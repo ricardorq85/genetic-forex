@@ -4,10 +4,12 @@
  */
 package forex.genetic.manager;
 
+import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.entities.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.Point;
+import forex.genetic.util.NumberUtil;
 import java.util.Random;
 import java.util.List;
 import java.util.Vector;
@@ -51,19 +53,21 @@ public class PoblacionManager {
 
     private void generatePoblacionInicial() {
         poblacion = new Poblacion();
-        List<IndividuoEstrategia> individuos = new Vector<IndividuoEstrategia>(INDIVIDUOS);
+        List<IndividuoEstrategia> individuos = new Vector<IndividuoEstrategia>(INITIAL_INDIVIDUOS);
         IndividuoEstrategia individuo = null;
         Indicator openIndicator = null;
         Indicator closeIndicator = null;
 
         Random random = new Random();
-        while (individuos.size() < INDIVIDUOS) {
+        while (individuos.size() < INITIAL_INDIVIDUOS) {
             individuo = new IndividuoEstrategia();
 
             List<Indicator> openIndicators = null;
             List<Indicator> closeIndicators = null;
 
-            Point point = points.get(((INDIVIDUOS < points.size()) ? individuos.size() : random.nextInt(points.size())));
+            int position = random.nextInt(points.size());
+            //Point point = points.get(((INITIAL_INDIVIDUOS < points.size()) ? individuos.size() : position));
+            Point point = points.get(position);
             openIndicators = new Vector<Indicator>(INDICATOR_NUMBER);
             closeIndicators = new Vector<Indicator>(INDICATOR_NUMBER);
             for (int i = 0; i < INDICATOR_NUMBER; i++) {
@@ -76,13 +80,18 @@ public class PoblacionManager {
 
             individuo.setOpenIndicators(openIndicators);
             individuo.setCloseIndicators(closeIndicators);
-            individuo.setTakeProfit(new Double(MIN_TP + random.nextInt(MAX_TP - MIN_TP)));
-            individuo.setStopLoss(new Double(MIN_SL + random.nextInt(MAX_SL - MIN_SL)));
-            individuo.setLot(MIN_LOT + random.nextInt(MAX_LOT - MIN_LOT));
 
-            if (!individuos.contains(individuo)) {
-                individuos.add(individuo);
-            }
+            //individuo.setTakeProfit(NumberUtil.round(new Double(MIN_TP + random.nextDouble() * (MAX_TP - MIN_TP))));
+            individuo.setTakeProfit(MIN_TP + random.nextInt(MAX_TP - MIN_TP));
+            //individuo.setStopLoss(NumberUtil.round(new Double(MIN_SL + random.nextDouble() * (MAX_SL - MIN_SL))));
+            individuo.setStopLoss(MIN_SL + random.nextInt(MAX_SL - MIN_SL));
+            individuo.setLot(NumberUtil.round(MIN_LOT + random.nextDouble() * (MAX_LOT - MIN_LOT), LOT_SCALE_ROUNDING));
+            //individuo.setInitialBalance(NumberUtil.round(MIN_BALANCE + random.nextDouble() * (MAX_BALANCE - MIN_BALANCE)));
+            individuo.setInitialBalance(MIN_BALANCE + random.nextInt(MAX_BALANCE - MIN_BALANCE));
+
+            //if (!individuos.contains(individuo)) {
+            individuos.add(individuo);
+            //}
         }
 
         poblacion.setIndividuos(individuos);

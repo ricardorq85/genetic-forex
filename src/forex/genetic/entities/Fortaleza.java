@@ -133,14 +133,18 @@ public class Fortaleza implements Comparable<Fortaleza> {
         StringBuilder buffer = new StringBuilder();
         buffer.append(" Fortaleza=" + value);
         buffer.append("; Profit=" + this.profit);
+        buffer.append("\n\t\t");
         buffer.append("; Pips=" + this.pips);
         buffer.append("; Pips Ganados=" + this.wonPips);
         buffer.append("; Pips Perdidos=" + this.lostPips);
+        buffer.append("\n\t\t");
         buffer.append("; Max. Pips Consecutivos Ganados=" + this.maxConsecutiveWonPips);
         buffer.append("; Max. Pips Consecutivos Perdidos=" + this.maxConsecutiveLostPips);
+        buffer.append("\n\t\t");
         buffer.append("; Numero Operaciones=" + (this.operationsNumber));
         buffer.append("; Numero Operaciones Ganadoras=" + (this.wonOperationsNumber));
         buffer.append("; Numero Operaciones Perdedoras=" + (this.lostOperationsNumber));
+        buffer.append("\n\t\t");
         buffer.append("; Max. Numero Consecutivo Operaciones Ganadoras=" + (this.maxConsecutiveWonOperationsNumber));
         buffer.append("; Max. Numero Consecutivo Operaciones Perdedoras=" + (this.maxConsecutiveLostOperationsNumber));
         buffer.append("; PipsFactor=" + (this.pipsFactor));

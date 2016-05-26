@@ -15,26 +15,29 @@ import static forex.genetic.util.Constants.*;
 public class IndividuoEstrategia implements Comparable<IndividuoEstrategia> {
 
     private int id = 0;
+    private int generacion = -1;
     private IndividuoEstrategia parent1 = null;
     private IndividuoEstrategia parent2 = null;
     private IndividuoType individuoType = IndividuoType.INITIAL;
-    private double takeProfit = 0.0;
-    private double stopLoss = 0.0;
-    private int lot = 0;
+    private int takeProfit = 0;
+    private int stopLoss = 0;
+    private double lot = 0;
+    private int initialBalance = 0;
     private List<? extends Indicator> openIndicators = null;
     private List<? extends Indicator> closeIndicators = null;
     private Fortaleza fortaleza = null;
 
     public IndividuoEstrategia() {
-        this(null, null, IndividuoType.INITIAL);
+        this(0, null, null, IndividuoType.INITIAL);
     }
 
     public IndividuoEstrategia(IndividuoEstrategia parent1) {
-        this(parent1, null, IndividuoType.INITIAL);
+        this(0, parent1, null, IndividuoType.INITIAL);
     }
 
-    public IndividuoEstrategia(IndividuoEstrategia parent1, IndividuoEstrategia parent2, IndividuoType individuoType) {
+    public IndividuoEstrategia(int generacion, IndividuoEstrategia parent1, IndividuoEstrategia parent2, IndividuoType individuoType) {
         setId(IndividuoManager.nextId());
+        setGeneracion(generacion);
         setParent1(parent1);
         setParent2(parent2);
         setIndividuoType(individuoType);
@@ -96,28 +99,44 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia> {
         this.closeIndicators = closeIndicators;
     }
 
-    public double getTakeProfit() {
-        return takeProfit;
+    public int getInitialBalance() {
+        return initialBalance;
     }
 
-    public void setTakeProfit(double takeProfit) {
-        this.takeProfit = takeProfit;
+    public void setInitialBalance(int initialBalance) {
+        this.initialBalance = initialBalance;
     }
 
-    public double getStopLoss() {
+    public int getStopLoss() {
         return stopLoss;
     }
 
-    public void setStopLoss(double stopLoss) {
+    public void setStopLoss(int stopLoss) {
         this.stopLoss = stopLoss;
     }
 
-    public int getLot() {
+    public int getTakeProfit() {
+        return takeProfit;
+    }
+
+    public void setTakeProfit(int takeProfit) {
+        this.takeProfit = takeProfit;
+    }
+
+    public double getLot() {
         return lot;
     }
 
-    public void setLot(int lot) {
+    public void setLot(double lot) {
         this.lot = lot;
+    }
+
+    public int getGeneracion() {
+        return generacion;
+    }
+
+    public void setGeneracion(int generacion) {
+        this.generacion = generacion;
     }
 
     public int compareTo(IndividuoEstrategia o) {
@@ -128,10 +147,10 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia> {
     public boolean equals(Object obj) {
         if (obj instanceof IndividuoEstrategia) {
             IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
-            return (this.openIndicators.equals(objIndividuo.openIndicators))
-                    && this.takeProfit == objIndividuo.takeProfit
-                    && this.stopLoss == objIndividuo.stopLoss
-                    && this.lot == objIndividuo.lot;
+            return (this.openIndicators.equals(objIndividuo.openIndicators)
+                    && this.closeIndicators.equals(objIndividuo.closeIndicators)
+                    && (this.takeProfit - objIndividuo.takeProfit) / this.takeProfit < 0.03
+                    && (this.stopLoss - objIndividuo.stopLoss) / this.stopLoss < 0.03);
         } else {
             return false;
         }
@@ -146,21 +165,24 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia> {
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         buffer.append(" Id=" + (this.id));
+        buffer.append(" Generacion=" + (this.generacion));
         buffer.append("; IndividuoType=" + (this.individuoType) + ";");
+        buffer.append("\n\t");
         buffer.append(((this.fortaleza == null) ? 0.0 : this.fortaleza.toString()));
-
+        buffer.append("\n\t");
         if (parent1 != null) {
             buffer.append("; Padre 1=" + parent1.getId());
         }
         if (parent2 != null) {
             buffer.append("; Padre 2=" + parent2.getId());
         }
-
         buffer.append("; TakeProfit=" + this.takeProfit);
         buffer.append("; Stoploss=" + this.stopLoss);
         buffer.append("; Lot=" + this.lot);
-
+        buffer.append("; Initial Balance=" + this.initialBalance);
+        buffer.append("\n\t");
         buffer.append("; Open Indicadores=" + (this.openIndicators));
+        buffer.append("\n\t");
         buffer.append("; Close Indicadores=" + (this.closeIndicators));
 
         return buffer.toString();

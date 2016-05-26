@@ -13,14 +13,28 @@ import java.util.List;
  */
 public class Point {
 
+    private int index = 0;
     private Date date = null;
-    private int volume = 0;
     private double open = 0.0;
+    private double low = 0.0;
+    private double high = 0.0;
     private double close = 0.0;
+    private int volume = 0;
     private double closeCompare = 0.0;
     private double min = 0.0;
     private double max = 0.0;
     private List<? extends Indicator> indicators = null;
+
+    public Point() {
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
 
     public double getCloseCompare() {
         return closeCompare;
@@ -32,6 +46,10 @@ public class Point {
 
     public double getClose() {
         return close;
+    }
+
+    public double getWeihgted() {
+        return ((this.getClose() + this.getOpen() + this.getHigh() + this.getLow()) / 4);
     }
 
     public void setClose(double close) {
@@ -84,5 +102,31 @@ public class Point {
 
     public void setVolume(int volume) {
         this.volume = volume;
+    }
+
+    public double getHigh() {
+        return high;
+    }
+
+    public void setHigh(double high) {
+        this.high = high;
+    }
+
+    public double getLow() {
+        return low;
+    }
+
+    public void setLow(double low) {
+        this.low = low;
+    }
+
+    @Override
+    public String toString() {
+        return "Index=" + this.index
+                + " Date=" + this.date
+                + " Open=" + this.open
+                + " Close=" + this.close
+                + " Low=" + this.low
+                + " High=" + this.high;
     }
 }

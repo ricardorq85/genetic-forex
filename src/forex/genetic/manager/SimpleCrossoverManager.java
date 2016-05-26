@@ -4,8 +4,6 @@
  */
 package forex.genetic.manager;
 
-import forex.genetic.util.NumberUtil;
-
 /**
  *
  * @author ricardorq85
@@ -13,7 +11,7 @@ import forex.genetic.util.NumberUtil;
 public class SimpleCrossoverManager extends EspecificCrossoverManager {
 
     public double crossover(double d1, double d2, double min, double max) {
-        return NumberUtil.round((d1 + d2) / 2);
+        return (d1 + d2) / 2;
     }
 
     public int crossover(int d1, int d2, int min, int max) {
