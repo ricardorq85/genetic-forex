@@ -10,43 +10,42 @@ package forex.genetic.entities;
  */
 public class Interval extends Indicator {
 
-    private double lowerInterval = 0.0;
-    private double higherInterval = 0.0;
+    private double lowInterval = 0.0;
+    private double highInterval = 0.0;
 
     public Interval() {
     }
 
-    public Interval(double lowerInterval, double higherInterval) {
-        this.setLowerInterval(lowerInterval);
-        this.setHigherInterval(higherInterval);
+    public Interval(double lowInterval, double highInterval) {
+        this.setLowInterval(lowInterval);
+        this.setHighInterval(highInterval);
     }
 
-    public double getHigherInterval() {
-        return higherInterval;
+    public double getHighInterval() {
+        return highInterval;
     }
 
-    public void setHigherInterval(double higherInterval) {
-        this.higherInterval = higherInterval;
+    public void setHighInterval(double highInterval) {
+        this.highInterval = highInterval;
     }
 
-    public double getLowerInterval() {
-        return lowerInterval;
+    public double getLowInterval() {
+        return lowInterval;
     }
 
-    public void setLowerInterval(double lowerInterval) {
-        this.lowerInterval = lowerInterval;
+    public void setLowInterval(double lowInterval) {
+        this.lowInterval = lowInterval;
     }
 
     @Override
-    public boolean  equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj instanceof Interval) {
             Interval objInterval = (Interval) obj;
-            return (this.lowerInterval == objInterval.lowerInterval)
-                    && (this.higherInterval == objInterval.higherInterval);
+            return (((objInterval.lowInterval - this.lowInterval) / this.lowInterval) < 0.005
+                    && ((objInterval.highInterval - this.highInterval) / this.highInterval) < 0.005);
         } else {
             return false;
         }
-
     }
 
     @Override
@@ -57,8 +56,8 @@ public class Interval extends Indicator {
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
-        buffer.append("LowerInterval=" + (this.lowerInterval));
-        buffer.append("; HigherInterval=" + this.higherInterval);
+        buffer.append("lowInterval=" + (this.lowInterval));
+        buffer.append("; highInterval=" + this.highInterval);
 
         return buffer.toString();
     }

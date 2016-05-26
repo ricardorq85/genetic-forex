@@ -28,16 +28,27 @@ public class Poblacion {
         return p;
     }
 
+    public Poblacion getLast() {
+        return getLast(1);
+    }
+
+    public Poblacion getLast(int cantidad) {
+        Poblacion p = new Poblacion();
+        p.setIndividuos(this.getIndividuos().subList((cantidad < this.getIndividuos().size())
+                ? (this.getIndividuos().size() - cantidad) : 0, this.getIndividuos().size()));
+
+        return p;
+    }
+
     public void removeAll(List<IndividuoEstrategia> individuos) {
         this.individuos.removeAll(individuos);
     }
 
     public void addAll(Poblacion poblacion) {
-        this.individuos.addAll(poblacion.getIndividuos());
+        //this.individuos.addAll(poblacion.getIndividuos());
         Set<IndividuoEstrategia> set = new HashSet<IndividuoEstrategia>();
         set.addAll(individuos);
-        individuos.clear();
-        set.addAll(individuos);
+        set.addAll(poblacion.getIndividuos());
 
         individuos.clear();
         individuos.addAll(set);

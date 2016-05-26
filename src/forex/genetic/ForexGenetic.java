@@ -6,7 +6,13 @@ package forex.genetic;
 
 import forex.genetic.entities.Poblacion;
 import forex.genetic.delegate.GeneticDelegate;
-import forex.genetic.delegate.GeneticTesterDelegate;
+import forex.genetic.entities.indicator.Average;
+import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.indicator.Macd;
+import forex.genetic.entities.indicator.Sar;
+import forex.genetic.util.Constants;
+import forex.genetic.util.NumberUtil;
+import java.util.List;
 
 /**
  *
@@ -21,10 +27,11 @@ public class ForexGenetic {
     public static void main(String[] args) {
         GeneticDelegate delegate = new GeneticDelegate();
         Poblacion poblacion = delegate.process();
-        delegate.outPoblacion(poblacion);
+        //delegate.outPoblacion(poblacion);
 
-        GeneticTesterDelegate testerDelegate = new GeneticTesterDelegate();
+
+        /*GeneticTesterDelegate testerDelegate = new GeneticTesterDelegate();
         testerDelegate.process(poblacion.getFirst());
-        delegate.outPoblacion(poblacion.getFirst());
+        delegate.outPoblacion(poblacion.getFirst());*/
     }
 }

@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package forex.genetic.util;
 
 import java.util.Date;
@@ -13,7 +12,7 @@ import java.util.Date;
  */
 public class LogUtil {
 
-    public static void logTime(String name) { 
+    public static void logTime(String name) {
         System.out.println("<log> " + name + "=" + new Date());
     }
 }
