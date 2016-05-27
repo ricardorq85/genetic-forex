@@ -28,7 +28,7 @@ public class FileOutManager {
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
         for (int i = individuos.size() - 1; i >= 0; i--) {
             IndividuoEstrategia individuo = individuos.get(i);
-            System.out.println(individuo.toFileString());
+            System.out.println(i + "," + individuo.toFileString(dateInterval));
             //writer.write(poblacion);
         }
         //writer.close();

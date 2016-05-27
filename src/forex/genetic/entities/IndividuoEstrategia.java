@@ -8,6 +8,9 @@ import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.manager.IndividuoManager;
 import forex.genetic.util.Constants;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import static forex.genetic.util.Constants.*;
 
@@ -18,6 +21,7 @@ import static forex.genetic.util.Constants.*;
 public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Serializable {
 
     private int id = 0;
+    private String file = null;
     private int processedUntil = 0;
     private int generacion = -1;
     private IndividuoEstrategia parent1 = null;
@@ -152,6 +156,14 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         this.generacion = generacion;
     }
 
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
     public int compareTo(IndividuoEstrategia o) {
         return (this.fortaleza.compareTo(o.getFortaleza()));
     }
@@ -213,10 +225,16 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         return buffer.toString();
     }
 
-    public String toFileString() {
+    public String toFileString(Interval<Date> dateInterval) {
         StringBuilder buffer = new StringBuilder();
         buffer.append("Pair=" + Constants.PAIR + ",");
         buffer.append(Constants.OPERATION_TYPE + "EstrategiaId=" + (this.id) + ",");
+
+        DateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+        buffer.append("VigenciaLower=" + format.format(dateInterval.getHighInterval()) + ",");
+        Date vigencia = new Date(dateInterval.getHighInterval().getTime() + Constants.VIGENCIA);
+        buffer.append("VigenciaHigher=" + (format.format(vigencia)) + ",");
+
         buffer.append(Constants.OPERATION_TYPE + "TakeProfit=" + this.takeProfit + ",");
         buffer.append(Constants.OPERATION_TYPE + "StopLoss=" + this.stopLoss + ",");
         buffer.append(Constants.OPERATION_TYPE + "Lote=" + this.lot + ",");

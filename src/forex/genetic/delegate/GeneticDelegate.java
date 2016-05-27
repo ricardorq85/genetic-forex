@@ -6,20 +6,14 @@ package forex.genetic.delegate;
 
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
-import forex.genetic.entities.indicator.Adx;
-import forex.genetic.entities.indicator.Average;
-import forex.genetic.entities.indicator.Macd;
-import forex.genetic.entities.indicator.Rsi;
-import forex.genetic.entities.indicator.Sar;
 import forex.genetic.manager.CrossoverManager;
 import forex.genetic.manager.FuncionFortalezaManager;
 import forex.genetic.manager.MutationManager;
 import forex.genetic.manager.PoblacionManager;
 import forex.genetic.manager.io.FileOutManager;
 import forex.genetic.manager.io.SerializationManager;
-import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
-import forex.genetic.util.NumberUtil;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import static forex.genetic.util.Constants.*;
@@ -44,22 +38,35 @@ public class GeneticDelegate {
     public Poblacion process(int poblacionCounter) {
         Poblacion poblacion = new Poblacion();
         int serialiced = 0;
-        try {
-            Poblacion p = new SerializationManager().readAll(SERIALICE_PATH, SHOW_HARDEST);
-            serialiced = p.getIndividuos().size();
-            poblacion.addAll(p);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        if (RECALCULATE) {
+            try {
+                Poblacion p = serializationManager.readAll(SERIALICE_PATH, SHOW_HARDEST);
+                serialiced = p.getIndividuos().size();
+                poblacion.addAll(p);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            try {
+                Poblacion p = serializationManager.readObject(new File(RECALCULATE_INDIVIDUOS_PATH));
+                serialiced = p.getIndividuos().size();
+                poblacion.addAll(p);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
         int totalSize = 0;
-        for (int poblacionIndex = INITIAL_POBLACION_COUNTER; poblacionIndex < INITIAL_POBLACION_COUNTER + poblacionCounter; poblacionIndex++) {
+        for (int poblacionIndex = INITIAL_POBLACION_PROCESS; poblacionIndex <= poblacionCounter; poblacionIndex++) {
             LogUtil.logTime("\n Crear poblacion " + poblacionIndex);
             PoblacionManager poblacionManager = new PoblacionManager("" + poblacionIndex, true);
-            LogUtil.logTime("Crear poblacion " + poblacionIndex + " Fecha=" + poblacionManager.getDateInterval());
+            LogUtil.logTime("Crear poblacion " + poblacionIndex);
 
             if (poblacionManager.getPoblacion() != null) {
                 poblacion.addAll(poblacionManager.getPoblacion());
+                LogUtil.logTime(" Fecha=" + poblacionManager.getDateInterval());
+            } else {
+                LogUtil.logTime("\n");
             }
 
             int generacionIndex = 0;
@@ -68,10 +75,8 @@ public class GeneticDelegate {
             LogUtil.logTime("Points=" + poblacionManager.getPoints().size() + ", Individuos = " + size);
             for (generacionIndex = 1; generacionIndex <= GENERATIONS; generacionIndex++) {
                 LogUtil.logTime("Generacion=" + (generacionIndex - 1) + ", Individuos = " + size);
-                if ((poblacionIndex > INITIAL_POBLACION_COUNTER) || (serialiced < INDIVIDUOS)) {
-                    this.processGeneracion(poblacion, generacionIndex);
-                }
-                for (int poblacionManagerIndex = INITIAL_POBLACION_COUNTER; poblacionManagerIndex <= poblacionIndex; poblacionManagerIndex++) {
+                this.processGeneracion(poblacion, generacionIndex);
+                for (int poblacionManagerIndex = INITIAL_POBLACION; poblacionManagerIndex <= poblacionIndex; poblacionManagerIndex++) {
                     PoblacionManager oldPoblacionManager = null;
                     if (poblacionManagerIndex == poblacionIndex) {
                         oldPoblacionManager = poblacionManager;
@@ -79,22 +84,24 @@ public class GeneticDelegate {
                         oldPoblacionManager = new PoblacionManager("" + poblacionManagerIndex, false);
                     }
                     /** Se calcula la fortaleza de los individuos */
-                    LogUtil.logTime("Calcular fortaleza");
+                    //LogUtil.logTime("Calcular fortaleza");
                     funcionFortalezaManager.calculateFortaleza(totalSize, oldPoblacionManager.getPoints(), poblacion,
-                            ((poblacionIndex == INITIAL_POBLACION_COUNTER) && (generacionIndex == 1)),
+                            ((poblacionIndex == INITIAL_POBLACION_PROCESS) && (generacionIndex == 1) && (RECALCULATE)),
                             poblacionManagerIndex);
                     //((generacionIndex == 1) && (poblacionManagerIndex == poblacionIndex)));
-                    LogUtil.logTime("Calcular fortaleza");
+                    //LogUtil.logTime("Calcular fortaleza");
                 }
 
                 /** Se obtienen los individuos mas DEBILES y se eliminan */
-                LogUtil.logTime("Procesar mas debiles");
+                //LogUtil.logTime("Procesar mas debiles");
                 funcionFortalezaManager.processWeakestPoblacion(poblacion, INDIVIDUOS);
-                LogUtil.logTime("Procesar mas debiles");
+                //LogUtil.logTime("Procesar mas debiles");
 
                 outPoblacion(poblacion.getFirst());
                 try {
-                    fileOutManager.write(poblacion.getFirst(SHOW_HARDEST), poblacionManager.getDateInterval());
+                    if (poblacionManager.getPoblacion() != null) {
+                        fileOutManager.write(poblacion.getFirst(SHOW_HARDEST), poblacionManager.getDateInterval());
+                    }
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -103,8 +110,10 @@ public class GeneticDelegate {
             LogUtil.logTime("Generaciones = " + (generacionIndex - 1));
             outPoblacion(poblacion.getFirst(SHOW_HARDEST));
             try {
-                fileOutManager.write(poblacion.getFirst(SHOW_HARDEST), poblacionManager.getDateInterval());
-                serializationManager.writeObject(id, poblacion, poblacionManager.getDateInterval());
+                if (poblacionManager.getPoblacion() != null) {
+                    fileOutManager.write(poblacion.getFirst(SHOW_HARDEST), poblacionManager.getDateInterval());
+                    serializationManager.writeObject(id, poblacion, poblacionManager.getDateInterval());
+                }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

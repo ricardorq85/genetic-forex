@@ -64,7 +64,7 @@ public class BasePointManagerFile {
         Bollinger bollingerBand = null;
         Momentum momentum = null;
 
-        DateFormat format = new SimpleDateFormat("MM/dd/yyyyHH:mm");
+        DateFormat format = new SimpleDateFormat("yyyy/MM/ddHH:mm");
 
         BufferedReader reader = new BufferedReader(
                 new FileReader(filePath));

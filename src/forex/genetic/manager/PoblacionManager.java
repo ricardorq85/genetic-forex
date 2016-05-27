@@ -34,15 +34,17 @@ public class PoblacionManager {
 
     public PoblacionManager(String poblacionId, boolean poblar) {
         this.generatePoints(poblacionId);
-        if (poblar) {
+        if ( (poblar) && (!this.points.isEmpty()) ) {
             this.generatePoblacionInicial();
         }
     }
 
     private void generatePoints(String poblacionId) {
         this.points = BasePointManagerFile.process(poblacionId);
-        this.dateInterval.setLowInterval(this.points.get(0).getDate());
-        this.dateInterval.setHighInterval(this.points.get(this.points.size() - 1).getDate());
+        if (!(this.points.isEmpty())) {
+            this.dateInterval.setLowInterval(this.points.get(0).getDate());
+            this.dateInterval.setHighInterval(this.points.get(this.points.size() - 1).getDate());
+        }
     }
 
     private void generatePoblacionInicial() {

@@ -8,6 +8,7 @@ import forex.genetic.util.CollectionUtil;
 import forex.genetic.util.Constants;
 import forex.genetic.util.Constants.OperationType;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -75,12 +76,11 @@ public class Poblacion implements Serializable {
     }
 
     public void addAll(Poblacion poblacion) {
-        Set<IndividuoEstrategia> set = new HashSet<IndividuoEstrategia>();
-        set.addAll(poblacion.getIndividuos());
-        set.addAll(this.getIndividuos());
-
-        this.getIndividuos().clear();
-        this.getIndividuos().addAll(set);
+        for (IndividuoEstrategia individuoEstrategia : poblacion.getIndividuos()) {
+            if (!this.individuos.contains(individuoEstrategia)) {
+                this.individuos.add(individuoEstrategia);
+            }
+        }
     }
 
     /*    public void addAllHistoricos(List<IndividuoEstrategia> individuos) {
@@ -100,5 +100,16 @@ public class Poblacion implements Serializable {
     public void setIndividuos(List<IndividuoEstrategia> individuos) {
         this.individuos = individuos;
         //this.addAllHistoricos(individuos);
+    }
+
+    public boolean equals(Poblacion p) {
+        return (this.operationType.equals(p.operationType)
+                && this.pair.equals(p.pair)
+                && this.individuos.equals(p.individuos));
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }
