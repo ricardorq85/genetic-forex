@@ -4,12 +4,15 @@
  */
 package forex.genetic.entities;
 
+import java.io.Serializable;
+
 /**
  *
  * @author ricardorq85
  */
-public class Fortaleza implements Comparable<Fortaleza> {
+public class Fortaleza implements Comparable<Fortaleza>, Serializable {
 
+    public static final long serialVersionUID = 201101251800L;
     private double pips = 0.0;
     private double profit = 0.0;
     private double wonPips = 0.0;
@@ -23,6 +26,15 @@ public class Fortaleza implements Comparable<Fortaleza> {
     private int maxConsecutiveWonOperationsNumber = 0;
     private int maxConsecutiveLostOperationsNumber = 0;
     private double value = 0.0;
+    private double diffValue = 0.0;
+
+    public double getDiffValue() {
+        return diffValue;
+    }
+
+    public void setDiffValue(double diffValue) {
+        this.diffValue = diffValue;
+    }
 
     public int getLostOperationsNumber() {
         return lostOperationsNumber;
@@ -131,7 +143,7 @@ public class Fortaleza implements Comparable<Fortaleza> {
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
-        buffer.append(" Fortaleza=" + value);
+        buffer.append(" Fortaleza=" + value + " Diff=" + diffValue);
         buffer.append("; Profit=" + this.profit);
         buffer.append("\n\t\t");
         buffer.append("; Pips=" + this.pips);
@@ -153,6 +165,6 @@ public class Fortaleza implements Comparable<Fortaleza> {
     }
 
     public int compareTo(Fortaleza o) {
-        return ((Double.isNaN(value)) ? 1 : -Double.compare(value, o.getValue()));
+        return (-Double.compare(value, o.getValue()));
     }
 }

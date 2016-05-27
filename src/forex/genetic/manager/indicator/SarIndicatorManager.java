@@ -4,33 +4,31 @@
  */
 package forex.genetic.manager.indicator;
 
-import forex.genetic.entities.Indicator;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Sar;
-import forex.genetic.manager.IntervalManager;
-import static forex.genetic.util.Constants.PriceType;
 
 /**
  *
  * @author ricardorq85
  */
-public class SarIndicatorManager extends IndicatorManager<Sar> {
+public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
 
-    private IntervalManager intervalManager = new IntervalManager();
-    private PriceType type = null;
+    protected SarIndicatorManager(boolean priceDependence) {
+        super(priceDependence, "Sar");
+    }
 
-    protected SarIndicatorManager(PriceType type, boolean priceDependence) {
-        super(priceDependence);
-        this.type = type;
+    public Sar getIndicatorInstance() {
+        return new Sar("Sar");
     }
 
     public Indicator generate(Sar indicator, Point point) {
         Interval interval = null;
-        Sar sar = new Sar();
+        Sar sar = new Sar("Sar");
         if (indicator != null) {
             sar.setSar(indicator.getSar());
-            interval = intervalManager.generate(indicator.getSar(), (type.equals(PriceType.COMPARE_CLOSE)) ? point.getCloseCompare() : point.getHigh(), (type.equals(PriceType.COMPARE_CLOSE)) ? point.getCloseCompare() : point.getLow());
+            interval = intervalManager.generate(indicator.getSar(), point.getLow(), point.getHigh());
         } else {
             interval = intervalManager.generate(Double.NaN, Double.NaN, Double.NaN);
         }
@@ -39,35 +37,12 @@ public class SarIndicatorManager extends IndicatorManager<Sar> {
         return sar;
     }
 
+    @Override
     public boolean operate(Sar sarIndividuo, Sar iSar, Point point) {
-        if (type.equals(PriceType.COMPARE_CLOSE)) {
-            return intervalManager.operate(sarIndividuo.getInterval(), iSar.getSar(), point.getCloseCompare());
-        } else {
-            return intervalManager.operate(sarIndividuo.getInterval(), iSar.getSar(), point);
-        }
+        return intervalManager.operate(sarIndividuo.getInterval(), iSar.getSar(), point);
     }
 
-    public Indicator crossover(Sar sar1, Sar sar2) {
-        Sar avgHijo = new Sar();
-        Interval interval = null;
-        if ((sar1 == null) && (sar2 == null)) {
-            avgHijo = null;
-        } else {
-            interval = intervalManager.crossover(
-                    (sar1 == null) ? null : sar1.getInterval(),
-                    (sar2 == null) ? null : sar2.getInterval());
-            avgHijo.setInterval(interval);
-        }
-        return avgHijo;
-    }
-
-    public Indicator mutate(Sar sar) {
-        Sar avgHijo = new Sar();
-        Interval interval = intervalManager.mutate((sar == null) ? null : sar.getInterval());
-        avgHijo.setInterval(interval);
-        return avgHijo;
-    }
-
+    @Override
     public Interval calculateInterval(Sar sarIndividuo, Sar iSar, Point point) {
         return intervalManager.calculateInterval(sarIndividuo.getInterval(), iSar.getSar(), point);
     }

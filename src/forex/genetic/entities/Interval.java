@@ -4,60 +4,57 @@
  */
 package forex.genetic.entities;
 
+import java.io.Serializable;
+
 /**
  *
  * @author ricardorq85
  */
-public class Interval extends Indicator {
+public abstract class Interval<E> implements Serializable {
 
-    private double lowInterval = 0.0;
-    private double highInterval = 0.0;
+    public static final long serialVersionUID = 6007574011942155419L;
+    protected String name = null;
+    protected E lowInterval = null;
+    protected E highInterval = null;
 
-    public Interval() {
+    public Interval(String name) {
+        this.name = name;
     }
 
-    public Interval(double lowInterval, double highInterval) {
+    public Interval(E lowInterval, E highInterval) {
         this.setLowInterval(lowInterval);
         this.setHighInterval(highInterval);
     }
 
-    public double getHighInterval() {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public E getHighInterval() {
         return highInterval;
     }
 
-    public void setHighInterval(double highInterval) {
+    public void setHighInterval(E highInterval) {
         this.highInterval = highInterval;
     }
 
-    public double getLowInterval() {
+    public E getLowInterval() {
         return lowInterval;
     }
 
-    public void setLowInterval(double lowInterval) {
+    public void setLowInterval(E lowInterval) {
         this.lowInterval = lowInterval;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Interval) {
-            Interval objInterval = (Interval) obj;
-            return (((objInterval.lowInterval - this.lowInterval) / this.lowInterval) < 0.005
-                    && ((objInterval.highInterval - this.highInterval) / this.highInterval) < 0.005);
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
     }
 
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
-        buffer.append("lowInterval=" + (this.lowInterval));
-        buffer.append("; highInterval=" + this.highInterval);
+        buffer.append(this.name + "Lower=" + (this.lowInterval) + ",");
+        buffer.append(this.name + "Higher=" + this.highInterval);
 
         return buffer.toString();
     }

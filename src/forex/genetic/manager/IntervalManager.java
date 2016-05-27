@@ -4,8 +4,10 @@
  */
 package forex.genetic.manager;
 
+import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
+import forex.genetic.util.Constants;
 import forex.genetic.util.NumberUtil;
 import java.util.Random;
 
@@ -15,31 +17,42 @@ import java.util.Random;
  */
 public class IntervalManager {
 
+    private double pairFactor = Constants.getPairFactor(Constants.PAIR);
     private double min = Double.POSITIVE_INFINITY;
     private double max = Double.NEGATIVE_INFINITY;
     private Random random = new Random();
     private static EspecificMutationManager especificMutationManager = EspecificMutationManager.getInstance();
+    private String name = null;
 
-    public IntervalManager() {
+    public IntervalManager(String name) {
+        this.name = name;
+    }
+
+    private double generateDefault() {
+        if (Double.isInfinite(min) || Double.isInfinite(max)) {
+            return (random.nextBoolean()) ? random.nextDouble() : -random.nextDouble();
+        } else {
+            return min + random.nextDouble() * (max - min);
+        }
     }
 
     public Interval generate(double value, double i1, double i2) {
-        Interval interval = new Interval();
+        Interval<Double> interval = new DoubleInterval(this.name);
         double interval1 = 0.0;
         double interval2 = 0.0;
         if (Double.isNaN(value) || (value == 0.0)) {
-            if (Double.isInfinite(min) || Double.isInfinite(max)) {
-                interval1 = (random.nextBoolean()) ? random.nextDouble() : -random.nextDouble();
-            } else {
-                interval1 = min + ((random.nextBoolean()) ? random.nextDouble() * max : -random.nextDouble() * max);
-            }
-            interval2 = (interval1 + random.nextDouble()) + interval1 * ((random.nextBoolean()) ? random.nextDouble() : -random.nextDouble());
+            interval1 = generateDefault();
+            interval2 = generateDefault();
         } else {
             if (!Double.isNaN(i1)) {
                 interval1 = (value - i1);
+            } else {
+                interval1 = generateDefault();
             }
             if (!Double.isNaN(i2)) {
                 interval2 = (value - i2);
+            } else {
+                interval2 = generateDefault();
             }
         }
         interval.setLowInterval(NumberUtil.round(Math.min(interval1, interval2)));
@@ -51,7 +64,7 @@ public class IntervalManager {
         return interval;
     }
 
-    public boolean operate(Interval interval, double value, double price) {
+    public boolean operate(Interval<Double> interval, double value, double price) {
         double lowInterval = interval.getLowInterval();
         double highInterval = interval.getHighInterval();
 
@@ -62,18 +75,30 @@ public class IntervalManager {
         return (this.calculateInterval(interval, value, point) != null);
     }
 
-    public Interval calculateInterval(Interval interval, double value, Point point) {
-        Interval result = new Interval();
+    public Interval calculateInterval(Interval<Double> interval, double value, Point point) {
+        Interval<Double> result = new DoubleInterval(this.name);
         double lowInterval = interval.getLowInterval();
         double highInterval = interval.getHighInterval();
 
         double highIntervalPosibble = value - lowInterval;
         double lowIntervalPosibble = value - highInterval;
 
-        result.setLowInterval(NumberUtil.round(lowIntervalPosibble));
+        /*result.setLowInterval(NumberUtil.round(lowIntervalPosibble));
         result.setHighInterval(NumberUtil.round(highIntervalPosibble));
+         */
+        result.setLowInterval(lowIntervalPosibble);
+        result.setHighInterval(highIntervalPosibble);
 
-        result = IntervalManager.intersect(new Interval(lowIntervalPosibble, highIntervalPosibble), new Interval(point.getLow(), point.getHigh()));
+        Interval<Double> pointInterval = new DoubleInterval(this.name);
+        if (Constants.OPERATION_TYPE.equals(Constants.OperationType.Buy)) {
+            pointInterval.setLowInterval(point.getLow() + Constants.PIPS_FIXER / pairFactor);
+            pointInterval.setHighInterval(point.getHigh() + Constants.PIPS_FIXER / pairFactor);
+        } else {
+            pointInterval.setLowInterval(point.getLow());
+            pointInterval.setHighInterval(point.getHigh());
+        }
+
+        result = IntervalManager.intersect(result, pointInterval);
 
         return result;
     }
@@ -82,50 +107,63 @@ public class IntervalManager {
         return (value >= low) && (value <= high);
     }
 
-    public Interval crossover(Interval interval1, Interval interval2) {
-        Interval interval = new Interval();
-        if ((interval1 == null) && (interval2 == null)) {
-            interval.setLowInterval(min);
-            interval.setHighInterval(max);
-        } else if (interval1 == null) {
-            interval.setLowInterval(interval2.getLowInterval());
-            interval.setHighInterval(interval2.getHighInterval());
-        } else if (interval2 == null) {
-            interval.setLowInterval(interval1.getLowInterval());
-            interval.setHighInterval(interval1.getHighInterval());
-        } else {
-            if (interval1.getLowInterval() > interval2.getHighInterval()) {
+    public Interval crossover(Interval<Double> interval1, Interval<Double> interval2) {
+        Interval interval = intersect(interval1, interval2);
+        if (interval == null) {
+            interval = new DoubleInterval(this.name);
+            if ((interval1 == null) && (interval2 == null)) {
+                if (Double.isInfinite(min) || Double.isInfinite(max)) {
+                    interval.setLowInterval(null);
+                    interval.setHighInterval(null);
+                } else {
+                    interval.setLowInterval(min);
+                    interval.setHighInterval(max);
+                }
+            } else if (interval1 == null) {
                 interval.setLowInterval(interval2.getLowInterval());
+                interval.setHighInterval(interval2.getHighInterval());
+            } else if (interval2 == null) {
+                interval.setLowInterval(interval1.getLowInterval());
                 interval.setHighInterval(interval1.getHighInterval());
             } else {
-                interval.setLowInterval(interval1.getLowInterval());
-                interval.setHighInterval(interval2.getHighInterval());
+                if (interval1.getLowInterval() > interval2.getHighInterval()) {
+                    interval.setLowInterval(interval2.getLowInterval());
+                    interval.setHighInterval(interval1.getHighInterval());
+                } else {
+                    interval.setLowInterval(interval1.getLowInterval());
+                    interval.setHighInterval(interval2.getHighInterval());
+                }
             }
         }
         return interval;
     }
 
-    public Interval mutate(Interval interval) {
-        Interval intervalHijo = new Interval();
+    public Interval mutate(Interval<Double> interval) {
+        Interval<Double> intervalHijo = new DoubleInterval(this.name);
         double interval1 = 0.0;
         double interval2 = 0.0;
         if (interval == null) {
-            interval1 = min + ((random.nextBoolean()) ? random.nextDouble() * max : -random.nextDouble() * max);
-            interval2 = (interval1 + random.nextDouble()) + interval1 * ((random.nextBoolean()) ? random.nextDouble() : -random.nextDouble());
+            interval1 = generateDefault();
+            interval2 = generateDefault();
         } else {
             interval1 = especificMutationManager.mutate(interval.getLowInterval(), min, interval.getHighInterval());
-            interval2 = especificMutationManager.mutate(interval.getHighInterval(), Math.min(interval1, interval.getLowInterval()), max);
+            interval2 = especificMutationManager.mutate(interval.getHighInterval(), Math.min(interval1, interval.getLowInterval()), Math.max(interval1, interval.getHighInterval()));
         }
         intervalHijo.setLowInterval(NumberUtil.round(Math.min(interval1, interval2)));
         intervalHijo.setHighInterval(NumberUtil.round(Math.max(interval1, interval2)));
+
+        min = NumberUtil.round(Math.min(min, intervalHijo.getLowInterval()));
+        max = NumberUtil.round(Math.max(max, intervalHijo.getHighInterval()));
+
         return intervalHijo;
     }
 
-    public static Interval intersect(Interval i1, Interval i2) {
-        Interval intersect = new Interval();
+    public static Interval<Double> intersect(Interval<Double> i1, Interval<Double> i2) {
+        Interval<Double> intersect = null;
         if ((i1 == null) || (i2 == null)) {
             intersect = null;
         } else {
+            intersect = new DoubleInterval(i1.getName());
             intersect.setLowInterval(Math.max(i1.getLowInterval(), i2.getLowInterval()));
             intersect.setHighInterval(Math.min(i1.getHighInterval(), i2.getHighInterval()));
             if (intersect.getLowInterval() > intersect.getHighInterval()) {

@@ -5,10 +5,17 @@
 package forex.genetic.manager;
 
 import forex.genetic.entities.indicator.Average;
-import forex.genetic.entities.Indicator;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.Macd;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.Adx;
+import forex.genetic.entities.indicator.Bollinger;
+import forex.genetic.entities.indicator.Momentum;
+import forex.genetic.entities.indicator.Rsi;
 import forex.genetic.entities.indicator.Sar;
+import forex.genetic.manager.indicator.IndicatorManager;
+import forex.genetic.util.Constants;
+import forex.genetic.util.NumberUtil;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -26,15 +33,12 @@ import static forex.genetic.util.Constants.*;
  *
  * @author ricardorq85
  */
-public class BasePointManagerFile extends BasePointManager {
+public class BasePointManagerFile {
 
-    public BasePointManagerFile() {
-    }
-
-    public List<Point> process() {
+    public static List<Point> process(String poblacionId) {
         try {
-            String filePath = "c:/Archivos de programa/MetaTrader 4/experts/files/EURUSD,1.csv";
-            return this.readFileAsPoint(filePath);
+            String filePath = Constants.FILE_PATH + Constants.PAIR + "," + poblacionId + ".csv";
+            return readFileAsPoint(filePath);
         } catch (ParseException ex) {
             Logger.getLogger(BasePointManagerFile.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -44,7 +48,7 @@ public class BasePointManagerFile extends BasePointManager {
         return null;
     }
 
-    private List<Point> readFileAsPoint(String filePath)
+    private static List<Point> readFileAsPoint(String filePath)
             throws java.io.IOException, ParseException {
         List<Point> points = new Vector<Point>();
         int counter = 0;
@@ -55,6 +59,11 @@ public class BasePointManagerFile extends BasePointManager {
         Macd macd = null;
         Average compareAverage = null;
         Sar sar = null;
+        Adx adx = null;
+        Rsi rsi = null;
+        Bollinger bollingerBand = null;
+        Momentum momentum = null;
+
         DateFormat format = new SimpleDateFormat("MM/dd/yyyyHH:mm");
 
         BufferedReader reader = new BufferedReader(
@@ -74,35 +83,61 @@ public class BasePointManagerFile extends BasePointManager {
             double compareCloseValue = Double.parseDouble(strings[11]);
             double compareAverageValue = Double.parseDouble(strings[12]);
             double baseSar = Double.parseDouble(strings[13]);
+            double baseAdxValue = Double.parseDouble(strings[14]);
+            double baseAdxPlus = Double.parseDouble(strings[15]);
+            double baseAdxMinus = Double.parseDouble(strings[16]);
+            double baseRsi = Double.parseDouble(strings[17]);
+            double baseBollingerUpper = Double.parseDouble(strings[18]);
+            double baseBollingerLower = Double.parseDouble(strings[19]);
+            double baseMomentum = Double.parseDouble(strings[20]);
 
             point = new Point();
             point.setIndex(counter);
             point.setDate(date);
-            point.setOpen(baseOpen);
-            point.setLow(baseLow);
-            point.setHigh(baseHigh);
-            point.setClose(baseClose);
+            point.setOpen(NumberUtil.round(baseOpen));
+            point.setLow(NumberUtil.round(baseLow));
+            point.setHigh(NumberUtil.round(baseHigh));
+            point.setClose(NumberUtil.round(baseClose));
             point.setVolume(volume);
-            point.setCloseCompare(compareCloseValue);
+            point.setCloseCompare(NumberUtil.round(compareCloseValue));
 
-            average = new Average();
-            average.setAverage(baseAverage);
+            average = new Average("Ma");
+            average.setAverage(NumberUtil.round(baseAverage));
 
-            macd = new Macd();
-            macd.setMacdValue(baseMacdValue);
-            macd.setMacdSignal(baseMacdSignal);
+            macd = new Macd("Macd");
+            macd.setMacdValue(NumberUtil.round(baseMacdValue));
+            macd.setMacdSignal(NumberUtil.round(baseMacdSignal));
 
-            compareAverage = new Average();
-            compareAverage.setAverage(compareAverageValue);
+            compareAverage = new Average("MaCompare");
+            compareAverage.setAverage(NumberUtil.round(compareAverageValue));
 
-            sar = new Sar();
-            sar.setSar(baseSar);
+            sar = new Sar("Sar");
+            sar.setSar(NumberUtil.round(baseSar));
 
-            indicators = new Vector<Indicator>(INDICATOR_NUMBER);
+            adx = new Adx("Adx");
+            adx.setAdxValue(baseAdxValue);
+            adx.setAdxPlus(baseAdxPlus);
+            adx.setAdxMinus(baseAdxMinus);
+
+            rsi = new Rsi("Rsi");
+            rsi.setRsi(NumberUtil.round(baseRsi));
+
+            bollingerBand = new Bollinger("Bollinger");
+            bollingerBand.setUpper(NumberUtil.round(baseBollingerUpper));
+            bollingerBand.setLower(NumberUtil.round(baseBollingerLower));
+
+            momentum = new Momentum("Momentum");
+            momentum.setMomentum(NumberUtil.round(baseMomentum));
+
+            indicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
             indicators.add(average);
             indicators.add(macd);
             indicators.add(compareAverage);
             indicators.add(sar);
+            indicators.add(adx);
+            indicators.add(rsi);
+            indicators.add(bollingerBand);
+            indicators.add(momentum);
             point.setIndicators(indicators);
 
             points.add(point);

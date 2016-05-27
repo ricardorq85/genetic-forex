@@ -4,12 +4,15 @@
  */
 package forex.genetic.manager;
 
+import forex.genetic.entities.DateInterval;
 import forex.genetic.manager.indicator.IndicatorManager;
-import forex.genetic.entities.Indicator;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.Interval;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.Point;
 import forex.genetic.util.NumberUtil;
+import java.util.Date;
 import java.util.Random;
 import java.util.List;
 import java.util.Vector;
@@ -23,32 +26,23 @@ public class PoblacionManager {
 
     private List<Point> points = null;
     private Poblacion poblacion = null;
-    private static PoblacionManager instance = null;
+    private Interval<Date> dateInterval = new DateInterval();
 
-    public static PoblacionManager getInstance() {
-        return getInstance(true);
+    public PoblacionManager(String poblacionId) {
+        this(poblacionId, false);
     }
 
-    public static PoblacionManager getInstance(boolean poblar) {
-        if (instance == null) {
-            instance = new PoblacionManager(poblar);
-        }
-        return instance;
-    }
-
-    private PoblacionManager() {
-        this(true);
-    }
-
-    private PoblacionManager(boolean poblar) {
-        this.generatePoints();
+    public PoblacionManager(String poblacionId, boolean poblar) {
+        this.generatePoints(poblacionId);
         if (poblar) {
             this.generatePoblacionInicial();
         }
     }
 
-    private void generatePoints() {
-        this.points = BasePointManager.getBasePointManager().process();
+    private void generatePoints(String poblacionId) {
+        this.points = BasePointManagerFile.process(poblacionId);
+        this.dateInterval.setLowInterval(this.points.get(0).getDate());
+        this.dateInterval.setHighInterval(this.points.get(this.points.size() - 1).getDate());
     }
 
     private void generatePoblacionInicial() {
@@ -59,21 +53,22 @@ public class PoblacionManager {
         Indicator closeIndicator = null;
 
         Random random = new Random();
-        while (individuos.size() < INITIAL_INDIVIDUOS) {
+        int counter = 0;
+        while (counter < INITIAL_INDIVIDUOS) {
             individuo = new IndividuoEstrategia();
 
             List<Indicator> openIndicators = null;
             List<Indicator> closeIndicators = null;
 
             int position = random.nextInt(points.size());
-            //Point point = points.get(((INITIAL_INDIVIDUOS < points.size()) ? individuos.size() : position));
             Point point = points.get(position);
-            openIndicators = new Vector<Indicator>(INDICATOR_NUMBER);
-            closeIndicators = new Vector<Indicator>(INDICATOR_NUMBER);
-            for (int i = 0; i < INDICATOR_NUMBER; i++) {
+            openIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
+            closeIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
+            for (int i = 0; i < IndicatorManager.getIndicatorNumber(); i++) {
                 IndicatorManager indicatorManager = IndicatorManager.getInstance(i);
-                openIndicator = indicatorManager.generate(point.getIndicators().get(i), point);
-                closeIndicator = indicatorManager.generate(point.getIndicators().get(i), point);
+                List<? extends Indicator> indicators = point.getIndicators();
+                openIndicator = indicatorManager.generate(indicators.get(i), point);
+                closeIndicator = indicatorManager.generate(indicators.get(i), point);
                 openIndicators.add(openIndicator);
                 closeIndicators.add(closeIndicator);
             }
@@ -81,19 +76,16 @@ public class PoblacionManager {
             individuo.setOpenIndicators(openIndicators);
             individuo.setCloseIndicators(closeIndicators);
 
-            //individuo.setTakeProfit(NumberUtil.round(new Double(MIN_TP + random.nextDouble() * (MAX_TP - MIN_TP))));
             individuo.setTakeProfit(MIN_TP + random.nextInt(MAX_TP - MIN_TP));
-            //individuo.setStopLoss(NumberUtil.round(new Double(MIN_SL + random.nextDouble() * (MAX_SL - MIN_SL))));
             individuo.setStopLoss(MIN_SL + random.nextInt(MAX_SL - MIN_SL));
             individuo.setLot(NumberUtil.round(MIN_LOT + random.nextDouble() * (MAX_LOT - MIN_LOT), LOT_SCALE_ROUNDING));
-            //individuo.setInitialBalance(NumberUtil.round(MIN_BALANCE + random.nextDouble() * (MAX_BALANCE - MIN_BALANCE)));
             individuo.setInitialBalance(MIN_BALANCE + random.nextInt(MAX_BALANCE - MIN_BALANCE));
 
-            //if (!individuos.contains(individuo)) {
-            individuos.add(individuo);
-            //}
+            if (!individuos.contains(individuo)) {
+                individuos.add(individuo);
+            }
+            counter++;
         }
-
         poblacion.setIndividuos(individuos);
     }
 
@@ -111,5 +103,13 @@ public class PoblacionManager {
 
     public void setPoints(List<Point> points) {
         this.points = points;
+    }
+
+    public Interval<Date> getDateInterval() {
+        return dateInterval;
+    }
+
+    public void setDateInterval(Interval<Date> dateInterval) {
+        this.dateInterval = dateInterval;
     }
 }

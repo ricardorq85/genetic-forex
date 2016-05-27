@@ -4,7 +4,8 @@
  */
 package forex.genetic.manager.controller;
 
-import forex.genetic.entities.Indicator;
+import forex.genetic.entities.DoubleInterval;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
@@ -13,7 +14,6 @@ import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.NumberUtil;
 import java.util.List;
-import static forex.genetic.util.Constants.*;
 
 /**
  *
@@ -29,14 +29,17 @@ public class IndicatorController {
     public boolean operateOpen(IndividuoEstrategia individuoEstrategia, List<Point> points, int index) {
         boolean operate = true;
         Point currentPoint = points.get(index);
-        Point previousPoint = points.get(index);
-        for (int j = 0; j < INDICATOR_NUMBER && operate; j++) {
+        Point previousPoint = points.get(index - 1);
+        for (int j = 0; j < IndicatorManager.getIndicatorNumber() && operate; j++) {
             IndicatorManager indicatorManager = IndicatorManager.getInstance(j);
-            Indicator openIndicatorIndividuo = individuoEstrategia.getOpenIndicators().get(j);
-            Indicator openIndicator = previousPoint.getIndicators().get(j);
-            if ((openIndicatorIndividuo != null) && (openIndicator != null)) {
-                operate = indicatorManager.operate(openIndicatorIndividuo, openIndicator, currentPoint)
-                        && indicatorManager.operate(openIndicatorIndividuo, openIndicator, points, index);
+            if (individuoEstrategia.getOpenIndicators().size() > j) {
+                Indicator openIndicatorIndividuo = individuoEstrategia.getOpenIndicators().get(j);
+                Indicator openIndicator = previousPoint.getIndicators().get(j);
+                if ((openIndicatorIndividuo != null) && (openIndicator != null)) {
+                    operate = indicatorManager.operate(openIndicatorIndividuo, openIndicator, currentPoint)
+                            && indicatorManager.operate(openIndicatorIndividuo, openIndicator, currentPoint, previousPoint)
+                            && indicatorManager.operate(openIndicatorIndividuo, openIndicator, points, index);
+                }
             }
         }
         return operate;
@@ -46,15 +49,18 @@ public class IndicatorController {
         boolean operate = false;
         boolean operateIndicator = true;
         Point currentPoint = points.get(index);
-        Point previousPoint = points.get(index);
-        for (int j = 0; j < INDICATOR_NUMBER && operateIndicator; j++) {
+        Point previousPoint = points.get(index - 1);
+        for (int j = 0; j < IndicatorManager.getIndicatorNumber() && operateIndicator; j++) {
             IndicatorManager indicatorManager = IndicatorManager.getInstance(j);
-            Indicator closeIndicatorIndividuo = individuoEstrategia.getCloseIndicators().get(j);
-            Indicator closeIndicator = previousPoint.getIndicators().get(j);
-            if ((closeIndicatorIndividuo != null) && (closeIndicator != null)) {
-                operateIndicator = indicatorManager.operate(closeIndicatorIndividuo, closeIndicator, currentPoint)
-                        && indicatorManager.operate(closeIndicatorIndividuo, closeIndicator, points, index);
-                operate = operateIndicator;
+            if (individuoEstrategia.getCloseIndicators().size() > j) {
+                Indicator closeIndicatorIndividuo = individuoEstrategia.getCloseIndicators().get(j);
+                Indicator closeIndicator = previousPoint.getIndicators().get(j);
+                if ((closeIndicatorIndividuo != null) && (closeIndicator != null)) {
+                    operateIndicator = indicatorManager.operate(closeIndicatorIndividuo, closeIndicator, currentPoint)
+                            && indicatorManager.operate(closeIndicatorIndividuo, closeIndicator, currentPoint, previousPoint)
+                            && indicatorManager.operate(closeIndicatorIndividuo, closeIndicator, points, index);
+                    operate = operateIndicator;
+                }
             }
         }
         return operate;
@@ -63,30 +69,35 @@ public class IndicatorController {
     public double calculateOpenPrice(IndividuoEstrategia individuoEstrategia, List<Point> points, int index) {
         double price = Double.NaN;
         Point currentPoint = points.get(index);
-        Point previousPoint = points.get(index);
-        Interval currentInterval = new Interval(currentPoint.getLow(), currentPoint.getHigh());
-        for (int j = 0; j < INDICATOR_NUMBER && ((currentInterval != null) || (j == 0)); j++) {
+        Point previousPoint = points.get(index - 1);
+        Interval currentInterval = new DoubleInterval(currentPoint.getLow(), currentPoint.getHigh());
+        for (int j = 0; j < IndicatorManager.getIndicatorNumber() && ((currentInterval != null) || (j == 0)); j++) {
             IndicatorManager indicatorManager = IndicatorManager.getInstance(j);
-            Indicator indicatorIndividuo = individuoEstrategia.getOpenIndicators().get(j);
-            Indicator indicator = previousPoint.getIndicators().get(j);
-            if ((indicatorIndividuo != null) && (indicator != null)) {
-                if (indicatorManager.isPriceDependence()) {
-                    currentInterval = IntervalManager.intersect(currentInterval,
-                            indicatorManager.calculateInterval(indicatorIndividuo, indicator, currentPoint));
+            if (individuoEstrategia.getOpenIndicators().size() > j) {
+                Indicator indicatorIndividuo = individuoEstrategia.getOpenIndicators().get(j);
+                Indicator indicator = previousPoint.getIndicators().get(j);
+                if ((indicatorIndividuo != null) && (indicator != null)) {
+                    if (indicatorManager.isPriceDependence()) {
+                        currentInterval = IntervalManager.intersect(currentInterval,
+                                indicatorManager.calculateInterval(indicatorIndividuo, indicator, currentPoint));
+                    }
                 }
             }
         }
         if (currentInterval != null) {
-            Interval pointInterval = new Interval(currentPoint.getLow(), currentPoint.getHigh());
-            Interval resultInterval = IntervalManager.intersect(currentInterval, pointInterval);
+            Interval pointInterval = new DoubleInterval(currentPoint.getLow(), currentPoint.getHigh());
+            DoubleInterval resultInterval = (DoubleInterval) IntervalManager.intersect(currentInterval, pointInterval);
             if (resultInterval != null) {
                 price = (currentPoint.getOpen() <= resultInterval.getLowInterval())
-                        ? resultInterval.getLowInterval() : resultInterval.getHighInterval();
-//                if (Constants.OPERATION_TYPE.equals(Constants.OperationType.buy)) {
-//                    price += Constants.PIPS_FIXER / pairFactor;
-//                } else {
-//                    price -= Constants.PIPS_FIXER / pairFactor;
-//                }
+                        ? resultInterval.getLowInterval() : (currentPoint.getOpen() >= resultInterval.getHighInterval())
+                        ? resultInterval.getHighInterval() : (currentPoint.getClose() <= resultInterval.getLowInterval())
+                        ? resultInterval.getHighInterval() : (currentPoint.getClose() >= resultInterval.getHighInterval())
+                        ? resultInterval.getLowInterval() : (resultInterval.getLowInterval() + resultInterval.getHighInterval()) / 2;
+                if (Constants.OPERATION_TYPE.equals(Constants.OperationType.Buy)) {
+                    price += Constants.PIPS_FIXER / pairFactor;
+                } else {
+                    price -= Constants.PIPS_FIXER / pairFactor;
+                }
                 price = NumberUtil.round(price);
             }
         }
@@ -96,30 +107,36 @@ public class IndicatorController {
     public double calculateClosePrice(IndividuoEstrategia individuoEstrategia, List<Point> points, int index) {
         double price = Double.NaN;
         Point currentPoint = points.get(index);
-        Point previousPoint = points.get(index);
-        Interval currentInterval = new Interval(currentPoint.getLow(), currentPoint.getHigh());
-        for (int j = 0; j < INDICATOR_NUMBER && ((currentInterval != null) || (j == 0)); j++) {
+        Point previousPoint = points.get(index - 1);
+        Interval currentInterval = new DoubleInterval(currentPoint.getLow(), currentPoint.getHigh());
+        for (int j = 0; j < IndicatorManager.getIndicatorNumber() && ((currentInterval != null) || (j == 0)); j++) {
             IndicatorManager indicatorManager = IndicatorManager.getInstance(j);
-            Indicator indicatorIndividuo = individuoEstrategia.getCloseIndicators().get(j);
-            Indicator indicator = previousPoint.getIndicators().get(j);
-            if ((indicatorIndividuo != null) && (indicator != null)) {
-                if (indicatorManager.isPriceDependence()) {
-                    if (j == 0) {
-                        currentInterval = indicatorManager.calculateInterval(indicatorIndividuo, indicator, currentPoint);
-                    } else {
-                        currentInterval = IntervalManager.intersect(currentInterval,
-                                indicatorManager.calculateInterval(indicatorIndividuo, indicator, currentPoint));
+            if (individuoEstrategia.getOpenIndicators().size() > j) {
+                Indicator indicatorIndividuo = individuoEstrategia.getCloseIndicators().get(j);
+                Indicator indicator = previousPoint.getIndicators().get(j);
+                if ((indicatorIndividuo != null) && (indicator != null)) {
+                    if (indicatorManager.isPriceDependence()) {
+                        if (j == 0) {
+                            currentInterval = indicatorManager.calculateInterval(indicatorIndividuo, indicator, currentPoint);
+                        } else {
+                            currentInterval = IntervalManager.intersect(currentInterval,
+                                    indicatorManager.calculateInterval(indicatorIndividuo, indicator, currentPoint));
+                        }
                     }
                 }
             }
         }
+
         if (currentInterval != null) {
-            Interval pointInterval = new Interval(currentPoint.getLow(), currentPoint.getHigh());
-            Interval resultInterval = IntervalManager.intersect(currentInterval, pointInterval);
+            Interval pointInterval = new DoubleInterval(currentPoint.getLow(), currentPoint.getHigh());
+            Interval<Double> resultInterval = IntervalManager.intersect(currentInterval, pointInterval);
             if (resultInterval != null) {
                 price = (currentPoint.getOpen() <= resultInterval.getLowInterval())
-                        ? resultInterval.getLowInterval() : resultInterval.getHighInterval();
-                if (Constants.OPERATION_TYPE.equals(Constants.OperationType.buy)) {
+                        ? resultInterval.getLowInterval() : (currentPoint.getOpen() >= resultInterval.getHighInterval())
+                        ? resultInterval.getHighInterval() : (currentPoint.getClose() <= resultInterval.getLowInterval())
+                        ? resultInterval.getHighInterval() : (currentPoint.getClose() >= resultInterval.getHighInterval())
+                        ? resultInterval.getLowInterval() : (resultInterval.getLowInterval() + resultInterval.getHighInterval()) / 2;
+                if (Constants.OPERATION_TYPE.equals(Constants.OperationType.Buy)) {
                     price -= Constants.PIPS_FIXER / pairFactor;
                 } else {
                     price += Constants.PIPS_FIXER / pairFactor;

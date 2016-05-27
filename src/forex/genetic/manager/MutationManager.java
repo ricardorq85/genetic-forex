@@ -5,7 +5,7 @@
 package forex.genetic.manager;
 
 import forex.genetic.manager.indicator.IndicatorManager;
-import forex.genetic.entities.Indicator;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.util.NumberUtil;
@@ -24,8 +24,6 @@ public class MutationManager {
 
     public Poblacion[] mutate(int generacion, Poblacion poblacion, int percentValue) {
         Poblacion[] poblacionArray = new Poblacion[2];
-        FuncionFortalezaManager fortalezaManager = new FuncionFortalezaManager();
-        PoblacionManager poblacionManager = PoblacionManager.getInstance();
         Poblacion parentsPoblacion = new Poblacion();
         Poblacion mutatedPoblacion = new Poblacion();
         List<IndividuoEstrategia> parents = new Vector<IndividuoEstrategia>();
@@ -37,12 +35,12 @@ public class MutationManager {
         int counter = 0;
 
         while (counter < percentValue) {
-            int pos1 = counter;//random.nextInt(counter);
+            int pos1 = counter;
             IndividuoEstrategia individuo1 = individuos.get(pos1);
 
             IndividuoEstrategia hijo = new IndividuoEstrategia(generacion, individuo1, null, IndividuoType.MUTATION);
-            List<Indicator> openIndicators = new Vector<Indicator>(INDICATOR_NUMBER);
-            List<Indicator> closeIndicators = new Vector<Indicator>(INDICATOR_NUMBER);
+            List<Indicator> openIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
+            List<Indicator> closeIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
             for (int i = 0; i < individuo1.getOpenIndicators().size(); i++) {
                 Indicator openIndicator = individuo1.getOpenIndicators().get(i);
                 IndicatorManager indicatorManager = IndicatorManager.getInstance(i);
@@ -56,7 +54,7 @@ public class MutationManager {
                     openIndicators.add(indHijo);
                 }
                 Indicator closeIndicator = individuo1.getCloseIndicators().get(i);
-                if (random.nextDouble() < 0.3) {
+                if (random.nextDouble() < 10.0) {
                     closeIndicators.add(null);
                 } else {
                     Indicator indHijo = closeIndicator;
@@ -87,7 +85,7 @@ public class MutationManager {
             double lot1 = individuo1.getLot();
             double lotHijo = lot1;
             if (random.nextBoolean()) {
-                lotHijo = NumberUtil.round(especificMutationManager.mutate(lot1, MIN_LOT, MAX_LOT));
+                lotHijo = NumberUtil.round(especificMutationManager.mutate(lot1, MIN_LOT, MAX_LOT), LOT_SCALE_ROUNDING);
             }
             hijo.setLot(lotHijo);
 
@@ -101,7 +99,6 @@ public class MutationManager {
             if (!hijos.contains(hijo)) {
                 parents.add(individuo1);
                 hijos.add(hijo);
-                fortalezaManager.calculateFortaleza(poblacionManager.getPoints(), hijo);
             }
             counter++;
         }

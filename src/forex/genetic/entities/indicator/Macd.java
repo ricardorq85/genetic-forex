@@ -4,28 +4,23 @@
  */
 package forex.genetic.entities.indicator;
 
-import forex.genetic.entities.Indicator;
-import forex.genetic.entities.Interval;
+import java.io.Serializable;
 
 /**
  *
  * @author ricardorq85
  */
-public class Macd extends Indicator {
+public class Macd extends IntervalIndicator implements Serializable {
 
+    public static final long serialVersionUID = 201101251800L;
     private double macdValue = 0.0;
     private double macdSignal = 0.0;
     private double parameter1 = 0.0;
     private double parameter2 = 0.0;
     private double parameter3 = 0.0;
-    private Interval interval = new Interval();
 
-    public Interval getInterval() {
-        return interval;
-    }
-
-    public void setInterval(Interval interval) {
-        this.interval = interval;
+    public Macd(String name) {
+        super(name);
     }
 
     public double getParameter3() {
@@ -81,17 +76,5 @@ public class Macd extends Indicator {
     @Override
     public int hashCode() {
         return super.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("\n\t\t{");
-        buffer.append(" MACD Value=" + ((this.macdValue == 0.0) ? 0.0 : this.macdValue));
-        buffer.append("; MACD Signal=" + ((this.macdSignal == 0.0) ? 0.0 : this.macdSignal));
-        buffer.append("\n\t\t");
-        buffer.append("; " + (this.interval) + "}");
-        
-        return buffer.toString();
     }
 }

@@ -4,19 +4,22 @@
  */
 package forex.genetic.entities.indicator;
 
-import forex.genetic.entities.Indicator;
-import forex.genetic.entities.Interval;
+import java.io.Serializable;
 
 /**
  *
  * @author ricardorq85
  */
-public class Sar extends Indicator {
+public class Sar extends IntervalIndicator implements Serializable {
 
+    public static final long serialVersionUID = 201101251800L;
     private double sar = 0.0;
     private double parameter1 = 0.0;
     private double parameter2 = 0.0;
-    private Interval interval = new Interval();
+
+    public Sar(String name) {
+        super(name);
+    }
 
     public double getParameter1() {
         return parameter1;
@@ -42,14 +45,6 @@ public class Sar extends Indicator {
         this.sar = sar;
     }
 
-    public Interval getInterval() {
-        return interval;
-    }
-
-    public void setInterval(Interval interval) {
-        this.interval = interval;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Sar) {
@@ -64,16 +59,5 @@ public class Sar extends Indicator {
     @Override
     public int hashCode() {
         return super.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("\n\t\t{");
-        buffer.append("Sar=" + ((this.sar == 0.0) ? 0.0 : this.sar));
-        buffer.append("\n\t\t");
-        buffer.append("; " + (this.interval) + "}");
-
-        return buffer.toString();
     }
 }

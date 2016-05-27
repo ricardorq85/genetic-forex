@@ -6,7 +6,7 @@ package forex.genetic.manager;
 
 import forex.genetic.entities.Interval;
 import forex.genetic.manager.indicator.IndicatorManager;
-import forex.genetic.entities.Indicator;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.Point;
 
 /**

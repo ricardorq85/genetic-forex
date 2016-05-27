@@ -4,18 +4,21 @@
  */
 package forex.genetic.entities.indicator;
 
-import forex.genetic.entities.Indicator;
-import forex.genetic.entities.Interval;
+import java.io.Serializable;
 
 /**
  *
  * @author ricardorq85
  */
-public class Average extends Indicator {
+public class Average extends IntervalIndicator implements Serializable {
 
+    public static final long serialVersionUID = 201101251800L;
     private double average = 0.0;
     private double parameter1 = 0.0;
-    private Interval interval = new Interval();
+
+    public Average(String name) {
+        super(name);
+    }
 
     public double getParameter1() {
         return parameter1;
@@ -33,14 +36,6 @@ public class Average extends Indicator {
         this.average = average;
     }
 
-    public Interval getInterval() {
-        return interval;
-    }
-
-    public void setInterval(Interval interval) {
-        this.interval = interval;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Average) {
@@ -49,22 +44,10 @@ public class Average extends Indicator {
         } else {
             return false;
         }
-
     }
 
     @Override
     public int hashCode() {
         return super.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("\n\t\t{");
-        buffer.append("Average=" + ((this.average == 0.0) ? 0.0 : this.average));
-        buffer.append("\n\t\t");
-        buffer.append("; " + (this.interval) + "}");
-
-        return buffer.toString();
     }
 }

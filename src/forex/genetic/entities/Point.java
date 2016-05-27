@@ -4,6 +4,7 @@
  */
 package forex.genetic.entities;
 
+import forex.genetic.entities.indicator.Indicator;
 import java.util.Date;
 import java.util.List;
 

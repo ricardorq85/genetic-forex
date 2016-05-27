@@ -5,52 +5,34 @@
 package forex.genetic.delegate;
 
 import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.entities.Poblacion;
-import forex.genetic.entities.Point;
 import forex.genetic.manager.FuncionFortalezaManager;
 import forex.genetic.manager.PoblacionManager;
-import java.util.List;
+import static forex.genetic.util.Constants.INITIAL_POBLACION_COUNTER;
+import forex.genetic.util.LogUtil;
 
 /**
  *
  * @author ricardorq85
  */
-public class GeneticTesterDelegate {
+public class GeneticTesterDelegate extends GeneticDelegate {
 
-    public void process(Poblacion poblacion) {
-        this.process(null, poblacion);
+    public GeneticTesterDelegate(long id) {
+        super(id);
     }
 
-    public void process(List<Point> p, Poblacion poblacion) {
-        List<Point> points = null;
-        if (p == null) {
-            PoblacionManager poblacionManager = PoblacionManager.getInstance();
-            points = poblacionManager.getPoints();
-        } else {
-            points = p;
+    public void process(int poblacionCounter, IndividuoEstrategia individuoEstrategia) {
+        FuncionFortalezaManager funcionFortalezaManager = new FuncionFortalezaManager();
+        for (int poblacionIndex = INITIAL_POBLACION_COUNTER; poblacionIndex < INITIAL_POBLACION_COUNTER + poblacionCounter; poblacionIndex++) {
+            LogUtil.logTime("\n Crear poblacion " + poblacionIndex);
+            PoblacionManager oldPoblacionManager = new PoblacionManager("" + poblacionIndex, false);
+            LogUtil.logTime("Crear poblacion " + poblacionIndex + " Fecha=" + oldPoblacionManager.getDateInterval());
+            /** Se calcula la fortaleza de los individuos */
+            LogUtil.logTime("Calcular fortaleza");
+            funcionFortalezaManager.calculateFortaleza(oldPoblacionManager.getPoints().size(), oldPoblacionManager.getPoints(), individuoEstrategia,
+                    (poblacionIndex == INITIAL_POBLACION_COUNTER),
+                    (poblacionIndex > INITIAL_POBLACION_COUNTER));
+            LogUtil.logTime("Calcular fortaleza");
+            super.outIndividuo(individuoEstrategia);
         }
-
-        FuncionFortalezaManager funcionFortalezaManager = new FuncionFortalezaManager();
-        funcionFortalezaManager.calculateFortaleza(points, poblacion, true);
-    }
-
-    public void process(IndividuoEstrategia individuoEstrategia) {
-        PoblacionManager poblacionManager = PoblacionManager.getInstance(false);
-
-        FuncionFortalezaManager funcionFortalezaManager = new FuncionFortalezaManager();
-        funcionFortalezaManager.calculateFortaleza(poblacionManager.getPoints(), individuoEstrategia, true);
-    }
-
-    public void process(List<Point> p, IndividuoEstrategia individuoEstrategia) {
-        List<Point> points = null;
-        if (p == null) {
-            PoblacionManager poblacionManager = PoblacionManager.getInstance();
-            points = poblacionManager.getPoints();
-        } else {
-            points = p;
-        }
-
-        FuncionFortalezaManager funcionFortalezaManager = new FuncionFortalezaManager();
-        funcionFortalezaManager.calculateFortaleza(points, individuoEstrategia);
     }
 }

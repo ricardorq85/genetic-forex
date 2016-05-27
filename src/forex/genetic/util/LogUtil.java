@@ -13,6 +13,6 @@ import java.util.Date;
 public class LogUtil {
 
     public static void logTime(String name) {
-        System.out.println("<log> " + name + "=" + new Date());
+        System.out.println("<log> " + name + ":" + new Date());
     }
 }

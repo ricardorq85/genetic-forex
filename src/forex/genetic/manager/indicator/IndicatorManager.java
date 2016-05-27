@@ -4,7 +4,7 @@
  */
 package forex.genetic.manager.indicator;
 
-import forex.genetic.entities.Indicator;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import java.util.List;
@@ -20,12 +20,23 @@ public abstract class IndicatorManager<E> {
     private static final IndicatorManager averageIndicatorManager = new AverageIndicatorManager(PriceType.AVERAGE, true);
     private static final IndicatorManager macdIndicatorManager = new MacdIndicatorManager();
     private static final IndicatorManager compareIndicatorManager = new AverageIndicatorManager(PriceType.COMPARE_CLOSE, false);
-    private static final IndicatorManager sarIndicatorManager = new SarIndicatorManager(PriceType.AVERAGE, true);
+    private static final IndicatorManager sarIndicatorManager = new SarIndicatorManager(true);
+    private static final IndicatorManager adxIndicatorManager = new AdxIndicatorManager();
+    private static final IndicatorManager rsiIndicatorManager = new RsiIndicatorManager();
+    private static final IndicatorManager bollingerBandIndicatorManager = new BollingerIndicatorManager();
+    private static final IndicatorManager momentumIndicatorManager = new MomentumIndicatorManager();
     private static List<IndicatorManager> list = null;
     private boolean priceDependence = false;
 
     protected IndicatorManager(boolean priceDependence) {
         this.setPriceDependence(priceDependence);
+    }
+
+    public static int getIndicatorNumber() {
+        if (list == null) {
+            load();
+        }
+        return list.size();
     }
 
     public static IndicatorManager getInstance(int i) {
@@ -41,8 +52,12 @@ public abstract class IndicatorManager<E> {
         list.add(macdIndicatorManager);
         list.add(compareIndicatorManager);
         list.add(sarIndicatorManager);
+        list.add(adxIndicatorManager);
+        list.add(rsiIndicatorManager);
+        list.add(bollingerBandIndicatorManager);
+        list.add(momentumIndicatorManager);
     }
-   
+
     public boolean operate(E individuo, E indicator, List<Point> points, int i) {
         return true;
     }
@@ -57,13 +72,17 @@ public abstract class IndicatorManager<E> {
 
     public abstract Indicator generate(E indicator, Point point);
 
-    public abstract boolean operate(E individuo, E indicator, Point point);
+    public boolean operate(E individuo, E indicator, Point point) {
+        return true;
+    }
+
+    public boolean operate(E individuo, E indicator, Point currentPoint, Point previousPoint) {
+        return true;
+    }
 
     public abstract Interval calculateInterval(E individuo, E indicator, Point point);
 
     public abstract Indicator crossover(E indicator1, E indicator2);
 
     public abstract Indicator mutate(E indicator);
-
 }
-

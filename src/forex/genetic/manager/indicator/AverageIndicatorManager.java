@@ -5,33 +5,42 @@
 package forex.genetic.manager.indicator;
 
 import forex.genetic.entities.indicator.Average;
-import forex.genetic.entities.Indicator;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
-import forex.genetic.manager.IntervalManager;
 import static forex.genetic.util.Constants.PriceType;
 
 /**
  *
  * @author ricardorq85
  */
-public class AverageIndicatorManager extends IndicatorManager<Average> {
+public class AverageIndicatorManager extends IntervalIndicatorManager<Average> {
 
-    private IntervalManager intervalManager = new IntervalManager();
     private PriceType type = null;
 
     protected AverageIndicatorManager(PriceType type, boolean priceDependence) {
-        super(priceDependence);
+        super(priceDependence, (type.equals(PriceType.COMPARE_CLOSE))
+                ? "MaCompare"
+                : "Ma");
         this.type = type;
+    }
+
+    public Average getIndicatorInstance() {
+        return (type.equals(PriceType.COMPARE_CLOSE))
+                ? new Average("MaCompare")
+                : new Average("Ma");
     }
 
     public Indicator generate(Average indicator, Point point) {
         Interval interval = null;
-        Average average = new Average();
+        Average average = (type.equals(PriceType.COMPARE_CLOSE))
+                ? new Average("MaCompare")
+                : new Average("Ma");
         if (indicator != null) {
             average.setAverage(indicator.getAverage());
-            interval = intervalManager.generate(indicator.getAverage(), (type.equals(PriceType.COMPARE_CLOSE))
-                    ? point.getCloseCompare() : point.getHigh(), (type.equals(PriceType.COMPARE_CLOSE)) ? Double.NaN : point.getLow());
+            interval = intervalManager.generate(indicator.getAverage(),
+                    (type.equals(PriceType.COMPARE_CLOSE)) ? point.getCloseCompare() : point.getLow(),
+                    (type.equals(PriceType.COMPARE_CLOSE)) ? Double.NaN : point.getHigh());
         } else {
             interval = intervalManager.generate(Double.NaN, Double.NaN, Double.NaN);
         }
@@ -40,35 +49,16 @@ public class AverageIndicatorManager extends IndicatorManager<Average> {
         return average;
     }
 
-    public boolean operate(Average averageIndividuo, Average iAverage, Point point) {
+    @Override
+    public boolean operate(Average averageIndividuo, Average iAverage, Point currentPoint, Point previousPoint) {
         if (type.equals(PriceType.COMPARE_CLOSE)) {
-            return intervalManager.operate(averageIndividuo.getInterval(), iAverage.getAverage(), point.getCloseCompare());
+            return intervalManager.operate(averageIndividuo.getInterval(), iAverage.getAverage(), previousPoint.getCloseCompare());
         } else {
-            return intervalManager.operate(averageIndividuo.getInterval(), iAverage.getAverage(), point);
+            return intervalManager.operate(averageIndividuo.getInterval(), iAverage.getAverage(), currentPoint);
         }
     }
 
-    public Indicator crossover(Average average1, Average average2) {
-        Average avgHijo = new Average();
-        Interval interval = null;
-        if ((average1 == null) && (average2 == null)) {
-            avgHijo = null;
-        } else {
-            interval = intervalManager.crossover(
-                    (average1 == null) ? null : average1.getInterval(),
-                    (average2 == null) ? null : average2.getInterval());
-            avgHijo.setInterval(interval);
-        }
-        return avgHijo;
-    }
-
-    public Indicator mutate(Average average) {
-        Average avgHijo = new Average();
-        Interval interval = intervalManager.mutate((average == null) ? null : average.getInterval());
-        avgHijo.setInterval(interval);
-        return avgHijo;
-    }
-
+    @Override
     public Interval calculateInterval(Average averageIndividuo, Average iAverage, Point point) {
         return intervalManager.calculateInterval(averageIndividuo.getInterval(), iAverage.getAverage(), point);
     }

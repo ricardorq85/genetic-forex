@@ -5,7 +5,7 @@
 package forex.genetic.manager;
 
 import forex.genetic.manager.indicator.IndicatorManager;
-import forex.genetic.entities.Indicator;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.util.NumberUtil;
@@ -23,8 +23,6 @@ public class CrossoverManager {
     public Poblacion[] crossover(int generacion, Poblacion poblacion, int percentValue) {
         Poblacion[] poblacionArray = new Poblacion[2];
         EspecificCrossoverManager especificCrossoverManager = EspecificCrossoverManager.getInstance();
-        FuncionFortalezaManager fortalezaManager = new FuncionFortalezaManager();
-        PoblacionManager poblacionManager = PoblacionManager.getInstance();
         Poblacion parentsPoblacion = new Poblacion();
         Poblacion crossoveredPoblacion = new Poblacion();
         List<IndividuoEstrategia> parents = new Vector<IndividuoEstrategia>();
@@ -36,7 +34,7 @@ public class CrossoverManager {
         int counter = 0;
 
         while (counter < percentValue) {
-            int pos1 = counter;//random.nextInt(size);
+            int pos1 = counter;
             int pos2 = random.nextInt(size);
 
             if (pos1 != pos2) {
@@ -44,11 +42,13 @@ public class CrossoverManager {
                 IndividuoEstrategia individuo2 = individuos.get(pos2);
 
                 IndividuoEstrategia hijo = new IndividuoEstrategia(generacion, individuo1, individuo2, IndividuoType.CROSSOVER);
-                List<Indicator> openIndicators = new Vector<Indicator>(INDICATOR_NUMBER);
-                List<Indicator> closeIndicators = new Vector<Indicator>(INDICATOR_NUMBER);
-                for (int i = 0; i < individuo1.getOpenIndicators().size(); i++) {
-                    Indicator openIndicator1 = individuo1.getOpenIndicators().get(i);
-                    Indicator openIndicator2 = individuo2.getOpenIndicators().get(i);
+                List<Indicator> openIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
+                List<Indicator> closeIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
+                for (int i = 0; (i < individuo1.getOpenIndicators().size()) || (i < individuo2.getOpenIndicators().size()); i++) {
+                    List<? extends Indicator> openIndicators1 = individuo1.getOpenIndicators();
+                    List<? extends Indicator> openIndicators2 = individuo2.getOpenIndicators();
+                    Indicator openIndicator1 = (openIndicators1.size() > i) ? openIndicators1.get(i) : null;
+                    Indicator openIndicator2 = (openIndicators2.size() > i) ? openIndicators2.get(i) : null;
                     IndicatorManager indicatorManager = IndicatorManager.getInstance(i);
                     if (random.nextDouble() < 0.3) {
                         openIndicators.add(null);
@@ -56,9 +56,11 @@ public class CrossoverManager {
                         Indicator indHijo = indicatorManager.crossover(openIndicator1, openIndicator2);
                         openIndicators.add(indHijo);
                     }
-                    Indicator closeIndicator1 = individuo1.getCloseIndicators().get(i);
-                    Indicator closeIndicator2 = individuo2.getCloseIndicators().get(i);
-                    if (random.nextDouble() < 0.3) {
+                    List<? extends Indicator> closeIndicators1 = individuo1.getCloseIndicators();
+                    List<? extends Indicator> closeIndicators2 = individuo2.getCloseIndicators();
+                    Indicator closeIndicator1 = (closeIndicators1.size() > i) ? closeIndicators1.get(i) : null;
+                    Indicator closeIndicator2 = (closeIndicators2.size() > i) ? closeIndicators2.get(i) : null;
+                    if (random.nextDouble() < 10.0) {
                         closeIndicators.add(null);
                     } else {
                         Indicator indHijo = indicatorManager.crossover(closeIndicator1, closeIndicator2);
@@ -92,7 +94,6 @@ public class CrossoverManager {
                     parents.add(individuo1);
                     parents.add(individuo2);
                     hijos.add(hijo);
-                    fortalezaManager.calculateFortaleza(poblacionManager.getPoints(), hijo);
                 }
                 counter++;
             }

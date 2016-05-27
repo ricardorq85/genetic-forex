@@ -4,7 +4,10 @@
  */
 package forex.genetic.entities;
 
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.manager.IndividuoManager;
+import forex.genetic.util.Constants;
+import java.io.Serializable;
 import java.util.List;
 import static forex.genetic.util.Constants.*;
 
@@ -12,9 +15,10 @@ import static forex.genetic.util.Constants.*;
  *
  * @author ricardorq85
  */
-public class IndividuoEstrategia implements Comparable<IndividuoEstrategia> {
+public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Serializable {
 
     private int id = 0;
+    private int processedUntil = 0;
     private int generacion = -1;
     private IndividuoEstrategia parent1 = null;
     private IndividuoEstrategia parent2 = null;
@@ -26,6 +30,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia> {
     private List<? extends Indicator> openIndicators = null;
     private List<? extends Indicator> closeIndicators = null;
     private Fortaleza fortaleza = null;
+    public static final long serialVersionUID = 201101251800L;
 
     public IndividuoEstrategia() {
         this(0, null, null, IndividuoType.INITIAL);
@@ -41,6 +46,14 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia> {
         setParent1(parent1);
         setParent2(parent2);
         setIndividuoType(individuoType);
+    }
+
+    public int getProcessedUntil() {
+        return processedUntil;
+    }
+
+    public void setProcessedUntil(int processedUntil) {
+        this.processedUntil = processedUntil;
     }
 
     public IndividuoType getIndividuoType() {
@@ -149,8 +162,20 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia> {
             IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
             return (this.openIndicators.equals(objIndividuo.openIndicators)
                     && this.closeIndicators.equals(objIndividuo.closeIndicators)
-                    && (this.takeProfit - objIndividuo.takeProfit) / this.takeProfit < 0.03
-                    && (this.stopLoss - objIndividuo.stopLoss) / this.stopLoss < 0.03);
+                    && (this.takeProfit == objIndividuo.takeProfit)
+                    && (this.stopLoss == objIndividuo.stopLoss));
+        } else {
+            return false;
+        }
+    }
+
+    public boolean equalsReal(Object obj) {
+        if (obj instanceof IndividuoEstrategia) {
+            IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
+            return (this.openIndicators.equals(objIndividuo.openIndicators)
+                    || this.closeIndicators.equals(objIndividuo.closeIndicators)
+                    || (Math.abs((objIndividuo.takeProfit - this.takeProfit) / new Double(this.takeProfit)) < 0.03)
+                    || (Math.abs((objIndividuo.stopLoss - this.stopLoss) / new Double(this.stopLoss)) < 0.03));
         } else {
             return false;
         }
@@ -158,7 +183,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia> {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return (this.openIndicators.hashCode() + this.closeIndicators.hashCode() + this.takeProfit + this.stopLoss);
     }
 
     @Override
@@ -185,6 +210,32 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia> {
         buffer.append("\n\t");
         buffer.append("; Close Indicadores=" + (this.closeIndicators));
 
+        return buffer.toString();
+    }
+
+    public String toFileString() {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("Pair=" + Constants.PAIR + ",");
+        buffer.append(Constants.OPERATION_TYPE + "EstrategiaId=" + (this.id) + ",");
+        buffer.append(Constants.OPERATION_TYPE + "TakeProfit=" + this.takeProfit + ",");
+        buffer.append(Constants.OPERATION_TYPE + "StopLoss=" + this.stopLoss + ",");
+        buffer.append(Constants.OPERATION_TYPE + "Lote=" + this.lot + ",");
+        for (Indicator indicator : this.openIndicators) {
+            if (indicator != null) {
+                buffer.append(indicator.toFileString("open" + Constants.OPERATION_TYPE));
+            } else {
+                buffer.append("null");
+            }
+            buffer.append(",");
+        }
+        for (Indicator indicator : this.closeIndicators) {
+            if (indicator != null) {
+                buffer.append(indicator.toFileString("close" + Constants.OPERATION_TYPE));
+            } else {
+                buffer.append("null");
+            }
+            buffer.append(",");
+        }
         return buffer.toString();
     }
 }
