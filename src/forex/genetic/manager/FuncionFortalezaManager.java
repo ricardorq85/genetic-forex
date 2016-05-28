@@ -126,21 +126,22 @@ public class FuncionFortalezaManager {
         return has;
     }
 
-    public void calculateFortaleza(List<Point> points, Poblacion poblacion) {
-        this.calculateFortaleza(points, poblacion, false, 0);
-    }
-
-    public void calculateFortaleza(List<Point> points, Poblacion poblacion, boolean recalculate, int poblacionIndex) {
+    public void calculateFortaleza(List<Point> points, Poblacion poblacion,
+            boolean recalculate, int poblacionIndex, int poblacionFromIndex) {
         List<IndividuoEstrategia> individuos = new Vector<IndividuoEstrategia>();
         individuos.addAll(poblacion.getIndividuos());
         //LogUtil.logTime("individuos.toString() " + individuos.toString(), 5);
         for (Iterator<IndividuoEstrategia> it = individuos.iterator(); it.hasNext();) {
             IndividuoEstrategia individuoEstrategia = it.next();
             this.calculateFortaleza(points, individuoEstrategia,
-                    recalculate && recalculate(individuoEstrategia),
-                    poblacionIndex > individuoEstrategia.getProcessedUntil(), poblacionIndex);
+                    recalculate && recalculate(individuoEstrategia, poblacionFromIndex),
+                    poblacionIndex > individuoEstrategia.getProcessedUntil(), 
+                    poblacionIndex, poblacionFromIndex);
             if ((poblacionIndex > individuoEstrategia.getProcessedUntil())) {
                 individuoEstrategia.setProcessedUntil(poblacionIndex);
+            }
+            if ((poblacionFromIndex > individuoEstrategia.getProcessedFrom())) {
+                individuoEstrategia.setProcessedFrom(poblacionFromIndex);
             }
             if (!PropertiesManager.getPropertyString(Constants.FILE_ID).equals(individuoEstrategia.getFileId())) {
                 individuoEstrategia.setFileId(PropertiesManager.getPropertyString(Constants.FILE_ID));
@@ -148,20 +149,19 @@ public class FuncionFortalezaManager {
         }
     }
 
-    private boolean recalculate(IndividuoEstrategia ind) {
+    private boolean recalculate(IndividuoEstrategia ind, int poblacionFromIndex) {
         boolean rec = ((!PropertiesManager.getPropertyString(Constants.FILE_ID).equals(ind.getFileId())));
         rec = ((rec)
                 || (ind.getProcessedUntil() >= PropertiesManager.getPropertyInt(Constants.END_POBLACION))
+                || (ind.getProcessedFrom() != poblacionFromIndex)
                 || PropertiesManager.getPropertyBoolean(Constants.RECALCULATE_ALL)
                 || ((ind.getFortaleza() == null) || (ind.getFortaleza().getPresentNumberPoblacion() != PropertiesManager.getPropertyInt(Constants.PRESENT_NUMBER_POBLACION))));
         return rec;
     }
 
-    public void calculateFortaleza(List<Point> points, IndividuoEstrategia individuoEstrategia) {
-        this.calculateFortaleza(points, individuoEstrategia, false, false, 0);
-    }
-
-    public void calculateFortaleza(List<Point> points, IndividuoEstrategia individuoEstrategia, boolean recalculate, boolean continueCalculate, int poblacionIndex) {
+    public void calculateFortaleza(List<Point> points,
+            IndividuoEstrategia individuoEstrategia, boolean recalculate,
+            boolean continueCalculate, int poblacionIndex, int poblacionFromIndex) {
         //LogUtil.logTime("Calculando fortaleza " + individuoEstrategia.getId());
         if (recalculate || continueCalculate || (individuoEstrategia.getFortaleza() == null)) {
             Fortaleza fortaleza = individuoEstrategia.getFortaleza();
@@ -170,6 +170,7 @@ public class FuncionFortalezaManager {
                 individuoEstrategia.setFortaleza(fortaleza);
                 individuoEstrategia.setListaFortaleza(null);
                 individuoEstrategia.setProcessedUntil(poblacionIndex);
+                individuoEstrategia.setProcessedFrom(poblacionFromIndex);
             }
 
             double takeProfit = individuoEstrategia.getTakeProfit();
@@ -352,7 +353,7 @@ public class FuncionFortalezaManager {
             fortaleza.setAverageConsecutiveWonOperationsNumber(wonNumOperations / (double) numConsecutiveWon);
             fortaleza.setAverageConsecutiveLostPips(acumulativeLostPips / (double) numConsecutiveLost);
             fortaleza.setAverageConsecutiveWonPips(acumulativeWonPips / (double) numConsecutiveWon);
-            
+
             double value = calculate(points, individuoEstrategia);
             fortaleza.setCalculatedValue(value);
 

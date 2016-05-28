@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable {
 
     public static final long serialVersionUID = 201101251800L;
-    public static final String currentVersion = "5.1.08";
+    public static final String currentVersion = "5.1.1.02";
     private String version = "0.0";
     private double pips = 0.0;
     private double profit = 0.0;

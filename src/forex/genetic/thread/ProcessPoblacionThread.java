@@ -30,17 +30,21 @@ public class ProcessPoblacionThread extends Thread {
     private Poblacion newPoblacion = new Poblacion();
     private boolean recalculate;
     private int poblacionIndex;
+    private int poblacionFromIndex;
     private FuncionFortalezaManager ffm;
     private CrossoverThread crossoverThread = null;
     private MutationThread mutationThread = null;
 
-    public ProcessPoblacionThread(String name, List<Point> points, Poblacion poblacion, boolean recalculate, int poblacionIndex, FuncionFortalezaManager ffm) {
+    public ProcessPoblacionThread(String name, List<Point> points, 
+            Poblacion poblacion, boolean recalculate, int poblacionIndex, int poblacionFromIndex, 
+            FuncionFortalezaManager ffm) {
         super(name);
         this.points = points;
         LogUtil.logTime(this.getName() + " : Points=" + this.points.size(), 5);
         this.poblacion = poblacion;
         this.recalculate = recalculate;
         this.poblacionIndex = poblacionIndex;
+        this.poblacionFromIndex = poblacionFromIndex;
         this.ffm = ffm;
     }
 
@@ -48,7 +52,7 @@ public class ProcessPoblacionThread extends Thread {
         LogUtil.logTime("Procesar Generacion " + this.getName() + " Individuos=" + poblacion.getIndividuos().size(), 3);
         this.processGeneracion(poblacion, poblacionIndex);
         LogUtil.logTime("Calcular fortaleza " + this.getName() + " Individuos=" + poblacion.getIndividuos().size() + " Points=" + points.size(), 2);
-        ffm.calculateFortaleza(points, poblacion, recalculate, poblacionIndex);
+        ffm.calculateFortaleza(points, poblacion, recalculate, poblacionIndex, poblacionFromIndex);
         LogUtil.logTime(this.getName() + " : Points=" + this.points.size(), 3);
         LogUtil.logTime("Procesar invalidos " + this.getName() + " Individuos=" + poblacion.getIndividuos().size(), 3);
         ffm.processInvalids(poblacion);

@@ -34,7 +34,7 @@ public class SerializationManager {
     private static List<File> loadedFiles = new Vector<File>();
     private static int totalCounter = 0;
 
-    public Poblacion readAll(final String path, int counter, final int processedUntil) {
+    public Poblacion readAll(final String path, int counter, final int processedUntil, final int processedFrom) {
         Poblacion poblacion = new Poblacion();
 
         File root = new File(path);
@@ -44,7 +44,7 @@ public class SerializationManager {
                 boolean accept = false;
                 String name = file.getName();
                 if ((name.contains(".gfx")) && (name.contains(PropertiesManager.getOperationType().name()))) {
-                    if ((name.contains("-" + processedUntil))
+                    if ((name.contains("-" + processedFrom + "-" + processedUntil))
                             || (!name.contains(PropertiesManager.getPropertyString(Constants.FILE_ID)))) {
                         if (!loadedFiles.contains(file)) {
                             return true;
@@ -70,7 +70,7 @@ public class SerializationManager {
                 Poblacion p = this.readObject(file);
                 if ((p.getOperationType().equals(PropertiesManager.getOperationType()))
                         && (p.getPair().equals(PropertiesManager.getPropertyString(Constants.PAIR)))) {
-                    Poblacion poblacionByProcessedUntil = p.getByProcessedUntil(processedUntil);
+                    Poblacion poblacionByProcessedUntil = p.getByProcessedUntil(processedUntil, processedFrom);
                     int fromIndex = 0;
                     if (totalCounter < poblacionByProcessedUntil.getIndividuos().size()) {
                         fromIndex = totalCounter;
@@ -142,6 +142,7 @@ public class SerializationManager {
                     ind.setFortaleza(null);
                     ind.setListaFortaleza(null);
                     ind.setProcessedUntil(0);
+                    ind.setProcessedFrom(0);
                     poblacion.add(ind);
                 }
             } catch (IOException ex) {
@@ -153,14 +154,14 @@ public class SerializationManager {
         return poblacion;
     }
 
-    public void writeObject(String id, Poblacion poblacion, Interval<Date> dateInterval, int poblacionIndex)
+    public void writeObject(String id, Poblacion poblacion, Interval<Date> dateInterval, int poblacionIndex, int poblacionFromIndex)
             throws IOException {
         ObjectOutputStream writer = new ObjectOutputStream(
                 new FileOutputStream(
                 PropertiesManager.getPropertyString(Constants.SERIALICE_PATH)
                 + PropertiesManager.getOperationType() + PropertiesManager.getPropertyString(Constants.PAIR) + ""
                 + PropertiesManager.getPropertyString(Constants.FILE_ID) + "_"
-                + id + "-" + poblacionIndex + ".gfx"));
+                + id + "-" + poblacionFromIndex + "-" + poblacionIndex + ".gfx"));
         writer.writeObject(poblacion);
         writer.close();
     }

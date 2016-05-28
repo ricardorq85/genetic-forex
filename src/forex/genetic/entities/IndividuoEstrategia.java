@@ -27,6 +27,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     private String id = "0";
     private String fileId = null;
     private int processedUntil = 0;
+    private int processedFrom = 0;
     private int generacion = -1;
     private IndividuoEstrategia parent1 = null;
     private IndividuoEstrategia parent2 = null;
@@ -58,6 +59,14 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         setParent1(parent1);
         setParent2(parent2);
         setIndividuoType(individuoType);
+    }
+
+    public int getProcessedFrom() {
+        return processedFrom;
+    }
+
+    public void setProcessedFrom(int processedFrom) {
+        this.processedFrom = processedFrom;
     }
 
     public int getProcessedUntil() {
@@ -260,7 +269,8 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         StringBuilder buffer = new StringBuilder();
         buffer.append(" Id=" + (this.id));
         buffer.append(" Generacion=" + (this.generacion) + ";");
-        buffer.append(" ProcessedUntil=" + (this.processedUntil));
+        buffer.append(" ProcessedFrom=" + (this.processedFrom));
+        buffer.append(" ProcessedUntil=" + (this.processedUntil));        
         buffer.append("; IndividuoType=" + (this.individuoType) + ";");
         buffer.append("\n\t");
         buffer.append(((this.fortaleza == null) ? 0.0 : this.fortaleza.toString()));
@@ -285,7 +295,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 
     public String toFileString(Interval<Date> dateInterval) {
         StringBuilder buffer = new StringBuilder();
-        buffer.append("ProcessedUntil=" + (this.processedUntil) + " / " + PropertiesManager.getPropertyInt(Constants.END_POBLACION) + ",");
+        buffer.append("ProcessedFrom&Until="+ (this.processedFrom) + "-" + (this.processedUntil) + "/" + PropertiesManager.getPropertyInt(Constants.END_POBLACION) + ",");
         buffer.append("EstrategiaId=" + (this.id) + ",");
         buffer.append("Pair=" + PropertiesManager.getPropertyString(Constants.PAIR) + ",");
         buffer.append("Operation=" + PropertiesManager.getOperationType() + ",");

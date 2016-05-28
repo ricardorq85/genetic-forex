@@ -37,7 +37,8 @@ public class GeneticTesterDelegate extends GeneticDelegate {
             LogUtil.logTime("Calcular fortaleza", 1);
             funcionFortalezaManager.calculateFortaleza(poblacionManager.getPoints(), individuoEstrategia,
                     (poblacionIndex == 1),
-                    (poblacionIndex > 1), poblacionIndex);
+                    (poblacionIndex > 1), poblacionIndex,
+                    PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION));
             if ((poblacionIndex > individuoEstrategia.getProcessedUntil())) {
                 individuoEstrategia.setProcessedUntil(poblacionIndex);
             }

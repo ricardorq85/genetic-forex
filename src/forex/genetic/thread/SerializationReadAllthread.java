@@ -19,20 +19,22 @@ public class SerializationReadAllthread extends Thread {
     private String path;
     private int counter;
     private int processedUntil;
+    private int processedFrom;
     private SerializationManager sm = null;
     private Poblacion poblacion = null;
 
-    public SerializationReadAllthread(String name, String path, int counter, int processedUntil, SerializationManager sm) {
+    public SerializationReadAllthread(String name, String path, int counter, int processedUntil, int processedFrom, SerializationManager sm) {
         super(name);
         this.path = path;
         this.counter = counter;
         this.processedUntil = processedUntil;
+        this.processedFrom = processedFrom;
         this.sm = sm;
     }
 
     public void run() {
         try {
-            poblacion = sm.readAll(path, counter, processedUntil);
+            poblacion = sm.readAll(path, counter, processedUntil, processedFrom);
             /*if (processedUntil == PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION)) {
                 poblacion = sm.readByEstrategyId(path, "1317728540202.241005");
                 poblacion.addAll(sm.readByEstrategyId(path, "1317728540202.163003"));
