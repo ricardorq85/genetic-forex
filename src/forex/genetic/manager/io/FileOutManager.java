@@ -36,12 +36,17 @@ public class FileOutManager {
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
         for (int i = individuos.size() - 1; i >= 0; i--) {
             IndividuoEstrategia individuo = individuos.get(i);
-            if (first) {
-                write("<First>");
-            }
-            System.out.println(i + "," + individuo.toFileString(dateInterval));
+            write(individuo, dateInterval, first, i);
             //writer.write(poblacion);
         }
         //writer.close();
+    }
+
+    public void write(IndividuoEstrategia individuo, Interval<Date> dateInterval, boolean first, int i)
+            throws IOException {
+        if (first) {
+            write("<First>");
+        }
+        System.out.println(",Index=" + i + "," + individuo.toFileString(dateInterval));
     }
 }

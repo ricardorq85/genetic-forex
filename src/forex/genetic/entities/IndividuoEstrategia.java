@@ -201,7 +201,21 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     }
 
     public int compareTo(IndividuoEstrategia o) {
-        return (this.fortaleza.compareTo(o.getFortaleza()));
+        int compare = 0;
+        if ((this.fortaleza == null) && (o.fortaleza == null)) {
+            compare = 0;
+        } else if (this.fortaleza == null) {
+            compare = 1;
+        } else if (o.getFortaleza() == null) {
+            compare = -1;
+        } else {
+            if (this.equals(o)) {
+                compare = 0;
+            } else {
+                compare = (this.fortaleza.compareTo(o.getFortaleza()));
+            }
+        }
+        return compare;
     }
 
     @Override
@@ -209,12 +223,12 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         if (obj instanceof IndividuoEstrategia) {
             IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
             return (this.getId().equals(objIndividuo.getId()))
-                    || ( !((this.openIndicators != null && objIndividuo.openIndicators == null)
-                        && (this.openIndicators == null && objIndividuo.openIndicators != null)
-                        && this.openIndicators.equals(objIndividuo.openIndicators))
+                    || (!((this.openIndicators != null && objIndividuo.openIndicators == null)
+                    && (this.openIndicators == null && objIndividuo.openIndicators != null)
+                    && this.openIndicators.equals(objIndividuo.openIndicators))
                     && !((this.closeIndicators != null && objIndividuo.closeIndicators == null)
-                        && (this.closeIndicators == null && objIndividuo.closeIndicators != null)
-                        && this.closeIndicators.equals(objIndividuo.closeIndicators))
+                    && (this.closeIndicators == null && objIndividuo.closeIndicators != null)
+                    && this.closeIndicators.equals(objIndividuo.closeIndicators))
                     && (this.takeProfit == objIndividuo.takeProfit)
                     && (this.stopLoss == objIndividuo.stopLoss));
         } else {
@@ -229,8 +243,8 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
                     && Collections.frequency(this.openIndicators, null) != this.openIndicators.size())
                     || (this.closeIndicators.equals(objIndividuo.closeIndicators)
                     && Collections.frequency(this.closeIndicators, null) != this.closeIndicators.size())
-                    || ((Math.abs((objIndividuo.takeProfit - this.takeProfit) / new Double(this.takeProfit)) < 0.03)
-                    && (Math.abs((objIndividuo.stopLoss - this.stopLoss) / new Double(this.stopLoss)) < 0.03)));
+                    || ((Math.abs((objIndividuo.takeProfit - this.takeProfit) / new Double(this.takeProfit)) < 0.02)
+                    && (Math.abs((objIndividuo.stopLoss - this.stopLoss) / new Double(this.stopLoss)) < 0.02)));
         } else {
             return false;
         }
@@ -271,19 +285,25 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 
     public String toFileString(Interval<Date> dateInterval) {
         StringBuilder buffer = new StringBuilder();
-        buffer.append("EstrategiaId=" + (this.id) + ",");
         buffer.append("ProcessedUntil=" + (this.processedUntil) + " / " + PropertiesManager.getPropertyInt(Constants.END_POBLACION) + ",");
+        buffer.append("EstrategiaId=" + (this.id) + ",");
         buffer.append("Pair=" + PropertiesManager.getPropertyString(Constants.PAIR) + ",");
         buffer.append("Operation=" + PropertiesManager.getOperationType() + ",");
 
         DateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm");
         buffer.append("VigenciaLower=" + format.format(dateInterval.getHighInterval()) + ",");
-        Date vigencia = new Date(dateInterval.getHighInterval().getTime() + PropertiesManager.getPropertyInt(Constants.VIGENCIA));
+        long vigDias = PropertiesManager.getPropertyLong(Constants.VIGENCIA);
+        long vigMillis = (vigDias * 24 * 60 * 60 * 1000);
+        Date vigencia = new Date(dateInterval.getHighInterval().getTime() + vigMillis);
         buffer.append("VigenciaHigher=" + (format.format(vigencia)) + ",");
 
         buffer.append("TakeProfit=" + this.takeProfit + ",");
         buffer.append("StopLoss=" + this.stopLoss + ",");
         buffer.append("Lote=" + this.lot + ",");
+        buffer.append("MaxConsecutiveLostOperationsNumber=" + this.fortaleza.getMaxConsecutiveLostOperationsNumber() + ",");
+        buffer.append("MaxConsecutiveWonOperationsNumber=" + this.fortaleza.getMaxConsecutiveWonOperationsNumber() + ",");
+        buffer.append("AverageConsecutiveLostOperationsNumber=" + Math.round(this.fortaleza.getAverageConsecutiveLostOperationsNumber()) + ",");
+        buffer.append("AverageConsecutiveWonOperationsNumber=" + Math.round(this.fortaleza.getAverageConsecutiveWonOperationsNumber()) + ",");
         for (Indicator indicator : this.openIndicators) {
             if (indicator != null) {
                 buffer.append(indicator.toFileString("open"));

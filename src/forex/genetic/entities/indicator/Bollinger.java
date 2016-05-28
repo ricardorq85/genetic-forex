@@ -57,8 +57,8 @@ public class Bollinger extends IntervalIndicator implements Serializable {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Bollinger) {
-            Bollinger objMacd = (Bollinger) obj;
-            return (this.interval.equals(objMacd.interval));
+            Bollinger objBollinger = (Bollinger) obj;
+            return (this.interval.equals(objBollinger.interval));
         } else {
             return false;
         }
@@ -66,6 +66,6 @@ public class Bollinger extends IntervalIndicator implements Serializable {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return this.interval.hashCode();
     }
 }

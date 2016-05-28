@@ -15,11 +15,11 @@ import java.util.Properties;
  */
 public class FileProperties {
 
-    private static Properties properties = null;
+    private static Properties properties = new Properties();
 
-    public static void load() {
-        properties = new Properties();
+    public synchronized static void load() {
         try {
+            properties.clear();
             InputStream is = new FileInputStream("Forex.properties");
             properties.load(is);
             is.close();
@@ -28,15 +28,23 @@ public class FileProperties {
         }
     }
 
-    public static String getPropertyString(String key) {
+    public static synchronized Properties getProperties() {
+        return properties;
+    }
+
+    public static synchronized void setProperties(Properties properties) {
+        FileProperties.properties = properties;
+    }
+
+    public static synchronized String getPropertyString(String key) {
         return properties.getProperty(key);
     }
 
-    public static int getPropertyInt(String key) {
+    public static synchronized int getPropertyInt(String key) {
         return Integer.parseInt(getPropertyString(key));
     }
 
-    public static double getPropertyDouble(String key) {
+    public static synchronized double getPropertyDouble(String key) {
         return Double.parseDouble(getPropertyString(key));
     }
 }

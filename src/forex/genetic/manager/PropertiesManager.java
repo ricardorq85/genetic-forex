@@ -15,14 +15,30 @@ import forex.genetic.util.Constants.OperationType;
  */
 public class PropertiesManager {
 
+    private static Thread t = null;
+
     public PropertiesManager() {
     }
 
-    public static void load() {
-        FileProperties.load();
+    public static Thread load() {
+        t = new Thread() {
+
+            public void run() {
+                FileProperties.load();
+            }
+        };
+        t.start();
+        return t;
     }
 
     public static OperationType getOperationType() {
+        try {
+            if (FileProperties.getProperties().isEmpty()) {
+                t.join();
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
         OperationType ot = null;
         String s = getPropertyString(Constants.OPERATION_TYPE);
         if (s.contains("Sell")) {
@@ -34,17 +50,33 @@ public class PropertiesManager {
     }
 
     public static FortalezaType getFortalezaType() {
+        try {
+            if (FileProperties.getProperties().isEmpty()) {
+                t.join();
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
         FortalezaType t = null;
         String s = getPropertyString(Constants.FORTALEZA_TYPE);
         if (s.contains("Stable")) {
             t = Constants.FortalezaType.Stable;
         } else if (s.contains("Pips")) {
             t = Constants.FortalezaType.Pips;
+        } else if (s.contains("Embudo")) {
+            t = Constants.FortalezaType.Embudo;
         }
         return t;
     }
 
     public static int getPointsControl() {
+        try {
+            if (FileProperties.getProperties().isEmpty()) {
+                t.join();
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
         int points = 1;
         String s = getPropertyString(Constants.POINTS_CONTROL);
         if (s.contains("Integer.MAX_VALUE")) {
@@ -58,18 +90,57 @@ public class PropertiesManager {
     }
 
     public static String getPropertyString(String key) {
+        try {
+            if (FileProperties.getProperties().isEmpty()) {
+                t.join();
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
         return FileProperties.getPropertyString(key);
     }
 
     public static int getPropertyInt(String key) {
+        try {
+            if (FileProperties.getProperties().isEmpty()) {
+                t.join();
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
         return Integer.parseInt(FileProperties.getPropertyString(key));
     }
 
+    public static long getPropertyLong(String key) {
+        try {
+            if (FileProperties.getProperties().isEmpty()) {
+                t.join();
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        return Long.parseLong(FileProperties.getPropertyString(key));
+    }
+
     public static boolean getPropertyBoolean(String key) {
+        try {
+            if (FileProperties.getProperties().isEmpty()) {
+                t.join();
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
         return Boolean.parseBoolean(FileProperties.getPropertyString(key));
     }
 
     public static double getPropertyDouble(String key) {
+        try {
+            if (FileProperties.getProperties().isEmpty()) {
+                t.join();
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
         return Double.parseDouble(FileProperties.getPropertyString(key));
     }
 }

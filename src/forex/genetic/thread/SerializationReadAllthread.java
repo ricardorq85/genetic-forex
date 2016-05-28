@@ -5,7 +5,10 @@
 package forex.genetic.thread;
 
 import forex.genetic.entities.Poblacion;
+import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.io.SerializationManager;
+import forex.genetic.util.Constants;
+import forex.genetic.util.LogUtil;
 
 /**
  *
@@ -19,61 +22,34 @@ public class SerializationReadAllthread extends Thread {
     private SerializationManager sm = null;
     private Poblacion poblacion = null;
 
-    public SerializationReadAllthread(String path, int counter, int processedUntil, SerializationManager sm, Poblacion poblacion) {
+    public SerializationReadAllthread(String name, String path, int counter, int processedUntil, SerializationManager sm) {
+        super(name);
         this.path = path;
         this.counter = counter;
         this.processedUntil = processedUntil;
-        this.poblacion = poblacion;
+        this.sm = sm;
     }
 
     public void run() {
         try {
-            Poblacion p = sm.readAll(path, counter, processedUntil);
-            poblacion.addAll(p);
+            poblacion = sm.readAll(path, counter, processedUntil);
+            /*if (processedUntil == PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION)) {
+                poblacion = sm.readByEstrategyId(path, "1317728540202.241005");
+                poblacion.addAll(sm.readByEstrategyId(path, "1317728540202.163003"));
+            }else {
+                poblacion = new Poblacion();
+            }*/
+            LogUtil.logTime("End Cargar poblacion serializada " + this.getName() + " Individuos=" + poblacion.getIndividuos().size(), 1);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    public int getCounter() {
-        return counter;
-    }
-
-    public void setCounter(int counter) {
-        this.counter = counter;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
     public Poblacion getPoblacion() {
         return poblacion;
     }
 
-    public void setPoblacion(Poblacion poblacion) {
-        this.poblacion = poblacion;
-    }
-
     public int getProcessedUntil() {
         return processedUntil;
     }
-
-    public void setProcessedUntil(int processedUntil) {
-        this.processedUntil = processedUntil;
-    }
-
-    public SerializationManager getSm() {
-        return sm;
-    }
-
-    public void setSm(SerializationManager sm) {
-        this.sm = sm;
-    }
-    
-    
 }

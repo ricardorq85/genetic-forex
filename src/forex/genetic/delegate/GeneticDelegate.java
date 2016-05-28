@@ -8,15 +8,20 @@ import forex.genetic.util.Constants;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
-import forex.genetic.manager.CrossoverManager;
 import forex.genetic.manager.FuncionFortalezaManager;
-import forex.genetic.manager.MutationManager;
 import forex.genetic.manager.PoblacionManager;
 import forex.genetic.manager.io.FileOutManager;
 import forex.genetic.manager.io.SerializationManager;
+import forex.genetic.manager.statistic.EstadisticaManager;
+import forex.genetic.thread.ProcessPoblacionThread;
+import forex.genetic.thread.PoblacionLoadThread;
 import forex.genetic.thread.SerializationReadAllthread;
 import forex.genetic.util.LogUtil;
+import forex.genetic.util.ThreadUtil;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -29,113 +34,209 @@ public class GeneticDelegate {
     private SerializationManager serializationManager = new SerializationManager();
     private FileOutManager fileOutManager = new FileOutManager();
     private FuncionFortalezaManager funcionFortalezaManager = new FuncionFortalezaManager();
-    private CrossoverManager crossoverManager = new CrossoverManager();
-    private MutationManager mutationManager = new MutationManager();
 
     public GeneticDelegate() {
     }
 
     public Poblacion process() {
         Poblacion poblacion = new Poblacion();
-        int totalSize = 0;
+        Poblacion newPoblacion = new Poblacion();
+        ProcessPoblacionThread threadProcessPoblacionAcumulada = null;
+        ProcessPoblacionThread threadProcessPoblacionNueva = null;
+        List<ProcessPoblacionThread> threads = new ArrayList<ProcessPoblacionThread>(PropertiesManager.getPropertyInt(Constants.GENERATIONS));
+        List<ProcessPoblacionThread> threadsNew = new ArrayList<ProcessPoblacionThread>(PropertiesManager.getPropertyInt(Constants.GENERATIONS));
+        PoblacionLoadThread[] threadPoblacionesLoad = new PoblacionLoadThread[PropertiesManager.getPropertyInt(Constants.END_POBLACION)];
+        threadPoblacionesLoad[PropertiesManager.getPropertyInt(Constants.ROOT_POBLACION) - 1] =
+                launchLoad(PropertiesManager.getPropertyInt(Constants.ROOT_POBLACION),
+                PropertiesManager.getPropertyInt(Constants.ROOT_POBLACION), 0);
+
+        PoblacionLoadThread currentThreadPoblacionLoad = threadPoblacionesLoad[PropertiesManager.getPropertyInt(Constants.ROOT_POBLACION) - 1];
+        PoblacionManager currentPoblacionManager = currentThreadPoblacionLoad.getPoblacionManager();
+        List<SerializationReadAllthread> readSerialize = new ArrayList<SerializationReadAllthread>();
+        SerializationReadAllthread threadSerReadAll = null;
         for (int poblacionIndex = PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION);
                 poblacionIndex <= PropertiesManager.getPropertyInt(Constants.END_POBLACION) && !PropertiesManager.getPropertyBoolean(Constants.TERMINAR);
                 poblacionIndex++) {
-            LogUtil.logTime("\n Cargar poblacion serializada " + poblacionIndex);
-
-                        try {
-            Poblacion p = serializationManager.readAll(PropertiesManager.getPropertyString(Constants.SERIALICE_PATH), PropertiesManager.getPropertyInt(Constants.READ_HARDEST), poblacionIndex);
-            poblacion.addAll(p);
-            } catch (Exception ex) {
-            ex.printStackTrace();
-            }
-            /*SerializationReadAllthread serReadAllThread = new SerializationReadAllthread(
-                    PropertiesManager.getPropertyString(Constants.SERIALICE_PATH),
-                    PropertiesManager.getPropertyInt(Constants.READ_HARDEST),
-                    poblacionIndex, serializationManager, poblacion);
-            serReadAllThread.start();
-
-            LogUtil.logTime("Cargar poblacion serializada " + poblacionIndex);
-*/
-            PoblacionManager poblacionManager = new PoblacionManager();
-            LogUtil.logTime("\n Crear poblacion " + poblacionIndex);            
-            poblacionManager.load("" + poblacionIndex, true);
-            LogUtil.logTime("Crear poblacion " + poblacionIndex);
-
-            if (poblacionManager.getPoblacion() != null) {
-                poblacion.addAll(poblacionManager.getPoblacion());
-                LogUtil.logTime(" Fecha = " + poblacionManager.getDateInterval());
-            } else {
-                LogUtil.logTime("\n");
-            }
-
+            System.gc();
             int generacionIndex = 0;
-            int size = poblacion.getIndividuos().size();
-            totalSize += size;
-            LogUtil.logTime("Points = " + poblacionManager.getPoints().size() + ", Individuos = " + size);
             for (generacionIndex = 1; generacionIndex <= PropertiesManager.getPropertyInt(Constants.GENERATIONS)
                     && !PropertiesManager.getPropertyBoolean(Constants.TERMINAR); generacionIndex++) {
+                EstadisticaManager.addGeneracion(1);
                 PropertiesManager.load();
-                size = poblacion.getIndividuos().size();
-                totalSize += size;
-                this.processGeneracion(poblacion, generacionIndex);
-                LogUtil.logTime("Generacion = " + (generacionIndex - 1) + ", Individuos = " + size);
-                for (int poblacionManagerIndex = 1; poblacionManagerIndex <= poblacionIndex; poblacionManagerIndex++) {
-                    PoblacionManager oldPoblacionManager = null;
-                    if (poblacionManagerIndex == poblacionIndex) {
-                        oldPoblacionManager = poblacionManager;
-                    } else {
-                        oldPoblacionManager = new PoblacionManager();
-                        oldPoblacionManager.load("" + poblacionManagerIndex, false);
-                    }
-                    /** Se calcula la fortaleza de los individuos */
-                    //LogUtil.logTime("Calcular fortaleza");
-                    funcionFortalezaManager.calculateFortaleza(totalSize, oldPoblacionManager.getPoints(), poblacion,
-                            ((poblacionIndex == 1) && (generacionIndex == 1)),
-                            poblacionManagerIndex);
-                    //LogUtil.logTime("Calcular fortaleza");
-                    funcionFortalezaManager.processInvalids(poblacion);
+                if (threadPoblacionesLoad.length < PropertiesManager.getPropertyInt(Constants.END_POBLACION)) {
+                    threadPoblacionesLoad = Arrays.copyOf(threadPoblacionesLoad, PropertiesManager.getPropertyInt(Constants.END_POBLACION));
+                }
+                ThreadUtil.joinThread(threadPoblacionesLoad[PropertiesManager.getPropertyInt(Constants.ROOT_POBLACION) - 1]);
+                newPoblacion = new Poblacion();
+                newPoblacion.addAll(threadPoblacionesLoad[PropertiesManager.getPropertyInt(Constants.ROOT_POBLACION) - 1].getPoblacionManager().getPoblacion(), poblacion);
+                unirPoblaciones(threads, threadsNew, poblacion, newPoblacion);
+                processSerialized(newPoblacion, poblacion, readSerialize);
+                if ((currentPoblacionManager != null) && (!currentThreadPoblacionLoad.isAlive())
+                        && (generacionIndex == PropertiesManager.getPropertyInt(Constants.GENERATIONS))) {
+                    newPoblacion.addAll(currentPoblacionManager.getPoblacion(), poblacion);
                 }
 
-                /** Se obtienen los individuos mas DEBILES y se eliminan */
-                //LogUtil.logTime("Procesar mas debiles");
-                funcionFortalezaManager.processWeakestPoblacion(poblacion, PropertiesManager.getPropertyInt(Constants.INDIVIDUOS));
-                //LogUtil.logTime("Procesar mas debiles");
-
-                outPoblacion(poblacion.getFirst());
+                /*                if (threadProcessPoblacionAcumulada != null) {
+                outPoblacion(threadProcessPoblacionAcumulada.getPoblacion().getFirst(PropertiesManager.getPropertyInt(Constants.SHOW_HARDEST)));
                 try {
-                    if (poblacionManager.getPoblacion() != null) {
-                        fileOutManager.write(poblacion.getFirst(PropertiesManager.getPropertyInt(Constants.SHOW_HARDEST)), poblacionManager.getDateInterval());
-                    }
+                fileOutManager.write(threadProcessPoblacionAcumulada.getPoblacion().getFirst(PropertiesManager.getPropertyInt(Constants.SHOW_HARDEST)), currentPoblacionManager.getDateInterval(), false);
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                ex.printStackTrace();
+                }
+                }
+                 */
+
+                LogUtil.logTime("Generacion = " + (generacionIndex - 1) + " Poblacion=" + poblacionIndex, 1);
+                for (int poblacionManagerIndex = PropertiesManager.getPropertyInt(Constants.ROOT_POBLACION);
+                        poblacionManagerIndex <= poblacionIndex; poblacionManagerIndex++) {
+                    LogUtil.logTime("Individuos=" + poblacion.getIndividuos().size(), 1);
+                    LogUtil.logTime("Individuos Nuevos=" + newPoblacion.getIndividuos().size(), 1);
+                    if ((poblacionManagerIndex < poblacionIndex) && (threadPoblacionesLoad[poblacionManagerIndex] == null)) {
+                        threadPoblacionesLoad[poblacionManagerIndex] = launchLoad(poblacionManagerIndex, poblacionIndex, 1);
+                    }
+                    if ((poblacionManagerIndex < poblacionIndex - 1) && (threadPoblacionesLoad[poblacionManagerIndex + 1] == null)) {
+                        threadPoblacionesLoad[poblacionManagerIndex + 1] = launchLoad(poblacionManagerIndex + 1, poblacionIndex, 1);
+                    }
+
+                    currentThreadPoblacionLoad = threadPoblacionesLoad[poblacionManagerIndex - 1];
+                    if ((poblacionManagerIndex > PropertiesManager.getPropertyInt(Constants.ROOT_POBLACION)) && (poblacionManagerIndex < poblacionIndex)) {
+                        threadPoblacionesLoad[poblacionManagerIndex - 1] = null;
+                    }
+
+                    ThreadUtil.joinThread(currentThreadPoblacionLoad);
+                    currentPoblacionManager = currentThreadPoblacionLoad.getPoblacionManager();
+                    if (poblacionManagerIndex == PropertiesManager.getPropertyInt(Constants.ROOT_POBLACION)) {
+                        if (generacionIndex == 1) {
+                            LogUtil.logTime("Inicio poblacion " + poblacionIndex + " "
+                                    + threadPoblacionesLoad[PropertiesManager.getPropertyInt(Constants.ROOT_POBLACION) - 1].getPoblacionManager().getDateInterval(), 1);
+                        }
+                        LogUtil.logTime("Cargar poblacion serializada " + (poblacionIndex) + "." + generacionIndex, 1);
+                        threadSerReadAll = new SerializationReadAllthread("threadSerReadAll " + (poblacionIndex) + "." + generacionIndex,
+                                PropertiesManager.getPropertyString(Constants.SERIALICE_PATH),
+                                PropertiesManager.getPropertyInt(Constants.READ_HARDEST),
+                                poblacionIndex, serializationManager);
+                        if (PropertiesManager.getPropertyBoolean(Constants.THREAD)) {
+                            threadSerReadAll.start();
+                        } else {
+                            threadSerReadAll.run();
+                        }
+                        readSerialize.add(threadSerReadAll);
+                    }
+
+                    // Nueva Poblacion
+                    if (threadProcessPoblacionNueva != null) {
+                        ThreadUtil.joinThread(threadProcessPoblacionNueva);
+                        //LogUtil.logTime("Before ", 1);
+                        //outPoblacion(newPoblacion.getFirst(PropertiesManager.getPropertyInt(Constants.SHOW_HARDEST)));
+                        LogUtil.logTime("Procesar mas debiles newPoblacion. Individuos=" + newPoblacion.getIndividuos().size(), 1);
+                        funcionFortalezaManager.processWeakestPoblacion(newPoblacion, PropertiesManager.getPropertyInt(Constants.INDIVIDUOS));
+                    }
+                    if (!newPoblacion.getIndividuos().isEmpty()) {
+                        threadProcessPoblacionNueva =
+                                new ProcessPoblacionThread("threadProcessPoblacionNueva "
+                                + poblacionIndex + "." + generacionIndex + "." + poblacionManagerIndex,
+                                currentPoblacionManager.getPoints(), newPoblacion,
+                                recalculate(poblacionManagerIndex, generacionIndex),
+                                poblacionManagerIndex, funcionFortalezaManager);
+                        if (PropertiesManager.getPropertyBoolean(Constants.THREAD)) {
+                            LogUtil.logTime("Starting Thread " + threadProcessPoblacionNueva.getName(), 4);
+                            threadProcessPoblacionNueva.start();
+                        } else {
+                            threadProcessPoblacionNueva.run();
+                        }
+                        if (poblacionManagerIndex == poblacionIndex) {
+                            threadsNew.add(threadProcessPoblacionNueva);
+                        }
+                    }
+                    if (!poblacion.getIndividuos().isEmpty()) {
+                        if ((generacionIndex == 1) && (poblacionManagerIndex == poblacionIndex)) {
+                            threadProcessPoblacionAcumulada =
+                                    new ProcessPoblacionThread("threadProcessPoblacionAcumulada "
+                                    + poblacionIndex + "." + generacionIndex + "." + poblacionManagerIndex,
+                                    currentPoblacionManager.getPoints(), poblacion,
+                                    recalculate(poblacionManagerIndex, generacionIndex),
+                                    poblacionManagerIndex, funcionFortalezaManager);
+                            if (PropertiesManager.getPropertyBoolean(Constants.THREAD)) {
+                                threadProcessPoblacionAcumulada.start();
+                            } else {
+                                threadProcessPoblacionAcumulada.run();
+                            }
+                            threads.add(threadProcessPoblacionAcumulada);
+                        }
+                    }
                 }
             }
+            if (threadProcessPoblacionAcumulada != null) {
+                ThreadUtil.joinThread(threadProcessPoblacionAcumulada);
+            }
+            if (threadProcessPoblacionNueva != null) {
+                ThreadUtil.joinThread(threadProcessPoblacionNueva);
+            }
+            LogUtil.logTime("Procesar mas debiles poblacion. Individuos=" + poblacion.getIndividuos().size(), 1);
+            funcionFortalezaManager.processWeakestPoblacion(poblacion, PropertiesManager.getPropertyInt(Constants.INDIVIDUOS));
+            LogUtil.logTime("Procesar mas debiles newPoblacion. Individuos=" + newPoblacion.getIndividuos().size(), 1);
+            funcionFortalezaManager.processWeakestPoblacion(newPoblacion, PropertiesManager.getPropertyInt(Constants.INDIVIDUOS));
 
-            LogUtil.logTime("Generaciones = " + (generacionIndex - 1));
+            LogUtil.logTime("Generaciones=" + (generacionIndex - 1), 1);
             outPoblacion(poblacion.getFirst(PropertiesManager.getPropertyInt(Constants.SHOW_HARDEST)));
             try {
-                if (poblacionManager.getPoblacion() != null) {
-                    fileOutManager.write(poblacion.getFirst(PropertiesManager.getPropertyInt(Constants.SHOW_HARDEST)), poblacionManager.getDateInterval(), true);
-                    serializationManager.writeObject(id, poblacion, poblacionManager.getDateInterval(), poblacionIndex);
+                fileOutManager.write(poblacion.getFirst(PropertiesManager.getPropertyInt(Constants.SHOW_HARDEST)), currentPoblacionManager.getDateInterval(), true);
+                if ((currentPoblacionManager.getPoblacion() != null) && (!currentPoblacionManager.getPoblacion().getIndividuos().isEmpty())) {
+                    serializationManager.writeObject(id, poblacion, currentPoblacionManager.getDateInterval(), poblacionIndex);
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+            EstadisticaManager.showEstadisticas();
         }
+
         return poblacion;
     }
 
-    private void processGeneracion(Poblacion poblacion, int generacion) {
-        int size = poblacion.getIndividuos().size();
+    private PoblacionLoadThread launchLoad(int poblacionManagerIndex, int poblacionIndex, int plus) {
+        LogUtil.logTime("Launching Thread threadPoblacionLoad " + (poblacionManagerIndex + plus), 3);
+        PoblacionLoadThread threadPoblacionesLoad = new PoblacionLoadThread("threadPoblacionLoad " + (poblacionManagerIndex + plus),
+                new PoblacionManager(), poblacionManagerIndex + plus, ((poblacionManagerIndex + plus) == poblacionIndex) ? true : false);
+        if (PropertiesManager.getPropertyBoolean(Constants.THREAD)) {
+            threadPoblacionesLoad.start();
+        } else {
+            threadPoblacionesLoad.run();
+        }
+        return threadPoblacionesLoad;
+    }
 
-        /** Se mezclan los individuos */
-        Poblacion[] crossoverPoblacion = crossoverManager.crossover(generacion, poblacion, (new Double(size * PropertiesManager.getPropertyDouble(Constants.CROSSOVER_PERCENT))).intValue());
-        poblacion.addAll(crossoverPoblacion[1]);
+    private void processSerialized(Poblacion newPoblacion, Poblacion poblacion, List<SerializationReadAllthread> readSerialize) {
+        for (Iterator<SerializationReadAllthread> it = readSerialize.iterator(); it.hasNext();) {
+            SerializationReadAllthread threadSerReadAll = it.next();
+            if (!threadSerReadAll.isAlive()) {
+                Poblacion p = threadSerReadAll.getPoblacion();
+                if (p.getIndividuos() != null) {
+                    newPoblacion.addAll(p, poblacion);
+                    EstadisticaManager.addIndividuoLeido(p.getIndividuos().size());
+                }
+                it.remove();
+            }
+        }
+    }
 
-        /** Se mutan los individuos */
-        Poblacion[] mutationPoblacion = mutationManager.mutate(generacion, poblacion, (new Double(size * PropertiesManager.getPropertyDouble(Constants.MUTATION_PERCENT))).intValue());
-        poblacion.addAll(mutationPoblacion[1]);
+    private void unirPoblaciones(List<ProcessPoblacionThread> threads, List<ProcessPoblacionThread> threadsNew,
+            Poblacion poblacion, Poblacion newPoblacion) {
+        for (Iterator<ProcessPoblacionThread> it = threads.iterator(); it.hasNext();) {
+            ProcessPoblacionThread processPoblacionThread = it.next();
+            ThreadUtil.joinThread(processPoblacionThread);
+            newPoblacion.addAll(processPoblacionThread.getNewPoblacion(), poblacion);
+            it.remove();
+        }
+        for (Iterator<ProcessPoblacionThread> it = threadsNew.iterator(); it.hasNext();) {
+            ProcessPoblacionThread processPoblacionThread = it.next();
+            ThreadUtil.joinThread(processPoblacionThread);
+            poblacion.addAll(processPoblacionThread.getPoblacion());
+            it.remove();
+        }
+    }
+
+    private boolean recalculate(int poblacionIndex, int generacionIndex) {
+        return ((poblacionIndex == PropertiesManager.getPropertyInt(Constants.ROOT_POBLACION)) && (generacionIndex == 1));
     }
 
     public void outPoblacion(Poblacion poblacion) {
@@ -149,68 +250,5 @@ public class GeneticDelegate {
 
     public void outIndividuo(IndividuoEstrategia individuo) {
         System.out.println(individuo.toString());
-        /*        System.out.println(PropertiesManager.getOperationType() + "TakeProfit=" + individuo.getTakeProfit());
-        System.out.println(PropertiesManager.getOperationType() + "StopLoss=" + individuo.getStopLoss());
-        System.out.println(PropertiesManager.getOperationType() + "Lote=" + individuo.getLot());
-        int count = 0;
-        if (individuo.getOpenIndicators().size() > count) {
-        System.out.println(PropertiesManager.getOperationType() + "MaOpenLower=" + NumberUtil.round(((individuo.getOpenIndicators().get(count) != null) ? ((Average) individuo.getOpenIndicators().get(count)).getInterval().getLowInterval() * 100 : -1000000)));
-        System.out.println(PropertiesManager.getOperationType() + "MaOpenHigher=" + NumberUtil.round(((individuo.getOpenIndicators().get(count) != null) ? ((Average) individuo.getOpenIndicators().get(count)).getInterval().getHighInterval() * 100 : 1000000)));
-        }
-        count++;
-        if (individuo.getOpenIndicators().size() > count) {
-        System.out.println(PropertiesManager.getOperationType() + "MacdOpenLower=" + NumberUtil.round(((individuo.getOpenIndicators().get(count) != null) ? ((Macd) individuo.getOpenIndicators().get(count)).getInterval().getLowInterval() * 100 : -1000000)));
-        System.out.println(PropertiesManager.getOperationType() + "MacdOpenHigher=" + NumberUtil.round(((individuo.getOpenIndicators().get(count) != null) ? ((Macd) individuo.getOpenIndicators().get(count)).getInterval().getHighInterval() * 100 : 1000000)));
-        }
-        count++;
-        if (individuo.getOpenIndicators().size() > count) {
-        System.out.println(PropertiesManager.getOperationType() + "MaCompareOpenLower=" + NumberUtil.round(((individuo.getOpenIndicators().get(count) != null) ? ((Average) individuo.getOpenIndicators().get(count)).getInterval().getLowInterval() * 100 : -1000000)));
-        System.out.println(PropertiesManager.getOperationType() + "MaCompareOpenHigher=" + NumberUtil.round(((individuo.getOpenIndicators().get(count) != null) ? ((Average) individuo.getOpenIndicators().get(count)).getInterval().getHighInterval() * 100 : 1000000)));
-        }
-        count++;
-        if (individuo.getOpenIndicators().size() > count) {
-        System.out.println(PropertiesManager.getOperationType() + "SarOpenLower=" + NumberUtil.round(((individuo.getOpenIndicators().get(count) != null) ? ((Sar) individuo.getOpenIndicators().get(count)).getInterval().getLowInterval() * 100 : -1000000)));
-        System.out.println(PropertiesManager.getOperationType() + "SarOpenHigher=" + NumberUtil.round(((individuo.getOpenIndicators().get(count) != null) ? ((Sar) individuo.getOpenIndicators().get(count)).getInterval().getHighInterval() * 100 : 1000000)));
-        }
-        count++;
-        if (individuo.getOpenIndicators().size() > count) {
-        System.out.println(PropertiesManager.getOperationType() + "AdxOpenLower=" + NumberUtil.round(((individuo.getOpenIndicators().get(count) != null) ? ((Adx) individuo.getOpenIndicators().get(count)).getInterval().getLowInterval() * 100 : -1000000)));
-        System.out.println(PropertiesManager.getOperationType() + "AdxOpenHigher=" + NumberUtil.round(((individuo.getOpenIndicators().get(count) != null) ? ((Adx) individuo.getOpenIndicators().get(count)).getInterval().getHighInterval() * 100 : 1000000)));
-        }
-        count++;
-        if (individuo.getOpenIndicators().size() > count) {
-        System.out.println(PropertiesManager.getOperationType() + "RsiOpenLower=" + NumberUtil.round(((individuo.getOpenIndicators().get(count) != null) ? ((Rsi) individuo.getOpenIndicators().get(count)).getInterval().getLowInterval() * 100 : -1000000)));
-        System.out.println(PropertiesManager.getOperationType() + "RsiOpenHigher=" + NumberUtil.round(((individuo.getOpenIndicators().get(count) != null) ? ((Rsi) individuo.getOpenIndicators().get(count)).getInterval().getHighInterval() * 100 : 1000000)));
-        }
-        count = 0;
-        if (individuo.getCloseIndicators().size() > count) {
-        System.out.println(PropertiesManager.getOperationType() + "MaCloseLower=" + NumberUtil.round(((individuo.getCloseIndicators().get(count) != null) ? ((Average) individuo.getCloseIndicators().get(count)).getInterval().getLowInterval() * 100 : -1000000)));
-        System.out.println(PropertiesManager.getOperationType() + "MaCloseHigher=" + NumberUtil.round(((individuo.getCloseIndicators().get(count) != null) ? ((Average) individuo.getCloseIndicators().get(count)).getInterval().getHighInterval() * 100 : 1000000)));
-        }
-        count++;
-        if (individuo.getOpenIndicators().size() > count) {
-        System.out.println(PropertiesManager.getOperationType() + "MacdCloseLower=" + NumberUtil.round(((individuo.getCloseIndicators().get(count) != null) ? ((Macd) individuo.getCloseIndicators().get(count)).getInterval().getLowInterval() * 100 : -1000000)));
-        System.out.println(PropertiesManager.getOperationType() + "MacdCloseHigher=" + NumberUtil.round(((individuo.getCloseIndicators().get(count) != null) ? ((Macd) individuo.getCloseIndicators().get(count)).getInterval().getHighInterval() * 100 : 1000000)));
-        }
-        count++;
-        if (individuo.getOpenIndicators().size() > count) {
-        System.out.println(PropertiesManager.getOperationType() + "MaCompareCloseLower=" + NumberUtil.round(((individuo.getCloseIndicators().get(count) != null) ? ((Average) individuo.getCloseIndicators().get(count)).getInterval().getLowInterval() * 100 : -1000000)));
-        System.out.println(PropertiesManager.getOperationType() + "MaCompareCloseHigher=" + NumberUtil.round(((individuo.getCloseIndicators().get(count) != null) ? ((Average) individuo.getCloseIndicators().get(count)).getInterval().getHighInterval() * 100 : 1000000)));
-        }
-        count++;
-        if (individuo.getOpenIndicators().size() > count) {
-        System.out.println(PropertiesManager.getOperationType() + "SarCloseLower=" + NumberUtil.round(((individuo.getCloseIndicators().get(count) != null) ? ((Sar) individuo.getCloseIndicators().get(count)).getInterval().getLowInterval() * 100 : -1000000)));
-        System.out.println(PropertiesManager.getOperationType() + "SarCloseHigher=" + NumberUtil.round(((individuo.getCloseIndicators().get(count) != null) ? ((Sar) individuo.getCloseIndicators().get(count)).getInterval().getHighInterval() * 100 : 1000000)));
-        }
-        count++;
-        if (individuo.getOpenIndicators().size() > count) {
-        System.out.println(PropertiesManager.getOperationType() + "AdxCloseLower=" + NumberUtil.round(((individuo.getCloseIndicators().get(count) != null) ? ((Adx) individuo.getCloseIndicators().get(count)).getInterval().getLowInterval() * 100 : -1000000)));
-        System.out.println(PropertiesManager.getOperationType() + "AdxCloseHigher=" + NumberUtil.round(((individuo.getCloseIndicators().get(count) != null) ? ((Adx) individuo.getCloseIndicators().get(count)).getInterval().getHighInterval() * 100 : 1000000)));
-        }
-        count++;
-        if (individuo.getOpenIndicators().size() > count) {
-        System.out.println(PropertiesManager.getOperationType() + "RsiCloseLower=" + NumberUtil.round(((individuo.getCloseIndicators().get(count) != null) ? ((Rsi) individuo.getCloseIndicators().get(count)).getInterval().getLowInterval() * 100 : -1000000)));
-        System.out.println(PropertiesManager.getOperationType() + "RsiCloseHigher=" + NumberUtil.round(((individuo.getCloseIndicators().get(count) != null) ? ((Rsi) individuo.getCloseIndicators().get(count)).getInterval().getHighInterval() * 100 : 1000000)));
-        }*/
     }
 }

@@ -4,7 +4,6 @@
  */
 package forex.genetic.thread;
 
-import forex.genetic.entities.Poblacion;
 import forex.genetic.manager.PoblacionManager;
 import forex.genetic.util.LogUtil;
 
@@ -14,50 +13,26 @@ import forex.genetic.util.LogUtil;
  */
 public class PoblacionLoadThread extends Thread {
 
-    private Poblacion poblacion = null;
     private PoblacionManager poblacionManager;
     private int poblacionIndex;
+    private boolean poblar;
 
-    public PoblacionLoadThread(PoblacionManager poblacionManager, Poblacion poblacion, int poblacionIndex) {
+    public PoblacionLoadThread(String name, PoblacionManager poblacionManager, int poblacionIndex, boolean poblar) {
+        super(name);
         this.poblacionManager = poblacionManager;
-        this.poblacion = poblacion;
-        this.poblacionIndex = poblacionIndex;        
-    }        
+        this.poblacionIndex = poblacionIndex;
+        this.poblar = poblar;
+    }
 
     public void run() {
-        LogUtil.logTime("\n Crear poblacion " + poblacionIndex);
-        poblacionManager.load("" + poblacionIndex, true);
-        LogUtil.logTime("Crear poblacion " + poblacionIndex);
-
+        LogUtil.logTime("Loading poblacion " + poblacionIndex, 1);
+        poblacionManager.load("" + poblacionIndex, poblar);
         if (poblacionManager.getPoblacion() != null) {
-            poblacion.addAll(poblacionManager.getPoblacion());
-            LogUtil.logTime(" Fecha = " + poblacionManager.getDateInterval());
-        } else {
-            LogUtil.logTime("\n");
+            LogUtil.logTime("Loaded poblacion " + poblacionIndex + " " + poblacionManager.getPoblacion().getIndividuos().size(), 3);
         }
-    }
-
-    public int getPoblacionIndex() {
-        return poblacionIndex;
-    }
-
-    public void setPoblacionIndex(int poblacionIndex) {
-        this.poblacionIndex = poblacionIndex;
     }
 
     public PoblacionManager getPoblacionManager() {
         return poblacionManager;
-    }
-
-    public void setPoblacionManager(PoblacionManager poblacionManager) {
-        this.poblacionManager = poblacionManager;
-    }
-
-    public Poblacion getPoblacion() {
-        return poblacion;
-    }
-
-    public void setPoblacion(Poblacion poblacion) {
-        this.poblacion = poblacion;
     }
 }

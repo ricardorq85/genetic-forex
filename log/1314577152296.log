@@ -1,9 +1,0 @@
-<log> 
- Cargar poblacion serializada 35 <-- Sun Aug 28 19:19:12 COT 2011
-<log> Cargar poblacion serializada 35 <-- Sun Aug 28 19:19:27 COT 2011
-<log> 
- Crear poblacion 35 <-- Sun Aug 28 19:19:27 COT 2011
-<log> Crear poblacion 35 <-- Sun Aug 28 19:19:27 COT 2011
-<log>  Fecha = lowInterval=2011/02/03 19:15; highInterval=2011/02/07 05:39 <-- Sun Aug 28 19:19:27 COT 2011
-<log> Points = 2000, Individuos = 125 <-- Sun Aug 28 19:19:27 COT 2011
-<log> Generacion = 0, Individuos = 125 <-- Sun Aug 28 19:19:27 COT 2011

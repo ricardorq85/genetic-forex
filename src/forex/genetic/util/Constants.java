@@ -4,8 +4,6 @@
  */
 package forex.genetic.util;
 
-import java.util.Hashtable;
-
 /**
  *
  * @author ricardorq85
@@ -17,6 +15,7 @@ public class Constants {
     public static final String INDIVIDUOS = "INDIVIDUOS";
     public static final String POINTS_CONTROL = "POINTS_CONTROL";
     public static final String GENERATIONS = "GENERATIONS";
+    public static final String ROOT_POBLACION = "ROOT_POBLACION";
     public static final String INITIAL_POBLACION = "INITIAL_POBLACION";
     public static final String END_POBLACION = "END_POBLACION";
     public static final String FILE_ID = "FILE_ID";
@@ -56,9 +55,13 @@ public class Constants {
     public static final String PRESENT_NUMBER_POBLACION = "PRESENT_NUMBER_POBLACION";
     public static final String FORTALEZA_TYPE = "FORTALEZA_TYPE";
     public static final String SHOW_OPERATIONS = "SHOW_OPERATIONS";
+    public static final String THREAD = "THREAD";
+    public static final String LOG_LEVEL = "LOG_LEVEL";
+    public static final String SHOW_ESTADISTICAS = "SHOW_ESTADISTICAS";
+    public static final String NUMBER_BACK_ROOT_POBLACION = "NUMBER_BACK_ROOT_POBLACION";
     
     public static final double MAX_RISK_LEVEL = 10;
-    public static final Hashtable<String, Double> PAIR_MARGIN_REQUIRED = new Hashtable<String, Double>();
+    public static final int MAX_FILE_PER_READ = 100;
 
     public enum IndividuoType {
 
@@ -84,6 +87,7 @@ public class Constants {
     public enum FortalezaType {
 
         Pips,
-        Stable;
+        Stable,
+        Embudo;
     }
 }

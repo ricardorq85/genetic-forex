@@ -57,8 +57,8 @@ public class Adx extends IntervalIndicator implements Serializable {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Adx) {
-            Adx objMacd = (Adx) obj;
-            return (this.interval.equals(objMacd.interval));
+            Adx objAdx = (Adx) obj;
+            return (this.interval.equals(objAdx.interval));
         } else {
             return false;
         }
@@ -66,6 +66,6 @@ public class Adx extends IntervalIndicator implements Serializable {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return this.interval.hashCode();
     }
 }

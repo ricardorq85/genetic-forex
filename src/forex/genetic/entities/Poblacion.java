@@ -64,7 +64,8 @@ public class Poblacion implements Serializable {
 
     public Poblacion getByProcessedUntil(int processedUntil) {
         Poblacion p = new Poblacion();
-        for (IndividuoEstrategia individuoEstrategia : this.getIndividuos()) {
+        for (int i = 0; i < this.getIndividuos().size(); i++) {
+            IndividuoEstrategia individuoEstrategia = this.getIndividuos().get(i);
             if (validateIndividuo(individuoEstrategia)) {
                 if ((individuoEstrategia.getProcessedUntil() == processedUntil)
                         || (!individuoEstrategia.getFileId().equals(PropertiesManager.getPropertyString(Constants.FILE_ID)))) {
@@ -129,16 +130,18 @@ public class Poblacion implements Serializable {
         }
     }
 
-    /*    public void addAllHistoricos(List<IndividuoEstrategia> individuos) {
-    Set<IndividuoEstrategia> set = new HashSet<IndividuoEstrategia>();
-    set.addAll(individuosHistoricos);
-    individuosHistoricos.clear();
-    set.addAll(individuos);
-    
-    individuosHistoricos.clear();
-    individuosHistoricos.addAll(set);
+    public void addAll(Poblacion poblacion, Poblacion compare) {
+        for (IndividuoEstrategia individuoEstrategia : poblacion.getIndividuos()) {
+            this.add(individuoEstrategia, compare);
+        }
     }
-     */
+
+    public void add(IndividuoEstrategia ie, Poblacion compare) {
+        if ((!this.individuos.contains(ie)) && (!compare.individuos.contains(ie))) {
+            this.individuos.add(ie);
+        }
+    }
+
     public List<IndividuoEstrategia> getIndividuos() {
         return this.individuos;
     }

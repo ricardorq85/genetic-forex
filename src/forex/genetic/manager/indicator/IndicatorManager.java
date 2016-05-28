@@ -46,16 +46,18 @@ public abstract class IndicatorManager<E> {
         return list.get(i);
     }
 
-    private static void load() {
-        list = new Vector<IndicatorManager>();
-        list.add(averageIndicatorManager);
-        list.add(macdIndicatorManager);
-        list.add(compareIndicatorManager);
-        list.add(sarIndicatorManager);
-        list.add(adxIndicatorManager);
-        list.add(rsiIndicatorManager);
-        list.add(bollingerBandIndicatorManager);
-        list.add(momentumIndicatorManager);
+    private synchronized static void load() {
+        if (list == null) {
+            list = new Vector<IndicatorManager>();
+            list.add(averageIndicatorManager);
+            list.add(macdIndicatorManager);
+            list.add(compareIndicatorManager);
+            list.add(sarIndicatorManager);
+            list.add(adxIndicatorManager);
+            list.add(rsiIndicatorManager);
+            list.add(bollingerBandIndicatorManager);
+            list.add(momentumIndicatorManager);
+        }
     }
 
     public boolean operate(E individuo, E indicator, List<Point> points, int i) {

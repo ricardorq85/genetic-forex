@@ -26,4 +26,12 @@ public class NumberUtil {
             return bd.doubleValue();
         }
     }
+
+    public static double zeroToOne(double d) {
+        return (d == 0.0D) ? 1.0D : d;
+    }
+
+    public static double zeroToOne(int d) {
+        return (d == 0) ? 1.0D : d;
+    }
 }

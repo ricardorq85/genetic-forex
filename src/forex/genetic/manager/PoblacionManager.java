@@ -37,7 +37,7 @@ public class PoblacionManager {
 
     public void load(String poblacionId, boolean poblar) {
         this.generatePoints(poblacionId);
-        if ( (poblar) && (!this.points.isEmpty()) ) {
+        if ((poblar) && (!this.points.isEmpty())) {
             this.generatePoblacionInicial();
         }
     }
@@ -87,7 +87,7 @@ public class PoblacionManager {
             individuo.setInitialBalance(PropertiesManager.getPropertyInt(Constants.MIN_BALANCE) + random.nextInt(PropertiesManager.getPropertyInt(Constants.MAX_BALANCE) - PropertiesManager.getPropertyInt(Constants.MIN_BALANCE)));
 
             if (!individuos.contains(individuo)) {
-               individuos.add(individuo);
+                individuos.add(individuo);
             }
             counter++;
         }
@@ -116,5 +116,10 @@ public class PoblacionManager {
 
     public void setDateInterval(Interval<Date> dateInterval) {
         this.dateInterval = dateInterval;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
     }
 }

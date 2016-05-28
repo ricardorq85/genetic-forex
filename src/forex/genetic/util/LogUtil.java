@@ -4,6 +4,7 @@
  */
 package forex.genetic.util;
 
+import forex.genetic.manager.PropertiesManager;
 import java.util.Date;
 
 /**
@@ -12,7 +13,9 @@ import java.util.Date;
  */
 public class LogUtil {
 
-    public static void logTime(String name) {
-        System.out.println("<log> " + name + " <-- " + new Date());
+    public static void logTime(String name, int logLevel) {
+        if (logLevel <= PropertiesManager.getPropertyInt(Constants.LOG_LEVEL)) {
+            System.out.println("<log> " + name + " <-- " + new Date());
+        }
     }
 }

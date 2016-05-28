@@ -15,7 +15,7 @@ public class CollectionUtil {
 
     public static <T> List<T> subList(List<T> list, int fromIndex, int toIndex) {
         List<T> subList = new Vector<T>(toIndex - fromIndex);
-        for (int i = fromIndex; ((i < toIndex) && (i<list.size())); i++) {
+        for (int i = fromIndex; ((i < toIndex) && (i < list.size())); i++) {
             T obj = list.get(i);
             subList.add(obj);
         }

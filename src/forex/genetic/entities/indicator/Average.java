@@ -48,6 +48,6 @@ public class Average extends IntervalIndicator implements Serializable {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return this.interval.hashCode();
     }
 }
