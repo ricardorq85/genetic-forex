@@ -51,4 +51,24 @@ public abstract class IntervalIndicator extends Indicator implements Serializabl
     public String toString() {
         return this.interval.toString();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof IntervalIndicator) {
+            IntervalIndicator objIndicator = (IntervalIndicator) obj;
+            boolean value = ((((this.pointFilterCount != null) && (objIndicator.pointFilterCount != null)
+                    && (this.pointFilterCount.equals(objIndicator.pointFilterCount))))
+                    || (this.interval.equals(objIndicator.interval)));
+            return value;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 79 * hash + (this.interval != null ? this.interval.hashCode() : 0);
+        return hash;
+    }
 }

@@ -56,28 +56,28 @@ public class MutationManager {
                             openIndicator = individuo1.getOpenIndicators().get(i);
                         }
                         IndicatorManager indicatorManager = IndicatorManager.getInstance(i);
-                        if ((!indicatorManager.isObligatory()) && random.nextDouble() < 0.1) {
+                        /*if ((!indicatorManager.isObligatory()) && random.nextDouble() < 0.1) {
                             openIndicators.add(null);
-                        } else {
+                        } else {*/
                             Indicator indHijo = openIndicator;
-                            if ((random.nextDouble() < 0.7) || ((openIndicator == null) && (indicatorManager.isObligatory()))) {
+                            if ((random.nextDouble() < 0.7) || (openIndicator == null)) {
                                 indHijo = indicatorManager.mutate(openIndicator);
                             }
                             openIndicators.add(indHijo);
-                        }
+                        //}
                         Indicator closeIndicator = null;
                         if (individuo1.getCloseIndicators().size() > i) {
                             closeIndicator = individuo1.getCloseIndicators().get(i);
                         }
-                        if ((!indicatorManager.isObligatory()) && random.nextDouble() < 0.1) {
+                        /*if ((!indicatorManager.isObligatory()) && random.nextDouble() < 0.1) {
                             closeIndicators.add(null);
-                        } else {
-                            Indicator indHijo = closeIndicator;
-                            if ((random.nextDouble() < 0.7) || ((closeIndicator == null) && (indicatorManager.isObligatory()))) {
+                        } else {*/
+                            indHijo = closeIndicator;
+                            if ((random.nextDouble() < 0.7) || (closeIndicator == null)) {
                                 indHijo = indicatorManager.mutate(closeIndicator);
                             }
                             closeIndicators.add(indHijo);
-                        }
+                        //}
                     }
                     hijo.setOpenIndicators(openIndicators);
                     hijo.setCloseIndicators(closeIndicators);

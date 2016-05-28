@@ -58,15 +58,11 @@ public class FuncionFortalezaManager {
             for (int j = i + 1; j < individuos1.size(); j++) {
                 IndividuoEstrategia individuo2 = individuos1.get(j);
                 if (individuo1.equalsReal(individuo2)) {
+                    EstadisticaManager.addIndividuoRemovedEqualsReal(1);
                     if (individuo1.compareTo(individuo2) > 0) {
                         individuos1.remove(individuo2);
-                        /*                       if (((individuo1.getId().equals("1334626152604.157")) && (individuo2.getId().equals("1334576773756.32")))
-                        || ((individuo2.getId().equals("1334626152604.157")) && (individuo1.getId().equals("1334576773756.32")))) {*/
-                        boolean b = individuo1.equalsReal(individuo2);
-
                     } else {
                         individuos1.remove(individuo1);
-                        boolean b = individuo1.equalsReal(individuo2);
                     }
                 }
             }

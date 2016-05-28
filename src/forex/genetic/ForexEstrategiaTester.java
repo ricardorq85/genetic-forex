@@ -57,11 +57,13 @@ public class ForexEstrategiaTester {
         GeneticTesterDelegate.id = Long.toString(System.currentTimeMillis());
         delegate.process(individuoEstrategia);
 
-        OptimizationThread optimizationThread =
+       /* OptimizationThread optimizationThread =
                 new OptimizationThread("OptimizationThread 0", 0, p, 1, new OptimizationManager());
         optimizationThread.run();
         IndividuoEstrategia individuoEstrategiaOptimized = optimizationThread.getNewPoblacion().getIndividuos().get(0);
         delegate = new GeneticTesterDelegate();
         delegate.process(individuoEstrategiaOptimized);
+        * 
+        */
     }
 }

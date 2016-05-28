@@ -53,7 +53,7 @@ public class OptimizationManager {
                             if (individuo1.getOptimizedOpenIndicators().size() > i) {
                                 openIndicator = individuo1.getOptimizedOpenIndicators().get(i);
                             }
-                            if ((openIndicator == null) && (indicatorManager.isObligatory())) {
+                            if (openIndicator == null) {
                                 openIndicator = indicatorManager.mutate(null);
                             }
                             openIndicators.add(openIndicator);
@@ -61,7 +61,7 @@ public class OptimizationManager {
                             if (individuo1.getOptimizedCloseIndicators().size() > i) {
                                 closeIndicator = individuo1.getOptimizedCloseIndicators().get(i);
                             }
-                            if ((closeIndicator == null) && (indicatorManager.isObligatory())) {
+                            if (closeIndicator == null) {
                                 closeIndicator = indicatorManager.mutate(null);
                             }
                             closeIndicators.add(closeIndicator);

@@ -36,19 +36,4 @@ public class Rsi extends IntervalIndicator implements Serializable {
         this.rsi = rsi;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Rsi) {
-            Rsi objRsi = (Rsi) obj;
-            return (this.interval.equals(objRsi.interval));
-        } else {
-            return false;
-        }
-
-    }
-
-    @Override
-    public int hashCode() {
-        return this.interval.hashCode();
-    }
 }

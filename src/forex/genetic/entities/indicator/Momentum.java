@@ -36,20 +36,4 @@ public class Momentum extends IntervalIndicator implements Serializable {
         this.period = period;
     }
 
- 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Momentum) {
-            Momentum objMomentum = (Momentum) obj;
-            return (this.interval.equals(objMomentum.interval));
-        } else {
-            return false;
-        }
-
-    }
-
-    @Override
-    public int hashCode() {
-        return this.interval.hashCode();
-    }
 }

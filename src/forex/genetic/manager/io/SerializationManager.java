@@ -151,7 +151,7 @@ public class SerializationManager {
             }
         };
         File[] files = root.listFiles(nameFilter);
-        for (int i = 0; i < files.length; i++) {
+        for (int i = 0; ((i < files.length) && (poblacion.getIndividuos().isEmpty())); i++) {
             try {
                 File file = files[i];
                 Poblacion p = this.readObject(file);

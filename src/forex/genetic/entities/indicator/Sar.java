@@ -44,20 +44,4 @@ public class Sar extends IntervalIndicator implements Serializable {
     public void setSar(double sar) {
         this.sar = sar;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Sar) {
-            Sar objSar = (Sar) obj;
-            return (this.interval.equals(objSar.interval));
-        } else {
-            return false;
-        }
-
-    }
-
-    @Override
-    public int hashCode() {
-        return this.interval.hashCode();
-    }
 }

@@ -18,7 +18,6 @@ import java.util.List;
 public class Point implements Serializable {
 
     public static final long serialVersionUID = 201203120716L;
-    
     private int index = 0;
     private Date date = null;
     private double open = 0.0;
@@ -145,5 +144,31 @@ public class Point implements Serializable {
                 + ";Low=" + this.low
                 + ";High=" + this.high
                 + ";Spread=" + this.spread;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Point other = (Point) obj;
+        if (this.index != other.index) {
+            return false;
+        }
+        if (this.date != other.date && (this.date == null || !this.date.equals(other.date))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + this.index;
+        hash = 97 * hash + (this.date != null ? this.date.hashCode() : 0);
+        return hash;
     }
 }

@@ -8,6 +8,7 @@ import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Ichimoku;
 import forex.genetic.entities.indicator.Indicator;
+import forex.genetic.util.LogUtil;
 
 /**
  *
@@ -43,8 +44,9 @@ public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
 
     @Override
     public boolean operate(Ichimoku ichimokuIndividuo, Ichimoku iIchimoku, Point currentPoint, Point previousPoint) {
-        return intervalManager.operate(ichimokuIndividuo.getInterval(),
+        boolean operate = intervalManager.operate(ichimokuIndividuo.getInterval(),
                 getValue(iIchimoku, previousPoint, previousPoint), currentPoint);
+        return operate;
     }
 
     @Override

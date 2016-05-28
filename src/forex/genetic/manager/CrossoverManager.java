@@ -60,30 +60,30 @@ public class CrossoverManager {
                         Indicator openIndicator1 = (openIndicators1.size() > i) ? openIndicators1.get(i) : null;
                         Indicator openIndicator2 = (openIndicators2.size() > i) ? openIndicators2.get(i) : null;
                         IndicatorManager indicatorManager = IndicatorManager.getInstance(i);
-                        if (!indicatorManager.isObligatory() && (random.nextDouble() < 0.1)) {
-                            openIndicators.add(null);
-                        } else {
-                            if ((indicatorManager.isObligatory()) && (openIndicator1 == null) && (openIndicator2 == null)) {
-                                openIndicator1 = indicatorManager.mutate(openIndicator1);
-                                openIndicator2 = indicatorManager.mutate(openIndicator2);
-                            }
-                            Indicator indHijo = indicatorManager.crossover(openIndicator1, openIndicator2);
-                            openIndicators.add(indHijo);
+                        /*if (!indicatorManager.isObligatory() && (random.nextDouble() < 0.1)) {
+                        openIndicators.add(null);
+                        } else {*/
+                        if ((openIndicator1 == null) && (openIndicator2 == null)) {
+                            openIndicator1 = indicatorManager.mutate(openIndicator1);
+                            openIndicator2 = indicatorManager.mutate(openIndicator2);
                         }
+                        Indicator indHijo = indicatorManager.crossover(openIndicator1, openIndicator2);
+                        openIndicators.add(indHijo);
+                        //}
                         List<? extends Indicator> closeIndicators1 = individuo1.getCloseIndicators();
                         List<? extends Indicator> closeIndicators2 = individuo2.getCloseIndicators();
                         Indicator closeIndicator1 = (closeIndicators1.size() > i) ? closeIndicators1.get(i) : null;
                         Indicator closeIndicator2 = (closeIndicators2.size() > i) ? closeIndicators2.get(i) : null;
-                        if (!indicatorManager.isObligatory() && (random.nextDouble() < 0.1)) {
-                            closeIndicators.add(null);
-                        } else {
-                            if ((indicatorManager.isObligatory()) && (closeIndicator1 == null) && (closeIndicator2 == null)) {
-                                closeIndicator1 = indicatorManager.mutate(closeIndicator1);
-                                closeIndicator2 = indicatorManager.mutate(closeIndicator2);
-                            }
-                            Indicator indHijo = indicatorManager.crossover(closeIndicator1, closeIndicator2);
-                            closeIndicators.add(indHijo);
+                        /*if (!indicatorManager.isObligatory() && (random.nextDouble() < 0.1)) {
+                        closeIndicators.add(null);
+                        } else {*/
+                        if ((closeIndicator1 == null) && (closeIndicator2 == null)) {
+                            closeIndicator1 = indicatorManager.mutate(closeIndicator1);
+                            closeIndicator2 = indicatorManager.mutate(closeIndicator2);
                         }
+                        indHijo = indicatorManager.crossover(closeIndicator1, closeIndicator2);
+                        closeIndicators.add(indHijo);
+                        //}
                     }
                     hijo.setOpenIndicators(openIndicators);
                     hijo.setCloseIndicators(closeIndicators);
@@ -112,7 +112,7 @@ public class CrossoverManager {
                         parents.add(individuo1);
                         parents.add(individuo2);
                         hijos.add(hijo);
-                    }                    
+                    }
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     ex.printStackTrace();
                 }

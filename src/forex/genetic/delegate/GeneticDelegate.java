@@ -25,8 +25,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -79,6 +77,7 @@ public class GeneticDelegate {
 
             for (generacionIndex = 1; generacionIndex <= PropertiesManager.getPropertyInt(Constants.GENERATIONS)
                     && !PropertiesManager.getPropertyBoolean(Constants.TERMINAR); generacionIndex++) {
+                PropertiesManager.load();
                 EstadisticaManager.addGeneracion(1);
                 if (threadPoblacionesLoad[poblacionFromIndex - 1] == null) {
                     threadPoblacionesLoad[poblacionFromIndex - 1] = launchLoad(poblacionFromIndex, poblacionFromIndex, 0, false);
@@ -103,7 +102,6 @@ public class GeneticDelegate {
                 LogUtil.logTime("Generacion = " + (generacionIndex - 1) + " Poblacion=" + poblacionIndex, 1);
                 for (int poblacionManagerIndex = poblacionFromIndex;
                         poblacionManagerIndex <= poblacionIndex; poblacionManagerIndex++) {
-                    PropertiesManager.load();
                     LogUtil.logTime("Individuos=" + poblacion.getIndividuos().size(), 1);
                     LogUtil.logTime("Individuos Nuevos=" + newPoblacion.getIndividuos().size(), 1);
                     if ((poblacionManagerIndex < poblacionIndex) && (threadPoblacionesLoad[poblacionManagerIndex] == null)) {

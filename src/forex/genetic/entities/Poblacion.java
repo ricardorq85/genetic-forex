@@ -4,9 +4,7 @@
  */
 package forex.genetic.entities;
 
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.manager.PropertiesManager;
-import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.util.CollectionUtil;
 import forex.genetic.util.Constants;
 import forex.genetic.util.Constants.OperationType;
@@ -21,6 +19,7 @@ import java.util.Vector;
 public class Poblacion implements Serializable {
 
     public static final long serialVersionUID = 201101251800L;
+    //private Collection<IndividuoEstrategia> individuos = Collections.synchronizedSet(new HashSet<IndividuoEstrategia>());
     private List<IndividuoEstrategia> individuos = new Vector<IndividuoEstrategia>();
     private OperationType operationType = null;
     private String pair = null;

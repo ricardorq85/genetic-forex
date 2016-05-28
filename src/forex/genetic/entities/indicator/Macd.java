@@ -62,19 +62,4 @@ public class Macd extends IntervalIndicator implements Serializable {
     public void setParameter2(double parameter2) {
         this.parameter2 = parameter2;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Macd) {
-            Macd objMacd = (Macd) obj;
-            return (this.interval.equals(objMacd.interval));
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 }

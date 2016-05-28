@@ -42,6 +42,9 @@ public class IndicatorController {
                     operate = indicatorManager.operate(openIndicatorIndividuo, openIndicator, currentPoint)
                             && indicatorManager.operate(openIndicatorIndividuo, openIndicator, currentPoint, previousPoint)
                             && indicatorManager.operate(openIndicatorIndividuo, openIndicator, points, index);
+                    if (!operate) {
+                        openIndicatorIndividuo.addFilterCount(currentPoint.getDate());
+                    }
                 }
             }
         }
@@ -63,6 +66,9 @@ public class IndicatorController {
                             && indicatorManager.operate(closeIndicatorIndividuo, closeIndicator, currentPoint, previousPoint)
                             && indicatorManager.operate(closeIndicatorIndividuo, closeIndicator, points, index);
                     operate = operateIndicator;
+                    if (!operate) {
+                        closeIndicatorIndividuo.addFilterCount(currentPoint.getDate());
+                    }
                 }
             }
         }
@@ -83,6 +89,9 @@ public class IndicatorController {
                     if (indicatorManager.isPriceDependence()) {
                         currentInterval = IntervalManager.intersect(currentInterval,
                                 indicatorManager.calculateInterval(indicatorIndividuo, indicator, currentPoint));
+                        if (currentInterval == null) {
+                            indicatorIndividuo.addFilterCount(currentPoint.getDate());
+                        }
                     }
                 }
             }
@@ -124,6 +133,9 @@ public class IndicatorController {
                         } else {
                             currentInterval = IntervalManager.intersect(currentInterval,
                                     indicatorManager.calculateInterval(indicatorIndividuo, indicator, currentPoint));
+                        }
+                        if (currentInterval == null) {
+                            indicatorIndividuo.addFilterCount(currentPoint.getDate());
                         }
                     }
                 }

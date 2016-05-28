@@ -305,56 +305,6 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof IndividuoEstrategia) {
-            IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
-            boolean value = false;
-            try {
-                value = (this.getId().equals(objIndividuo.getId()))
-                        || ((((this.openIndicators == null) && (objIndividuo.openIndicators == null))
-                        || ((this.openIndicators != null) && (objIndividuo.openIndicators != null) && (this.openIndicators.equals(objIndividuo.openIndicators))))
-                        && (((this.closeIndicators == null) && (objIndividuo.closeIndicators == null))
-                        || ((this.closeIndicators != null) && (objIndividuo.closeIndicators != null) && (this.closeIndicators.equals(objIndividuo.closeIndicators))))
-                        && (this.takeProfit == objIndividuo.takeProfit)
-                        && (this.stopLoss == objIndividuo.stopLoss));
-                /*
-                 * value = (this.getId().equals(objIndividuo.getId())) ||
-                 * (!((this.openIndicators != null &&
-                 * objIndividuo.openIndicators == null) && (this.openIndicators
-                 * == null && objIndividuo.openIndicators != null)) &&
-                 * this.openIndicators.equals(objIndividuo.openIndicators) &&
-                 * !((this.closeIndicators != null &&
-                 * objIndividuo.closeIndicators == null) &&
-                 * (this.closeIndicators == null && objIndividuo.closeIndicators
-                 * != null)) &&
-                 * this.closeIndicators.equals(objIndividuo.closeIndicators) &&
-                 * (this.takeProfit == objIndividuo.takeProfit) &&
-                 * (this.stopLoss == objIndividuo.stopLoss));
-                 */
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return value;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean equalsReal(Object obj) {
-        if (obj instanceof IndividuoEstrategia) {
-            IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
-            return ((this.openIndicators.equals(objIndividuo.openIndicators)
-                    && Collections.frequency(this.openIndicators, null) != this.openIndicators.size())
-                    && (this.closeIndicators.equals(objIndividuo.closeIndicators)
-                    && Collections.frequency(this.closeIndicators, null) != this.closeIndicators.size())
-                    && ((Math.abs((objIndividuo.takeProfit - this.takeProfit) / new Double(this.takeProfit)) < 0.02)
-                    && (Math.abs((objIndividuo.stopLoss - this.stopLoss) / new Double(this.stopLoss)) < 0.02)));
-        } else {
-            return false;
-        }
-    }
-
-    @Override
     public int hashCode() {
         return (this.getId().hashCode());
     }
@@ -430,6 +380,42 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
             buffer.append(",");
         }
         return buffer.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof IndividuoEstrategia) {
+            IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
+            boolean value = false;
+            try {
+                value = (this.getId().equals(objIndividuo.getId()))
+                        || ((((this.openIndicators == null) && (objIndividuo.openIndicators == null))
+                        || ((this.openIndicators != null) && (objIndividuo.openIndicators != null) && (this.openIndicators.equals(objIndividuo.openIndicators))))
+                        && (((this.closeIndicators == null) && (objIndividuo.closeIndicators == null))
+                        || ((this.closeIndicators != null) && (objIndividuo.closeIndicators != null) && (this.closeIndicators.equals(objIndividuo.closeIndicators))))
+                        && (this.takeProfit == objIndividuo.takeProfit)
+                        && (this.stopLoss == objIndividuo.stopLoss));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return value;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean equalsReal(Object obj) {
+        if (obj instanceof IndividuoEstrategia) {
+            IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
+            return ((this.openIndicators.equals(objIndividuo.openIndicators)
+                    && Collections.frequency(this.openIndicators, null) != this.openIndicators.size())
+                    && (this.closeIndicators.equals(objIndividuo.closeIndicators)
+                    && Collections.frequency(this.closeIndicators, null) != this.closeIndicators.size())
+                    && ((Math.abs((objIndividuo.takeProfit - this.takeProfit) / new Double(this.takeProfit)) < 0.02)
+                    && (Math.abs((objIndividuo.stopLoss - this.stopLoss) / new Double(this.stopLoss)) < 0.02)));
+        } else {
+            return false;
+        }
     }
 
     public double calculateRiskLevel(Fortaleza fortaleza, int index) {
@@ -525,18 +511,6 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
                 Fortaleza fo1 = o.fortaleza;
                 int presentNumberPoblacion = PropertiesManager.getPropertyInt(Constants.PRESENT_NUMBER_POBLACION);
                 int size = this.listaFortaleza.size();
-                if (this.processedUntil == 11) {
-                    if ("1331505873292.3596".equals(this.id)) {
-                        if ("1332391723361.869".equals(o.id)) {
-                            int h = 0;
-                        }
-                    }
-                    if ("1331505873292.3596".equals(o.id)) {
-                        if ("1332391723361.869".equals(this.id)) {
-                            int h = 0;
-                        }
-                    }
-                }
                 compare = f1.compareTo(fo1) * (presentNumberPoblacion + 1);
                 if (compare == 0) {
                     for (int i = size - 1; (i >= (size - presentNumberPoblacion)) && (i > 0); i--) {
@@ -561,37 +535,15 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
                 }
             }
         }
+        if (compare == 0) {
+            if (this.creationDate == null) {
+                compare = -1;
+            } else if (o.creationDate == null) {
+                compare = 1;
+            } else {
+                compare = (this.creationDate).compareTo((o.creationDate));
+            }
+        }
         return (Integer.valueOf(compare).compareTo(Integer.valueOf(0)));
     }
-
-    /*    public int compareTo(IndividuoEstrategia o) {
-    int compare = 0;
-    if ((this.fortaleza == null) && (o.fortaleza == null)) {
-    compare = 0;
-    } else if (this.fortaleza == null) {
-    compare = 1;
-    } else if (o.fortaleza == null) {
-    compare = -1;
-    } else {
-    if (this.equals(o)) {
-    compare = 0;
-    } else {
-    compare = this.fortaleza.compareTo(o.fortaleza) * PropertiesManager.getPropertyInt(Constants.PRESENT_NUMBER_POBLACION);
-    for (int i = this.listaFortaleza.size() - 2; (i >= (this.listaFortaleza.size() - PropertiesManager.getPropertyInt(Constants.PRESENT_NUMBER_POBLACION))) && (i >= 0); i--) {
-    Fortaleza f = this.listaFortaleza.get(i);
-    Fortaleza fo = o.listaFortaleza.get(i);
-    if ((f == null) && (fo == null)) {
-    compare += 0;
-    } else if (f == null) {
-    compare = 1;
-    } else if (fo == null) {
-    compare = -1;
-    } else {
-    compare += f.compareTo(fo) * (PropertiesManager.getPropertyInt(Constants.PRESENT_NUMBER_POBLACION) - (this.listaFortaleza.size() - i - 1));
-    }
-    }
-    }
-    }
-    return (Integer.valueOf(compare).compareTo(Integer.valueOf(0)));
-    }*/
 }

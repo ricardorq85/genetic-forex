@@ -36,18 +36,4 @@ public class Average extends IntervalIndicator implements Serializable {
         this.average = average;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Average) {
-            Average objAvg = (Average) obj;
-            return (this.interval.equals(objAvg.interval));
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return this.interval.hashCode();
-    }
 }

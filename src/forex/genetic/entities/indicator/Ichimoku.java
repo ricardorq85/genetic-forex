@@ -62,19 +62,4 @@ public class Ichimoku extends IntervalIndicator implements Serializable {
     public void setTenkanSen(double tenkanSen) {
         this.tenkanSen = tenkanSen;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof Ichimoku) {
-            Ichimoku obj = (Ichimoku) o;
-            return (this.interval.equals(obj.interval));
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 }
