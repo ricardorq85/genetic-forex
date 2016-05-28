@@ -26,14 +26,15 @@ public class DoubleCrossoverManager extends EspecificCrossoverManager {
                 String binaryHijo = binary1.substring(0, corte) + binary2.substring(corte, binary2.length());
 
                 Long l = Long.parseLong(binaryHijo, 2);
-                hijo = NumberUtil.round(Double.longBitsToDouble(l));
+                //hijo = NumberUtil.round(Double.longBitsToDouble(l));
+                hijo = Double.longBitsToDouble(l);
                 counter++;
-                if (counter > 2) {
-                    System.out.println(counter + " ; " + hijo);
-                }
+                /*if (counter > 2) {
+                System.out.println(counter + " ; " + hijo);
+                }*/
             }
+            hijo = NumberUtil.round(hijo);
         }
-
         return hijo;
     }
 

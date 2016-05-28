@@ -90,22 +90,22 @@ public class CrossoverManager {
 
                     int tp1 = individuo1.getTakeProfit();
                     int tp2 = individuo2.getTakeProfit();
-                    int tpHijo = especificCrossoverManager.crossover(tp1, tp2, PropertiesManager.getPropertyInt(Constants.MIN_TP), PropertiesManager.getPropertyInt(Constants.MAX_TP));
+                    int tpHijo = especificCrossoverManager.crossover(tp1, tp2, PropertiesManager.getMinTP(), PropertiesManager.getMaxTP());
                     hijo.setTakeProfit(tpHijo);
 
                     int sl1 = individuo1.getStopLoss();
                     int sl2 = individuo2.getStopLoss();
-                    int slHijo = especificCrossoverManager.crossover(sl1, sl2, PropertiesManager.getPropertyInt(Constants.MIN_SL), PropertiesManager.getPropertyInt(Constants.MAX_SL));
+                    int slHijo = especificCrossoverManager.crossover(sl1, sl2, PropertiesManager.getMinSL(), PropertiesManager.getMaxSL());
                     hijo.setStopLoss(slHijo);
 
                     double lot1 = individuo1.getLot();
                     double lot2 = individuo2.getLot();
-                    double lotHijo = especificCrossoverManager.crossover(lot1, lot2, PropertiesManager.getPropertyDouble(Constants.MIN_LOT), PropertiesManager.getPropertyDouble(Constants.MAX_LOT));
-                    hijo.setLot(NumberUtil.round(lotHijo, PropertiesManager.getPropertyInt(Constants.LOT_SCALE_ROUNDING)));
+                    double lotHijo = especificCrossoverManager.crossover(lot1, lot2, PropertiesManager.getMinLot(), PropertiesManager.getMaxLot());
+                    hijo.setLot(NumberUtil.round(lotHijo, PropertiesManager.getDefaultScaleRounding()));
 
                     int balance1 = individuo1.getInitialBalance();
                     int balance2 = individuo2.getInitialBalance();
-                    int balanceHijo = especificCrossoverManager.crossover(balance1, balance2, PropertiesManager.getPropertyInt(Constants.MIN_BALANCE), PropertiesManager.getPropertyInt(Constants.MAX_BALANCE));
+                    int balanceHijo = especificCrossoverManager.crossover(balance1, balance2, PropertiesManager.getMinBalance(), PropertiesManager.getMaxBalance());
                     hijo.setInitialBalance(balanceHijo);
 
                     if (!hijos.contains(hijo)) {

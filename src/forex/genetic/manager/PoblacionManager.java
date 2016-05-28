@@ -52,14 +52,24 @@ public class PoblacionManager {
 
     private void generatePoblacionInicial() {
         poblacion = new Poblacion();
-        List<IndividuoEstrategia> individuos = new Vector<IndividuoEstrategia>(PropertiesManager.getPropertyInt(Constants.INITIAL_INDIVIDUOS));
+        int initialIndividuos = PropertiesManager.getPropertyInt(Constants.INITIAL_INDIVIDUOS);
+        List<IndividuoEstrategia> individuos = new Vector<IndividuoEstrategia>(initialIndividuos);
         IndividuoEstrategia individuo = null;
         Indicator openIndicator = null;
         Indicator closeIndicator = null;
 
         Random random = new Random();
-        int counter = 0;
-        while (counter < PropertiesManager.getPropertyInt(Constants.INITIAL_INDIVIDUOS)) {
+        int counter = 0;        
+        int minTP = PropertiesManager.getMinTP();
+        int maxTP = PropertiesManager.getMaxTP();
+        int minSL = PropertiesManager.getMinSL();
+        int maxSL = PropertiesManager.getMaxSL();
+        double minLot = PropertiesManager.getMinLot();
+        double maxLot = PropertiesManager.getMaxLot();
+        int minBalance = PropertiesManager.getMinBalance();
+        int maxBalance = PropertiesManager.getMaxBalance();
+        int lotScaleRounding = PropertiesManager.getLotScaleRounding();
+        while (counter < initialIndividuos) {
             individuo = new IndividuoEstrategia();
 
             List<Indicator> openIndicators = null;
@@ -93,10 +103,10 @@ public class PoblacionManager {
             individuo.setOpenIndicators(openIndicators);
             individuo.setCloseIndicators(closeIndicators);
 
-            individuo.setTakeProfit(PropertiesManager.getPropertyInt(Constants.MIN_TP) + random.nextInt(PropertiesManager.getPropertyInt(Constants.MAX_TP) - PropertiesManager.getPropertyInt(Constants.MIN_TP)));
-            individuo.setStopLoss(PropertiesManager.getPropertyInt(Constants.MIN_SL) + random.nextInt(PropertiesManager.getPropertyInt(Constants.MAX_SL) - PropertiesManager.getPropertyInt(Constants.MIN_SL)));
-            individuo.setLot(NumberUtil.round(PropertiesManager.getPropertyDouble(Constants.MIN_LOT) + random.nextDouble() * (PropertiesManager.getPropertyDouble(Constants.MAX_LOT) - PropertiesManager.getPropertyDouble(Constants.MIN_LOT)), PropertiesManager.getPropertyInt(Constants.LOT_SCALE_ROUNDING)));
-            individuo.setInitialBalance(PropertiesManager.getPropertyInt(Constants.MIN_BALANCE) + random.nextInt(PropertiesManager.getPropertyInt(Constants.MAX_BALANCE) - PropertiesManager.getPropertyInt(Constants.MIN_BALANCE)));
+            individuo.setTakeProfit(minTP + random.nextInt(maxTP - minTP));
+            individuo.setStopLoss(minSL + random.nextInt(maxSL - minSL));
+            individuo.setLot(NumberUtil.round(minLot + random.nextDouble() * (maxLot - minLot), lotScaleRounding));
+            individuo.setInitialBalance(minBalance + random.nextInt(maxBalance - minBalance));
 
             if (!individuos.contains(individuo)) {
                 individuos.add(individuo);

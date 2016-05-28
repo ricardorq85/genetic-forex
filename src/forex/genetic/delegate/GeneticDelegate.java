@@ -37,31 +37,39 @@ public class GeneticDelegate {
     private SerializationManager serializationManager = new SerializationManager();
     private FileOutManager fileOutManager = new FileOutManager();
     private FuncionFortalezaManager funcionFortalezaManager = new FuncionFortalezaManager();
+    private int rootPoblacion = -1;
+    private int backPoblacion = -1;
+    private int initialPoblacion = -1;
+    private int generations = -1;
 
     public GeneticDelegate() {
+        rootPoblacion = PropertiesManager.getPropertyInt(Constants.ROOT_POBLACION);
+        backPoblacion = PropertiesManager.getPropertyInt(Constants.NUMBER_BACK_ROOT_POBLACION);
+        initialPoblacion = PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION);
+        generations = PropertiesManager.getPropertyInt(Constants.GENERATIONS);
     }
 
     public Poblacion process() {
         Poblacion poblacion = new Poblacion();
-        Poblacion newPoblacion = new Poblacion();
+        Poblacion newPoblacion = null;
         ProcessPoblacionThread threadProcessPoblacionAcumulada = null;
         ProcessPoblacionThread threadProcessPoblacionNueva = null;
         ProcessGeneracion threadProcessGeneracion = null;
-        List<ProcessPoblacionThread> threads = new ArrayList<ProcessPoblacionThread>(PropertiesManager.getPropertyInt(Constants.GENERATIONS));
-        List<ProcessPoblacionThread> threadsNew = new ArrayList<ProcessPoblacionThread>(PropertiesManager.getPropertyInt(Constants.GENERATIONS));
+        List<ProcessPoblacionThread> threads = new ArrayList<ProcessPoblacionThread>(generations);
+        List<ProcessPoblacionThread> threadsNew = new ArrayList<ProcessPoblacionThread>(generations);
         PoblacionLoadThread[] threadPoblacionesLoad = new PoblacionLoadThread[PropertiesManager.getPropertyInt(Constants.END_POBLACION)];
 
         List<SerializationReadAllthread> readSerialize = new ArrayList<SerializationReadAllthread>();
         SerializationReadAllthread threadSerReadAll = null;
         PoblacionManager currentPoblacionManager = null;
-        for (int poblacionIndex = PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION);
+        for (int poblacionIndex = initialPoblacion;
                 poblacionIndex <= PropertiesManager.getPropertyInt(Constants.END_POBLACION) && !PropertiesManager.getPropertyBoolean(Constants.TERMINAR);
                 poblacionIndex++) {
             System.gc();
             int generacionIndex = 0;
             int poblacionFromIndex = 0;
-            int root1 = PropertiesManager.getPropertyInt(Constants.ROOT_POBLACION);
-            int back = PropertiesManager.getPropertyInt(Constants.NUMBER_BACK_ROOT_POBLACION);
+            int root1 = rootPoblacion;
+            int back = backPoblacion;
             if (back < 0) {
                 back = (PropertiesManager.getPropertyInt(Constants.END_POBLACION));
             }
@@ -74,10 +82,10 @@ public class GeneticDelegate {
             if (threadPoblacionesLoad[poblacionIndex - 1] == null) {
                 threadPoblacionesLoad[poblacionIndex - 1] = launchLoad(poblacionIndex, poblacionIndex, 0, true);
             }
-
-            for (generacionIndex = 1; generacionIndex <= PropertiesManager.getPropertyInt(Constants.GENERATIONS)
+            
+            for (generacionIndex = 1; generacionIndex <= generations
                     && !PropertiesManager.getPropertyBoolean(Constants.TERMINAR); generacionIndex++) {
-                PropertiesManager.load();
+                generations = PropertiesManager.getPropertyInt(Constants.GENERATIONS);
                 EstadisticaManager.addGeneracion(1);
                 if (threadPoblacionesLoad[poblacionFromIndex - 1] == null) {
                     threadPoblacionesLoad[poblacionFromIndex - 1] = launchLoad(poblacionFromIndex, poblacionFromIndex, 0, false);
@@ -92,14 +100,15 @@ public class GeneticDelegate {
                 newPoblacion = new Poblacion();
                 //newPoblacion.addAll(threadPoblacionesLoad[poblacionFromIndex - 1].getPoblacionManager().getPoblacion(), poblacion);
                 unirPoblaciones(threads, threadsNew, poblacion, newPoblacion);
-                processSerialized(newPoblacion, poblacion, readSerialize, poblacionIndex, (generacionIndex == PropertiesManager.getPropertyInt(Constants.GENERATIONS) - 1));
+                processSerialized(newPoblacion, poblacion, readSerialize, poblacionIndex, (generacionIndex == generations - 1));
                 if ((currentPoblacionManager != null) && (!currentThreadPoblacionLoad.isAlive())
-                        && (generacionIndex == PropertiesManager.getPropertyInt(Constants.GENERATIONS) - 1)) {
+                        && (generacionIndex == generations - 1)) {
                     newPoblacion.addAll(currentPoblacionManager.getPoblacion(), poblacion);
                 }
 
                 boolean processedWeakestPoblacion = false;
                 LogUtil.logTime("Generacion = " + (generacionIndex - 1) + " Poblacion=" + poblacionIndex, 1);
+                PropertiesManager.load();
                 for (int poblacionManagerIndex = poblacionFromIndex;
                         poblacionManagerIndex <= poblacionIndex; poblacionManagerIndex++) {
                     LogUtil.logTime("Individuos=" + poblacion.getIndividuos().size(), 1);
@@ -123,10 +132,10 @@ public class GeneticDelegate {
                         //if ((PropertiesManager.getPropertyInt(Constants.GENERATIONS) == 1) || (generacionIndex <= PropertiesManager.getPropertyInt(Constants.GENERATIONS) * 2 / 3)) {
                         LogUtil.logTime("Cargar poblacion serializada " + (poblacionIndex) + "." + generacionIndex, 1);
                         threadSerReadAll = new SerializationReadAllthread("threadSerReadAll " + (poblacionIndex) + "." + generacionIndex,
-                                PropertiesManager.getPropertyString(Constants.SERIALICE_PATH),
+                                PropertiesManager.getSerialicePath(),
                                 PropertiesManager.getPropertyInt(Constants.READ_HARDEST),
                                 poblacionIndex, poblacionFromIndex, serializationManager);
-                        if (PropertiesManager.getPropertyBoolean(Constants.THREAD)) {
+                        if (PropertiesManager.isThread()) {
                             threadSerReadAll.start();
                         } else {
                             threadSerReadAll.run();
@@ -138,6 +147,7 @@ public class GeneticDelegate {
                         // Nueva Poblacion
                         if (threadProcessPoblacionNueva != null) {
                             ThreadUtil.joinThread(threadProcessPoblacionNueva);
+                            //Tiene que hacerser al final de la generación
                             //LogUtil.logTime("Procesar mas debiles newPoblacion. Individuos=" + newPoblacion.getIndividuos().size(), 1);
                             //funcionFortalezaManager.processWeakestPoblacion(newPoblacion, PropertiesManager.getPropertyInt(Constants.INDIVIDUOS));
                         }
@@ -147,7 +157,7 @@ public class GeneticDelegate {
                                 currentPoblacionManager.getPoints(), newPoblacion,
                                 recalculate(poblacionIndex, generacionIndex, poblacionManagerIndex, poblacionFromIndex),
                                 poblacionManagerIndex, poblacionFromIndex, funcionFortalezaManager);
-                        if (PropertiesManager.getPropertyBoolean(Constants.THREAD)) {
+                        if (PropertiesManager.isThread()) {
                             LogUtil.logTime("Starting Thread " + threadProcessPoblacionNueva.getName(), 4);
                             threadProcessPoblacionNueva.start();
                         } else {
@@ -180,9 +190,6 @@ public class GeneticDelegate {
                                     poblacionManagerIndex, poblacionFromIndex,
                                     funcionFortalezaManager);
                             ThreadUtil.launchThread(threadProcessPoblacionAcumulada);
-                            //if (poblacionManagerIndex == poblacionIndex) {
-                            //threads.add(threadProcessPoblacionAcumulada);
-                            //}
                         }
                     }
                 }
@@ -192,7 +199,13 @@ public class GeneticDelegate {
             }
             if (!poblacion.getIndividuos().isEmpty()) {
                 LogUtil.logTime("Procesar mas debiles poblacion. Individuos=" + poblacion.getIndividuos().size(), 1);
-                FuncionFortalezaManager.processWeakestPoblacion(poblacion, PropertiesManager.getPropertyInt(Constants.INDIVIDUOS));
+                int zeroPosition = FuncionFortalezaManager.processWeakestPoblacion(poblacion, PropertiesManager.getPropertyInt(Constants.INDIVIDUOS));
+                int size = poblacion.getIndividuos().size();
+                int positives = Math.min(size, zeroPosition);
+                int negatives = Math.max(size - positives, 0);
+                EstadisticaManager.setIndividuos(size);
+                EstadisticaManager.setIndividuosPositivos(positives);
+                EstadisticaManager.setIndividuosNegativos(negatives);
             }
 
             if (threadProcessPoblacionNueva != null) {
@@ -228,7 +241,7 @@ public class GeneticDelegate {
         PoblacionLoadThread threadPoblacionesLoad = new PoblacionLoadThread("threadPoblacionLoad " + (poblacionManagerIndex + plus),
                 new PoblacionManager(), poblacionManagerIndex + plus,
                 poblar);
-        if (PropertiesManager.getPropertyBoolean(Constants.THREAD)) {
+        if (PropertiesManager.isThread()) {
             threadPoblacionesLoad.start();
         } else {
             threadPoblacionesLoad.run();
@@ -272,7 +285,7 @@ public class GeneticDelegate {
     }
 
     private boolean recalculate(int poblacionIndex, int generacionIndex, int poblacionManagerIndex, int poblacionFromIndex) {
-        return (((poblacionManagerIndex == PropertiesManager.getPropertyInt(Constants.ROOT_POBLACION))
+        return (((poblacionManagerIndex == rootPoblacion)
                 || (poblacionManagerIndex == poblacionFromIndex))
                 && (generacionIndex == 1));
     }

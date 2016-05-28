@@ -53,6 +53,18 @@ public class EstadisticaManager {
         estadistica.addIndividuoRemovedEqualsReal(count);
     }
 
+    public synchronized static void setIndividuos(int count) {
+        estadistica.setIndividuos(count);
+    }
+
+    public synchronized static void setIndividuosPositivos(int count) {
+        estadistica.setIndividuosPositivos(count);
+    }
+
+    public synchronized static void setIndividuosNegativos(int count) {
+        estadistica.setIndividuosNegativos(count);
+    }
+
     public synchronized static void showEstadisticas() {
         if (PropertiesManager.getPropertyBoolean(Constants.SHOW_ESTADISTICAS)) {
             LogUtil.logTime(estadistica.toString(), 1);

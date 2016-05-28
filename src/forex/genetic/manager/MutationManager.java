@@ -85,28 +85,28 @@ public class MutationManager {
                     int tp1 = individuo1.getTakeProfit();
                     int tpHijo = tp1;
                     if (random.nextBoolean()) {
-                        tpHijo = especificMutationManager.mutate(tp1, PropertiesManager.getPropertyInt(Constants.MIN_TP), PropertiesManager.getPropertyInt(Constants.MAX_TP));
+                        tpHijo = especificMutationManager.mutate(tp1, PropertiesManager.getMinTP(), PropertiesManager.getMaxTP());
                     }
                     hijo.setTakeProfit(tpHijo);
 
                     int sl1 = individuo1.getStopLoss();
                     int slHijo = sl1;
                     if (random.nextBoolean()) {
-                        slHijo = especificMutationManager.mutate(sl1, PropertiesManager.getPropertyInt(Constants.MIN_SL), PropertiesManager.getPropertyInt(Constants.MAX_SL));
+                        slHijo = especificMutationManager.mutate(sl1, PropertiesManager.getMinSL(), PropertiesManager.getMaxSL());
                     }
                     hijo.setStopLoss(slHijo);
 
                     double lot1 = individuo1.getLot();
                     double lotHijo = lot1;
                     if (random.nextBoolean()) {
-                        lotHijo = NumberUtil.round(especificMutationManager.mutate(lot1, PropertiesManager.getPropertyDouble(Constants.MIN_LOT), PropertiesManager.getPropertyDouble(Constants.MAX_LOT)), PropertiesManager.getPropertyInt(Constants.LOT_SCALE_ROUNDING));
+                        lotHijo = NumberUtil.round(especificMutationManager.mutate(lot1, PropertiesManager.getMinLot(), PropertiesManager.getMaxLot()), PropertiesManager.getLotScaleRounding());
                     }
                     hijo.setLot(lotHijo);
 
                     int balance1 = individuo1.getInitialBalance();
                     int balanceHijo = balance1;
                     if (random.nextBoolean()) {
-                        balanceHijo = especificMutationManager.mutate(balance1, PropertiesManager.getPropertyInt(Constants.MIN_BALANCE), PropertiesManager.getPropertyInt(Constants.MAX_BALANCE));
+                        balanceHijo = especificMutationManager.mutate(balance1, PropertiesManager.getMinBalance(), PropertiesManager.getMaxBalance());
                     }
                     hijo.setInitialBalance(balanceHijo);
 

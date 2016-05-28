@@ -40,8 +40,8 @@ public class SerializationReadAllthread extends Thread {
         try {
             poblacion = sm.readAll(path, counter, processedUntil, processedFrom);
             /*if (processedUntil == PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION)) {
-                poblacion = sm.readByEstrategyId(path, "1336344492091.626");
-                poblacion.addAll(sm.readByEstrategyId(path, "1336344492091.621"));
+                poblacion = sm.readByEstrategyId(path, "1322673642223.74325");
+                //poblacion.addAll(sm.readByEstrategyId(path, "1336344492091.621"));
             } else {
                 poblacion = new Poblacion();
             }*/

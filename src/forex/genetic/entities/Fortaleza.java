@@ -18,14 +18,13 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
 
     public static final long serialVersionUID = 201101251800L;
     //public static final String currentVersion = "v6.1.1.07";
-    public static final Long currentVersionNumber = 70030L;
+    public static final Long currentVersionNumber = 70033L;
     //private String version = "0.0";
     private Long versionNumber = 0L;
     private double pips = 0.0;
     private double profit = 0.0;
     private double wonPips = 0.0;
     private double lostPips = 0.0;
-    private double pipsFactor = 0.0;
     private int operationsNumber = 0;
     private int wonOperationsNumber = 0;
     private int lostOperationsNumber = 0;
@@ -58,7 +57,7 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
         //setVersion(currentVersion);
         setVersionNumber(currentVersionNumber);
         setType(PropertiesManager.getFortalezaType());
-        setPresentNumberPoblacion(PropertiesManager.getPropertyInt(Constants.PRESENT_NUMBER_POBLACION));
+        setPresentNumberPoblacion(PropertiesManager.getPresentNumberPoblacion());
     }
 
     public Long getVersionNumber() {
@@ -115,22 +114,6 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
 
     public void setNumConsecutiveLost(int numConsecutiveLost) {
         this.numConsecutiveLost = numConsecutiveLost;
-    }
-
-    public double getPresentFortalezaDouble() {
-        return presentFortalezaDouble;
-    }
-
-    public void setPresentFortalezaDouble(double presentFortalezaDouble) {
-        this.presentFortalezaDouble = presentFortalezaDouble;
-    }
-
-    public int getPresentFortaleza() {
-        return presentFortaleza;
-    }
-
-    public void setPresentFortaleza(int presentFortaleza) {
-        this.presentFortaleza = presentFortaleza;
     }
 
     public int getCurrentConsecutiveLostOperationsNumber() {
@@ -269,10 +252,6 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
         this.pips = pips;
     }
 
-    public double getPipsFactor() {
-        return pipsFactor;
-    }
-
     public double getLostPips() {
         return lostPips;
     }
@@ -287,10 +266,6 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
 
     public void setWonPips(double wonPips) {
         this.wonPips = wonPips;
-    }
-
-    public void setPipsFactor(double pipsFactor) {
-        this.pipsFactor = pipsFactor;
     }
 
     public double getValue() {
@@ -326,42 +301,6 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Fortaleza other = (Fortaleza) obj;
-        if ((this.versionNumber == null) ? (other.versionNumber != null) : !this.versionNumber.equals(other.versionNumber)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.pips) != Double.doubleToLongBits(other.pips)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.wonPips) != Double.doubleToLongBits(other.wonPips)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.lostPips) != Double.doubleToLongBits(other.lostPips)) {
-            return false;
-        }
-        if (this.operationsNumber != other.operationsNumber) {
-            return false;
-        }
-        if (this.wonOperationsNumber != other.wonOperationsNumber) {
-            return false;
-        }
-        if (this.lostOperationsNumber != other.lostOperationsNumber) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.value) != Double.doubleToLongBits(other.value)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public int hashCode() {
         int hash = 5;
         hash = 79 * hash + (this.versionNumber != null ? this.versionNumber.hashCode() : 0);
@@ -378,7 +317,7 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
-        buffer.append(" Fortaleza Value=" + value + " CalculatedValue=" + calculatedValue + " Diff=" + diffValue + " Pipsfactor=" + pipsFactor);
+        buffer.append(" Fortaleza Value=" + value + " CalculatedValue=" + calculatedValue + " Diff=" + diffValue);
         buffer.append("; Profit=" + this.profit);
         buffer.append("; PresentFortaleza=" + this.presentFortaleza);
         buffer.append("; PresentFortalezaDouble=" + this.presentFortalezaDouble);
@@ -447,7 +386,6 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
     public Fortaleza clone() throws CloneNotSupportedException {
         Fortaleza f = new Fortaleza();
         f.setDiffValue(diffValue);
-        f.setPresentFortaleza(presentFortaleza);
         f.setCurrentConsecutiveLostOperationsNumber(currentConsecutiveLostOperationsNumber);
         f.setCurrentConsecutiveLostPips(currentConsecutiveLostPips);
         f.setCurrentConsecutiveWonOperationsNumber(currentConsecutiveWonOperationsNumber);
@@ -462,7 +400,6 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
         f.setMinConsecutiveWonOperationsNumber(minConsecutiveWonOperationsNumber);
         f.setOperationsNumber(operationsNumber);
         f.setPips(pips);
-        f.setPipsFactor(pipsFactor);
         f.setProfit(profit);
         f.setRiskLevel(riskLevel);
         f.setValue(value);
@@ -500,7 +437,6 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
     public Fortaleza calculateDifference(Fortaleza f2) {
         Fortaleza f = new Fortaleza();
         f.setDiffValue(f2.diffValue - diffValue);
-        f.setPresentFortaleza(f2.presentFortaleza - presentFortaleza);
         f.setCurrentConsecutiveLostOperationsNumber(f2.currentConsecutiveLostOperationsNumber - currentConsecutiveLostOperationsNumber);
         f.setCurrentConsecutiveLostPips(f2.currentConsecutiveLostPips - currentConsecutiveLostPips);
         f.setCurrentConsecutiveWonOperationsNumber(f2.currentConsecutiveWonOperationsNumber - currentConsecutiveWonOperationsNumber);
@@ -515,7 +451,6 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
         f.setMinConsecutiveWonOperationsNumber(f2.minConsecutiveWonOperationsNumber - minConsecutiveWonOperationsNumber);
         f.setOperationsNumber(f2.operationsNumber - operationsNumber);
         f.setPips(f2.pips - pips);
-        f.setPipsFactor(f2.pipsFactor - pipsFactor);
         f.setProfit(f2.profit - profit);
         f.setRiskLevel(f2.riskLevel - riskLevel);
         f.setValue(f2.value - value);
@@ -530,5 +465,41 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
         f.setNumConsecutiveLost(f2.numConsecutiveLost - numConsecutiveLost);
         f.setNumConsecutiveWon(f2.numConsecutiveWon - numConsecutiveWon);
         return f;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Fortaleza other = (Fortaleza) obj;
+        if ((this.versionNumber == null) ? (other.versionNumber != null) : !this.versionNumber.equals(other.versionNumber)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.pips) != Double.doubleToLongBits(other.pips)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.wonPips) != Double.doubleToLongBits(other.wonPips)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.lostPips) != Double.doubleToLongBits(other.lostPips)) {
+            return false;
+        }
+        if (this.operationsNumber != other.operationsNumber) {
+            return false;
+        }
+        if (this.wonOperationsNumber != other.wonOperationsNumber) {
+            return false;
+        }
+        if (this.lostOperationsNumber != other.lostOperationsNumber) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.value) != Double.doubleToLongBits(other.value)) {
+            return false;
+        }
+        return true;
     }
 }

@@ -11,7 +11,7 @@ import forex.genetic.manager.PropertiesManager;
  * @author ricardorq85
  */
 public class ThreadUtil {
-
+        
     public static void joinThread(Thread t) {
         if ((t != null) && (t.isAlive())) {
             try {
@@ -25,7 +25,7 @@ public class ThreadUtil {
     }
 
     public static void launchThread(Thread t) {
-        if (PropertiesManager.getPropertyBoolean(Constants.THREAD)) {
+        if (PropertiesManager.isThread()) {
             t.start();
         } else {
             t.run();

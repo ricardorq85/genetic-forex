@@ -15,9 +15,7 @@ import java.util.Random;
  *
  * @author ricardorq85
  */
-public class IntervalManager {
-
-    private double pairFactor = PropertiesManager.getPropertyDouble(Constants.PAIR_FACTOR);
+public class IntervalManager {    
     private double min = Double.POSITIVE_INFINITY;
     private double max = Double.NEGATIVE_INFINITY;
     private static final Random random = new Random();
@@ -61,8 +59,8 @@ public class IntervalManager {
         interval.setLowInterval(NumberUtil.round(Math.min(interval1, interval2)));
         interval.setHighInterval(NumberUtil.round(Math.max(interval1, interval2)));
 
-        min = NumberUtil.round(Math.min(min, interval.getLowInterval()));
-        max = NumberUtil.round(Math.max(max, interval.getHighInterval()));
+        min = Math.min(min, interval.getLowInterval());
+        max = Math.max(max, interval.getHighInterval());
 
         return interval;
     }
@@ -86,17 +84,13 @@ public class IntervalManager {
         double highIntervalPosibble = value - lowInterval;
         double lowIntervalPosibble = value - highInterval;
 
-        /*
-         * result.setLowInterval(NumberUtil.round(lowIntervalPosibble));
-         * result.setHighInterval(NumberUtil.round(highIntervalPosibble));
-         */
         result.setLowInterval(lowIntervalPosibble);
         result.setHighInterval(highIntervalPosibble);
 
         Interval<Double> pointInterval = new DoubleInterval(this.name);
-        if (PropertiesManager.getOperationType().equals(Constants.OperationType.Buy)) {
-            pointInterval.setLowInterval(point.getLow() + PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor);
-            pointInterval.setHighInterval(point.getHigh() + PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor);
+        if (PropertiesManager.isBuy()) {
+            pointInterval.setLowInterval(point.getLow() + PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor());
+            pointInterval.setHighInterval(point.getHigh() + PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor());
         } else {
             pointInterval.setLowInterval(point.getLow());
             pointInterval.setHighInterval(point.getHigh());
@@ -173,8 +167,8 @@ public class IntervalManager {
         intervalHijo.setLowInterval(NumberUtil.round(Math.min(interval1, interval2)));
         intervalHijo.setHighInterval(NumberUtil.round(Math.max(interval1, interval2)));
 
-        min = NumberUtil.round(Math.min(min, intervalHijo.getLowInterval()));
-        max = NumberUtil.round(Math.max(max, intervalHijo.getHighInterval()));
+        min = Math.min(min, intervalHijo.getLowInterval());
+        max = Math.max(max, intervalHijo.getHighInterval());
 
         return intervalHijo;
     }

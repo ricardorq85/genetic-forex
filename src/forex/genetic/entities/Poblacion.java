@@ -29,8 +29,8 @@ public class Poblacion implements Serializable {
 
     public Poblacion() {
         this.operationType = PropertiesManager.getOperationType();
-        this.pair = PropertiesManager.getPropertyString(Constants.PAIR);
-        setRiskLevel(PropertiesManager.getPropertyDouble(Constants.RISK_LEVEL) / Constants.MAX_RISK_LEVEL);
+        this.pair = PropertiesManager.getPair();
+        setRiskLevel(PropertiesManager.getRiskLevel() / dRiskLevel);
         if (riskLevel != 0) {
             setRiskLevel(riskLevel);
         }
@@ -85,17 +85,17 @@ public class Poblacion implements Serializable {
     }
 
     private void corregirIndividuo(IndividuoEstrategia ind) {
-        if (ind.getTakeProfit() < PropertiesManager.getPropertyInt(Constants.MIN_TP)
-                || (ind.getTakeProfit() > PropertiesManager.getPropertyInt(Constants.MAX_TP))) {
-            ind.setTakeProfit(PropertiesManager.getPropertyInt(Constants.MIN_TP));
+        if (ind.getTakeProfit() < PropertiesManager.getMinTP()
+                || (ind.getTakeProfit() > PropertiesManager.getMaxTP())) {
+            ind.setTakeProfit(PropertiesManager.getMinTP());
         }
-        if (ind.getStopLoss() < PropertiesManager.getPropertyInt(Constants.MIN_SL)
-                || (ind.getStopLoss() > PropertiesManager.getPropertyInt(Constants.MAX_SL))) {
-            ind.setStopLoss(PropertiesManager.getPropertyInt(Constants.MAX_SL));
+        if (ind.getStopLoss() < PropertiesManager.getMinSL()
+                || (ind.getStopLoss() > PropertiesManager.getMaxSL())) {
+            ind.setStopLoss(PropertiesManager.getMaxSL());
         }
-        if (ind.getLot() < PropertiesManager.getPropertyDouble(Constants.MIN_LOT)
-                || (ind.getLot() > PropertiesManager.getPropertyDouble(Constants.MAX_LOT))) {
-            ind.setLot(PropertiesManager.getPropertyDouble(Constants.MIN_LOT));
+        if (ind.getLot() < PropertiesManager.getMinLot()
+                || (ind.getLot() > PropertiesManager.getMaxLot())) {
+            ind.setLot(PropertiesManager.getMinLot());
         }
     }
 

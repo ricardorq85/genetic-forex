@@ -37,7 +37,7 @@ public class BasePointManagerFile {
 
     public static List<Point> process(String poblacionId) {
         try {
-            String filePath = PropertiesManager.getPropertyString(Constants.FILE_PATH) + PropertiesManager.getPropertyString(Constants.PAIR) + "-" + PropertiesManager.getPropertyString(Constants.FILE_ID) + "-" + poblacionId + ".csv";
+            String filePath = PropertiesManager.getPropertyString(Constants.FILE_PATH) + PropertiesManager.getPair() + "-" + PropertiesManager.getFileId() + "-" + poblacionId + ".csv";
             return readFileAsPoint(filePath);
         } catch (ParseException ex) {
             Logger.getLogger(BasePointManagerFile.class.getName()).log(Level.SEVERE, null, ex);
@@ -72,7 +72,8 @@ public class BasePointManagerFile {
         String lineRead = reader.readLine();
         boolean hasSpread = lineRead.contains("Spread");
         int indexField = 0;
-        while ((counter < PropertiesManager.getPointsControl()) && ((lineRead = reader.readLine()) != null)) {
+        int pointsControl = PropertiesManager.getPointsControl();
+        while ((counter < pointsControl) && ((lineRead = reader.readLine()) != null)) {
             indexField = 0;
             String[] strings = lineRead.split(",");
             Date date = format.parse(strings[++indexField] + strings[++indexField]);

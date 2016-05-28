@@ -45,7 +45,7 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
         /** Se mezclan los individuos */
         crossoverThread = new CrossoverThread("crossoverThread " + generacion,
                 generacion, poblacion, PropertiesManager.getPropertyInt(Constants.CROSSOVER), crossoverManager);
-        if (PropertiesManager.getPropertyBoolean(Constants.THREAD)) {
+        if (PropertiesManager.isThread()) {
             crossoverThread.start();
         } else {
             crossoverThread.run();
@@ -54,7 +54,7 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
         /** Se mutan los individuos */
         mutationThread = new MutationThread("mutationThread " + generacion,
                 generacion, poblacion, PropertiesManager.getPropertyInt(Constants.MUTATION), mutationManager);
-        if (PropertiesManager.getPropertyBoolean(Constants.THREAD)) {
+        if (PropertiesManager.isThread()) {
             mutationThread.start();
         } else {
             mutationThread.run();
@@ -63,7 +63,7 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
         /** Optimizacion */
         optimizationThread = new OptimizationThread("optimization " + generacion,
                 generacion, poblacion, PropertiesManager.getPropertyInt(Constants.OPTIMIZATION), optimizationManager);
-        if (PropertiesManager.getPropertyBoolean(Constants.THREAD)) {
+        if (PropertiesManager.isThread()) {
             optimizationThread.start();
         } else {
             optimizationThread.run();
@@ -71,7 +71,7 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
     }
 
     private void joinProcessGeneracion() {
-        if (PropertiesManager.getPropertyBoolean(Constants.THREAD)) {
+        if (PropertiesManager.isThread()) {
             ThreadUtil.joinThread(crossoverThread);
             Poblacion p = crossoverThread.getNewPoblacion();
             if (p.getIndividuos() != null) {

@@ -52,13 +52,13 @@ public class SerializationManager {
                          * && (name.contains(PropertiesManager.getOperationType().name()))
                          */) {
                     if ((loadedFiles.isEmpty() || (!loadedFiles.contains(file))) && (name.contains("-" + processedFrom + "-" + processedUntil + "."))
-                            && (name.contains(PropertiesManager.getPropertyString(Constants.FILE_ID)))
+                            && (name.contains(PropertiesManager.getFileId()))
                             && (name.contains(PropertiesManager.getOperationType().name()))
-                            && (name.contains(PropertiesManager.getPropertyString(Constants.PAIR)))) {
+                            && (name.contains(PropertiesManager.getPair()))) {
                         return true;
                     } else if ((!loadedFiles.contains(file)) && ((name.contains("-" + processedFrom + "-" + processedUntil + "."))
-                            || (!name.contains(PropertiesManager.getPropertyString(Constants.FILE_ID)))
-                            || (!name.contains(PropertiesManager.getPropertyString(Constants.PAIR))))) {
+                            || (!name.contains(PropertiesManager.getFileId()))
+                            || (!name.contains(PropertiesManager.getPair())))) {
                         return true;
                     }
                 }
@@ -85,7 +85,7 @@ public class SerializationManager {
                  * if
                  * ((p.getOperationType().equals(PropertiesManager.getOperationType()))
                  * &&
-                 * (p.getPair().equals(PropertiesManager.getPropertyString(Constants.PAIR)))) {
+                 * (p.getPair().equals(PropertiesManager.getPair()))) {
                  */
                 Poblacion poblacionByProcessedUntil = p.getByProcessedUntil(processedUntil, processedFrom);
                 int fromIndex = 0;
@@ -142,15 +142,14 @@ public class SerializationManager {
 
             public boolean accept(File dir, String name) {
                 boolean accept = false;
-                if ((name.contains(".gfx")) && (name.contains(PropertiesManager.getOperationType().name()))) {
-                    if (name.contains(id.substring(0, id.indexOf(".")))) {
-                        return true;
-                    }
+                if (name.contains(".gfx") && (name.contains(PropertiesManager.getPair()))) {
+                    return true;
                 }
                 return accept;
             }
         };
         File[] files = root.listFiles(nameFilter);
+        Arrays.sort(files, new FilePoblacionComparator());
         for (int i = 0; ((i < files.length) && (poblacion.getIndividuos().isEmpty())); i++) {
             try {
                 File file = files[i];
@@ -182,9 +181,9 @@ public class SerializationManager {
             throws IOException {
         ObjectOutputStream writer = new ObjectOutputStream(
                 new FileOutputStream(
-                PropertiesManager.getPropertyString(Constants.SERIALICE_PATH)
-                + PropertiesManager.getOperationType() + PropertiesManager.getPropertyString(Constants.PAIR)
-                + PropertiesManager.getPropertyString(Constants.FILE_ID) + "_"
+                PropertiesManager.getSerialicePath()
+                + PropertiesManager.getOperationType() + PropertiesManager.getPair()
+                + PropertiesManager.getFileId() + "_"
                 + id + "-" + poblacionFromIndex + "-" + poblacionIndex + ".gfx"));
         writer.writeObject(poblacion);
         writer.close();

@@ -65,7 +65,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     }
 
     public IndividuoEstrategia(int generacion, IndividuoEstrategia parent1, IndividuoEstrategia parent2, IndividuoType individuoType) {
-        setFileId(PropertiesManager.getPropertyString(Constants.FILE_ID));
+        setFileId(PropertiesManager.getFileId());
         setId(IndividuoManager.nextId());
         setGeneracion(generacion);
         setParent1(parent1);
@@ -344,7 +344,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         buffer.append("ProcessedFrom&Until=" + (this.processedFrom) + "-" + (this.processedUntil) + "/" + PropertiesManager.getPropertyInt(Constants.END_POBLACION) + ",");
         buffer.append("EstrategiaId=" + (this.id) + ",");
         buffer.append("Active=" + (this.fortaleza.getValue() > 1.0) + ",");
-        buffer.append("Pair=" + PropertiesManager.getPropertyString(Constants.PAIR) + ",");
+        buffer.append("Pair=" + PropertiesManager.getPair() + ",");
         buffer.append("Operation=" + PropertiesManager.getOperationType() + ",");
 
         DateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm");
@@ -387,16 +387,14 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         if (obj instanceof IndividuoEstrategia) {
             IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
             boolean value = false;
-            try {
-                value = (this.getId().equals(objIndividuo.getId()))
-                        || ((((this.openIndicators == null) && (objIndividuo.openIndicators == null))
+            value = (this.getId().equals(objIndividuo.getId()));
+            if (!value) {
+                value = ((((this.openIndicators == null) && (objIndividuo.openIndicators == null))
                         || ((this.openIndicators != null) && (objIndividuo.openIndicators != null) && (this.openIndicators.equals(objIndividuo.openIndicators))))
                         && (((this.closeIndicators == null) && (objIndividuo.closeIndicators == null))
                         || ((this.closeIndicators != null) && (objIndividuo.closeIndicators != null) && (this.closeIndicators.equals(objIndividuo.closeIndicators))))
                         && (this.takeProfit == objIndividuo.takeProfit)
                         && (this.stopLoss == objIndividuo.stopLoss));
-            } catch (Exception e) {
-                e.printStackTrace();
             }
             return value;
         } else {
@@ -407,12 +405,30 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     public boolean equalsReal(Object obj) {
         if (obj instanceof IndividuoEstrategia) {
             IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
-            return ((this.openIndicators.equals(objIndividuo.openIndicators)
+            boolean value = ((this.openIndicators.equals(objIndividuo.openIndicators)
                     && Collections.frequency(this.openIndicators, null) != this.openIndicators.size())
                     && (this.closeIndicators.equals(objIndividuo.closeIndicators)
                     && Collections.frequency(this.closeIndicators, null) != this.closeIndicators.size())
                     && ((Math.abs((objIndividuo.takeProfit - this.takeProfit) / new Double(this.takeProfit)) < 0.02)
                     && (Math.abs((objIndividuo.stopLoss - this.stopLoss) / new Double(this.stopLoss)) < 0.02)));
+            if (!value) {
+                Fortaleza f = null;
+                Fortaleza objF = null;
+                boolean temp = true;
+                int presentNumberPoblacion = PropertiesManager.getPresentNumberPoblacion();
+                int size = this.listaFortaleza.size();
+                for (int i = size - 1; (temp) && (i >= (size - presentNumberPoblacion) + 1) && (i >= 0); i--) {
+                    f = this.listaFortaleza.get(i);
+                    objF = objIndividuo.listaFortaleza.get(i);
+                    temp = (f == null) && (objF == null);
+                    if (!temp) {
+                        temp = ((f != null) && (objF != null));
+                        temp = temp && (f.equals(objF));
+                    }
+                }
+                value = temp;
+            }
+            return value;
         } else {
             return false;
         }
@@ -426,7 +442,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         double risk1 = 1.0;
         double risk2 = 1.0;
         double risk3 = 1.0;
-        double percentLevel = PropertiesManager.getPropertyDouble(Constants.RISK_LEVEL) / Constants.MAX_RISK_LEVEL;
+        double percentLevel = PropertiesManager.getRiskLevel() / Constants.MAX_RISK_LEVEL;
         double percentFortalezaNumber = (fortaleza.getWonOperationsNumber() == 0) ? 0.0D
                 : fortaleza.getLostOperationsNumber() / (double) (fortaleza.getWonOperationsNumber());
         double percentFortalezaPips = (fortaleza.getWonPips() == 0) ? 0.0D
@@ -436,7 +452,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 
         risk1 = (percentFortaleza > percentLevel) ? (1.0) / (1000.0) : (10.0);
         risk2 = ((fortaleza.getOperationsNumber() / (index + 1))
-                < PropertiesManager.getPropertyInt(Constants.MIN_OPER_NUM_BY_PERIOD)) ? (2.0) / (1000.0) : (10.0);
+                < PropertiesManager.getMinOperNumByPeriod()) ? (2.0) / (1000.0) : (10.0);
         risk3 = (!processObligatory(this)) ? (3.0) / (100.0) : (10.0);
 
         if ((risk1 > 1.0) && (risk2 > 1.0) && (risk3 > 1.0)) {
@@ -469,7 +485,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 
     private boolean isContinuo(List<Fortaleza> fortalezas) {
         boolean continuo = true;
-        int presentNumberPoblacion = PropertiesManager.getPropertyInt(Constants.PRESENT_NUMBER_POBLACION);
+        int presentNumberPoblacion = PropertiesManager.getPresentNumberPoblacion();
         for (int i = fortalezas.size() - 1; (continuo && i >= presentNumberPoblacion); i--) {
             if (!(fortalezas.get(i).getCalculatedValue() == fortalezas.get(i - presentNumberPoblacion).getCalculatedValue())) {
                 continuo = false;
@@ -509,11 +525,11 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
             } else {
                 Fortaleza f1 = this.fortaleza;
                 Fortaleza fo1 = o.fortaleza;
-                int presentNumberPoblacion = PropertiesManager.getPropertyInt(Constants.PRESENT_NUMBER_POBLACION);
+                int presentNumberPoblacion = PropertiesManager.getPresentNumberPoblacion();
                 int size = this.listaFortaleza.size();
                 compare = f1.compareTo(fo1) * (presentNumberPoblacion + 1);
                 if (compare == 0) {
-                    for (int i = size - 1; (i >= (size - presentNumberPoblacion)) && (i > 0); i--) {
+                    for (int i = size - 1; (i > (size - presentNumberPoblacion) + 1) && (i > 0); i--) {
                         Fortaleza f2 = this.listaFortaleza.get(i - 1);
                         Fortaleza f = f2.calculateDifference(f1);
                         Fortaleza fo2 = o.listaFortaleza.get(i - 1);

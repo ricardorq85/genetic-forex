@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class NumberUtil {
 
     public static double round(double d) {
-        return NumberUtil.round(d, PropertiesManager.getPropertyInt(Constants.DEFAULT_SCALE_ROUNDING));
+        return NumberUtil.round(d, PropertiesManager.getDefaultScaleRounding());
     }
 
     public static double round(double d, int scale) {
@@ -23,8 +23,6 @@ public class NumberUtil {
         } else {
             BigDecimal bd = new BigDecimal(d);
             bd = bd.setScale(scale, BigDecimal.ROUND_HALF_UP);
-            //String str = bd.toPlainString();
-            //double value = Double.parseDouble(str);            
             double value = bd.doubleValue();
             return value;
         }

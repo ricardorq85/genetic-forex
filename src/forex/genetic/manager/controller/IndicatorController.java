@@ -24,8 +24,6 @@ import java.util.Vector;
  */
 public class IndicatorController {
 
-    private double pairFactor = PropertiesManager.getPropertyDouble(Constants.PAIR_FACTOR);
-
     public IndicatorController() {
     }
 
@@ -42,9 +40,6 @@ public class IndicatorController {
                     operate = indicatorManager.operate(openIndicatorIndividuo, openIndicator, currentPoint)
                             && indicatorManager.operate(openIndicatorIndividuo, openIndicator, currentPoint, previousPoint)
                             && indicatorManager.operate(openIndicatorIndividuo, openIndicator, points, index);
-                    if (!operate) {
-                        openIndicatorIndividuo.addFilterCount(currentPoint.getDate());
-                    }
                 }
             }
         }
@@ -66,9 +61,6 @@ public class IndicatorController {
                             && indicatorManager.operate(closeIndicatorIndividuo, closeIndicator, currentPoint, previousPoint)
                             && indicatorManager.operate(closeIndicatorIndividuo, closeIndicator, points, index);
                     operate = operateIndicator;
-                    if (!operate) {
-                        closeIndicatorIndividuo.addFilterCount(currentPoint.getDate());
-                    }
                 }
             }
         }
@@ -89,9 +81,6 @@ public class IndicatorController {
                     if (indicatorManager.isPriceDependence()) {
                         currentInterval = IntervalManager.intersect(currentInterval,
                                 indicatorManager.calculateInterval(indicatorIndividuo, indicator, currentPoint));
-                        if (currentInterval == null) {
-                            indicatorIndividuo.addFilterCount(currentPoint.getDate());
-                        }
                     }
                 }
             }
@@ -105,10 +94,10 @@ public class IndicatorController {
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() <= resultInterval.getLowInterval())
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() >= resultInterval.getHighInterval())
                         ? resultInterval.getLowInterval() : (resultInterval.getLowInterval() + resultInterval.getHighInterval()) / 2;
-                if (PropertiesManager.getOperationType().equals(Constants.OperationType.Buy)) {
-                    price += PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
+                if (PropertiesManager.isBuy()) {
+                    price += PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor();
                 } else {
-                    price -= PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
+                    price -= PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor();
                 }
                 price = NumberUtil.round(price);
             }
@@ -134,9 +123,6 @@ public class IndicatorController {
                             currentInterval = IntervalManager.intersect(currentInterval,
                                     indicatorManager.calculateInterval(indicatorIndividuo, indicator, currentPoint));
                         }
-                        if (currentInterval == null) {
-                            indicatorIndividuo.addFilterCount(currentPoint.getDate());
-                        }
                     }
                 }
             }
@@ -151,10 +137,10 @@ public class IndicatorController {
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() <= resultInterval.getLowInterval())
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() >= resultInterval.getHighInterval())
                         ? resultInterval.getLowInterval() : (resultInterval.getLowInterval() + resultInterval.getHighInterval()) / 2;
-                if (PropertiesManager.getOperationType().equals(Constants.OperationType.Buy)) {
-                    price -= PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
+                if (PropertiesManager.isBuy()) {
+                    price -= PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor();
                 } else {
-                    price += PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
+                    price += PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor();
                 }
                 price = NumberUtil.round(price);
             }
@@ -199,9 +185,6 @@ public class IndicatorController {
                 }
                 if ((individuoEstrategia.getOptimizedCloseIndicators() != null) && (j < individuoEstrategia.getOptimizedCloseIndicators().size())) {
                     closeOptimizedIndividuo = individuoEstrategia.getOptimizedCloseIndicators().get(j);
-                }
-                if ((prevOpenPoint == null) || (prevOpenPoint.getIndicators() == null)) {
-                    int kl = 9;
                 }
                 Indicator openIndicator = prevOpenPoint.getIndicators().get(j);
                 Indicator closeIndicator = closePoint.getIndicators().get(j);

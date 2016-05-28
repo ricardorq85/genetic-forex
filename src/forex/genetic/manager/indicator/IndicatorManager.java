@@ -7,7 +7,6 @@ package forex.genetic.manager.indicator;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Indicator;
-import forex.genetic.util.Constants.PriceType;
 import java.util.List;
 import java.util.Vector;
 
@@ -17,9 +16,9 @@ import java.util.Vector;
  */
 public abstract class IndicatorManager<E> {
 
-    private static final IndicatorManager averageIndicatorManager = new AverageIndicatorManager(PriceType.AVERAGE, true);
+    private static final IndicatorManager averageIndicatorManager = new MaIndicatorManager();
     private static final IndicatorManager macdIndicatorManager = new MacdIndicatorManager();
-    private static final IndicatorManager compareIndicatorManager = new AverageIndicatorManager(PriceType.COMPARE_CLOSE, false);
+    private static final IndicatorManager compareIndicatorManager = new CompareMaIndicatorManager();
     private static final IndicatorManager sarIndicatorManager = new SarIndicatorManager(true);
     private static final IndicatorManager adxIndicatorManager = new AdxIndicatorManager();
     private static final IndicatorManager rsiIndicatorManager = new RsiIndicatorManager();

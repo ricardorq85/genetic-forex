@@ -19,6 +19,9 @@ public class Estadistica {
     private int individuosOptimizados = 0;
     private int individuosInvalidos = 0;
     private int individuosRemovedEqualsReal = 0;
+    private int individuos = 0;
+    private int individuosPositivos = 0;
+    private int individuosNegativos = 0;
 
     public void addIndividuoGenerado(int count) {
         individuosGenerados += count;
@@ -56,6 +59,18 @@ public class Estadistica {
         individuosRemovedEqualsReal += count;
     }
 
+    public void setIndividuosNegativos(int individuosNegativos) {
+        this.individuosNegativos = individuosNegativos;
+    }
+
+    public void setIndividuosPositivos(int individuosPositivos) {
+        this.individuosPositivos = individuosPositivos;
+    }
+
+    public void setIndividuos(int individuos) {
+        this.individuos = individuos;
+    }
+
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
@@ -77,9 +92,15 @@ public class Estadistica {
         buffer.append(this.individuosOptimizados);
         buffer.append(" IndividuosInvalidos ");
         buffer.append(this.individuosInvalidos);
-        buffer.append("\n\t");
         buffer.append(" IndividuosEqualsReal ");
         buffer.append(this.individuosRemovedEqualsReal);
+        buffer.append("\n\t");
+        buffer.append(" Individuos ");
+        buffer.append(this.individuos);
+        buffer.append(" IndividuosPositivos ");
+        buffer.append(this.individuosPositivos);
+        buffer.append(" IndividusNegativos ");
+        buffer.append(this.individuosNegativos);
 
         return buffer.toString();
     }

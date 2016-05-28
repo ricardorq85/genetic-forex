@@ -24,16 +24,16 @@ import java.util.List;
  */
 public class ForexEstrategiaListing {
 
-    public static void main(String[] args) throws ClassNotFoundException, FileNotFoundException {
-        PropertiesManager.load();
+    public static void main(String[] args) throws ClassNotFoundException, FileNotFoundException, InterruptedException {
+        PropertiesManager.load().join();
         SerializationManager serializationManager = new SerializationManager();
         String listingId = PropertiesManager.getPropertyString(Constants.LISTING_ID);
         String id = listingId;
-        PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + "Listing_" + PropertiesManager.getOperationType() + PropertiesManager.getPropertyString(Constants.PAIR) + id + ".log");
+        PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + "Listing_" + PropertiesManager.getOperationType() + PropertiesManager.getPair() + id + ".log");
         System.setOut(out);
         System.setErr(out);
 
-        String serPath = PropertiesManager.getPropertyString(Constants.SERIALICE_PATH);
+        String serPath = PropertiesManager.getSerialicePath();
         Poblacion p = null;
         int initialPoblacion = PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION);
         int endPoblacion = PropertiesManager.getPropertyInt(Constants.END_POBLACION);
@@ -44,8 +44,8 @@ public class ForexEstrategiaListing {
         GeneticTesterDelegate delegate = new GeneticTesterDelegate();
         for (int i = initialPoblacion; i <= endPoblacion; i++) {
             String filename = serPath
-                    + PropertiesManager.getOperationType() + PropertiesManager.getPropertyString(Constants.PAIR)
-                    + PropertiesManager.getPropertyString(Constants.FILE_ID) + "_"
+                    + PropertiesManager.getOperationType() + PropertiesManager.getPair()
+                    + PropertiesManager.getFileId() + "_"
                     + id + "-" + ((backPoblacion < 0) || (i < backPoblacion) ? 1 : (i - backPoblacion + 1)) + "-" + (i) + ".gfx";
             try {
                 p = serializationManager.readObject(new File(filename));

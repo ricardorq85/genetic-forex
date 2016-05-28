@@ -21,11 +21,11 @@ public class ForexGenetic {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         long id = System.currentTimeMillis();
-        PropertiesManager.load();
+        PropertiesManager.load().join();
         LogUtil.logTime("" + id, 1);
-        PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + PropertiesManager.getOperationType() + PropertiesManager.getPropertyString(Constants.PAIR) + id + ".log");
+        PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + PropertiesManager.getOperationType() + PropertiesManager.getPair() + id + ".log");
         System.setOut(out);
         System.setErr(out);
         LogUtil.logTime("Inicio: " + id, 1);

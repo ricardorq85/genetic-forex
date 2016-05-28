@@ -23,8 +23,8 @@ public class DoubleMutationManager {
         double hijo = d1;
         int counter = 0;
 
-        if (d1 == 0.0) {
-            hijo = 1.0;
+        if (d1 == 0.0D) {
+            hijo = 1.0D;
         } else {
             String binary1 = Long.toBinaryString(Double.doubleToRawLongBits(d1));
             while ((counter < 11) && ((hijo == d1) || (hijo < min) || (hijo > max))) {
@@ -35,12 +35,11 @@ public class DoubleMutationManager {
 
                 BigInteger l = new BigInteger(binaryMutation, 2);
 
-                hijo = NumberUtil.round(Double.longBitsToDouble(l.longValue()));
+                //hijo = NumberUtil.round(Double.longBitsToDouble(l.longValue()));
+                hijo = Double.longBitsToDouble(l.longValue());
                 counter++;
-                if (counter > 2) {
-                    System.out.println(counter + " ; " + hijo);
-                }
             }
+            hijo = NumberUtil.round(hijo);
         }
         return hijo;
     }
