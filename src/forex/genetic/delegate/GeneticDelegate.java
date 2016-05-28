@@ -13,7 +13,6 @@ import forex.genetic.manager.PoblacionManager;
 import forex.genetic.manager.io.FileOutManager;
 import forex.genetic.manager.io.SerializationManager;
 import forex.genetic.util.LogUtil;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import static forex.genetic.util.Constants.*;
@@ -38,26 +37,16 @@ public class GeneticDelegate {
     public Poblacion process(int poblacionCounter) {
         Poblacion poblacion = new Poblacion();
         int serialiced = 0;
-        if (RECALCULATE) {
-            try {
-                Poblacion p = serializationManager.readAll(SERIALICE_PATH, SHOW_HARDEST);
-                serialiced = p.getIndividuos().size();
-                poblacion.addAll(p);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        } else {
-            try {
-                Poblacion p = serializationManager.readObject(new File(RECALCULATE_INDIVIDUOS_PATH));
-                serialiced = p.getIndividuos().size();
-                poblacion.addAll(p);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        try {
+            Poblacion p = serializationManager.readAll(SERIALICE_PATH, SHOW_HARDEST*5);
+            serialiced = p.getIndividuos().size();
+            poblacion.addAll(p);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         int totalSize = 0;
-        for (int poblacionIndex = INITIAL_POBLACION_PROCESS; poblacionIndex <= poblacionCounter; poblacionIndex++) {
+        for (int poblacionIndex = INITIAL_POBLACION; poblacionIndex <= poblacionCounter; poblacionIndex++) {
             LogUtil.logTime("\n Crear poblacion " + poblacionIndex);
             PoblacionManager poblacionManager = new PoblacionManager("" + poblacionIndex, true);
             LogUtil.logTime("Crear poblacion " + poblacionIndex);
@@ -86,7 +75,7 @@ public class GeneticDelegate {
                     /** Se calcula la fortaleza de los individuos */
                     //LogUtil.logTime("Calcular fortaleza");
                     funcionFortalezaManager.calculateFortaleza(totalSize, oldPoblacionManager.getPoints(), poblacion,
-                            ((poblacionIndex == INITIAL_POBLACION_PROCESS) && (generacionIndex == 1) && (RECALCULATE)),
+                            ((poblacionIndex == INITIAL_POBLACION) && (generacionIndex == 1)),
                             poblacionManagerIndex);
                     //((generacionIndex == 1) && (poblacionManagerIndex == poblacionIndex)));
                     //LogUtil.logTime("Calcular fortaleza");

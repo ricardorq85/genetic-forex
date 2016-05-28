@@ -13,7 +13,6 @@ import java.io.PrintStream;
 /**
  *
  * @author ricardorq85
- * TODO: Recalcular estrategia para actuar en el "futuro"
  */
 public class ForexGenetic {
 
@@ -22,7 +21,6 @@ public class ForexGenetic {
      */
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         long id = System.currentTimeMillis();
-        java.io.
         PrintStream out = new PrintStream(Constants.LOG_PATH + id + ".log");
         System.setOut(out);
         System.setErr(out);

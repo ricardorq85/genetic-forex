@@ -29,7 +29,8 @@ public class IntervalManager {
     }
 
     private double generateDefault() {
-        if (Double.isInfinite(min) || Double.isInfinite(max)) {
+        if (Double.isInfinite(min) || Double.isInfinite(max)
+                || Double.isNaN(min) || Double.isNaN(max)) {
             return (random.nextBoolean()) ? random.nextDouble() : -random.nextDouble();
         } else {
             return min + random.nextDouble() * (max - min);
@@ -40,16 +41,16 @@ public class IntervalManager {
         Interval<Double> interval = new DoubleInterval(this.name);
         double interval1 = 0.0;
         double interval2 = 0.0;
-        if (Double.isNaN(value) || (value == 0.0)) {
+        if (Double.isInfinite(value) || Double.isNaN(value) || (value == 0.0)) {
             interval1 = generateDefault();
             interval2 = generateDefault();
         } else {
-            if (!Double.isNaN(i1)) {
+            if (!Double.isNaN(i1) || !Double.isInfinite(i1)) {
                 interval1 = (value - i1);
             } else {
                 interval1 = generateDefault();
             }
-            if (!Double.isNaN(i2)) {
+            if (!Double.isNaN(i2) || !Double.isInfinite(i2)) {
                 interval2 = (value - i2);
             } else {
                 interval2 = generateDefault();

@@ -22,7 +22,7 @@ public class ForexEstrategiaTester {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         SerializationManager serializationManager = new SerializationManager();
         Poblacion poblacion = serializationManager.readObject(new File(SERIALICE_PATH +
-                "SellGBPJPY201004220427-201007160418_1299446937171.gfx"));
+                "SellEURUSD200910290001-200910302200_1304647473296.gfx"));
 
         Poblacion p = poblacion.getFirst(1);
         IndividuoEstrategia individuoEstrategia = p.getIndividuos().get(0);

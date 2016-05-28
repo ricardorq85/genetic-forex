@@ -17,11 +17,12 @@ public class NumberUtil {
     }
 
     public static double round(double d, int scale) {
-        //return d;
-
-        BigDecimal bd = new BigDecimal(d);
-        bd = bd.setScale(scale, BigDecimal.ROUND_HALF_UP);
-        return bd.doubleValue();
-
+        if (Double.isInfinite(d) || Double.isNaN(d)) {
+            return d;
+        } else {
+            BigDecimal bd = new BigDecimal(d);
+            bd = bd.setScale(scale, BigDecimal.ROUND_HALF_UP);
+            return bd.doubleValue();
+        }
     }
 }

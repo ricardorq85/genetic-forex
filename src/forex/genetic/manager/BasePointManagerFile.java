@@ -37,8 +37,8 @@ public class BasePointManagerFile {
 
     public static List<Point> process(String poblacionId) {
         try {
-            String filePath = Constants.FILE_PATH + Constants.PAIR + "," + poblacionId + ".csv";
-            return readFileAsPoint(filePath);
+            String filePath = Constants.FILE_PATH + Constants.PAIR + "-" + Constants.FILE_ID + "-" + poblacionId + ".csv";
+                return readFileAsPoint(filePath);
         } catch (ParseException ex) {
             Logger.getLogger(BasePointManagerFile.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {

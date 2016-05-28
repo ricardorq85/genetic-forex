@@ -11,6 +11,7 @@ import forex.genetic.entities.Point;
 import forex.genetic.manager.controller.IndicatorController;
 import forex.genetic.util.CollectionUtil;
 import forex.genetic.util.Constants;
+import static forex.genetic.util.Constants.*;
 import java.util.Collections;
 import java.util.List;
 
@@ -69,10 +70,14 @@ public class FuncionFortalezaManager {
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
         for (int i = 0; i < individuos.size(); i++) {
             IndividuoEstrategia individuoEstrategia = individuos.get(i);
-            this.calculateFortaleza(totalSize, points, individuoEstrategia, recalculate,
+            this.calculateFortaleza(totalSize, points, individuoEstrategia, 
+                    ((recalculate && (!Constants.FILE_ID.equals(individuoEstrategia.getFileId()))) || (individuoEstrategia.getProcessedUntil() >= INITIAL_POBLACION + POBLACION_COUNTER)),
                     poblacionIndex > individuoEstrategia.getProcessedUntil(), poblacionIndex);
             if ( (poblacionIndex > individuoEstrategia.getProcessedUntil()) ) {
                 individuoEstrategia.setProcessedUntil(poblacionIndex);
+            }
+            if (!Constants.FILE_ID.equals(individuoEstrategia.getFileId())) {
+                individuoEstrategia.setFileId(Constants.FILE_ID);
             }
             individuoCounter++;
             if (!Double.isInfinite(individuoEstrategia.getFortaleza().getValue())) {

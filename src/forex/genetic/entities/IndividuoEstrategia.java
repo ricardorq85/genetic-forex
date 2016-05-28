@@ -21,7 +21,7 @@ import static forex.genetic.util.Constants.*;
 public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Serializable {
 
     private int id = 0;
-    private String file = null;
+    private String fileId = null;
     private int processedUntil = 0;
     private int generacion = -1;
     private IndividuoEstrategia parent1 = null;
@@ -45,6 +45,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     }
 
     public IndividuoEstrategia(int generacion, IndividuoEstrategia parent1, IndividuoEstrategia parent2, IndividuoType individuoType) {
+        setFileId(Constants.FILE_ID);
         setId(IndividuoManager.nextId());
         setGeneracion(generacion);
         setParent1(parent1);
@@ -156,12 +157,12 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         this.generacion = generacion;
     }
 
-    public String getFile() {
-        return file;
+    public String getFileId() {
+        return fileId;
     }
 
-    public void setFile(String file) {
-        this.file = file;
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
     }
 
     public int compareTo(IndividuoEstrategia o) {
@@ -227,20 +228,21 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 
     public String toFileString(Interval<Date> dateInterval) {
         StringBuilder buffer = new StringBuilder();
+        buffer.append("EstrategiaId=" + (this.id) + ",");
         buffer.append("Pair=" + Constants.PAIR + ",");
-        buffer.append(Constants.OPERATION_TYPE + "EstrategiaId=" + (this.id) + ",");
+        buffer.append("Operation=" + Constants.OPERATION_TYPE + ",");
 
         DateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm");
         buffer.append("VigenciaLower=" + format.format(dateInterval.getHighInterval()) + ",");
         Date vigencia = new Date(dateInterval.getHighInterval().getTime() + Constants.VIGENCIA);
         buffer.append("VigenciaHigher=" + (format.format(vigencia)) + ",");
 
-        buffer.append(Constants.OPERATION_TYPE + "TakeProfit=" + this.takeProfit + ",");
-        buffer.append(Constants.OPERATION_TYPE + "StopLoss=" + this.stopLoss + ",");
-        buffer.append(Constants.OPERATION_TYPE + "Lote=" + this.lot + ",");
+        buffer.append("TakeProfit=" + this.takeProfit + ",");
+        buffer.append("StopLoss=" + this.stopLoss + ",");
+        buffer.append("Lote=" + this.lot + ",");
         for (Indicator indicator : this.openIndicators) {
             if (indicator != null) {
-                buffer.append(indicator.toFileString("open" + Constants.OPERATION_TYPE));
+                buffer.append(indicator.toFileString("open"));
             } else {
                 buffer.append("null");
             }
@@ -248,7 +250,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         }
         for (Indicator indicator : this.closeIndicators) {
             if (indicator != null) {
-                buffer.append(indicator.toFileString("close" + Constants.OPERATION_TYPE));
+                buffer.append(indicator.toFileString("close"));
             } else {
                 buffer.append("null");
             }
