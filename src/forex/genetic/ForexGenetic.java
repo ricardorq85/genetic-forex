@@ -8,6 +8,7 @@ import forex.genetic.entities.Poblacion;
 import forex.genetic.delegate.GeneticDelegate;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants;
+import forex.genetic.util.LogUtil;
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -23,6 +24,7 @@ public class ForexGenetic {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         long id = System.currentTimeMillis();
         PropertiesManager.load();
+        LogUtil.logTime("" + id, 1);      
         PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + PropertiesManager.getOperationType() + PropertiesManager.getPropertyString(Constants.PAIR) + id + ".log");
         System.setOut(out);
         System.setErr(out);

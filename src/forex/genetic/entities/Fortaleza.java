@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable {
 
     public static final long serialVersionUID = 201101251800L;
-    public static final String currentVersion = "5.1.1.02";
+    public static final String currentVersion = "v5.2.2.02";
     private String version = "0.0";
     private double pips = 0.0;
     private double profit = 0.0;
@@ -31,6 +31,8 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
     private double maxConsecutiveLostPips = 0.0;
     private int maxConsecutiveWonOperationsNumber = 0;
     private int maxConsecutiveLostOperationsNumber = 0;
+    private int minConsecutiveWonOperationsNumber = 0;
+    private int minConsecutiveLostOperationsNumber = 0;
     private double averageConsecutiveWonPips = 0.0;
     private double averageConsecutiveLostPips = 0.0;
     private double averageConsecutiveWonOperationsNumber = 0;
@@ -54,6 +56,22 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
         setVersion(currentVersion);
         setType(PropertiesManager.getFortalezaType());
         setPresentNumberPoblacion(PropertiesManager.getPropertyInt(Constants.PRESENT_NUMBER_POBLACION));
+    }
+
+    public int getMinConsecutiveLostOperationsNumber() {
+        return minConsecutiveLostOperationsNumber;
+    }
+
+    public void setMinConsecutiveLostOperationsNumber(int minConsecutiveLostOperationsNumber) {
+        this.minConsecutiveLostOperationsNumber = minConsecutiveLostOperationsNumber;
+    }
+
+    public int getMinConsecutiveWonOperationsNumber() {
+        return minConsecutiveWonOperationsNumber;
+    }
+
+    public void setMinConsecutiveWonOperationsNumber(int minConsecutiveWonOperationsNumber) {
+        this.minConsecutiveWonOperationsNumber = minConsecutiveWonOperationsNumber;
     }
 
     public double getAverageConsecutiveLostOperationsNumber() {
@@ -384,36 +402,41 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
         buffer.append("; Max. Numero Consecutivo Operaciones Ganadoras=" + (this.maxConsecutiveWonOperationsNumber));
         buffer.append("; Max. Numero Consecutivo Operaciones Perdedoras=" + (this.maxConsecutiveLostOperationsNumber));
         buffer.append("\n\t\t");
+        buffer.append("; Min. Numero Consecutivo Operaciones Ganadoras=" + (this.minConsecutiveWonOperationsNumber));
+        buffer.append("; Min. Numero Consecutivo Operaciones Perdedoras=" + (this.minConsecutiveLostOperationsNumber));
+        buffer.append("\n\t\t");
         buffer.append("; Promedio de operaciones ganadas=" + this.averageConsecutiveWonOperationsNumber);
         buffer.append("; Promedio de pips ganados=" + this.averageConsecutiveWonPips);
         buffer.append("; Numero de operaciones que ganan consecutivamente=" + this.numConsecutiveWon);
         buffer.append("\n\t\t");
         buffer.append("; Promedio de operaciones perdidas=" + this.averageConsecutiveLostOperationsNumber);
         buffer.append("; Promedio de pips perdidos=" + this.averageConsecutiveLostPips);
-        buffer.append("; Numero de operaciones que ganan consecutivamente=" + this.numConsecutiveLost);
+        buffer.append("; Numero de operaciones que pierden consecutivamente=" + this.numConsecutiveLost);
 
         return buffer.toString();
     }
 
     public int compareTo(Fortaleza o) {
-        int compare = (-Double.compare(this.value, o.getValue()));
+        int compare = 0;
+        compare = (Double.compare((this.value == 0.0D) ? -1000.0D : this.value, (o.getValue() == 0.0D) ? -1000.0D : o.getValue())) * 43;
         if (this.getType().equals(Constants.FortalezaType.Stable)) {
             if (compare == 0) {
-                compare += (-Double.compare(this.getPips(), o.getPips())) * 15;
-                compare += (-Double.compare(this.getOperationsNumber(), o.getOperationsNumber())) * 10;
-                compare += (-Double.compare(this.getWonOperationsNumber() / NumberUtil.zeroToOne(this.getLostOperationsNumber()),
-                        o.getWonOperationsNumber() / NumberUtil.zeroToOne(o.getLostOperationsNumber()))) * 10;
-                compare += (-Double.compare(this.getMaxConsecutiveWonOperationsNumber() / NumberUtil.zeroToOne(this.getMaxConsecutiveLostOperationsNumber()),
-                        o.getMaxConsecutiveWonOperationsNumber() / NumberUtil.zeroToOne(o.getMaxConsecutiveLostOperationsNumber()))) * 5;
-                compare += (-Double.compare(this.getPresentFortaleza(), o.getPresentFortaleza())) * 5;
-                compare += (-Double.compare(Math.abs(this.getMaxConsecutiveWonPips()) / NumberUtil.zeroToOne(this.getMaxConsecutiveLostPips()),
-                        Math.abs(o.getMaxConsecutiveWonPips()) / NumberUtil.zeroToOne(o.getMaxConsecutiveLostPips()))) * 8;
+                compare += (Double.compare(this.getPips(), o.getPips())) * 15;
+                compare += (Double.compare(this.getOperationsNumber(), o.getOperationsNumber())) * 10;
+                //compare += (Double.compare(this.getWonOperationsNumber() / NumberUtil.zeroToOne(this.getLostOperationsNumber()),
+                //      o.getWonOperationsNumber() / NumberUtil.zeroToOne(o.getLostOperationsNumber()))) * 10;
+                //compare += (Double.compare(this.getMaxConsecutiveWonOperationsNumber() / NumberUtil.zeroToOne(this.getMaxConsecutiveLostOperationsNumber()),
+                //      o.getMaxConsecutiveWonOperationsNumber() / NumberUtil.zeroToOne(o.getMaxConsecutiveLostOperationsNumber()))) * 5;
+                compare += (Double.compare(this.getPresentFortaleza(), o.getPresentFortaleza())) * 5;
+                compare += (Double.compare(Math.abs(this.getMaxConsecutiveWonPips() / NumberUtil.zeroToOne(this.getMaxConsecutiveLostPips())),
+                        Math.abs(o.getMaxConsecutiveWonPips() / NumberUtil.zeroToOne(o.getMaxConsecutiveLostPips())))) * 8;
             }
         } else if (this.getType().equals(Constants.FortalezaType.Embudo)) {
             if (compare == 0) {
-                compare = (-Double.compare(this.getOperationsNumber(), o.getOperationsNumber()));
+                compare = (Double.compare(this.getOperationsNumber(), o.getOperationsNumber()));
             }
         }
+        //return Integer.compare(compare, 0);
         return compare;
     }
 
@@ -432,6 +455,8 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
         f.setMaxConsecutiveLostPips(maxConsecutiveLostPips);
         f.setMaxConsecutiveWonOperationsNumber(maxConsecutiveWonOperationsNumber);
         f.setMaxConsecutiveWonPips(maxConsecutiveWonPips);
+        f.setMinConsecutiveLostOperationsNumber(minConsecutiveLostOperationsNumber);
+        f.setMinConsecutiveWonOperationsNumber(minConsecutiveWonOperationsNumber);
         f.setOperationsNumber(operationsNumber);
         f.setPips(pips);
         f.setPipsFactor(pipsFactor);

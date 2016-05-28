@@ -4,6 +4,7 @@
  */
 package forex.genetic.manager;
 
+import forex.genetic.util.LogUtil;
 import forex.genetic.util.Constants;
 import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.entities.indicator.Indicator;
@@ -21,6 +22,12 @@ import static forex.genetic.util.Constants.*;
  */
 public class CrossoverManager {
 
+    private boolean endProcess = false;
+
+    public synchronized void endProcess() {
+        this.endProcess = true;
+    }
+
     public Poblacion[] crossover(int generacion, Poblacion poblacion, int percentValue) {
         Poblacion[] poblacionArray = new Poblacion[2];
         EspecificCrossoverManager especificCrossoverManager = EspecificCrossoverManager.getInstance();
@@ -33,7 +40,7 @@ public class CrossoverManager {
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
         int counter = 0;
 
-        while (counter < percentValue) {
+        while ((counter < percentValue) && (!endProcess)) {
             int pos1 = counter % individuos.size();
             int pos2 = random.nextInt(individuos.size());
 
@@ -52,7 +59,7 @@ public class CrossoverManager {
                         Indicator openIndicator1 = (openIndicators1.size() > i) ? openIndicators1.get(i) : null;
                         Indicator openIndicator2 = (openIndicators2.size() > i) ? openIndicators2.get(i) : null;
                         IndicatorManager indicatorManager = IndicatorManager.getInstance(i);
-                        if (random.nextDouble() < 0.2) {
+                        if (random.nextDouble() < 0.1) {
                             openIndicators.add(null);
                         } else {
                             Indicator indHijo = indicatorManager.crossover(openIndicator1, openIndicator2);
@@ -62,7 +69,7 @@ public class CrossoverManager {
                         List<? extends Indicator> closeIndicators2 = individuo2.getCloseIndicators();
                         Indicator closeIndicator1 = (closeIndicators1.size() > i) ? closeIndicators1.get(i) : null;
                         Indicator closeIndicator2 = (closeIndicators2.size() > i) ? closeIndicators2.get(i) : null;
-                        if (random.nextDouble() < 10.0) {
+                        if (random.nextDouble() < 0.1) {
                             closeIndicators.add(null);
                         } else {
                             Indicator indHijo = indicatorManager.crossover(closeIndicator1, closeIndicator2);
@@ -100,6 +107,8 @@ public class CrossoverManager {
                     counter++;
                 } catch (ArrayIndexOutOfBoundsException ex) {
                 }
+            } else {
+                LogUtil.logTime("CrossoverManager crossover Counter=" + counter + " pos1=" + pos1 + " pos2=" + pos2, 5);
             }
         }
         parentsPoblacion.setIndividuos(parents);

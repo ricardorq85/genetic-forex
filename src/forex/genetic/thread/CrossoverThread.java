@@ -32,6 +32,10 @@ public class CrossoverThread extends Thread {
         newPoblacion.addAll(crossoverPoblacion[1]);
     }
 
+    public void endProcess() {
+        crossoverManager.endProcess();
+    }
+
     public Poblacion getNewPoblacion() {
         return newPoblacion;
     }

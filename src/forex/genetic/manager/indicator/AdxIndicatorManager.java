@@ -15,11 +15,13 @@ import forex.genetic.entities.indicator.Adx;
  */
 public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 
+    private static final int ADX_TREND_VALUE = 30;
+
     public AdxIndicatorManager() {
         super(false, "Adx");
     }
 
-    public Adx getIndicatorInstance () {
+    public Adx getIndicatorInstance() {
         return new Adx("Adx");
     }
 
@@ -30,9 +32,10 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
             adx.setAdxValue(indicator.getAdxValue());
             adx.setAdxPlus(indicator.getAdxPlus());
             adx.setAdxMinus(indicator.getAdxMinus());
-            interval = intervalManager.generate(indicator.getAdxValue(), (indicator.getAdxPlus() - adx.getAdxMinus()), Double.NaN);
+            //interval = intervalManager.generate(indicator.getAdxPlus(), adx.getAdxMinus(), Double.NaN);
+            interval = intervalManager.generate(indicator.getAdxValue() * (indicator.getAdxPlus()-indicator.getAdxMinus()), -10000.00, 10000.00);
         } else {
-            interval = intervalManager.generate(Double.NaN, Double.NaN, Double.NaN);
+            interval = intervalManager.generate(Double.NaN, -10000.00, 10000.00);
         }
         adx.setInterval(interval);
         return adx;
@@ -40,6 +43,6 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 
     @Override
     public boolean operate(Adx adxIndividuo, Adx iAdx, Point point) {
-        return intervalManager.operate(adxIndividuo.getInterval(), iAdx.getAdxValue(), (iAdx.getAdxPlus() - iAdx.getAdxMinus()));
+        return intervalManager.operate(adxIndividuo.getInterval(), iAdx.getAdxValue() * (iAdx.getAdxPlus()-iAdx.getAdxMinus()), 10000.00);
     }
 }

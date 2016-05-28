@@ -42,6 +42,12 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     private List<? extends Indicator> closeIndicators = null;
     private Fortaleza fortaleza = null;
     private List<Fortaleza> listaFortaleza = new ArrayList<Fortaleza>();
+    private double openOperationValue = 0.0D;
+    private double openSpread = 0.0D;
+    private int openPoblacionIndex = 1;
+    private int openOperationIndex = 0;
+    private boolean activeOperation = false;
+    private Date creationDate = null;
     public static final long serialVersionUID = 201101251800L;
 
     public IndividuoEstrategia() {
@@ -59,6 +65,55 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         setParent1(parent1);
         setParent2(parent2);
         setIndividuoType(individuoType);
+        setCreationDate(new Date());
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public double getOpenSpread() {
+        return openSpread;
+    }
+
+    public void setOpenSpread(double openSpread) {
+        this.openSpread = openSpread;
+    }
+
+    public boolean isActiveOperation() {
+        return activeOperation;
+    }
+
+    public void setActiveOperation(boolean activeOperation) {
+        this.activeOperation = activeOperation;
+    }
+
+    public int getOpenOperationIndex() {
+        return openOperationIndex;
+    }
+
+    public void setOpenOperationIndex(int openOperationIndex) {
+        this.openOperationIndex = openOperationIndex;
+    }
+
+    public double getOpenOperationValue() {
+        return openOperationValue;
+    }
+
+    public void setOpenOperationValue(double openOperationValue) {
+        this.openOperationValue = openOperationValue;
+    }
+
+    public int getOpenPoblacionIndex() {
+        return openPoblacionIndex;
+    }
+
+    public void setOpenPoblacionIndex(int openPoblacionIndex) {
+        this.openPoblacionIndex = openPoblacionIndex;
     }
 
     public int getProcessedFrom() {
@@ -98,7 +153,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     }
 
     public void setParent2(IndividuoEstrategia parent2) {
-        this.idParent1 = (parent1 == null) ? null : parent1.id;
+        this.idParent2 = (parent2 == null) ? null : parent2.id;
     }
 
     public Fortaleza getFortaleza() {
@@ -215,16 +270,29 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
             compare = 0;
         } else if (this.fortaleza == null) {
             compare = 1;
-        } else if (o.getFortaleza() == null) {
+        } else if (o.fortaleza == null) {
             compare = -1;
         } else {
             if (this.equals(o)) {
                 compare = 0;
             } else {
-                compare = (this.fortaleza.compareTo(o.getFortaleza()));
+                compare = this.fortaleza.compareTo(o.fortaleza) * PropertiesManager.getPropertyInt(Constants.PRESENT_NUMBER_POBLACION);
+                for (int i = this.listaFortaleza.size() - 2; (i >= (this.listaFortaleza.size() - PropertiesManager.getPropertyInt(Constants.PRESENT_NUMBER_POBLACION))) && (i >= 0); i--) {
+                    Fortaleza f = this.listaFortaleza.get(i);
+                    Fortaleza fo = o.listaFortaleza.get(i);
+                    if ((f == null) && (fo == null)) {
+                        compare += 0;
+                    } else if (f == null) {
+                        compare = 1;
+                    } else if (fo == null) {
+                        compare = -1;
+                    } else {
+                        compare += f.compareTo(fo) * (PropertiesManager.getPropertyInt(Constants.PRESENT_NUMBER_POBLACION) - (this.listaFortaleza.size() - i - 1));
+                    }
+                }
             }
         }
-        return compare;
+        return (Integer.valueOf(compare).compareTo(Integer.valueOf(0)));
     }
 
     @Override
@@ -270,7 +338,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         buffer.append(" Id=" + (this.id));
         buffer.append(" Generacion=" + (this.generacion) + ";");
         buffer.append(" ProcessedFrom=" + (this.processedFrom));
-        buffer.append(" ProcessedUntil=" + (this.processedUntil));        
+        buffer.append(" ProcessedUntil=" + (this.processedUntil));
         buffer.append("; IndividuoType=" + (this.individuoType) + ";");
         buffer.append("\n\t");
         buffer.append(((this.fortaleza == null) ? 0.0 : this.fortaleza.toString()));
@@ -281,6 +349,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         if (idParent2 != null) {
             buffer.append("; Padre 2=" + idParent2);
         }
+        buffer.append("; CreationDate=" + this.creationDate);
         buffer.append("; TakeProfit=" + this.takeProfit);
         buffer.append("; Stoploss=" + this.stopLoss);
         buffer.append("; Lot=" + this.lot);
@@ -295,8 +364,9 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 
     public String toFileString(Interval<Date> dateInterval) {
         StringBuilder buffer = new StringBuilder();
-        buffer.append("ProcessedFrom&Until="+ (this.processedFrom) + "-" + (this.processedUntil) + "/" + PropertiesManager.getPropertyInt(Constants.END_POBLACION) + ",");
+        buffer.append("ProcessedFrom&Until=" + (this.processedFrom) + "-" + (this.processedUntil) + "/" + PropertiesManager.getPropertyInt(Constants.END_POBLACION) + ",");
         buffer.append("EstrategiaId=" + (this.id) + ",");
+        buffer.append("Active=" + (this.fortaleza.getValue() > 1.0) + ",");
         buffer.append("Pair=" + PropertiesManager.getPropertyString(Constants.PAIR) + ",");
         buffer.append("Operation=" + PropertiesManager.getOperationType() + ",");
 
@@ -312,6 +382,8 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         buffer.append("Lote=" + this.lot + ",");
         buffer.append("MaxConsecutiveLostOperationsNumber=" + this.fortaleza.getMaxConsecutiveLostOperationsNumber() + ",");
         buffer.append("MaxConsecutiveWonOperationsNumber=" + this.fortaleza.getMaxConsecutiveWonOperationsNumber() + ",");
+        buffer.append("MinConsecutiveLostOperationsNumber=" + this.fortaleza.getMinConsecutiveLostOperationsNumber() + ",");
+        buffer.append("MinConsecutiveWonOperationsNumber=" + this.fortaleza.getMinConsecutiveWonOperationsNumber() + ",");
         buffer.append("AverageConsecutiveLostOperationsNumber=" + Math.round(this.fortaleza.getAverageConsecutiveLostOperationsNumber()) + ",");
         buffer.append("AverageConsecutiveWonOperationsNumber=" + Math.round(this.fortaleza.getAverageConsecutiveWonOperationsNumber()) + ",");
         for (Indicator indicator : this.openIndicators) {

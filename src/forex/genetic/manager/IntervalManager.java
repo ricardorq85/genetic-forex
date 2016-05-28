@@ -45,12 +45,12 @@ public class IntervalManager {
             interval1 = generateDefault();
             interval2 = generateDefault();
         } else {
-            if (!Double.isNaN(i1) || !Double.isInfinite(i1)) {
+            if (!Double.isNaN(i1) && !Double.isInfinite(i1)) {
                 interval1 = (value - i1);
             } else {
                 interval1 = generateDefault();
             }
-            if (!Double.isNaN(i2) || !Double.isInfinite(i2)) {
+            if (!Double.isNaN(i2) && !Double.isInfinite(i2)) {
                 interval2 = (value - i2);
             } else {
                 interval2 = generateDefault();
@@ -92,8 +92,8 @@ public class IntervalManager {
 
         Interval<Double> pointInterval = new DoubleInterval(this.name);
         if (PropertiesManager.getOperationType().equals(Constants.OperationType.Buy)) {
-            pointInterval.setLowInterval(point.getLow() +  PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor);
-            pointInterval.setHighInterval(point.getHigh() +  PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor);
+            pointInterval.setLowInterval(point.getLow() + PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor);
+            pointInterval.setHighInterval(point.getHigh() + PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor);
         } else {
             pointInterval.setLowInterval(point.getLow());
             pointInterval.setHighInterval(point.getHigh());

@@ -5,9 +5,7 @@
 package forex.genetic.thread;
 
 import forex.genetic.entities.Poblacion;
-import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.io.SerializationManager;
-import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
 
 /**
@@ -31,13 +29,17 @@ public class SerializationReadAllthread extends Thread {
         this.processedFrom = processedFrom;
         this.sm = sm;
     }
+    
+    public void endProcess() {
+        sm.endProcess();
+    }
 
     public void run() {
         try {
             poblacion = sm.readAll(path, counter, processedUntil, processedFrom);
             /*if (processedUntil == PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION)) {
-                poblacion = sm.readByEstrategyId(path, "1317728540202.241005");
-                poblacion.addAll(sm.readByEstrategyId(path, "1317728540202.163003"));
+                poblacion = sm.readByEstrategyId(path, "1322710468617.19308");
+                poblacion.addAll(sm.readByEstrategyId(path, "1323536228569.12616"));
             }else {
                 poblacion = new Poblacion();
             }*/

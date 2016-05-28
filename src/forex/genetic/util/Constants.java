@@ -20,8 +20,8 @@ public class Constants {
     public static final String END_POBLACION = "END_POBLACION";
     public static final String FILE_ID = "FILE_ID";
     public static final String HARDEST_PERCENT = "HARDEST_PERCENT";
-    public static final String CROSSOVER_PERCENT = "CROSSOVER_PERCENT";
-    public static final String MUTATION_PERCENT = "MUTATION_PERCENT";
+    public static final String CROSSOVER = "CROSSOVER";
+    public static final String MUTATION = "MUTATION";
     public static final String WEAKEST_PERCENT = "WEAKEST_PERCENT";
     public static final String PIPS_FIXER = "PIPS_FIXER";
     public static final String MOD_POINTS = "MOD_POINTS";
@@ -59,9 +59,10 @@ public class Constants {
     public static final String LOG_LEVEL = "LOG_LEVEL";
     public static final String SHOW_ESTADISTICAS = "SHOW_ESTADISTICAS";
     public static final String NUMBER_BACK_ROOT_POBLACION = "NUMBER_BACK_ROOT_POBLACION";
-    
+    public static final String MAX_FILE_PER_READ = "MAX_FILE_PER_READ";
+    public static final String FORCE_INDIVIDUOS = "FORCE_INDIVIDUOS";
     public static final double MAX_RISK_LEVEL = 10;
-    public static final int MAX_FILE_PER_READ = 100;
+    public static final int MIN_OPER_NUM_BY_PERIOD = 5;
 
     public enum IndividuoType {
 
@@ -83,7 +84,7 @@ public class Constants {
         Buy,
         Sell;
     }
-    
+
     public enum FortalezaType {
 
         Pips,

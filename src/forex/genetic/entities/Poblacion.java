@@ -66,38 +66,57 @@ public class Poblacion implements Serializable {
         Poblacion p = new Poblacion();
         for (int i = 0; i < this.getIndividuos().size(); i++) {
             IndividuoEstrategia individuoEstrategia = this.getIndividuos().get(i);
-            if (validateIndividuo(individuoEstrategia)) {
-                if (((individuoEstrategia.getProcessedUntil() == processedUntil) && (individuoEstrategia.getProcessedFrom() == processedFrom))
-                        || (!individuoEstrategia.getFileId().equals(PropertiesManager.getPropertyString(Constants.FILE_ID)))) {
-                    if ((this.getRiskLevel() != PropertiesManager.getPropertyDouble(Constants.RISK_LEVEL) / Constants.MAX_RISK_LEVEL)
-                            || (individuoEstrategia.getProcessedFrom() != PropertiesManager.getPropertyInt(Constants.NUMBER_BACK_ROOT_POBLACION))
-                            || (!individuoEstrategia.getFileId().equals(PropertiesManager.getPropertyString(Constants.FILE_ID)))
-                            || (!Fortaleza.currentVersion.equals(individuoEstrategia.getFortaleza().getVersion()))
-                            || (!PropertiesManager.getFortalezaType().equals(individuoEstrategia.getFortaleza().getType()))) {
-                        individuoEstrategia.setFortaleza(null);
-                        individuoEstrategia.setListaFortaleza(null);
-                        individuoEstrategia.setProcessedUntil(0);
-                        individuoEstrategia.setProcessedFrom(0);
-                    }
-                    p.getIndividuos().add(individuoEstrategia);
-                }
+            corregirIndividuo(individuoEstrategia);
+            /*                if (((individuoEstrategia.getProcessedUntil() == processedUntil) && (individuoEstrategia.getProcessedFrom() == processedFrom))
+            || (!individuoEstrategia.getFileId().equals(PropertiesManager.getPropertyString(Constants.FILE_ID)))) {
+            if ((this.getRiskLevel() != PropertiesManager.getPropertyDouble(Constants.RISK_LEVEL) / Constants.MAX_RISK_LEVEL)
+            || (individuoEstrategia.getProcessedFrom() != PropertiesManager.getPropertyInt(Constants.NUMBER_BACK_ROOT_POBLACION))
+            || (!individuoEstrategia.getFileId().equals(PropertiesManager.getPropertyString(Constants.FILE_ID)))
+            || (!Fortaleza.currentVersion.equals(individuoEstrategia.getFortaleza().getVersion()))
+            || (!PropertiesManager.getFortalezaType().equals(individuoEstrategia.getFortaleza().getType()))) {
+            individuoEstrategia.setFortaleza(null);
+            individuoEstrategia.setListaFortaleza(null);
+            individuoEstrategia.setProcessedUntil(0);
+            individuoEstrategia.setProcessedFrom(0);
             }
+            p.getIndividuos().add(individuoEstrategia);
+            }*/
+            individuoEstrategia.setFortaleza(null);
+            individuoEstrategia.setListaFortaleza(null);
+            individuoEstrategia.setProcessedUntil(0);
+            individuoEstrategia.setProcessedFrom(0);
+            p.getIndividuos().add(individuoEstrategia);
+
         }
         return p;
     }
 
-    private boolean validateIndividuo(IndividuoEstrategia ind) {
-        return ((ind.getTakeProfit() >= PropertiesManager.getPropertyDouble(Constants.MIN_TP)
-                && (ind.getTakeProfit() <= PropertiesManager.getPropertyDouble(Constants.MAX_TP)))
-                && (ind.getStopLoss() >= PropertiesManager.getPropertyDouble(Constants.MIN_SL)
-                && (ind.getStopLoss() <= PropertiesManager.getPropertyDouble(Constants.MAX_SL)))
-                && (ind.getLot() >= PropertiesManager.getPropertyDouble(Constants.MIN_LOT)
-                && (ind.getLot() <= PropertiesManager.getPropertyDouble(Constants.MAX_LOT))));
+    private void corregirIndividuo(IndividuoEstrategia ind) {
+        if (ind.getTakeProfit() < PropertiesManager.getPropertyInt(Constants.MIN_TP)
+                || (ind.getTakeProfit() > PropertiesManager.getPropertyInt(Constants.MAX_TP))) {
+            ind.setTakeProfit(PropertiesManager.getPropertyInt(Constants.MIN_TP));
+        }
+        if (ind.getStopLoss() < PropertiesManager.getPropertyInt(Constants.MIN_SL)
+                || (ind.getStopLoss() > PropertiesManager.getPropertyInt(Constants.MAX_SL))) {
+            ind.setStopLoss(PropertiesManager.getPropertyInt(Constants.MAX_SL));
+        }
+        if (ind.getLot() < PropertiesManager.getPropertyDouble(Constants.MIN_LOT)
+                || (ind.getLot() > PropertiesManager.getPropertyDouble(Constants.MAX_LOT))) {
+            ind.setLot(PropertiesManager.getPropertyDouble(Constants.MIN_LOT));
+        }
     }
 
     public Poblacion getFirst(int cantidad) {
         Poblacion p = new Poblacion();
         p.setIndividuos(CollectionUtil.subList(this.getIndividuos(), 0, (cantidad < this.getIndividuos().size()) ? cantidad : this.getIndividuos().size()));
+
+        return p;
+    }
+
+    public Poblacion getFirst(int cantidad, int fromIndex) {
+        Poblacion p = new Poblacion();
+        p.setIndividuos(CollectionUtil.subList(this.getIndividuos(), fromIndex,
+                (cantidad < this.getIndividuos().size()) ? cantidad : this.getIndividuos().size()));
 
         return p;
     }
@@ -128,7 +147,9 @@ public class Poblacion implements Serializable {
 
     public void add(IndividuoEstrategia ie) {
         if (!this.individuos.contains(ie)) {
+            //if (this.individuos.size() < PropertiesManager.getPropertyInt(Constants.INDIVIDUOS)) {
             this.individuos.add(ie);
+            //}
         }
     }
 

@@ -4,8 +4,7 @@
  */
 package forex.genetic.util;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import forex.genetic.manager.PropertiesManager;
 
 /**
  *
@@ -15,13 +14,21 @@ public class ThreadUtil {
 
     public static void joinThread(Thread t) {
         if ((t != null) && (t.isAlive())) {
-            try {                
+            try {
                 LogUtil.logTime("Init Waiting for Thread " + t.getName(), 1);
                 t.join();
                 LogUtil.logTime("End Waiting for Thread " + t.getName(), 1);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
+        }
+    }
+
+    public static void launchThread(Thread t) {
+        if (PropertiesManager.getPropertyBoolean(Constants.THREAD)) {
+            t.start();
+        } else {
+            t.run();
         }
     }
 }

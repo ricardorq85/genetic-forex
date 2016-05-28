@@ -37,7 +37,11 @@ public class FileProperties {
     }
 
     public static synchronized String getPropertyString(String key) {
-        return properties.getProperty(key);
+        String value = properties.getProperty(key);
+        if (value == null) {
+            throw new IllegalArgumentException("key not found: " + key);
+        }
+        return value;
     }
 
     public static synchronized int getPropertyInt(String key) {

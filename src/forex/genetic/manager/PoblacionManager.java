@@ -72,8 +72,20 @@ public class PoblacionManager {
             for (int i = 0; i < IndicatorManager.getIndicatorNumber(); i++) {
                 IndicatorManager indicatorManager = IndicatorManager.getInstance(i);
                 List<? extends Indicator> indicators = point.getIndicators();
-                openIndicator = indicatorManager.generate(indicators.get(i), point);
-                closeIndicator = indicatorManager.generate(indicators.get(i), point);
+                if (random.nextDouble() < 0.1) {
+                    openIndicator = null;
+                } else if (random.nextDouble() < 0.2) {
+                    openIndicator = indicatorManager.generate(null, point);
+                } else {
+                    openIndicator = indicatorManager.generate(indicators.get(i), point);
+                }
+                if (random.nextDouble() < 0.1) {
+                    closeIndicator = null;
+                } else if (random.nextDouble() < 0.2) {
+                    closeIndicator = indicatorManager.generate(null, point);
+                } else {
+                    closeIndicator = indicatorManager.generate(indicators.get(i), point);
+                }
                 openIndicators.add(openIndicator);
                 closeIndicators.add(closeIndicator);
             }

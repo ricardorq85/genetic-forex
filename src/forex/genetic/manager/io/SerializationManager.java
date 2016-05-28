@@ -7,11 +7,11 @@ package forex.genetic.manager.io;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Poblacion;
-import forex.genetic.manager.FuncionFortalezaManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.statistic.EstadisticaManager;
 import forex.genetic.util.CollectionUtil;
 import forex.genetic.util.Constants;
+import forex.genetic.util.LogUtil;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -31,8 +31,13 @@ import java.util.Vector;
  */
 public class SerializationManager {
 
-    private static List<File> loadedFiles = new Vector<File>();
+    private final static List<File> loadedFiles = new Vector<File>();
     private static int totalCounter = 0;
+    private boolean endProcess = false;
+
+    public synchronized void endProcess() {
+        this.endProcess = true;
+    }
 
     public Poblacion readAll(final String path, int counter, final int processedUntil, final int processedFrom) {
         Poblacion poblacion = new Poblacion();
@@ -43,52 +48,62 @@ public class SerializationManager {
             public boolean accept(File file) {
                 boolean accept = false;
                 String name = file.getName();
-                if ((name.contains(".gfx")) && (name.contains(PropertiesManager.getOperationType().name()))) {
-                    if ((name.contains("-" + processedFrom + "-" + processedUntil))
-                            || (!name.contains(PropertiesManager.getPropertyString(Constants.FILE_ID)))) {
-                        if (!loadedFiles.contains(file)) {
-                            return true;
-                        }
+                if ((name.contains(".gfx")) /*&& (name.contains(PropertiesManager.getOperationType().name()))*/) {
+                    if ((loadedFiles.isEmpty() || (!loadedFiles.contains(file))) && (name.contains("-" + processedFrom + "-" + processedUntil + "."))
+                            && (name.contains(PropertiesManager.getPropertyString(Constants.FILE_ID)))
+                            && (name.contains(PropertiesManager.getOperationType().name()))
+                            && (name.contains(PropertiesManager.getPropertyString(Constants.PAIR)))) {
+                        return true;
+                    } else if ((!loadedFiles.contains(file)) && ((name.contains("-" + processedFrom + "-" + processedUntil + "."))
+                            || (!name.contains(PropertiesManager.getPropertyString(Constants.FILE_ID)))
+                            || (!name.contains(PropertiesManager.getPropertyString(Constants.PAIR))))) {
+                        return true;
                     }
                 }
                 return accept;
             }
         };
         File[] files = root.listFiles(filter);
+        Arrays.sort(files, new FilePoblacionComparator());
         if (files.length == 0) {
             totalCounter += counter;
             loadedFiles.clear();
         } else {
             int size = loadedFiles.size();
-            loadedFiles.addAll(CollectionUtil.subList(Arrays.asList(files), 0, Constants.MAX_FILE_PER_READ));
+            List<File> listFiles = Arrays.asList(files);
+            loadedFiles.addAll(CollectionUtil.subListReverse(listFiles, listFiles.size(), listFiles.size() - PropertiesManager.getPropertyInt(Constants.MAX_FILE_PER_READ)));
             EstadisticaManager.addArchivoLeido(loadedFiles.size() - size);
-            totalCounter = 0;
         }
-        for (int i = 0; i < files.length && i < Constants.MAX_FILE_PER_READ; i++) {
+        for (int i = files.length - 1; (!endProcess) && (i >= Math.max(0, files.length - PropertiesManager.getPropertyInt(Constants.MAX_FILE_PER_READ))); i--) {
+            File file = null;
             try {
-                File file = files[i];
+                file = files[i];
                 Poblacion p = this.readObject(file);
-                if ((p.getOperationType().equals(PropertiesManager.getOperationType()))
-                        && (p.getPair().equals(PropertiesManager.getPropertyString(Constants.PAIR)))) {
-                    Poblacion poblacionByProcessedUntil = p.getByProcessedUntil(processedUntil, processedFrom);
-                    int fromIndex = 0;
-                    if (totalCounter < poblacionByProcessedUntil.getIndividuos().size()) {
-                        fromIndex = totalCounter;
-                    } else {
-                        fromIndex = 0;
-                        totalCounter = 0;
-                    }
-                    FuncionFortalezaManager.processWeakestPoblacion(poblacionByProcessedUntil, counter, fromIndex);
-                    poblacion.addAll(poblacionByProcessedUntil);
-
+                /*if ((p.getOperationType().equals(PropertiesManager.getOperationType()))
+                && (p.getPair().equals(PropertiesManager.getPropertyString(Constants.PAIR)))) {*/
+                Poblacion poblacionByProcessedUntil = p.getByProcessedUntil(processedUntil, processedFrom);
+                int fromIndex = 0;
+                if (totalCounter < poblacionByProcessedUntil.getIndividuos().size()) {
+                    fromIndex = totalCounter - 1;
+                } else {
+                    fromIndex = 0;
+                    totalCounter = 0;
                 }
+                //FuncionFortalezaManager.processWeakestPoblacion(poblacionByProcessedUntil, counter, fromIndex);
+                poblacion.addAll(poblacionByProcessedUntil.getFirst(counter, fromIndex));
+                //}
             } catch (IOException ex) {
+                if (file != null) {
+                    LogUtil.logTime("Error: " + file.getName(), 1);
+                }
                 ex.printStackTrace();
             } catch (ClassNotFoundException ex) {
+                if (file != null) {
+                    LogUtil.logTime("Error: " + file.getName(), 1);
+                }
                 ex.printStackTrace();
             }
         }
-
         return poblacion;
     }
 
@@ -143,6 +158,7 @@ public class SerializationManager {
                     ind.setListaFortaleza(null);
                     ind.setProcessedUntil(0);
                     ind.setProcessedFrom(0);
+                    ind.setActiveOperation(false);
                     poblacion.add(ind);
                 }
             } catch (IOException ex) {

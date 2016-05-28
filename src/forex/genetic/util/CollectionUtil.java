@@ -15,7 +15,16 @@ public class CollectionUtil {
 
     public static <T> List<T> subList(List<T> list, int fromIndex, int toIndex) {
         List<T> subList = new Vector<T>(toIndex - fromIndex);
-        for (int i = fromIndex; ((i < toIndex) && (i < list.size())); i++) {
+        for (int i = Math.max(0, fromIndex); ((i < toIndex) && (i < list.size())); i++) {
+            T obj = list.get(i);
+            subList.add(obj);
+        }
+        return subList;
+    }
+
+    public static <T> List<T> subListReverse(List<T> list, int fromIndex, int toIndex) {
+        List<T> subList = new Vector<T>(fromIndex - toIndex);
+        for (int i = Math.min(fromIndex, list.size()) - 1; (i >= toIndex) && (i >= 0); i--) {
             T obj = list.get(i);
             subList.add(obj);
         }

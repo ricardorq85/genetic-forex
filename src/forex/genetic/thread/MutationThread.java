@@ -32,6 +32,10 @@ public class MutationThread extends Thread {
         newPoblacion.addAll(mutationPoblacion[1]);
     }
 
+    public void endProcess() {
+        mutationManager.endProcess();
+    }
+
     public Poblacion getNewPoblacion() {
         return newPoblacion;
     }

@@ -4,6 +4,7 @@
  */
 package forex.genetic.manager;
 
+import forex.genetic.util.LogUtil;
 import forex.genetic.util.Constants;
 import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.entities.indicator.Indicator;
@@ -22,6 +23,11 @@ import static forex.genetic.util.Constants.*;
 public class MutationManager {
 
     private EspecificMutationManager especificMutationManager = EspecificMutationManager.getInstance();
+    private boolean endProcess = false;
+
+    public synchronized void endProcess() {
+        this.endProcess = true;
+    }
 
     public Poblacion[] mutate(int generacion, Poblacion poblacion, int percentValue) {
         Poblacion[] poblacionArray = new Poblacion[2];
@@ -35,8 +41,8 @@ public class MutationManager {
         int size = individuos.size();
         int counter = 0;
 
-        while (counter < percentValue) {
-            int pos1 = counter % size;
+        while ((counter < percentValue) && (!endProcess)) {
+            int pos1 = counter % individuos.size();
             if (pos1 < individuos.size()) {
                 try {
                     IndividuoEstrategia individuo1 = individuos.get(pos1);
@@ -47,7 +53,7 @@ public class MutationManager {
                     for (int i = 0; i < individuo1.getOpenIndicators().size(); i++) {
                         Indicator openIndicator = individuo1.getOpenIndicators().get(i);
                         IndicatorManager indicatorManager = IndicatorManager.getInstance(i);
-                        if (random.nextDouble() < 0.2) {
+                        if (random.nextDouble() < 0.1) {
                             openIndicators.add(null);
                         } else {
                             Indicator indHijo = openIndicator;
@@ -57,7 +63,7 @@ public class MutationManager {
                             openIndicators.add(indHijo);
                         }
                         Indicator closeIndicator = individuo1.getCloseIndicators().get(i);
-                        if (random.nextDouble() < 10.0) {
+                        if (random.nextDouble() < 0.1) {
                             closeIndicators.add(null);
                         } else {
                             Indicator indHijo = closeIndicator;
@@ -105,7 +111,8 @@ public class MutationManager {
                     counter++;
                 } catch (ArrayIndexOutOfBoundsException ex) {
                 }
-
+            } else {
+                LogUtil.logTime("MutationManager mutation Counter=" + counter + " pos1=" + pos1, 5);
             }
         }
         parentsPoblacion.setIndividuos(parents);

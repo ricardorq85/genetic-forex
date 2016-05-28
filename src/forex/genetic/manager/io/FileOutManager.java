@@ -44,6 +44,7 @@ public class FileOutManager {
 
     public void write(IndividuoEstrategia individuo, Interval<Date> dateInterval, boolean first, int i)
             throws IOException {
+        write(individuo.getProcessedUntil() + " ");
         if (first) {
             write("<First>");
         }

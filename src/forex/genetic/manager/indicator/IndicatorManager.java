@@ -49,14 +49,14 @@ public abstract class IndicatorManager<E> {
     private synchronized static void load() {
         if (list == null) {
             list = new Vector<IndicatorManager>();
-            list.add(averageIndicatorManager);
-            list.add(macdIndicatorManager);
-            list.add(compareIndicatorManager);
-            list.add(sarIndicatorManager);
-            list.add(adxIndicatorManager);
-            list.add(rsiIndicatorManager);
-            list.add(bollingerBandIndicatorManager);
-            list.add(momentumIndicatorManager);
+            list.add(averageIndicatorManager);//0
+            list.add(macdIndicatorManager);//1
+            list.add(compareIndicatorManager);//2
+            list.add(sarIndicatorManager);//3
+            list.add(adxIndicatorManager);//4
+            list.add(rsiIndicatorManager);//5
+            list.add(bollingerBandIndicatorManager);//6
+            list.add(momentumIndicatorManager);//7
         }
     }
 

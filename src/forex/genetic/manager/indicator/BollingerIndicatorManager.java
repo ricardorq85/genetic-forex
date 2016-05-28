@@ -16,7 +16,7 @@ import forex.genetic.entities.indicator.Bollinger;
 public class BollingerIndicatorManager extends IntervalIndicatorManager<Bollinger> {
 
     public BollingerIndicatorManager() {
-        super(true, "Bollinger");
+        super(false, "Bollinger");
     }
 
     public Bollinger getIndicatorInstance() {
@@ -29,7 +29,7 @@ public class BollingerIndicatorManager extends IntervalIndicatorManager<Bollinge
         if (indicator != null) {
             bollingerBand.setPeriod(indicator.getPeriod());
             bollingerBand.setDesviation(indicator.getDesviation());
-            interval = intervalManager.generate(indicator.getUpper() - indicator.getLower(), point.getLow(), point.getHigh());
+            interval = intervalManager.generate(indicator.getUpper(), indicator.getLower(), Double.NaN);
         } else {
             interval = intervalManager.generate(Double.NaN, Double.NaN, Double.NaN);
         }
@@ -39,11 +39,16 @@ public class BollingerIndicatorManager extends IntervalIndicatorManager<Bollinge
 
     @Override
     public boolean operate(Bollinger bollingerBandIndividuo, Bollinger iBollinger, Point point) {
-        return intervalManager.operate(bollingerBandIndividuo.getInterval(), iBollinger.getUpper() - iBollinger.getLower(), point);
+        return intervalManager.operate(bollingerBandIndividuo.getInterval(), iBollinger.getUpper(), iBollinger.getLower());
     }
 
+    /*
+    @Override
+    public boolean operate(Bollinger bollingerBandIndividuo, Bollinger iBollinger, Point point) {
+    return intervalManager.operate(bollingerBandIndividuo.getInterval(), iBollinger.getUpper() - iBollinger.getLower(), point);
+    }
     @Override
     public Interval calculateInterval(Bollinger bollingerBandIndividuo, Bollinger iBollinger, Point point) {
-        return intervalManager.calculateInterval(bollingerBandIndividuo.getInterval(), iBollinger.getUpper() - iBollinger.getLower(), point);
-    }
+    return intervalManager.calculateInterval(bollingerBandIndividuo.getInterval(), iBollinger.getUpper() - iBollinger.getLower(), point);
+    }*/
 }
