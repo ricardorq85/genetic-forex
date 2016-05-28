@@ -22,10 +22,24 @@ public class Poblacion implements Serializable {
     private List<IndividuoEstrategia> individuos = new Vector<IndividuoEstrategia>();
     private OperationType operationType = null;
     private String pair = null;
+    private int riskLevel = 0;
+    private double dRiskLevel = Constants.MAX_RISK_LEVEL;
 
     public Poblacion() {
         this.operationType = PropertiesManager.getOperationType();
         this.pair = PropertiesManager.getPropertyString(Constants.PAIR);
+        setRiskLevel(PropertiesManager.getPropertyDouble(Constants.RISK_LEVEL) / Constants.MAX_RISK_LEVEL);
+        if (riskLevel != 0) {
+            setRiskLevel(riskLevel);
+        }
+    }
+
+    public double getRiskLevel() {
+        return dRiskLevel;
+    }
+
+    public void setRiskLevel(double riskLevel) {
+        this.dRiskLevel = riskLevel;
     }
 
     public String getPair() {
@@ -47,15 +61,35 @@ public class Poblacion implements Serializable {
     public Poblacion getFirst() {
         return getFirst(1);
     }
-    
-    public Poblacion getByProcessedUntil(int cantidad, int processedUntil) {
+
+    public Poblacion getByProcessedUntil(int processedUntil) {
         Poblacion p = new Poblacion();
         for (IndividuoEstrategia individuoEstrategia : this.getIndividuos()) {
-            if (processedUntil == individuoEstrategia.getProcessedUntil()) {
-                p.getIndividuos().add(individuoEstrategia);
+            if (validateIndividuo(individuoEstrategia)) {
+                if ((individuoEstrategia.getProcessedUntil() == processedUntil)
+                        || (!individuoEstrategia.getFileId().equals(PropertiesManager.getPropertyString(Constants.FILE_ID)))) {
+                    if ((this.getRiskLevel() != PropertiesManager.getPropertyDouble(Constants.RISK_LEVEL) / Constants.MAX_RISK_LEVEL)
+                            || (!individuoEstrategia.getFileId().equals(PropertiesManager.getPropertyString(Constants.FILE_ID)))
+                            || (!Fortaleza.currentVersion.equals(individuoEstrategia.getFortaleza().getVersion()))
+                            || (!PropertiesManager.getFortalezaType().equals(individuoEstrategia.getFortaleza().getType()))) {
+                        individuoEstrategia.setFortaleza(null);
+                        individuoEstrategia.setListaFortaleza(null);
+                        individuoEstrategia.setProcessedUntil(0);
+                    }
+                    p.getIndividuos().add(individuoEstrategia);
+                }
             }
         }
         return p;
+    }
+
+    private boolean validateIndividuo(IndividuoEstrategia ind) {
+        return ((ind.getTakeProfit() >= PropertiesManager.getPropertyDouble(Constants.MIN_TP)
+                && (ind.getTakeProfit() <= PropertiesManager.getPropertyDouble(Constants.MAX_TP)))
+                && (ind.getStopLoss() >= PropertiesManager.getPropertyDouble(Constants.MIN_SL)
+                && (ind.getStopLoss() <= PropertiesManager.getPropertyDouble(Constants.MAX_SL)))
+                && (ind.getLot() >= PropertiesManager.getPropertyDouble(Constants.MIN_LOT)
+                && (ind.getLot() <= PropertiesManager.getPropertyDouble(Constants.MAX_LOT))));
     }
 
     public Poblacion getFirst(int cantidad) {
@@ -85,9 +119,13 @@ public class Poblacion implements Serializable {
 
     public void addAll(Poblacion poblacion) {
         for (IndividuoEstrategia individuoEstrategia : poblacion.getIndividuos()) {
-            if (!this.individuos.contains(individuoEstrategia)) {
-                this.individuos.add(individuoEstrategia);
-            }
+            this.add(individuoEstrategia);
+        }
+    }
+
+    public void add(IndividuoEstrategia ie) {
+        if (!this.individuos.contains(ie)) {
+            this.individuos.add(ie);
         }
     }
 
@@ -96,7 +134,7 @@ public class Poblacion implements Serializable {
     set.addAll(individuosHistoricos);
     individuosHistoricos.clear();
     set.addAll(individuos);
-
+    
     individuosHistoricos.clear();
     individuosHistoricos.addAll(set);
     }

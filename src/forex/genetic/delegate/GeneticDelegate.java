@@ -14,6 +14,7 @@ import forex.genetic.manager.MutationManager;
 import forex.genetic.manager.PoblacionManager;
 import forex.genetic.manager.io.FileOutManager;
 import forex.genetic.manager.io.SerializationManager;
+import forex.genetic.thread.SerializationReadAllthread;
 import forex.genetic.util.LogUtil;
 import java.io.IOException;
 import java.util.List;
@@ -34,21 +35,30 @@ public class GeneticDelegate {
     public GeneticDelegate() {
     }
 
-    public Poblacion process(int poblacionCounter) {
+    public Poblacion process() {
         Poblacion poblacion = new Poblacion();
         int totalSize = 0;
-        for (int poblacionIndex = PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION); poblacionIndex <= poblacionCounter; poblacionIndex++) {            
+        for (int poblacionIndex = PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION);
+                poblacionIndex <= PropertiesManager.getPropertyInt(Constants.END_POBLACION) && !PropertiesManager.getPropertyBoolean(Constants.TERMINAR);
+                poblacionIndex++) {
             LogUtil.logTime("\n Cargar poblacion serializada " + poblacionIndex);
-            try {
-                Poblacion p = serializationManager.readAll(PropertiesManager.getPropertyString(Constants.SERIALICE_PATH), PropertiesManager.getPropertyInt(Constants.SHOW_HARDEST) * 5, poblacionIndex);
-                poblacion.addAll(p);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            LogUtil.logTime("Cargar poblacion serializada " + poblacionIndex);
 
-            LogUtil.logTime("\n Crear poblacion " + poblacionIndex);
+                        try {
+            Poblacion p = serializationManager.readAll(PropertiesManager.getPropertyString(Constants.SERIALICE_PATH), PropertiesManager.getPropertyInt(Constants.READ_HARDEST), poblacionIndex);
+            poblacion.addAll(p);
+            } catch (Exception ex) {
+            ex.printStackTrace();
+            }
+            /*SerializationReadAllthread serReadAllThread = new SerializationReadAllthread(
+                    PropertiesManager.getPropertyString(Constants.SERIALICE_PATH),
+                    PropertiesManager.getPropertyInt(Constants.READ_HARDEST),
+                    poblacionIndex, serializationManager, poblacion);
+            serReadAllThread.start();
+
+            LogUtil.logTime("Cargar poblacion serializada " + poblacionIndex);
+*/
             PoblacionManager poblacionManager = new PoblacionManager();
+            LogUtil.logTime("\n Crear poblacion " + poblacionIndex);            
             poblacionManager.load("" + poblacionIndex, true);
             LogUtil.logTime("Crear poblacion " + poblacionIndex);
 
@@ -63,12 +73,13 @@ public class GeneticDelegate {
             int size = poblacion.getIndividuos().size();
             totalSize += size;
             LogUtil.logTime("Points = " + poblacionManager.getPoints().size() + ", Individuos = " + size);
-            for (generacionIndex = 1; generacionIndex <= PropertiesManager.getPropertyInt(Constants.GENERATIONS); generacionIndex++) {
+            for (generacionIndex = 1; generacionIndex <= PropertiesManager.getPropertyInt(Constants.GENERATIONS)
+                    && !PropertiesManager.getPropertyBoolean(Constants.TERMINAR); generacionIndex++) {
                 PropertiesManager.load();
                 size = poblacion.getIndividuos().size();
                 totalSize += size;
-                LogUtil.logTime("Generacion = " + (generacionIndex - 1) + ", Individuos = " + size);
                 this.processGeneracion(poblacion, generacionIndex);
+                LogUtil.logTime("Generacion = " + (generacionIndex - 1) + ", Individuos = " + size);
                 for (int poblacionManagerIndex = 1; poblacionManagerIndex <= poblacionIndex; poblacionManagerIndex++) {
                     PoblacionManager oldPoblacionManager = null;
                     if (poblacionManagerIndex == poblacionIndex) {
@@ -82,7 +93,6 @@ public class GeneticDelegate {
                     funcionFortalezaManager.calculateFortaleza(totalSize, oldPoblacionManager.getPoints(), poblacion,
                             ((poblacionIndex == 1) && (generacionIndex == 1)),
                             poblacionManagerIndex);
-                    //((generacionIndex == 1) && (poblacionManagerIndex == poblacionIndex)));
                     //LogUtil.logTime("Calcular fortaleza");
                     funcionFortalezaManager.processInvalids(poblacion);
                 }
@@ -107,7 +117,7 @@ public class GeneticDelegate {
             try {
                 if (poblacionManager.getPoblacion() != null) {
                     fileOutManager.write(poblacion.getFirst(PropertiesManager.getPropertyInt(Constants.SHOW_HARDEST)), poblacionManager.getDateInterval(), true);
-                    serializationManager.writeObject(id, poblacion, poblacionManager.getDateInterval());
+                    serializationManager.writeObject(id, poblacion, poblacionManager.getDateInterval(), poblacionIndex);
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();

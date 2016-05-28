@@ -23,11 +23,11 @@ public class ForexGenetic {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         long id = System.currentTimeMillis();
         PropertiesManager.load();
-        PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + id + ".log");
+        PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + PropertiesManager.getOperationType() + PropertiesManager.getPropertyString(Constants.PAIR) + id + ".log");
         System.setOut(out);
         System.setErr(out);
         GeneticDelegate delegate = new GeneticDelegate();
         GeneticDelegate.id = Long.toString(id);
-        Poblacion poblacion = delegate.process(PropertiesManager.getPropertyInt(Constants.POBLACION_COUNTER));
+        Poblacion poblacion = delegate.process();
     }
 }

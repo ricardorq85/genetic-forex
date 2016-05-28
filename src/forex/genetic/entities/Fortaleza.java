@@ -4,15 +4,19 @@
  */
 package forex.genetic.entities;
 
+import forex.genetic.manager.PropertiesManager;
+import forex.genetic.util.Constants.FortalezaType;
 import java.io.Serializable;
 
 /**
  *
  * @author ricardorq85
  */
-public class Fortaleza implements Comparable<Fortaleza>, Serializable {
+public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable {
 
     public static final long serialVersionUID = 201101251800L;
+    public static final String currentVersion = "4.301";
+    private String version = "0.0";
     private double pips = 0.0;
     private double profit = 0.0;
     private double wonPips = 0.0;
@@ -26,7 +30,47 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable {
     private int maxConsecutiveWonOperationsNumber = 0;
     private int maxConsecutiveLostOperationsNumber = 0;
     private double value = 0.0;
+    private double calculatedValue = 0.0;
     private double diffValue = 0.0;
+    private double riskLevel = 0.0;
+    private FortalezaType type = null;
+
+    public Fortaleza() {
+        setVersion(currentVersion);
+        setType(PropertiesManager.getFortalezaType());
+    }
+
+    public FortalezaType getType() {
+        return type;
+    }
+
+    public void setType(FortalezaType type) {
+        this.type = type;
+    }
+    
+    public double getCalculatedValue() {
+        return calculatedValue;
+    }
+
+    public void setCalculatedValue(double calculatedValue) {
+        this.calculatedValue = calculatedValue;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public double getRiskLevel() {
+        return riskLevel;
+    }
+
+    public void setRiskLevel(double riskLevel) {
+        this.riskLevel = riskLevel;
+    }
 
     public double getDiffValue() {
         return diffValue;
@@ -145,6 +189,9 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable {
         StringBuilder buffer = new StringBuilder();
         buffer.append(" Fortaleza=" + value + " Diff=" + diffValue);
         buffer.append("; Profit=" + this.profit);
+        buffer.append("; RiskLevel=" + this.riskLevel);
+        buffer.append("; Version=" + this.version);
+        buffer.append("; Type=" + this.type);
         buffer.append("\n\t\t");
         buffer.append("; Pips=" + this.pips);
         buffer.append("; Pips Ganados=" + this.wonPips);
@@ -166,5 +213,28 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable {
 
     public int compareTo(Fortaleza o) {
         return (-Double.compare(value, o.getValue()));
+    }
+
+    @Override
+    public Fortaleza clone() throws CloneNotSupportedException {
+        Fortaleza f = new Fortaleza();
+        f.setDiffValue(diffValue);
+        f.setLostOperationsNumber(lostOperationsNumber);
+        f.setLostPips(lostPips);
+        f.setMaxConsecutiveLostOperationsNumber(maxConsecutiveLostOperationsNumber);
+        f.setMaxConsecutiveLostPips(maxConsecutiveLostPips);
+        f.setMaxConsecutiveWonOperationsNumber(maxConsecutiveWonOperationsNumber);
+        f.setMaxConsecutiveWonPips(maxConsecutiveWonPips);
+        f.setOperationsNumber(operationsNumber);
+        f.setPips(pips);
+        f.setPipsFactor(pipsFactor);
+        f.setProfit(profit);
+        f.setRiskLevel(riskLevel);
+        f.setValue(value);
+        f.setCalculatedValue(calculatedValue);
+        f.setVersion(version);
+        f.setWonOperationsNumber(wonOperationsNumber);
+        f.setWonPips(wonPips);
+        return f;
     }
 }

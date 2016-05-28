@@ -12,7 +12,7 @@ import forex.genetic.manager.io.SerializationManager;
 import forex.genetic.util.Constants;
 import java.io.File;
 import java.io.IOException;
-import static forex.genetic.util.Constants.*;
+import java.io.PrintStream;
 
 /**
  *
@@ -21,15 +21,38 @@ import static forex.genetic.util.Constants.*;
 public class ForexEstrategiaTester {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
+        long id = System.currentTimeMillis();
+        PropertiesManager.load();
+        PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + "Tester_" + PropertiesManager.getOperationType() + PropertiesManager.getPropertyString(Constants.PAIR) + id + ".log");
+        System.setOut(out);
+        System.setErr(out);
         SerializationManager serializationManager = new SerializationManager();
-        Poblacion poblacion = serializationManager.readObject(new File(PropertiesManager.getPropertyString(Constants.SERIALICE_PATH) +
-                "SellEURUSD200910290001-200911231853_1306198986343"));
+        String testStrategy = PropertiesManager.getPropertyString(Constants.TEST_STRATEGY);
+        String testFile = PropertiesManager.getPropertyString(Constants.TEST_FILE);
+        String serPath = PropertiesManager.getPropertyString(Constants.SERIALICE_PATH);
+        Poblacion poblacion = null;
+
+        if ((testFile == null) || ("".equals(testFile))) {
+            poblacion = serializationManager.readByEstrategyId(serPath, testStrategy);
+        } else {
+            if ((testStrategy == null) || ("".equals(testStrategy))) {
+                poblacion = serializationManager.readObject(new File(
+                        serPath
+                        + File.separatorChar
+                        + testFile));
+            } else {
+                poblacion = serializationManager.readStrategy(new File(
+                        serPath
+                        + File.separatorChar
+                        + testFile), testStrategy);
+            }
+        }
 
         Poblacion p = poblacion.getFirst(1);
         IndividuoEstrategia individuoEstrategia = p.getIndividuos().get(0);
         GeneticTesterDelegate delegate = new GeneticTesterDelegate();
         GeneticTesterDelegate.id = Long.toString(System.currentTimeMillis());
-        delegate.process(PropertiesManager.getPropertyInt(Constants.POBLACION_COUNTER), individuoEstrategia);
-        
+        delegate.process(individuoEstrategia);
+
     }
 }

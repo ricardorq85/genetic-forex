@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class IndicatorController {
 
-    private double pairFactor = Constants.getPairFactor(PropertiesManager.getPropertyString(Constants.PAIR));
+    private double pairFactor = PropertiesManager.getPropertyDouble(Constants.PAIR_FACTOR);
 
     public IndicatorController() {
     }
@@ -95,9 +95,9 @@ public class IndicatorController {
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() >= resultInterval.getHighInterval())
                         ? resultInterval.getLowInterval() : (resultInterval.getLowInterval() + resultInterval.getHighInterval()) / 2;
                 if (PropertiesManager.getOperationType().equals(Constants.OperationType.Buy)) {
-                    price +=  PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
+                    price += PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
                 } else {
-                    price -=  PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
+                    price -= PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
                 }
                 price = NumberUtil.round(price);
             }
@@ -138,9 +138,9 @@ public class IndicatorController {
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() >= resultInterval.getHighInterval())
                         ? resultInterval.getLowInterval() : (resultInterval.getLowInterval() + resultInterval.getHighInterval()) / 2;
                 if (PropertiesManager.getOperationType().equals(Constants.OperationType.Buy)) {
-                    price -=  PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
+                    price -= PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
                 } else {
-                    price +=  PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
+                    price += PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
                 }
                 price = NumberUtil.round(price);
             }
@@ -148,9 +148,25 @@ public class IndicatorController {
         return price;
     }
 
-    public double calculatePrice(List<Point> points, int index) {
+    public double calculateStopLossPrice(List<Point> points, int index, Constants.OperationType operationType) {
         Point currentPoint = points.get(index);
-        return currentPoint.getWeihgted();
+        double value = 0.0D;
+        if (operationType.equals(Constants.OperationType.Buy)) {
+            value = currentPoint.getLow();
+        } else {
+            value = currentPoint.getHigh();
+        }
+        return value;
+    }
+
+    public double calculateTakePrice(List<Point> points, int index, Constants.OperationType operationType) {
+        Point currentPoint = points.get(index);
+        double value = 0.0D;
+        if (operationType.equals(Constants.OperationType.Buy)) {
+            value = currentPoint.getHigh();
+        } else {
+            value = currentPoint.getLow();
+        }
+        return value;
     }
 }
-

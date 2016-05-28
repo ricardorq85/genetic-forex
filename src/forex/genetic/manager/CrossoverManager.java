@@ -31,16 +31,16 @@ public class CrossoverManager {
 
         Random random = new Random();
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
-        int size =individuos.size();
+        int size = individuos.size();
         int counter = 0;
 
         while (counter < percentValue) {
-            int pos1 = counter;
+            int pos1 = counter % size;
             int pos2 = random.nextInt(size);
 
             if (pos1 != pos2) {
-                IndividuoEstrategia individuo1 =individuos.get(pos1);
-                IndividuoEstrategia individuo2 =individuos.get(pos2);
+                IndividuoEstrategia individuo1 = individuos.get(pos1);
+                IndividuoEstrategia individuo2 = individuos.get(pos2);
 
                 IndividuoEstrategia hijo = new IndividuoEstrategia(generacion, individuo1, individuo2, IndividuoType.CROSSOVER);
                 List<Indicator> openIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());

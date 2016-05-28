@@ -32,12 +32,12 @@ public class MutationManager {
 
         Random random = new Random();
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
-        int size =individuos.size();
+        int size = individuos.size();
         int counter = 0;
 
         while (counter < percentValue) {
-            int pos1 = counter;
-            IndividuoEstrategia individuo1 =individuos.get(pos1);
+            int pos1 = counter % size;
+            IndividuoEstrategia individuo1 = individuos.get(pos1);
 
             IndividuoEstrategia hijo = new IndividuoEstrategia(generacion, individuo1, null, IndividuoType.MUTATION);
             List<Indicator> openIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());

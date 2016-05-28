@@ -4,6 +4,7 @@
  */
 package forex.genetic.entities;
 
+import java.util.Vector;
 import forex.genetic.manager.PropertiesManager;
 import java.util.Collections;
 import forex.genetic.entities.indicator.Indicator;
@@ -12,6 +13,7 @@ import forex.genetic.util.Constants;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import static forex.genetic.util.Constants.*;
@@ -28,6 +30,8 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     private int generacion = -1;
     private IndividuoEstrategia parent1 = null;
     private IndividuoEstrategia parent2 = null;
+    private String idParent1 = null;
+    private String idParent2 = null;
     private IndividuoType individuoType = IndividuoType.INITIAL;
     private int takeProfit = 0;
     private int stopLoss = 0;
@@ -36,6 +40,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     private List<? extends Indicator> openIndicators = null;
     private List<? extends Indicator> closeIndicators = null;
     private Fortaleza fortaleza = null;
+    private List<Fortaleza> listaFortaleza = new ArrayList<Fortaleza>();
     public static final long serialVersionUID = 201101251800L;
 
     public IndividuoEstrategia() {
@@ -76,7 +81,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     }
 
     public void setParent1(IndividuoEstrategia parent1) {
-        this.parent1 = parent1;
+        this.idParent1 = (parent1 == null) ? null : parent1.id;
     }
 
     public IndividuoEstrategia getParent2() {
@@ -84,7 +89,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     }
 
     public void setParent2(IndividuoEstrategia parent2) {
-        this.parent2 = parent2;
+        this.idParent1 = (parent1 == null) ? null : parent1.id;
     }
 
     public Fortaleza getFortaleza() {
@@ -167,6 +172,34 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         this.fileId = fileId;
     }
 
+    public String getIdParent1() {
+        return idParent1;
+    }
+
+    public void setIdParent1(String idParent1) {
+        this.idParent1 = idParent1;
+    }
+
+    public String getIdParent2() {
+        return idParent2;
+    }
+
+    public void setIdParent2(String idParent2) {
+        this.idParent2 = idParent2;
+    }
+
+    public List<Fortaleza> getListaFortaleza() {
+        return listaFortaleza;
+    }
+
+    public void setListaFortaleza(List<Fortaleza> listaFortaleza) {
+        if (listaFortaleza == null) {
+            this.listaFortaleza = new Vector<Fortaleza>();
+        } else {
+            this.listaFortaleza = listaFortaleza;
+        }
+    }
+
     public int compareTo(IndividuoEstrategia o) {
         return (this.fortaleza.compareTo(o.getFortaleza()));
     }
@@ -175,8 +208,13 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     public boolean equals(Object obj) {
         if (obj instanceof IndividuoEstrategia) {
             IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
-            return (this.getId().equals(objIndividuo.getId())) || (this.openIndicators.equals(objIndividuo.openIndicators)
-                    && this.closeIndicators.equals(objIndividuo.closeIndicators)
+            return (this.getId().equals(objIndividuo.getId()))
+                    || ( !((this.openIndicators != null && objIndividuo.openIndicators == null)
+                        && (this.openIndicators == null && objIndividuo.openIndicators != null)
+                        && this.openIndicators.equals(objIndividuo.openIndicators))
+                    && !((this.closeIndicators != null && objIndividuo.closeIndicators == null)
+                        && (this.closeIndicators == null && objIndividuo.closeIndicators != null)
+                        && this.closeIndicators.equals(objIndividuo.closeIndicators))
                     && (this.takeProfit == objIndividuo.takeProfit)
                     && (this.stopLoss == objIndividuo.stopLoss));
         } else {
@@ -188,11 +226,11 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         if (obj instanceof IndividuoEstrategia) {
             IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
             return ((this.openIndicators.equals(objIndividuo.openIndicators)
-                        && Collections.frequency(this.openIndicators, null) != this.openIndicators.size())
-                    ||(this.closeIndicators.equals(objIndividuo.closeIndicators)
-                        && Collections.frequency(this.closeIndicators, null) != this.closeIndicators.size())
+                    && Collections.frequency(this.openIndicators, null) != this.openIndicators.size())
+                    || (this.closeIndicators.equals(objIndividuo.closeIndicators)
+                    && Collections.frequency(this.closeIndicators, null) != this.closeIndicators.size())
                     || ((Math.abs((objIndividuo.takeProfit - this.takeProfit) / new Double(this.takeProfit)) < 0.03)
-                        && (Math.abs((objIndividuo.stopLoss - this.stopLoss) / new Double(this.stopLoss)) < 0.03)));
+                    && (Math.abs((objIndividuo.stopLoss - this.stopLoss) / new Double(this.stopLoss)) < 0.03)));
         } else {
             return false;
         }
@@ -213,11 +251,11 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         buffer.append("\n\t");
         buffer.append(((this.fortaleza == null) ? 0.0 : this.fortaleza.toString()));
         buffer.append("\n\t");
-        if (parent1 != null) {
-            buffer.append("; Padre 1=" + parent1.getId());
+        if (idParent1 != null) {
+            buffer.append("; Padre 1=" + idParent1);
         }
-        if (parent2 != null) {
-            buffer.append("; Padre 2=" + parent2.getId());
+        if (idParent2 != null) {
+            buffer.append("; Padre 2=" + idParent2);
         }
         buffer.append("; TakeProfit=" + this.takeProfit);
         buffer.append("; Stoploss=" + this.stopLoss);
@@ -234,7 +272,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     public String toFileString(Interval<Date> dateInterval) {
         StringBuilder buffer = new StringBuilder();
         buffer.append("EstrategiaId=" + (this.id) + ",");
-        buffer.append("ProcessedUntil=" + (this.processedUntil) + ",");
+        buffer.append("ProcessedUntil=" + (this.processedUntil) + " / " + PropertiesManager.getPropertyInt(Constants.END_POBLACION) + ",");
         buffer.append("Pair=" + PropertiesManager.getPropertyString(Constants.PAIR) + ",");
         buffer.append("Operation=" + PropertiesManager.getOperationType() + ",");
 

@@ -18,7 +18,7 @@ public class Constants {
     public static final String POINTS_CONTROL = "POINTS_CONTROL";
     public static final String GENERATIONS = "GENERATIONS";
     public static final String INITIAL_POBLACION = "INITIAL_POBLACION";
-    public static final String POBLACION_COUNTER = "POBLACION_COUNTER";
+    public static final String END_POBLACION = "END_POBLACION";
     public static final String FILE_ID = "FILE_ID";
     public static final String HARDEST_PERCENT = "HARDEST_PERCENT";
     public static final String CROSSOVER_PERCENT = "CROSSOVER_PERCENT";
@@ -28,6 +28,7 @@ public class Constants {
     public static final String MOD_POINTS = "MOD_POINTS";
     public static final String VIGENCIA = "VIGENCIA";
     public static final String SHOW_HARDEST = "SHOW_HARDEST";
+    public static final String READ_HARDEST = "READ_HARDEST";
     public static final String SHOW_WEAKEST = "SHOW_WEAKEST";
     public static final String PAIR = "PAIR";
     public static final String MINIMUN_FORTALEZA = "MINIMUN_FORTALEZA";
@@ -45,27 +46,19 @@ public class Constants {
     public static final String FILE_PATH = "FILE_PATH";
     public static final String SERIALICE_PATH = "SERIALICE_PATH";
     public static final String LOG_PATH = "LOG_PATH";
-
-    public static final Hashtable<String, Double> PAIR_FACTOR = new Hashtable<String, Double>();
+    public static final String TERMINAR = "TERMINAR";
+    public static final String RECALCULATE_ALL = "RECALCULATE_ALL";
+    public static final String TEST_FILE = "TEST_FILE";
+    public static final String TEST_STRATEGY = "TEST_STRATEGY";
+    public static final String RISK_LEVEL = "RISK_LEVEL";
+    public static final String PAIR_FACTOR = "PAIR_FACTOR";
+    public static final String MARGIN_REQUIRED = "MARGIN_REQUIRED";
+    public static final String PRESENT_NUMBER_POBLACION = "PRESENT_NUMBER_POBLACION";
+    public static final String FORTALEZA_TYPE = "FORTALEZA_TYPE";
+    public static final String SHOW_OPERATIONS = "SHOW_OPERATIONS";
+    
+    public static final double MAX_RISK_LEVEL = 10;
     public static final Hashtable<String, Double> PAIR_MARGIN_REQUIRED = new Hashtable<String, Double>();
-
-    public static double getPairFactor(String pair) {
-        if (PAIR_FACTOR.isEmpty()) {
-            PAIR_FACTOR.put("EURUSD", 100000.0);
-            PAIR_FACTOR.put("GBPUSD", 100000.0);
-            PAIR_FACTOR.put("GBPJPY", 1000.0);
-        }
-        return Constants.PAIR_FACTOR.get(pair);
-    }
-
-    public static double getPairMarginRequired(String pair) {
-        if (PAIR_MARGIN_REQUIRED.isEmpty()) {
-            PAIR_MARGIN_REQUIRED.put("EURUSD", 280.0);
-            PAIR_MARGIN_REQUIRED.put("GBPUSD", 280.0);
-            PAIR_MARGIN_REQUIRED.put("GBPJPY", 280.0);
-        }
-        return Constants.PAIR_MARGIN_REQUIRED.get(pair);
-    }
 
     public enum IndividuoType {
 
@@ -86,5 +79,11 @@ public class Constants {
 
         Buy,
         Sell;
+    }
+    
+    public enum FortalezaType {
+
+        Pips,
+        Stable;
     }
 }

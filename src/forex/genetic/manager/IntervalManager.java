@@ -17,7 +17,7 @@ import java.util.Random;
  */
 public class IntervalManager {
 
-    private double pairFactor = Constants.getPairFactor(PropertiesManager.getPropertyString(Constants.PAIR));
+    private double pairFactor = PropertiesManager.getPropertyDouble(Constants.PAIR_FACTOR);
     private double min = Double.POSITIVE_INFINITY;
     private double max = Double.NEGATIVE_INFINITY;
     private Random random = new Random();

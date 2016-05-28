@@ -21,9 +21,9 @@ public class GeneticTesterDelegate extends GeneticDelegate {
         super();
     }
 
-    public void process(int poblacionCounter, IndividuoEstrategia individuoEstrategia) {
+    public void process(IndividuoEstrategia individuoEstrategia) {
         FuncionFortalezaManager funcionFortalezaManager = new FuncionFortalezaManager();
-        for (int poblacionIndex = PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION); poblacionIndex <= poblacionCounter; poblacionIndex++) {
+        for (int poblacionIndex = PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION); poblacionIndex <= PropertiesManager.getPropertyInt(Constants.END_POBLACION) && !PropertiesManager.getPropertyBoolean(Constants.TERMINAR); poblacionIndex++) {
             LogUtil.logTime("\n Crear poblacion " + poblacionIndex);
             PoblacionManager oldPoblacionManager = new PoblacionManager();
             oldPoblacionManager.load("" + poblacionIndex, false);

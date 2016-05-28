@@ -5,6 +5,8 @@
 package forex.genetic.entities;
 
 import forex.genetic.entities.indicator.Indicator;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -24,9 +26,18 @@ public class Point {
     private double closeCompare = 0.0;
     private double min = 0.0;
     private double max = 0.0;
+    private double spread = 0.0;
     private List<? extends Indicator> indicators = null;
 
     public Point() {
+    }
+
+    public double getSpread() {
+        return spread;
+    }
+
+    public void setSpread(double spread) {
+        this.spread = spread;
     }
 
     public int getIndex() {
@@ -123,11 +134,13 @@ public class Point {
 
     @Override
     public String toString() {
-        return "Index=" + this.index
-                + " Date=" + this.date
-                + " Open=" + this.open
-                + " Close=" + this.close
-                + " Low=" + this.low
-                + " High=" + this.high;
+        DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+        return ";Index=" + this.index
+                + ";Date=" + format.format(this.date)
+                + ";Open=" + this.open
+                + ";Close=" + this.close
+                + ";Low=" + this.low
+                + ";High=" + this.high
+                + ";Spread=" + this.spread;
     }
 }

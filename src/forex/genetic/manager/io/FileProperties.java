@@ -6,6 +6,7 @@ package forex.genetic.manager.io;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -19,7 +20,9 @@ public class FileProperties {
     public static void load() {
         properties = new Properties();
         try {
-            properties.load(new FileInputStream("Forex.properties"));
+            InputStream is = new FileInputStream("Forex.properties");
+            properties.load(is);
+            is.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -68,27 +68,34 @@ public class BasePointManagerFile {
         BufferedReader reader = new BufferedReader(
                 new FileReader(filePath));
         String lineRead = reader.readLine();
+        boolean hasSpread = lineRead.contains("Spread");
+        int indexField = 0;
         while ((counter < PropertiesManager.getPointsControl()) && ((lineRead = reader.readLine()) != null)) {
+            indexField = 0;
             String[] strings = lineRead.split(",");
-            Date date = format.parse(strings[1] + strings[2]);
-            double baseOpen = Double.parseDouble(strings[3]);
-            double baseLow = Double.parseDouble(strings[4]);
-            double baseHigh = Double.parseDouble(strings[5]);
-            double baseClose = Double.parseDouble(strings[6]);
-            int volume = Integer.parseInt(strings[7]);
-            double baseAverage = Double.parseDouble(strings[8]);
-            double baseMacdValue = Double.parseDouble(strings[9]);
-            double baseMacdSignal = Double.parseDouble(strings[10]);
-            double compareCloseValue = Double.parseDouble(strings[11]);
-            double compareAverageValue = Double.parseDouble(strings[12]);
-            double baseSar = Double.parseDouble(strings[13]);
-            double baseAdxValue = Double.parseDouble(strings[14]);
-            double baseAdxPlus = Double.parseDouble(strings[15]);
-            double baseAdxMinus = Double.parseDouble(strings[16]);
-            double baseRsi = Double.parseDouble(strings[17]);
-            double baseBollingerUpper = Double.parseDouble(strings[18]);
-            double baseBollingerLower = Double.parseDouble(strings[19]);
-            double baseMomentum = Double.parseDouble(strings[20]);
+            Date date = format.parse(strings[++indexField] + strings[++indexField]);
+            double baseOpen = Double.parseDouble(strings[++indexField]);
+            double baseLow = Double.parseDouble(strings[++indexField]);
+            double baseHigh = Double.parseDouble(strings[++indexField]);
+            double baseClose = Double.parseDouble(strings[++indexField]);
+            int volume = Integer.parseInt(strings[++indexField]);
+            int spread = 0;
+            if (hasSpread){
+                spread = Integer.parseInt(strings[++indexField]);
+            }
+            double baseAverage = Double.parseDouble(strings[++indexField]);
+            double baseMacdValue = Double.parseDouble(strings[++indexField]);
+            double baseMacdSignal = Double.parseDouble(strings[++indexField]);
+            double compareCloseValue = Double.parseDouble(strings[++indexField]);
+            double compareAverageValue = Double.parseDouble(strings[++indexField]);
+            double baseSar = Double.parseDouble(strings[++indexField]);
+            double baseAdxValue = Double.parseDouble(strings[++indexField]);
+            double baseAdxPlus = Double.parseDouble(strings[++indexField]);
+            double baseAdxMinus = Double.parseDouble(strings[++indexField]);
+            double baseRsi = Double.parseDouble(strings[++indexField]);
+            double baseBollingerUpper = Double.parseDouble(strings[++indexField]);
+            double baseBollingerLower = Double.parseDouble(strings[++indexField]);
+            double baseMomentum = Double.parseDouble(strings[++indexField]);
 
             point = new Point();
             point.setIndex(counter);
@@ -98,6 +105,7 @@ public class BasePointManagerFile {
             point.setHigh(NumberUtil.round(baseHigh));
             point.setClose(NumberUtil.round(baseClose));
             point.setVolume(volume);
+            point.setSpread(spread);
             point.setCloseCompare(NumberUtil.round(compareCloseValue));
 
             average = new Average("Ma");
@@ -108,6 +116,9 @@ public class BasePointManagerFile {
             macd.setMacdSignal(NumberUtil.round(baseMacdSignal));
 
             compareAverage = new Average("MaCompare");
+            if (compareAverageValue == 0.0) {
+                compareAverageValue = Double.POSITIVE_INFINITY;
+            }
             compareAverage.setAverage(NumberUtil.round(compareAverageValue));
 
             sar = new Sar("Sar");
