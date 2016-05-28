@@ -1,0 +1,91 @@
+<log> 
+ Cargar poblacion serializada 35 <-- Sun Aug 28 21:09:48 COT 2011
+<log> Cargar poblacion serializada 35 <-- Sun Aug 28 21:10:06 COT 2011
+<log> 
+ Crear poblacion 35 <-- Sun Aug 28 21:10:06 COT 2011
+<log> Crear poblacion 35 <-- Sun Aug 28 21:10:06 COT 2011
+<log>  Fecha = lowInterval=2011/02/03 19:15; highInterval=2011/02/07 05:39 <-- Sun Aug 28 21:10:06 COT 2011
+<log> Points = 2000, Individuos = 138 <-- Sun Aug 28 21:10:06 COT 2011
+<log> Generacion = 0, Individuos = 138 <-- Sun Aug 28 21:10:06 COT 2011
+Not enough money for 1314583788171.219
+i=0; 
+ Id=1314577764812.1171 Generacion=12; ProcessedUntil=35; IndividuoType=CROSSOVER;
+	 Fortaleza=19855.91861528388 Diff=-2000.5343339371393; Profit=3988.860000000007
+		; Pips=10497.00000000004; Pips Ganados=43149.50000000002; Pips Perdidos=-32652.49999999998
+		; Max. Pips Consecutivos Ganados=42398.50000000002; Max. Pips Consecutivos Perdidos=-32073.49999999998
+		; Numero Operaciones=117; Numero Operaciones Ganadoras=59; Numero Operaciones Perdedoras=58
+		; Max. Numero Consecutivo Operaciones Ganadoras=58; Max. Numero Consecutivo Operaciones Perdedoras=57; PipsFactor=120060.51474610507
+	; Padre 1=1314419472437.38005; Padre 2=1314577764812.922; TakeProfit=751; Stoploss=579; Lot=0.38; Initial Balance=5393
+	; Open Indicadores=[null, SellMacdLower=-11.981,SellMacdHigher=8.375, null, SellSarLower=-0.185,SellSarHigher=0.013, SellAdxLower=-28.133000000000003,SellAdxHigher=-5.192, SellRsiLower=-4789.511,SellRsiHigher=-4099.022999999999, null, SellMomentumLower=-4.456,SellMomentumHigher=9263.637]
+	; Close Indicadores=[null, null, null, null, null, null, null, null]
+4,EstrategiaId=1314577764812.756,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=704,StopLoss=594,Lote=0.41,openMaLower=-0.13,openMaHigher=0.027,,null,null,openSarLower=-0.185,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,openMomentumLower=-20.477,openMomentumHigher=9263.637,,null,null,null,null,null,null,null,null,
+3,EstrategiaId=1314583788171.103,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=753,StopLoss=558,Lote=0.41,openMaLower=-0.13,openMaHigher=0.02,,openMacdLower=-11.981,openMacdHigher=8.375,,null,openSarLower=-0.185,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,null,null,null,null,null,null,null,null,null,
+2,EstrategiaId=1314419472437.37418,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=707,StopLoss=527,Lote=0.43,null,openMacdLower=-11.981,openMacdHigher=8.375,,null,openSarLower=-0.216,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,openMomentumLower=-20.477,openMomentumHigher=9263.637,,null,null,null,null,null,null,null,null,
+1,EstrategiaId=1314419472437.34519,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=766,StopLoss=527,Lote=0.42,openMaLower=-0.13,openMaHigher=0.027,,null,null,openSarLower=-0.216,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,null,null,null,null,null,null,null,null,null,
+0,EstrategiaId=1314577764812.1171,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=751,StopLoss=579,Lote=0.38,null,openMacdLower=-11.981,openMacdHigher=8.375,,null,openSarLower=-0.185,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,openMomentumLower=-4.456,openMomentumHigher=9263.637,,null,null,null,null,null,null,null,null,
+<log> Generacion = 1, Individuos = 50 <-- Sun Aug 28 21:15:11 COT 2011
+i=0; 
+ Id=1314577764812.1171 Generacion=12; ProcessedUntil=35; IndividuoType=CROSSOVER;
+	 Fortaleza=19855.91861528388 Diff=-2000.5343339371393; Profit=3988.860000000007
+		; Pips=10497.00000000004; Pips Ganados=43149.50000000002; Pips Perdidos=-32652.49999999998
+		; Max. Pips Consecutivos Ganados=42398.50000000002; Max. Pips Consecutivos Perdidos=-32073.49999999998
+		; Numero Operaciones=117; Numero Operaciones Ganadoras=59; Numero Operaciones Perdedoras=58
+		; Max. Numero Consecutivo Operaciones Ganadoras=58; Max. Numero Consecutivo Operaciones Perdedoras=57; PipsFactor=120060.51474610507
+	; Padre 1=1314419472437.38005; Padre 2=1314577764812.922; TakeProfit=751; Stoploss=579; Lot=0.38; Initial Balance=5393
+	; Open Indicadores=[null, SellMacdLower=-11.981,SellMacdHigher=8.375, null, SellSarLower=-0.185,SellSarHigher=0.013, SellAdxLower=-28.133000000000003,SellAdxHigher=-5.192, SellRsiLower=-4789.511,SellRsiHigher=-4099.022999999999, null, SellMomentumLower=-4.456,SellMomentumHigher=9263.637]
+	; Close Indicadores=[null, null, null, null, null, null, null, null]
+4,EstrategiaId=1314577764812.756,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=704,StopLoss=594,Lote=0.41,openMaLower=-0.13,openMaHigher=0.027,,null,null,openSarLower=-0.185,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,openMomentumLower=-20.477,openMomentumHigher=9263.637,,null,null,null,null,null,null,null,null,
+3,EstrategiaId=1314583788171.103,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=753,StopLoss=558,Lote=0.41,openMaLower=-0.13,openMaHigher=0.02,,openMacdLower=-11.981,openMacdHigher=8.375,,null,openSarLower=-0.185,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,null,null,null,null,null,null,null,null,null,
+2,EstrategiaId=1314419472437.37418,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=707,StopLoss=527,Lote=0.43,null,openMacdLower=-11.981,openMacdHigher=8.375,,null,openSarLower=-0.216,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,openMomentumLower=-20.477,openMomentumHigher=9263.637,,null,null,null,null,null,null,null,null,
+1,EstrategiaId=1314419472437.34519,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=766,StopLoss=527,Lote=0.42,openMaLower=-0.13,openMaHigher=0.027,,null,null,openSarLower=-0.216,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,null,null,null,null,null,null,null,null,null,
+0,EstrategiaId=1314577764812.1171,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=751,StopLoss=579,Lote=0.38,null,openMacdLower=-11.981,openMacdHigher=8.375,,null,openSarLower=-0.185,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,openMomentumLower=-4.456,openMomentumHigher=9263.637,,null,null,null,null,null,null,null,null,
+<log> Generacion = 2, Individuos = 50 <-- Sun Aug 28 21:17:09 COT 2011
+i=0; 
+ Id=1314577764812.1171 Generacion=12; ProcessedUntil=35; IndividuoType=CROSSOVER;
+	 Fortaleza=19855.91861528388 Diff=-2000.5343339371393; Profit=3988.860000000007
+		; Pips=10497.00000000004; Pips Ganados=43149.50000000002; Pips Perdidos=-32652.49999999998
+		; Max. Pips Consecutivos Ganados=42398.50000000002; Max. Pips Consecutivos Perdidos=-32073.49999999998
+		; Numero Operaciones=117; Numero Operaciones Ganadoras=59; Numero Operaciones Perdedoras=58
+		; Max. Numero Consecutivo Operaciones Ganadoras=58; Max. Numero Consecutivo Operaciones Perdedoras=57; PipsFactor=120060.51474610507
+	; Padre 1=1314419472437.38005; Padre 2=1314577764812.922; TakeProfit=751; Stoploss=579; Lot=0.38; Initial Balance=5393
+	; Open Indicadores=[null, SellMacdLower=-11.981,SellMacdHigher=8.375, null, SellSarLower=-0.185,SellSarHigher=0.013, SellAdxLower=-28.133000000000003,SellAdxHigher=-5.192, SellRsiLower=-4789.511,SellRsiHigher=-4099.022999999999, null, SellMomentumLower=-4.456,SellMomentumHigher=9263.637]
+	; Close Indicadores=[null, null, null, null, null, null, null, null]
+4,EstrategiaId=1314577764812.756,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=704,StopLoss=594,Lote=0.41,openMaLower=-0.13,openMaHigher=0.027,,null,null,openSarLower=-0.185,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,openMomentumLower=-20.477,openMomentumHigher=9263.637,,null,null,null,null,null,null,null,null,
+3,EstrategiaId=1314583788171.103,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=753,StopLoss=558,Lote=0.41,openMaLower=-0.13,openMaHigher=0.02,,openMacdLower=-11.981,openMacdHigher=8.375,,null,openSarLower=-0.185,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,null,null,null,null,null,null,null,null,null,
+2,EstrategiaId=1314419472437.37418,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=707,StopLoss=527,Lote=0.43,null,openMacdLower=-11.981,openMacdHigher=8.375,,null,openSarLower=-0.216,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,openMomentumLower=-20.477,openMomentumHigher=9263.637,,null,null,null,null,null,null,null,null,
+1,EstrategiaId=1314419472437.34519,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=766,StopLoss=527,Lote=0.42,openMaLower=-0.13,openMaHigher=0.027,,null,null,openSarLower=-0.216,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,null,null,null,null,null,null,null,null,null,
+0,EstrategiaId=1314577764812.1171,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=751,StopLoss=579,Lote=0.38,null,openMacdLower=-11.981,openMacdHigher=8.375,,null,openSarLower=-0.185,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,openMomentumLower=-4.456,openMomentumHigher=9263.637,,null,null,null,null,null,null,null,null,
+<log> Generacion = 3, Individuos = 50 <-- Sun Aug 28 21:19:49 COT 2011
+Not enough money for 1314583788171.574
+i=0; 
+ Id=1314577764812.1171 Generacion=12; ProcessedUntil=35; IndividuoType=CROSSOVER;
+	 Fortaleza=19855.91861528388 Diff=-2000.5343339371393; Profit=3988.860000000007
+		; Pips=10497.00000000004; Pips Ganados=43149.50000000002; Pips Perdidos=-32652.49999999998
+		; Max. Pips Consecutivos Ganados=42398.50000000002; Max. Pips Consecutivos Perdidos=-32073.49999999998
+		; Numero Operaciones=117; Numero Operaciones Ganadoras=59; Numero Operaciones Perdedoras=58
+		; Max. Numero Consecutivo Operaciones Ganadoras=58; Max. Numero Consecutivo Operaciones Perdedoras=57; PipsFactor=120060.51474610507
+	; Padre 1=1314419472437.38005; Padre 2=1314577764812.922; TakeProfit=751; Stoploss=579; Lot=0.38; Initial Balance=5393
+	; Open Indicadores=[null, SellMacdLower=-11.981,SellMacdHigher=8.375, null, SellSarLower=-0.185,SellSarHigher=0.013, SellAdxLower=-28.133000000000003,SellAdxHigher=-5.192, SellRsiLower=-4789.511,SellRsiHigher=-4099.022999999999, null, SellMomentumLower=-4.456,SellMomentumHigher=9263.637]
+	; Close Indicadores=[null, null, null, null, null, null, null, null]
+4,EstrategiaId=1314577764812.756,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=704,StopLoss=594,Lote=0.41,openMaLower=-0.13,openMaHigher=0.027,,null,null,openSarLower=-0.185,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,openMomentumLower=-20.477,openMomentumHigher=9263.637,,null,null,null,null,null,null,null,null,
+3,EstrategiaId=1314583788171.103,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=753,StopLoss=558,Lote=0.41,openMaLower=-0.13,openMaHigher=0.02,,openMacdLower=-11.981,openMacdHigher=8.375,,null,openSarLower=-0.185,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,null,null,null,null,null,null,null,null,null,
+2,EstrategiaId=1314419472437.37418,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=707,StopLoss=527,Lote=0.43,null,openMacdLower=-11.981,openMacdHigher=8.375,,null,openSarLower=-0.216,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,openMomentumLower=-20.477,openMomentumHigher=9263.637,,null,null,null,null,null,null,null,null,
+1,EstrategiaId=1314419472437.34519,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=766,StopLoss=527,Lote=0.42,openMaLower=-0.13,openMaHigher=0.027,,null,null,openSarLower=-0.216,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,null,null,null,null,null,null,null,null,null,
+0,EstrategiaId=1314577764812.1171,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=751,StopLoss=579,Lote=0.38,null,openMacdLower=-11.981,openMacdHigher=8.375,,null,openSarLower=-0.185,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,openMomentumLower=-4.456,openMomentumHigher=9263.637,,null,null,null,null,null,null,null,null,
+<log> Generacion = 4, Individuos = 50 <-- Sun Aug 28 21:22:16 COT 2011
+i=0; 
+ Id=1314577764812.1171 Generacion=12; ProcessedUntil=35; IndividuoType=CROSSOVER;
+	 Fortaleza=19855.91861528388 Diff=-2000.5343339371393; Profit=3988.860000000007
+		; Pips=10497.00000000004; Pips Ganados=43149.50000000002; Pips Perdidos=-32652.49999999998
+		; Max. Pips Consecutivos Ganados=42398.50000000002; Max. Pips Consecutivos Perdidos=-32073.49999999998
+		; Numero Operaciones=117; Numero Operaciones Ganadoras=59; Numero Operaciones Perdedoras=58
+		; Max. Numero Consecutivo Operaciones Ganadoras=58; Max. Numero Consecutivo Operaciones Perdedoras=57; PipsFactor=120060.51474610507
+	; Padre 1=1314419472437.38005; Padre 2=1314577764812.922; TakeProfit=751; Stoploss=579; Lot=0.38; Initial Balance=5393
+	; Open Indicadores=[null, SellMacdLower=-11.981,SellMacdHigher=8.375, null, SellSarLower=-0.185,SellSarHigher=0.013, SellAdxLower=-28.133000000000003,SellAdxHigher=-5.192, SellRsiLower=-4789.511,SellRsiHigher=-4099.022999999999, null, SellMomentumLower=-4.456,SellMomentumHigher=9263.637]
+	; Close Indicadores=[null, null, null, null, null, null, null, null]
+4,EstrategiaId=1314577764812.756,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=704,StopLoss=594,Lote=0.41,openMaLower=-0.13,openMaHigher=0.027,,null,null,openSarLower=-0.185,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,openMomentumLower=-20.477,openMomentumHigher=9263.637,,null,null,null,null,null,null,null,null,
+3,EstrategiaId=1314583788171.103,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=753,StopLoss=558,Lote=0.41,openMaLower=-0.13,openMaHigher=0.02,,openMacdLower=-11.981,openMacdHigher=8.375,,null,openSarLower=-0.185,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,null,null,null,null,null,null,null,null,null,
+2,EstrategiaId=1314419472437.37418,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=707,StopLoss=527,Lote=0.43,null,openMacdLower=-11.981,openMacdHigher=8.375,,null,openSarLower=-0.216,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,openMomentumLower=-20.477,openMomentumHigher=9263.637,,null,null,null,null,null,null,null,null,
+1,EstrategiaId=1314419472437.34519,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=766,StopLoss=527,Lote=0.42,openMaLower=-0.13,openMaHigher=0.027,,null,null,openSarLower=-0.216,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,null,null,null,null,null,null,null,null,null,
+0,EstrategiaId=1314577764812.1171,ProcessedUntil=35,Pair=EURUSD,Operation=Sell,VigenciaLower=2011.02.07 05:39,VigenciaHigher=2011.02.09 05:39,TakeProfit=751,StopLoss=579,Lote=0.38,null,openMacdLower=-11.981,openMacdHigher=8.375,,null,openSarLower=-0.185,openSarHigher=0.013,,openAdxLower=-28.133000000000003,openAdxHigher=-5.192,,openRsiLower=-4789.511,openRsiHigher=-4099.022999999999,,null,openMomentumLower=-4.456,openMomentumHigher=9263.637,,null,null,null,null,null,null,null,null,
+<log> Generacion = 5, Individuos = 50 <-- Sun Aug 28 21:24:52 COT 2011
