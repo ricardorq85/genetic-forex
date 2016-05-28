@@ -43,6 +43,7 @@ public class SerializationManager {
         Poblacion poblacion = new Poblacion();
 
         File root = new File(path);
+        
         FileFilter filter = new FileFilter() {
 
             public boolean accept(File file) {

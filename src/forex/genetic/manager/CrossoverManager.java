@@ -5,7 +5,6 @@
 package forex.genetic.manager;
 
 import forex.genetic.util.LogUtil;
-import forex.genetic.util.Constants;
 import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
@@ -41,8 +40,8 @@ public class CrossoverManager {
         int counter = 0;
 
         while ((counter < percentValue) && (!endProcess)) {
-            //int pos1 = counter % individuos.size();
-            int pos1 = random.nextInt(individuos.size());
+            int pos1 = counter % individuos.size();
+            //int pos1 = random.nextInt(individuos.size());
             int pos2 = random.nextInt(individuos.size());
 
             //if ((pos1 != pos2) && (pos1 < individuos.size()) && (pos2 < individuos.size())) {

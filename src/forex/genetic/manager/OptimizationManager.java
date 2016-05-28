@@ -38,8 +38,8 @@ public class OptimizationManager {
         int counter = 0;
 
         while ((counter < percentValue) && (!endProcess)) {
-            //int pos1 = counter % individuos.size();
-            int pos1 = random.nextInt(individuos.size());
+            int pos1 = counter % individuos.size();
+            //int pos1 = random.nextInt(individuos.size());
             if (pos1 < individuos.size()) {
                 try {
                     IndividuoEstrategia individuo1 = individuos.get(pos1);
