@@ -4,10 +4,11 @@
  */
 package forex.genetic.manager.indicator;
 
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.Interval;
-import forex.genetic.entities.indicator.Macd;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.Indicator;
+import forex.genetic.entities.indicator.Macd;
+import forex.genetic.manager.IntervalManager;
 
 /**
  *
@@ -29,7 +30,8 @@ public class MacdIndicatorManager extends IntervalIndicatorManager<Macd> {
         if (indicator != null) {
             macd.setMacdSignal(indicator.getMacdSignal());
             macd.setMacdValue(indicator.getMacdValue());
-            interval = intervalManager.generate(indicator.getMacdValue(), indicator.getMacdSignal(), Double.NaN);
+            double value = indicator.getMacdValue() - indicator.getMacdSignal();
+            interval = intervalManager.generate(value, -value * 0.1, value * 0.1);
         } else {
             interval = intervalManager.generate(Double.NaN, Double.NaN, Double.NaN);
         }
@@ -39,6 +41,27 @@ public class MacdIndicatorManager extends IntervalIndicatorManager<Macd> {
 
     @Override
     public boolean operate(Macd macdIndividuo, Macd iMacd, Point point) {
-        return intervalManager.operate(macdIndividuo.getInterval(), iMacd.getMacdValue(), iMacd.getMacdSignal());
+        return intervalManager.operate(macdIndividuo.getInterval(), iMacd.getMacdValue() - iMacd.getMacdSignal(), 0.0);
+    }
+    /*
+    public Indicator optimize(Macd individuo, Macd optimizedIndividuo, Macd indicator, Point point) {
+    Macd optimized = this.getIndicatorInstance();
+    double value = indicator.getMacdValue() - indicator.getMacdSignal();
+    Interval generated = intervalManager.generate(value, 0.0, 0.0);
+    intervalManager.round(generated);
+    Interval intersected = IntervalManager.intersect(generated, individuo.getInterval());
+    optimized.setInterval(intervalManager.optimize((optimizedIndividuo == null) ? null : optimizedIndividuo.getInterval(),
+    intersected));
+    if (optimized.getInterval() == null) {
+    optimized = optimizedIndividuo;
+    }
+    return optimized;
+    }
+     */
+
+    @Override
+    public double getValue(Macd indicator, Point prevPoint, Point point) {
+        double value = indicator.getMacdValue() - indicator.getMacdSignal();
+        return value;
     }
 }

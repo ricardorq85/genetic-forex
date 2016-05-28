@@ -4,10 +4,11 @@
  */
 package forex.genetic.manager.indicator;
 
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.Momentum;
+import forex.genetic.manager.IntervalManager;
 
 /**
  *
@@ -28,7 +29,8 @@ public class MomentumIndicatorManager extends IntervalIndicatorManager<Momentum>
         Momentum momentum = new Momentum("Momentum");
         if (indicator != null) {
             momentum.setMomentum(indicator.getMomentum());
-            interval = intervalManager.generate(indicator.getMomentum(), 0.0, 100.0);
+            double value = indicator.getMomentum();
+            interval = intervalManager.generate(value, -value * 0.1, value * 0.1);
         } else {
             interval = intervalManager.generate(Double.NaN, Double.NaN, Double.NaN);
         }
@@ -39,6 +41,26 @@ public class MomentumIndicatorManager extends IntervalIndicatorManager<Momentum>
 
     @Override
     public boolean operate(Momentum momentumIndividuo, Momentum iMomentum, Point point) {
-        return intervalManager.operate(momentumIndividuo.getInterval(), iMomentum.getMomentum(), 100);
+        return intervalManager.operate(momentumIndividuo.getInterval(), iMomentum.getMomentum(), 0.0);
+    }
+
+    /*  public Indicator optimize(Momentum individuo, Momentum optimizedIndividuo, Momentum indicator, Point point) {
+    Momentum optimized = this.getIndicatorInstance();
+    double value = indicator.getMomentum();
+    Interval generated = intervalManager.generate(value, 0.0, 0.0);
+    intervalManager.round(generated);
+    Interval intersected = IntervalManager.intersect(generated, individuo.getInterval());
+    optimized.setInterval(intervalManager.optimize((optimizedIndividuo == null) ? null : optimizedIndividuo.getInterval(),
+    intersected));
+    if (optimized.getInterval() == null) {
+    optimized = optimizedIndividuo;
+    }
+    return optimized;
+    }
+     */
+    @Override
+    public double getValue(Momentum indicator, Point prevPoint, Point point) {
+        double value = indicator.getMomentum();
+        return value;
     }
 }

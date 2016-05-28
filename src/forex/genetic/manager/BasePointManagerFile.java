@@ -10,6 +10,7 @@ import forex.genetic.entities.indicator.Macd;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Adx;
 import forex.genetic.entities.indicator.Bollinger;
+import forex.genetic.entities.indicator.Ichimoku;
 import forex.genetic.entities.indicator.Momentum;
 import forex.genetic.entities.indicator.Rsi;
 import forex.genetic.entities.indicator.Sar;
@@ -22,7 +23,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -63,6 +63,7 @@ public class BasePointManagerFile {
         Rsi rsi = null;
         Bollinger bollingerBand = null;
         Momentum momentum = null;
+        Ichimoku ichimoku = null;
 
         DateFormat format = new SimpleDateFormat("yyyy/MM/ddHH:mm");
 
@@ -97,6 +98,11 @@ public class BasePointManagerFile {
             double baseBollingerUpper = Double.parseDouble(strings[++indexField]);
             double baseBollingerLower = Double.parseDouble(strings[++indexField]);
             double baseMomentum = Double.parseDouble(strings[++indexField]);
+            double baseIchimokuTenkanSen = Double.parseDouble(strings[++indexField]);
+            double baseIchimokuKijunSen = Double.parseDouble(strings[++indexField]);
+            double baseIchimokuSenkouSpanA = Double.parseDouble(strings[++indexField]);
+            double baseIchimokuSenkouSpanB = Double.parseDouble(strings[++indexField]);
+            double baseIchimokuChinkouSpan = Double.parseDouble(strings[++indexField]);
 
             point = new Point();
             point.setIndex(counter);
@@ -139,16 +145,25 @@ public class BasePointManagerFile {
 
             momentum = new Momentum("Momentum");
             momentum.setMomentum(NumberUtil.round(baseMomentum));
+            
+            ichimoku = new Ichimoku("Ichimoku");
+            ichimoku.setChinkouSpan(baseIchimokuChinkouSpan);
+            ichimoku.setKijunSen(baseIchimokuKijunSen);
+            ichimoku.setSenkouSpanA(baseIchimokuSenkouSpanA);
+            ichimoku.setSenkouSpanB(baseIchimokuSenkouSpanB);
+            ichimoku.setTenkanSen(baseIchimokuTenkanSen);
 
             indicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
-            indicators.add(average);
-            indicators.add(macd);
-            indicators.add(compareAverage);
-            indicators.add(sar);
-            indicators.add(adx);
-            indicators.add(rsi);
-            indicators.add(bollingerBand);
-            indicators.add(momentum);
+            indicators.add(average);//0
+            indicators.add(macd);//1
+            indicators.add(compareAverage);//2
+            indicators.add(sar);//3
+            indicators.add(adx);//4
+            indicators.add(rsi);//5
+            indicators.add(bollingerBand);//6
+            indicators.add(momentum);//7
+            indicators.add(ichimoku);//8
+            indicators.add(ichimoku);//9
             point.setIndicators(indicators);
 
             points.add(point);

@@ -46,4 +46,24 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
     public Interval calculateInterval(Sar sarIndividuo, Sar iSar, Point point) {
         return intervalManager.calculateInterval(sarIndividuo.getInterval(), iSar.getSar(), point);
     }
+/*
+    public Indicator optimize(Sar individuo, Sar optimizedIndividuo, Sar indicator, Point point) {
+        Sar optimized = this.getIndicatorInstance();
+        double sar = indicator.getSar();
+        Interval generated = intervalManager.generate(sar, point.getLow(), point.getHigh());
+        intervalManager.round(generated);
+        Interval intersected = IntervalManager.intersect(generated, individuo.getInterval());
+        optimized.setInterval(intervalManager.optimize((optimizedIndividuo == null) ? null : optimizedIndividuo.getInterval(),
+                intersected));
+        if (optimized.getInterval() == null) {
+            optimized = optimizedIndividuo;
+        }
+        return optimized;
+    }
+*/
+    @Override
+    public double getValue(Sar indicator, Point prevPoint, Point point) {
+        double value = indicator.getSar();
+        return value;
+    }
 }

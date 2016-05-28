@@ -23,7 +23,10 @@ public class NumberUtil {
         } else {
             BigDecimal bd = new BigDecimal(d);
             bd = bd.setScale(scale, BigDecimal.ROUND_HALF_UP);
-            return bd.doubleValue();
+            //String str = bd.toPlainString();
+            //double value = Double.parseDouble(str);            
+            double value = bd.doubleValue();
+            return value;
         }
     }
 

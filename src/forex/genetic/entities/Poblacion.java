@@ -4,7 +4,9 @@
  */
 package forex.genetic.entities;
 
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.manager.PropertiesManager;
+import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.util.CollectionUtil;
 import forex.genetic.util.Constants;
 import forex.genetic.util.Constants.OperationType;
@@ -81,12 +83,39 @@ public class Poblacion implements Serializable {
             }
             p.getIndividuos().add(individuoEstrategia);
             }*/
+            /*Fortaleza f = individuoEstrategia.getFortaleza();
+            if (f != null) {
+                if ((f.getVersionNumber() == null) || (!Fortaleza.currentVersionNumber.equals(f.getVersionNumber()))) {
+                    for (int j = 0; j < IndicatorManager.getIndicatorNumber(); j++) {
+                        IndicatorManager indicatorManager = IndicatorManager.getInstance(j);
+                        Indicator openIndicatorIndividuo = null;
+                        if (individuoEstrategia.getOpenIndicators() != null) {
+                            openIndicatorIndividuo = individuoEstrategia.getOpenIndicators().get(j);
+                        }
+                        Indicator closeIndicatorIndividuo = null;
+                        if (individuoEstrategia.getCloseIndicators() != null) {
+                            closeIndicatorIndividuo = individuoEstrategia.getCloseIndicators().get(j);
+                        }
+                        if (openIndicatorIndividuo != null) {
+                            indicatorManager.round(openIndicatorIndividuo);
+                        }
+                        if (closeIndicatorIndividuo != null) {
+                            indicatorManager.round(closeIndicatorIndividuo);
+                        }
+                    }
+                }
+            }*/
             individuoEstrategia.setFortaleza(null);
             individuoEstrategia.setListaFortaleza(null);
             individuoEstrategia.setProcessedUntil(0);
             individuoEstrategia.setProcessedFrom(0);
+            individuoEstrategia.setOptimizedOpenIndicators(null);
+            individuoEstrategia.setOptimizedCloseIndicators(null);
+            individuoEstrategia.setOpenPoint(null);
+            individuoEstrategia.setPrevOpenPoint(null);
+            individuoEstrategia.setOpenOperationIndex(0);
+            individuoEstrategia.setActiveOperation(false);
             p.getIndividuos().add(individuoEstrategia);
-
         }
         return p;
     }
@@ -116,7 +145,7 @@ public class Poblacion implements Serializable {
     public Poblacion getFirst(int cantidad, int fromIndex) {
         Poblacion p = new Poblacion();
         p.setIndividuos(CollectionUtil.subList(this.getIndividuos(), fromIndex,
-                (cantidad < this.getIndividuos().size()) ? cantidad : this.getIndividuos().size()));
+                ((fromIndex + cantidad) < this.getIndividuos().size()) ? (fromIndex + cantidad) : this.getIndividuos().size()));
 
         return p;
     }

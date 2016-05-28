@@ -8,6 +8,7 @@ import forex.genetic.manager.io.FileProperties;
 import forex.genetic.util.Constants;
 import forex.genetic.util.Constants.FortalezaType;
 import forex.genetic.util.Constants.OperationType;
+import forex.genetic.util.LogUtil;
 
 /**
  *
@@ -25,6 +26,7 @@ public class PropertiesManager {
 
             public void run() {
                 FileProperties.load();
+                LogUtil.logTime(FileProperties.propertiesString(), 1);
             }
         };
         t.start();

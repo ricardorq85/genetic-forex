@@ -19,11 +19,15 @@ public abstract class IntervalIndicatorManager<E extends IntervalIndicator> exte
     protected IntervalManager intervalManager = null;
 
     public IntervalIndicatorManager(boolean priceDependence, String name) {
-        super(priceDependence);
+        this(priceDependence, priceDependence, name);
+    }
+
+    public IntervalIndicatorManager(boolean priceDependence, boolean obligatory, String name) {
+        super(priceDependence, obligatory);
         this.intervalManager = new IntervalManager(name);
     }
 
-    public abstract IntervalIndicator getIndicatorInstance ();
+    public abstract IntervalIndicator getIndicatorInstance();
 
     public Indicator crossover(E obj1, E obj2) {
         IntervalIndicator objHijo = this.getIndicatorInstance();
@@ -48,5 +52,35 @@ public abstract class IntervalIndicatorManager<E extends IntervalIndicator> exte
 
     public Interval calculateInterval(E objIndividuo, E iE, Point point) {
         throw new UnsupportedOperationException("Not supported.");
+    }
+
+    public void round(E indicator) {
+        if (indicator != null) {
+            Interval<Double> interval = indicator.getInterval();
+            if (interval != null) {
+                intervalManager.round(interval);
+            }
+        }
+    }
+
+    public Indicator optimize(E individuo, E optimizedIndividuo, E indicator, Point prevPoint, Point point, double pips) {
+        IntervalIndicator optimized = getIndicatorInstance();
+        double value = getValue(indicator, prevPoint, point);
+        Interval generated = intervalManager.generate(value, (isPriceDependence()) ? point.getLow() : 0.0, (isPriceDependence()) ? point.getHigh() : 0.0);
+        intervalManager.round(generated);
+        if (pips > 0) {
+            Interval intersected = IntervalManager.intersect(generated, individuo.getInterval());
+            Interval intervalOptimized = intervalManager.optimize((optimizedIndividuo == null) ? null : optimizedIndividuo.getInterval(), intersected);
+            optimized.setInterval(intervalOptimized);
+        } else {
+            if (optimizedIndividuo != null) {
+                Interval difference = IntervalManager.difference(optimizedIndividuo.getInterval(), generated);
+                optimized.setInterval(difference);
+            }
+        }
+        if ((optimized.getInterval() == null) || (optimized.getInterval().getLowInterval() == null) || (optimized.getInterval().getHighInterval() == null)) {
+            optimized = optimizedIndividuo;
+        }
+        return optimized;
     }
 }

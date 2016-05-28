@@ -22,6 +22,7 @@ public class Constants {
     public static final String HARDEST_PERCENT = "HARDEST_PERCENT";
     public static final String CROSSOVER = "CROSSOVER";
     public static final String MUTATION = "MUTATION";
+    public static final String OPTIMIZATION = "OPTIMIZATION";
     public static final String WEAKEST_PERCENT = "WEAKEST_PERCENT";
     public static final String PIPS_FIXER = "PIPS_FIXER";
     public static final String MOD_POINTS = "MOD_POINTS";
@@ -49,6 +50,8 @@ public class Constants {
     public static final String RECALCULATE_ALL = "RECALCULATE_ALL";
     public static final String TEST_FILE = "TEST_FILE";
     public static final String TEST_STRATEGY = "TEST_STRATEGY";
+    public static final String VALIDATION_ID = "VALIDATION_ID";
+    public static final String LISTING_ID = "LISTING_ID";
     public static final String RISK_LEVEL = "RISK_LEVEL";
     public static final String PAIR_FACTOR = "PAIR_FACTOR";
     public static final String MARGIN_REQUIRED = "MARGIN_REQUIRED";
@@ -59,16 +62,20 @@ public class Constants {
     public static final String LOG_LEVEL = "LOG_LEVEL";
     public static final String SHOW_ESTADISTICAS = "SHOW_ESTADISTICAS";
     public static final String NUMBER_BACK_ROOT_POBLACION = "NUMBER_BACK_ROOT_POBLACION";
+    public static final String VALIDATION_NUMBER = "VALIDATION_NUMBER";
+    public static final String LISTING_NUMBER = "LISTING_NUMBER";
     public static final String MAX_FILE_PER_READ = "MAX_FILE_PER_READ";
     public static final String FORCE_INDIVIDUOS = "FORCE_INDIVIDUOS";
+    public static final String MIN_OPER_NUM_BY_PERIOD = "MIN_OPER_NUM_BY_PERIOD";
+    public static final String HAS_MINIMUM_CRITERION_LEVEL = "HAS_MINIMUM_CRITERION_LEVEL";
     public static final double MAX_RISK_LEVEL = 10;
-    public static final int MIN_OPER_NUM_BY_PERIOD = 5;
 
     public enum IndividuoType {
 
         INITIAL,
         CROSSOVER,
-        MUTATION
+        MUTATION,
+        OPTIMIZED
     }
 
     public enum PriceType {

@@ -9,12 +9,14 @@ import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.manager.IntervalManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.NumberUtil;
 import java.util.List;
+import java.util.Vector;
 
 /**
  *
@@ -168,5 +170,49 @@ public class IndicatorController {
             value = currentPoint.getLow();
         }
         return value;
+    }
+
+    public void optimize(IndividuoEstrategia individuoEstrategia, Point prevOpenPoint, Point openPoint, Point closePoint, double pips) {
+        List<Indicator> openOptimized = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
+        List<Indicator> closeOptimized = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
+        for (int j = 0; j < IndicatorManager.getIndicatorNumber(); j++) {
+            IndicatorManager indicatorManager = IndicatorManager.getInstance(j);
+            if (individuoEstrategia.getOpenIndicators().size() > j) {
+                Indicator openIndicatorIndividuo = individuoEstrategia.getOpenIndicators().get(j);
+                Indicator closeIndicatorIndividuo = individuoEstrategia.getCloseIndicators().get(j);
+                Indicator openOptimizedIndividuo = null;
+                Indicator closeOptimizedIndividuo = null;
+                if ((individuoEstrategia.getOptimizedOpenIndicators() != null) && (j < individuoEstrategia.getOptimizedOpenIndicators().size())) {
+                    openOptimizedIndividuo = individuoEstrategia.getOptimizedOpenIndicators().get(j);
+                }
+                if ((individuoEstrategia.getOptimizedCloseIndicators() != null) && (j < individuoEstrategia.getOptimizedCloseIndicators().size())) {
+                    closeOptimizedIndividuo = individuoEstrategia.getOptimizedCloseIndicators().get(j);
+                }
+                if ((prevOpenPoint == null) || (prevOpenPoint.getIndicators() == null)) {
+                    int kl = 9;
+                }
+                Indicator openIndicator = prevOpenPoint.getIndicators().get(j);
+                Indicator closeIndicator = closePoint.getIndicators().get(j);
+                if ((openIndicatorIndividuo != null) && (openIndicator != null)) {
+                    Indicator optimizedIndicator = indicatorManager.optimize(openIndicatorIndividuo, openOptimizedIndividuo, openIndicator, prevOpenPoint, openPoint, pips);
+                    openOptimized.add(optimizedIndicator);
+                } else {
+                    openOptimized.add(null);
+                }
+
+                if ((closeIndicatorIndividuo != null) && (closeIndicator != null)) {
+                    //Indicator optimizedIndicator = indicatorManager.optimize(closeIndicatorIndividuo, closeOptimizedIndividuo, closeIndicator, closePoint);
+                    Indicator optimizedIndicator = closeIndicatorIndividuo;
+                    closeOptimized.add(optimizedIndicator);
+                } else {
+                    closeOptimized.add(null);
+                }
+            } else {
+                openOptimized.add(null);
+                closeOptimized.add(null);
+            }
+        }
+        individuoEstrategia.setOptimizedOpenIndicators(openOptimized);
+        individuoEstrategia.setOptimizedCloseIndicators(closeOptimized);
     }
 }

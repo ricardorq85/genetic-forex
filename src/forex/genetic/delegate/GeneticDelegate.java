@@ -192,14 +192,18 @@ public class GeneticDelegate {
             if (threadProcessPoblacionAcumulada != null) {
                 ThreadUtil.joinThread(threadProcessPoblacionAcumulada);
             }
-            LogUtil.logTime("Procesar mas debiles poblacion. Individuos=" + poblacion.getIndividuos().size(), 1);
-            funcionFortalezaManager.processWeakestPoblacion(poblacion, PropertiesManager.getPropertyInt(Constants.INDIVIDUOS));
+            if (!poblacion.getIndividuos().isEmpty()) {
+                LogUtil.logTime("Procesar mas debiles poblacion. Individuos=" + poblacion.getIndividuos().size(), 1);
+                FuncionFortalezaManager.processWeakestPoblacion(poblacion, PropertiesManager.getPropertyInt(Constants.INDIVIDUOS));
+            }
 
             if (threadProcessPoblacionNueva != null) {
                 if (poblacionIndex < PropertiesManager.getPropertyInt(Constants.END_POBLACION) && !PropertiesManager.getPropertyBoolean(Constants.TERMINAR)) {
                     ThreadUtil.joinThread(threadProcessPoblacionNueva);
-                    LogUtil.logTime("Procesar mas debiles newPoblacion. Individuos=" + newPoblacion.getIndividuos().size(), 1);
-                    funcionFortalezaManager.processWeakestPoblacion(newPoblacion, PropertiesManager.getPropertyInt(Constants.INDIVIDUOS));
+                    if (!newPoblacion.getIndividuos().isEmpty()) {
+                        LogUtil.logTime("Procesar mas debiles newPoblacion. Individuos=" + newPoblacion.getIndividuos().size(), 1);
+                        FuncionFortalezaManager.processWeakestPoblacion(newPoblacion, PropertiesManager.getPropertyInt(Constants.INDIVIDUOS));
+                    }
                 }
             }
 
@@ -279,8 +283,10 @@ public class GeneticDelegate {
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
         for (int i = individuos.size() - 1; i >= 0; i--) {
             IndividuoEstrategia individuo = (IndividuoEstrategia) individuos.get(i);
+            //if (individuo.getIndividuoType().equals(Constants.IndividuoType.OPTIMIZED)) {
             System.out.println("i=" + i + "; ");
             outIndividuo(individuo);
+            //}            
         }
     }
 

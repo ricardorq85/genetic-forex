@@ -7,6 +7,7 @@ package forex.genetic.thread;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.manager.CrossoverManager;
 import forex.genetic.manager.MutationManager;
+import forex.genetic.manager.OptimizationManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.statistic.EstadisticaManager;
 import forex.genetic.util.Constants;
@@ -21,9 +22,11 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
 
     private CrossoverManager crossoverManager = new CrossoverManager();
     private MutationManager mutationManager = new MutationManager();
+    private OptimizationManager optimizationManager = new OptimizationManager();
     private int generacion;
     private CrossoverThread crossoverThread = null;
     private MutationThread mutationThread = null;
+    private OptimizationThread optimizationThread = null;
 
     public ProcessGeneracion(String name, Poblacion poblacion, int generacion) {
         super(name);
@@ -39,8 +42,6 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
     }
 
     private void processGeneracion(Poblacion poblacion) {
-        int size = poblacion.getIndividuos().size();
-
         /** Se mezclan los individuos */
         crossoverThread = new CrossoverThread("crossoverThread " + generacion,
                 generacion, poblacion, PropertiesManager.getPropertyInt(Constants.CROSSOVER), crossoverManager);
@@ -58,6 +59,15 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
         } else {
             mutationThread.run();
         }
+
+        /** Optimizacion */
+        optimizationThread = new OptimizationThread("optimization " + generacion,
+                generacion, poblacion, PropertiesManager.getPropertyInt(Constants.OPTIMIZATION), optimizationManager);
+        if (PropertiesManager.getPropertyBoolean(Constants.THREAD)) {
+            optimizationThread.start();
+        } else {
+            optimizationThread.run();
+        }
     }
 
     private void joinProcessGeneracion() {
@@ -74,6 +84,12 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
                 super.getNewPoblacion().addAll(p);
                 EstadisticaManager.addIndividuoMutado(p.getIndividuos().size());
             }
+            ThreadUtil.joinThread(optimizationThread);
+            p = optimizationThread.getNewPoblacion();
+            if (p.getIndividuos() != null) {
+                super.getNewPoblacion().addAll(p);
+                EstadisticaManager.addIndividuoOptimizado(p.getIndividuos().size());
+            }
         }
     }
 
@@ -83,6 +99,9 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
         }
         if (mutationThread != null) {
             mutationThread.endProcess();
+        }
+        if (optimizationThread != null) {
+            optimizationThread.endProcess();
         }
     }
 }

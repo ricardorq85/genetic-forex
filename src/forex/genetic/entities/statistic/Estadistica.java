@@ -16,9 +16,10 @@ public class Estadistica {
     private int archivosLeidos = 0;
     private int individuosCruzados = 0;
     private int individuosMutados = 0;
+    private int individuosOptimizados = 0;
     private int individuosInvalidos = 0;
-    private int individuosRemovedEqualsReal = 0;    
-    
+    private int individuosRemovedEqualsReal = 0;
+
     public void addIndividuoGenerado(int count) {
         individuosGenerados += count;
     }
@@ -43,9 +44,14 @@ public class Estadistica {
         individuosMutados += count;
     }
 
+    public void addIndividuoOptimizado(int count) {
+        individuosOptimizados += count;
+    }
+
     public void addIndividuoInvalido(int count) {
         individuosInvalidos += count;
     }
+
     public void addIndividuoRemovedEqualsReal(int count) {
         individuosRemovedEqualsReal += count;
     }
@@ -67,12 +73,14 @@ public class Estadistica {
         buffer.append(this.individuosCruzados);
         buffer.append(" IndividuosMutados ");
         buffer.append(this.individuosMutados);
+        buffer.append(" IndividuosOptimizados ");
+        buffer.append(this.individuosOptimizados);
         buffer.append(" IndividuosInvalidos ");
         buffer.append(this.individuosInvalidos);
         buffer.append("\n\t");
         buffer.append(" IndividuosEqualsReal ");
         buffer.append(this.individuosRemovedEqualsReal);
-        
+
         return buffer.toString();
     }
 }

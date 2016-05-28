@@ -8,6 +8,7 @@ import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Rsi;
+import forex.genetic.manager.IntervalManager;
 
 /**
  *
@@ -28,7 +29,8 @@ public class RsiIndicatorManager extends IntervalIndicatorManager<Rsi> {
         Rsi rsi = new Rsi("Rsi");
         if (indicator != null) {
             rsi.setRsi(indicator.getRsi());
-            interval = intervalManager.generate(indicator.getRsi(), 0.0, 100.0);
+            double value = indicator.getRsi();
+            interval = intervalManager.generate(value, -value * 0.1, value * 0.1);
         } else {
             interval = intervalManager.generate(Double.NaN, Double.NaN, Double.NaN);
         }
@@ -39,6 +41,26 @@ public class RsiIndicatorManager extends IntervalIndicatorManager<Rsi> {
 
     @Override
     public boolean operate(Rsi rsiIndividuo, Rsi iRsi, Point point) {
-        return intervalManager.operate(rsiIndividuo.getInterval(), iRsi.getRsi(), 100);
+        return intervalManager.operate(rsiIndividuo.getInterval(), iRsi.getRsi(), 0.0);
+    }
+
+  /*  public Indicator optimize(Rsi individuo, Rsi optimizedIndividuo, Rsi indicator, Point point) {
+        Rsi optimized = this.getIndicatorInstance();
+        double value = indicator.getRsi();
+        Interval generated = intervalManager.generate(value, 0.0, 0.0);
+        intervalManager.round(generated);
+        Interval intersected = IntervalManager.intersect(generated, individuo.getInterval());
+        optimized.setInterval(intervalManager.optimize((optimizedIndividuo == null) ? null : optimizedIndividuo.getInterval(),
+                intersected));
+        if (optimized.getInterval() == null) {
+            optimized = optimizedIndividuo;
+        }
+        return optimized;
+    }
+*/
+    @Override
+    public double getValue(Rsi indicator, Point prevPoint, Point point) {
+        double value = indicator.getRsi();
+        return value;
     }
 }

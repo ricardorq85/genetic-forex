@@ -41,6 +41,10 @@ public class EstadisticaManager {
         estadistica.addIndividuoMutado(count);
     }
 
+    public synchronized static void addIndividuoOptimizado(int count) {
+        estadistica.addIndividuoOptimizado(count);
+    }
+
     public synchronized static void addIndividuoInvalido(int count) {
         estadistica.addIndividuoInvalido(count);
     }

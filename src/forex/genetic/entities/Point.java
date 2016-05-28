@@ -5,6 +5,7 @@
 package forex.genetic.entities;
 
 import forex.genetic.entities.indicator.Indicator;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,8 +15,10 @@ import java.util.List;
  *
  * @author ricardorq85
  */
-public class Point {
+public class Point implements Serializable {
 
+    public static final long serialVersionUID = 201203120716L;
+    
     private int index = 0;
     private Date date = null;
     private double open = 0.0;

@@ -34,13 +34,15 @@ public class AverageIndicatorManager extends IntervalIndicatorManager<Average> {
     public Indicator generate(Average indicator, Point point) {
         Interval interval = null;
         Average average = (type.equals(PriceType.COMPARE_CLOSE))
-                ? new Average("MaCompare")
-                : new Average("Ma");
+                ? new Average("MaCompare") : new Average("Ma");
         if (indicator != null) {
             average.setAverage(indicator.getAverage());
-            interval = intervalManager.generate(indicator.getAverage(),
-                    (type.equals(PriceType.COMPARE_CLOSE)) ? point.getCloseCompare() : point.getLow(),
-                    (type.equals(PriceType.COMPARE_CLOSE)) ? Double.NaN : point.getHigh());
+            if (type.equals(PriceType.COMPARE_CLOSE)) {
+                double value = indicator.getAverage() - point.getCloseCompare();
+                interval = intervalManager.generate(value, -value * 0.1, value * 0.1);
+            } else {
+                interval = intervalManager.generate(indicator.getAverage(), point.getLow(), point.getHigh());
+            }
         } else {
             interval = intervalManager.generate(Double.NaN, Double.NaN, Double.NaN);
         }
@@ -52,7 +54,7 @@ public class AverageIndicatorManager extends IntervalIndicatorManager<Average> {
     @Override
     public boolean operate(Average averageIndividuo, Average iAverage, Point currentPoint, Point previousPoint) {
         if (type.equals(PriceType.COMPARE_CLOSE)) {
-            return intervalManager.operate(averageIndividuo.getInterval(), iAverage.getAverage(), previousPoint.getCloseCompare());
+            return intervalManager.operate(averageIndividuo.getInterval(), iAverage.getAverage() - previousPoint.getCloseCompare(), 0.0);
         } else {
             return intervalManager.operate(averageIndividuo.getInterval(), iAverage.getAverage(), currentPoint);
         }
@@ -61,5 +63,16 @@ public class AverageIndicatorManager extends IntervalIndicatorManager<Average> {
     @Override
     public Interval calculateInterval(Average averageIndividuo, Average iAverage, Point point) {
         return intervalManager.calculateInterval(averageIndividuo.getInterval(), iAverage.getAverage(), point);
+    }
+
+    @Override
+    public double getValue(Average indicator, Point prevPoint, Point point) {
+        double value;
+        if (type.equals(PriceType.COMPARE_CLOSE)) {
+            value = indicator.getAverage() - prevPoint.getCloseCompare();
+        } else {
+            value = indicator.getAverage();
+        }
+        return value;
     }
 }

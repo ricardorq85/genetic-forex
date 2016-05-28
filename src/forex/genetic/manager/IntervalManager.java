@@ -20,7 +20,7 @@ public class IntervalManager {
     private double pairFactor = PropertiesManager.getPropertyDouble(Constants.PAIR_FACTOR);
     private double min = Double.POSITIVE_INFINITY;
     private double max = Double.NEGATIVE_INFINITY;
-    private Random random = new Random();
+    private static final Random random = new Random();
     private static EspecificMutationManager especificMutationManager = EspecificMutationManager.getInstance();
     private String name = null;
 
@@ -46,11 +46,13 @@ public class IntervalManager {
             interval2 = generateDefault();
         } else {
             if (!Double.isNaN(i1) && !Double.isInfinite(i1)) {
+                //interval1 = (value - (i1 * (1.0 + ((random.nextBoolean()) ? random.nextDouble() : -random.nextDouble()))));
                 interval1 = (value - i1);
             } else {
                 interval1 = generateDefault();
             }
             if (!Double.isNaN(i2) && !Double.isInfinite(i2)) {
+                //interval2 = (value - (i2 * (1.0 + ((random.nextBoolean()) ? random.nextDouble() : -random.nextDouble()))));
                 interval2 = (value - i2);
             } else {
                 interval2 = generateDefault();
@@ -69,7 +71,7 @@ public class IntervalManager {
         double lowInterval = interval.getLowInterval();
         double highInterval = interval.getHighInterval();
 
-        return (evaluate(value - price, lowInterval, highInterval));
+        return (evaluate(NumberUtil.round(value - price), lowInterval, highInterval));
     }
 
     public boolean operate(Interval interval, double value, Point point) {
@@ -84,8 +86,9 @@ public class IntervalManager {
         double highIntervalPosibble = value - lowInterval;
         double lowIntervalPosibble = value - highInterval;
 
-        /*result.setLowInterval(NumberUtil.round(lowIntervalPosibble));
-        result.setHighInterval(NumberUtil.round(highIntervalPosibble));
+        /*
+         * result.setLowInterval(NumberUtil.round(lowIntervalPosibble));
+         * result.setHighInterval(NumberUtil.round(highIntervalPosibble));
          */
         result.setLowInterval(lowIntervalPosibble);
         result.setHighInterval(highIntervalPosibble);
@@ -117,22 +120,39 @@ public class IntervalManager {
                     interval.setLowInterval(null);
                     interval.setHighInterval(null);
                 } else {
-                    interval.setLowInterval(min);
-                    interval.setHighInterval(max);
+                    Interval intervalTemp = new DoubleInterval("Temp");
+                    intervalTemp.setLowInterval(min);
+                    intervalTemp.setHighInterval(max);
+
+                    Interval intervalMutated = this.mutate(intervalTemp);
+                    interval.setLowInterval(intervalMutated.getLowInterval());
+                    interval.setHighInterval(intervalMutated.getHighInterval());
                 }
             } else if (interval1 == null) {
-                interval.setLowInterval(interval2.getLowInterval());
-                interval.setHighInterval(interval2.getHighInterval());
+                Interval intervalMutated = this.mutate(interval2);
+                interval.setLowInterval(intervalMutated.getLowInterval());
+                interval.setHighInterval(intervalMutated.getHighInterval());
             } else if (interval2 == null) {
-                interval.setLowInterval(interval1.getLowInterval());
-                interval.setHighInterval(interval1.getHighInterval());
+                Interval intervalMutated = this.mutate(interval1);
+                interval.setLowInterval(intervalMutated.getLowInterval());
+                interval.setHighInterval(intervalMutated.getHighInterval());
             } else {
                 if (interval1.getLowInterval() > interval2.getHighInterval()) {
-                    interval.setLowInterval(interval2.getLowInterval());
-                    interval.setHighInterval(interval1.getHighInterval());
+                    Interval intervalTemp = new DoubleInterval("Temp");
+                    intervalTemp.setLowInterval(interval2.getLowInterval());
+                    intervalTemp.setHighInterval(interval1.getHighInterval());
+
+                    Interval intervalMutated = this.mutate(intervalTemp);
+                    interval.setLowInterval(intervalMutated.getLowInterval());
+                    interval.setHighInterval(intervalMutated.getHighInterval());
                 } else {
-                    interval.setLowInterval(interval1.getLowInterval());
-                    interval.setHighInterval(interval2.getHighInterval());
+                    Interval intervalTemp = new DoubleInterval("Temp");
+                    intervalTemp.setLowInterval(interval1.getLowInterval());
+                    intervalTemp.setHighInterval(interval2.getHighInterval());
+
+                    Interval intervalMutated = this.mutate(intervalTemp);
+                    interval.setLowInterval(intervalMutated.getLowInterval());
+                    interval.setHighInterval(intervalMutated.getHighInterval());
                 }
             }
         }
@@ -159,6 +179,38 @@ public class IntervalManager {
         return intervalHijo;
     }
 
+    public Interval optimize(Interval<Double> optimized, Interval<Double> generated) {
+        Interval<Double> optimizedResult = new DoubleInterval(this.name);
+
+        double val1 = 0.0D;
+        double val2 = 0.0D;
+        if (generated != null) {
+            if ((optimized == null) || (optimized.getLowInterval() == null)) {
+                val1 = generated.getLowInterval();
+            } else {
+                val1 = Math.min(optimized.getLowInterval(), generated.getLowInterval());
+            }
+            if ((optimized == null) || (optimized.getHighInterval() == null)) {
+                val2 = generated.getHighInterval();
+            } else {
+                val2 = Math.max(optimized.getHighInterval(), generated.getHighInterval());
+            }
+        } else {
+            if ((optimized == null) || (optimized.getLowInterval() == null) || (optimized.getHighInterval() == null)) {
+                optimizedResult = null;
+            } else {
+                val1 = optimized.getLowInterval();
+                val2 = optimized.getHighInterval();
+            }
+        }
+        if (optimizedResult != null) {
+            optimizedResult.setLowInterval(NumberUtil.round(val1));
+            optimizedResult.setHighInterval(NumberUtil.round(val2));
+        }
+
+        return optimizedResult;
+    }
+
     public static Interval<Double> intersect(Interval<Double> i1, Interval<Double> i2) {
         Interval<Double> intersect = null;
         if ((i1 == null) || (i2 == null)) {
@@ -172,5 +224,63 @@ public class IntervalManager {
             }
         }
         return intersect;
+    }
+
+    public static Interval<Double> difference(Interval<Double> i1, Interval<Double> i2) {
+        Interval<Double> difference = null;
+        if ((i1 == null) || (i1.getLowInterval() == null) || (i1.getHighInterval() == null)) {
+            difference = null;
+        } else if ((i2 == null) || (i2.getLowInterval() == null) || (i2.getHighInterval() == null)) {
+            difference = i1;
+        } else {
+            difference = new DoubleInterval(i1.getName());
+            Interval<Double> intersect = intersect(i1, i2);
+            if (intersect == null) {
+                difference = i1;
+            } else if (intersect.equals(i1)) {
+                difference = null;
+            } else if (intersect.equals(i2)) {
+                boolean rb = random.nextBoolean();
+                difference.setLowInterval(rb ? i1.getLowInterval() : i2.getHighInterval());
+                difference.setHighInterval(rb ? i2.getLowInterval() : i1.getHighInterval());
+            } else if (intersect.getLowInterval() == intersect.getHighInterval()) {
+                if (intersect.getLowInterval() == i1.getLowInterval()) {
+                    difference.setLowInterval(i1.getLowInterval() + 0.00001);
+                    difference.setHighInterval(i1.getHighInterval());
+                } else if (intersect.getHighInterval() == i1.getHighInterval()) {
+                    difference.setLowInterval(i1.getLowInterval());
+                    difference.setHighInterval(i1.getHighInterval() - 0.00001);
+                }
+            } else {
+                if (i1.getLowInterval() < i2.getLowInterval()) {
+                    difference.setLowInterval(i1.getLowInterval());
+                } else if (i2.getLowInterval() <= i1.getLowInterval()) {
+                    difference.setLowInterval(intersect.getHighInterval() + 0.00001);
+                }
+                if (i1.getHighInterval() > i2.getHighInterval()) {
+                    difference.setHighInterval(i1.getHighInterval());
+                } else if (i2.getHighInterval() >= i1.getHighInterval()) {
+                    difference.setHighInterval(intersect.getLowInterval() - 0.00001);
+                }
+            }
+        }
+        return difference;
+    }
+
+    public void round(Interval<Double> interval) {
+/*        double val1 = interval.getLowInterval();
+        double val2 = interval.getHighInterval();
+        /*if (val1 >= 0) {
+        val1 *= 0.999999999;
+        } else {
+        val1 *= 1.000000001;
+        }
+        if (val2 >= 0) {
+        val2 *= 1.000000001;
+        } else {
+        val2 *= 0.999999999;
+        }
+        interval.setLowInterval(NumberUtil.round(val1));
+        interval.setHighInterval(NumberUtil.round(val2));*/
     }
 }

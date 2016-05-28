@@ -51,4 +51,9 @@ public class FileProperties {
     public static synchronized double getPropertyDouble(String key) {
         return Double.parseDouble(getPropertyString(key));
     }
+
+    public static String propertiesString() {
+        return properties.toString();
+    }
+    
 }

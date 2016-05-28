@@ -5,6 +5,8 @@
 package forex.genetic.delegate;
 
 import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.Poblacion;
+import forex.genetic.entities.Point;
 import forex.genetic.manager.FuncionFortalezaManager;
 import forex.genetic.manager.PoblacionManager;
 import forex.genetic.manager.PropertiesManager;
@@ -12,8 +14,7 @@ import forex.genetic.manager.io.FileOutManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 
 /**
  *
@@ -50,6 +51,21 @@ public class GeneticTesterDelegate extends GeneticDelegate {
                 ex.printStackTrace();
             }
 
+        }
+    }
+
+    public void process(Poblacion poblacion, int poblacionIndex, int endPoblacionIndex) {
+        FuncionFortalezaManager funcionFortalezaManager = new FuncionFortalezaManager();
+        for (int i = poblacionIndex;
+                i <= endPoblacionIndex && !PropertiesManager.getPropertyBoolean(Constants.TERMINAR); i++) {
+            LogUtil.logTime("Crear poblacion " + i, 1);
+            PoblacionManager poblacionManager = new PoblacionManager();
+            poblacionManager.load("" + i, false);
+            LogUtil.logTime("Crear poblacion " + i + " Fecha = " + poblacionManager.getDateInterval(), 1);
+            /** Se calcula la fortaleza de los individuos */
+            LogUtil.logTime("Calcular fortaleza", 1);
+            List<Point> points = poblacionManager.getPoints();
+            funcionFortalezaManager.calculateFortaleza(points, poblacion, true, i, poblacionIndex);
         }
     }
 }

@@ -33,8 +33,10 @@ public class DoubleInterval extends Interval<Double> implements Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof DoubleInterval) {
             Interval<Double> objInterval = (DoubleInterval) obj;
-            return (Math.abs((objInterval.getLowInterval() - this.getLowInterval()) / this.getLowInterval()) < 0.005
-                    && (Math.abs(objInterval.getHighInterval() - this.getHighInterval()) / this.getHighInterval()) < 0.005);
+            double d1 = Math.abs((objInterval.getLowInterval() - this.getLowInterval()) / this.getLowInterval());
+            double d2 = Math.abs((objInterval.getHighInterval() - this.getHighInterval()) / this.getHighInterval());
+            return ((Math.abs((objInterval.getLowInterval() - this.getLowInterval()) / this.getLowInterval()) < 0.0005)
+                    && (Math.abs((objInterval.getHighInterval() - this.getHighInterval()) / this.getHighInterval()) < 0.0005));
         } else {
             return false;
         }
@@ -49,7 +51,7 @@ public class DoubleInterval extends Interval<Double> implements Serializable {
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         buffer.append(PropertiesManager.getOperationType() + this.name + "Lower=" + (this.lowInterval * 100.0) + ",");
-        buffer.append(PropertiesManager.getOperationType() + this.name + "Higher=" + this.highInterval * 100.0);
+        buffer.append(PropertiesManager.getOperationType() + this.name + "Higher=" + (this.highInterval * 100.0));
 
         return buffer.toString();
     }

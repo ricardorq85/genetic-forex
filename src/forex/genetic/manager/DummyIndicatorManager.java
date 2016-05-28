@@ -39,4 +39,20 @@ public class DummyIndicatorManager extends IndicatorManager<Object> {
     public Interval calculateInterval(Object individuo, Object indicator, Point point) {
         throw new UnsupportedOperationException("Not supported.");
     }
+
+
+    @Override
+    public void round(Object indicator) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Indicator optimize(Object individuo, Object optimizedIndividuo, Object indicator, Point prevPoint, Point point, double pips) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public double getValue(Object indicator, Point prevPoint, Point point) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

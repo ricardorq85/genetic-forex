@@ -38,11 +38,11 @@ public class MutationManager {
 
         Random random = new Random();
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
-        int size = individuos.size();
         int counter = 0;
 
         while ((counter < percentValue) && (!endProcess)) {
-            int pos1 = counter % individuos.size();
+            //int pos1 = counter % individuos.size();
+            int pos1 = random.nextInt(individuos.size());
             if (pos1 < individuos.size()) {
                 try {
                     IndividuoEstrategia individuo1 = individuos.get(pos1);
@@ -50,24 +50,30 @@ public class MutationManager {
                     IndividuoEstrategia hijo = new IndividuoEstrategia(generacion, individuo1, null, IndividuoType.MUTATION);
                     List<Indicator> openIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
                     List<Indicator> closeIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
-                    for (int i = 0; i < individuo1.getOpenIndicators().size(); i++) {
-                        Indicator openIndicator = individuo1.getOpenIndicators().get(i);
+                    for (int i = 0; i < IndicatorManager.getIndicatorNumber(); i++) {
+                        Indicator openIndicator = null;
+                        if (individuo1.getOpenIndicators().size() > i) {
+                            openIndicator = individuo1.getOpenIndicators().get(i);
+                        }
                         IndicatorManager indicatorManager = IndicatorManager.getInstance(i);
-                        if (random.nextDouble() < 0.1) {
+                        if ((!indicatorManager.isObligatory()) && random.nextDouble() < 0.1) {
                             openIndicators.add(null);
                         } else {
                             Indicator indHijo = openIndicator;
-                            if (random.nextBoolean()) {
+                            if ((random.nextDouble() < 0.7) || ((openIndicator == null) && (indicatorManager.isObligatory()))) {
                                 indHijo = indicatorManager.mutate(openIndicator);
                             }
                             openIndicators.add(indHijo);
                         }
-                        Indicator closeIndicator = individuo1.getCloseIndicators().get(i);
-                        if (random.nextDouble() < 0.1) {
+                        Indicator closeIndicator = null;
+                        if (individuo1.getCloseIndicators().size() > i) {
+                            closeIndicator = individuo1.getCloseIndicators().get(i);
+                        }
+                        if ((!indicatorManager.isObligatory()) && random.nextDouble() < 0.1) {
                             closeIndicators.add(null);
                         } else {
                             Indicator indHijo = closeIndicator;
-                            if (random.nextBoolean()) {
+                            if ((random.nextDouble() < 0.7) || ((closeIndicator == null) && (indicatorManager.isObligatory()))) {
                                 indHijo = indicatorManager.mutate(closeIndicator);
                             }
                             closeIndicators.add(indHijo);
@@ -108,12 +114,13 @@ public class MutationManager {
                         parents.add(individuo1);
                         hijos.add(hijo);
                     }
-                    counter++;
                 } catch (ArrayIndexOutOfBoundsException ex) {
+                    ex.printStackTrace();
                 }
             } else {
                 LogUtil.logTime("MutationManager mutation Counter=" + counter + " pos1=" + pos1, 5);
             }
+            counter++;
         }
         parentsPoblacion.setIndividuos(parents);
         mutatedPoblacion.setIndividuos(hijos);
