@@ -4,6 +4,7 @@
  */
 package forex.genetic.util;
 
+import forex.genetic.manager.PropertiesManager;
 import java.math.BigDecimal;
 
 /**
@@ -13,7 +14,7 @@ import java.math.BigDecimal;
 public class NumberUtil {
 
     public static double round(double d) {
-        return NumberUtil.round(d, Constants.DEFAULT_SCALE_ROUNDING);
+        return NumberUtil.round(d, PropertiesManager.getPropertyInt(Constants.DEFAULT_SCALE_ROUNDING));
     }
 
     public static double round(double d, int scale) {

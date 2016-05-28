@@ -4,6 +4,7 @@
  */
 package forex.genetic.manager;
 
+import forex.genetic.util.Constants;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.entities.indicator.Indicator;
@@ -16,7 +17,6 @@ import java.util.Date;
 import java.util.Random;
 import java.util.List;
 import java.util.Vector;
-import static forex.genetic.util.Constants.*;
 
 /**
  *
@@ -28,11 +28,14 @@ public class PoblacionManager {
     private Poblacion poblacion = null;
     private Interval<Date> dateInterval = new DateInterval();
 
-    public PoblacionManager(String poblacionId) {
-        this(poblacionId, false);
+    public PoblacionManager() {
     }
 
-    public PoblacionManager(String poblacionId, boolean poblar) {
+    public void load(String poblacionId) {
+        this.load(poblacionId, false);
+    }
+
+    public void load(String poblacionId, boolean poblar) {
         this.generatePoints(poblacionId);
         if ( (poblar) && (!this.points.isEmpty()) ) {
             this.generatePoblacionInicial();
@@ -49,14 +52,14 @@ public class PoblacionManager {
 
     private void generatePoblacionInicial() {
         poblacion = new Poblacion();
-        List<IndividuoEstrategia> individuos = new Vector<IndividuoEstrategia>(INITIAL_INDIVIDUOS);
+        List<IndividuoEstrategia> individuos = new Vector<IndividuoEstrategia>(PropertiesManager.getPropertyInt(Constants.INITIAL_INDIVIDUOS));
         IndividuoEstrategia individuo = null;
         Indicator openIndicator = null;
         Indicator closeIndicator = null;
 
         Random random = new Random();
         int counter = 0;
-        while (counter < INITIAL_INDIVIDUOS) {
+        while (counter < PropertiesManager.getPropertyInt(Constants.INITIAL_INDIVIDUOS)) {
             individuo = new IndividuoEstrategia();
 
             List<Indicator> openIndicators = null;
@@ -78,13 +81,13 @@ public class PoblacionManager {
             individuo.setOpenIndicators(openIndicators);
             individuo.setCloseIndicators(closeIndicators);
 
-            individuo.setTakeProfit(MIN_TP + random.nextInt(MAX_TP - MIN_TP));
-            individuo.setStopLoss(MIN_SL + random.nextInt(MAX_SL - MIN_SL));
-            individuo.setLot(NumberUtil.round(MIN_LOT + random.nextDouble() * (MAX_LOT - MIN_LOT), LOT_SCALE_ROUNDING));
-            individuo.setInitialBalance(MIN_BALANCE + random.nextInt(MAX_BALANCE - MIN_BALANCE));
+            individuo.setTakeProfit(PropertiesManager.getPropertyInt(Constants.MIN_TP) + random.nextInt(PropertiesManager.getPropertyInt(Constants.MAX_TP) - PropertiesManager.getPropertyInt(Constants.MIN_TP)));
+            individuo.setStopLoss(PropertiesManager.getPropertyInt(Constants.MIN_SL) + random.nextInt(PropertiesManager.getPropertyInt(Constants.MAX_SL) - PropertiesManager.getPropertyInt(Constants.MIN_SL)));
+            individuo.setLot(NumberUtil.round(PropertiesManager.getPropertyDouble(Constants.MIN_LOT) + random.nextDouble() * (PropertiesManager.getPropertyDouble(Constants.MAX_LOT) - PropertiesManager.getPropertyDouble(Constants.MIN_LOT)), PropertiesManager.getPropertyInt(Constants.LOT_SCALE_ROUNDING)));
+            individuo.setInitialBalance(PropertiesManager.getPropertyInt(Constants.MIN_BALANCE) + random.nextInt(PropertiesManager.getPropertyInt(Constants.MAX_BALANCE) - PropertiesManager.getPropertyInt(Constants.MIN_BALANCE)));
 
             if (!individuos.contains(individuo)) {
-                individuos.add(individuo);
+               individuos.add(individuo);
             }
             counter++;
         }

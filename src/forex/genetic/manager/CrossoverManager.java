@@ -4,6 +4,7 @@
  */
 package forex.genetic.manager;
 
+import forex.genetic.util.Constants;
 import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
@@ -30,7 +31,7 @@ public class CrossoverManager {
 
         Random random = new Random();
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
-        int size = individuos.size();
+        int size =individuos.size();
         int counter = 0;
 
         while (counter < percentValue) {
@@ -38,8 +39,8 @@ public class CrossoverManager {
             int pos2 = random.nextInt(size);
 
             if (pos1 != pos2) {
-                IndividuoEstrategia individuo1 = individuos.get(pos1);
-                IndividuoEstrategia individuo2 = individuos.get(pos2);
+                IndividuoEstrategia individuo1 =individuos.get(pos1);
+                IndividuoEstrategia individuo2 =individuos.get(pos2);
 
                 IndividuoEstrategia hijo = new IndividuoEstrategia(generacion, individuo1, individuo2, IndividuoType.CROSSOVER);
                 List<Indicator> openIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
@@ -50,7 +51,7 @@ public class CrossoverManager {
                     Indicator openIndicator1 = (openIndicators1.size() > i) ? openIndicators1.get(i) : null;
                     Indicator openIndicator2 = (openIndicators2.size() > i) ? openIndicators2.get(i) : null;
                     IndicatorManager indicatorManager = IndicatorManager.getInstance(i);
-                    if (random.nextDouble() < 0.3) {
+                    if (random.nextDouble() < 0.2) {
                         openIndicators.add(null);
                     } else {
                         Indicator indHijo = indicatorManager.crossover(openIndicator1, openIndicator2);
@@ -72,22 +73,22 @@ public class CrossoverManager {
 
                 int tp1 = individuo1.getTakeProfit();
                 int tp2 = individuo2.getTakeProfit();
-                int tpHijo = especificCrossoverManager.crossover(tp1, tp2, MIN_TP, MAX_TP);
+                int tpHijo = especificCrossoverManager.crossover(tp1, tp2, PropertiesManager.getPropertyInt(Constants.MIN_TP), PropertiesManager.getPropertyInt(Constants.MAX_TP));
                 hijo.setTakeProfit(tpHijo);
 
                 int sl1 = individuo1.getStopLoss();
                 int sl2 = individuo2.getStopLoss();
-                int slHijo = especificCrossoverManager.crossover(sl1, sl2, MIN_SL, MAX_SL);
+                int slHijo = especificCrossoverManager.crossover(sl1, sl2, PropertiesManager.getPropertyInt(Constants.MIN_SL), PropertiesManager.getPropertyInt(Constants.MAX_SL));
                 hijo.setStopLoss(slHijo);
 
                 double lot1 = individuo1.getLot();
                 double lot2 = individuo2.getLot();
-                double lotHijo = especificCrossoverManager.crossover(lot1, lot2, MIN_LOT, MAX_LOT);
-                hijo.setLot(NumberUtil.round(lotHijo, LOT_SCALE_ROUNDING));
+                double lotHijo = especificCrossoverManager.crossover(lot1, lot2, PropertiesManager.getPropertyDouble(Constants.MIN_LOT), PropertiesManager.getPropertyDouble(Constants.MAX_LOT));
+                hijo.setLot(NumberUtil.round(lotHijo, PropertiesManager.getPropertyInt(Constants.LOT_SCALE_ROUNDING)));
 
                 int balance1 = individuo1.getInitialBalance();
                 int balance2 = individuo2.getInitialBalance();
-                int balanceHijo = especificCrossoverManager.crossover(balance1, balance2, MIN_BALANCE, MAX_BALANCE);
+                int balanceHijo = especificCrossoverManager.crossover(balance1, balance2, PropertiesManager.getPropertyInt(Constants.MIN_BALANCE), PropertiesManager.getPropertyInt(Constants.MAX_BALANCE));
                 hijo.setInitialBalance(balanceHijo);
 
                 if (!hijos.contains(hijo)) {

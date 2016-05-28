@@ -4,6 +4,7 @@
  */
 package forex.genetic.manager;
 
+import forex.genetic.util.Constants;
 import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
@@ -31,12 +32,12 @@ public class MutationManager {
 
         Random random = new Random();
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
-        int size = individuos.size();
+        int size =individuos.size();
         int counter = 0;
 
         while (counter < percentValue) {
             int pos1 = counter;
-            IndividuoEstrategia individuo1 = individuos.get(pos1);
+            IndividuoEstrategia individuo1 =individuos.get(pos1);
 
             IndividuoEstrategia hijo = new IndividuoEstrategia(generacion, individuo1, null, IndividuoType.MUTATION);
             List<Indicator> openIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
@@ -44,7 +45,7 @@ public class MutationManager {
             for (int i = 0; i < individuo1.getOpenIndicators().size(); i++) {
                 Indicator openIndicator = individuo1.getOpenIndicators().get(i);
                 IndicatorManager indicatorManager = IndicatorManager.getInstance(i);
-                if (random.nextDouble() < 0.3) {
+                if (random.nextDouble() < 0.2) {
                     openIndicators.add(null);
                 } else {
                     Indicator indHijo = openIndicator;
@@ -67,32 +68,31 @@ public class MutationManager {
             hijo.setOpenIndicators(openIndicators);
             hijo.setCloseIndicators(closeIndicators);
 
-
             int tp1 = individuo1.getTakeProfit();
             int tpHijo = tp1;
             if (random.nextBoolean()) {
-                tpHijo = especificMutationManager.mutate(tp1, MIN_TP, MAX_TP);
+                tpHijo = especificMutationManager.mutate(tp1, PropertiesManager.getPropertyInt(Constants.MIN_TP), PropertiesManager.getPropertyInt(Constants.MAX_TP));
             }
             hijo.setTakeProfit(tpHijo);
 
             int sl1 = individuo1.getStopLoss();
             int slHijo = sl1;
             if (random.nextBoolean()) {
-                slHijo = especificMutationManager.mutate(sl1, MIN_SL, MAX_SL);
+                slHijo = especificMutationManager.mutate(sl1, PropertiesManager.getPropertyInt(Constants.MIN_SL), PropertiesManager.getPropertyInt(Constants.MAX_SL));
             }
             hijo.setStopLoss(slHijo);
 
             double lot1 = individuo1.getLot();
             double lotHijo = lot1;
             if (random.nextBoolean()) {
-                lotHijo = NumberUtil.round(especificMutationManager.mutate(lot1, MIN_LOT, MAX_LOT), LOT_SCALE_ROUNDING);
+                lotHijo = NumberUtil.round(especificMutationManager.mutate(lot1, PropertiesManager.getPropertyDouble(Constants.MIN_LOT), PropertiesManager.getPropertyDouble(Constants.MAX_LOT)), PropertiesManager.getPropertyInt(Constants.LOT_SCALE_ROUNDING));
             }
             hijo.setLot(lotHijo);
 
             int balance1 = individuo1.getInitialBalance();
             int balanceHijo = balance1;
             if (random.nextBoolean()) {
-                balanceHijo = especificMutationManager.mutate(balance1, MIN_BALANCE, MAX_BALANCE);
+                balanceHijo = especificMutationManager.mutate(balance1, PropertiesManager.getPropertyInt(Constants.MIN_BALANCE), PropertiesManager.getPropertyInt(Constants.MAX_BALANCE));
             }
             hijo.setInitialBalance(balanceHijo);
 

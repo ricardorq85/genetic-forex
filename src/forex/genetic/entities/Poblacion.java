@@ -4,14 +4,12 @@
  */
 package forex.genetic.entities;
 
+import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.CollectionUtil;
 import forex.genetic.util.Constants;
 import forex.genetic.util.Constants.OperationType;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -26,8 +24,8 @@ public class Poblacion implements Serializable {
     private String pair = null;
 
     public Poblacion() {
-        this.operationType = Constants.OPERATION_TYPE;
-        this.pair = Constants.PAIR;
+        this.operationType = PropertiesManager.getOperationType();
+        this.pair = PropertiesManager.getPropertyString(Constants.PAIR);
     }
 
     public String getPair() {
@@ -48,6 +46,16 @@ public class Poblacion implements Serializable {
 
     public Poblacion getFirst() {
         return getFirst(1);
+    }
+    
+    public Poblacion getByProcessedUntil(int cantidad, int processedUntil) {
+        Poblacion p = new Poblacion();
+        for (IndividuoEstrategia individuoEstrategia : this.getIndividuos()) {
+            if (processedUntil == individuoEstrategia.getProcessedUntil()) {
+                p.getIndividuos().add(individuoEstrategia);
+            }
+        }
+        return p;
     }
 
     public Poblacion getFirst(int cantidad) {
@@ -94,7 +102,7 @@ public class Poblacion implements Serializable {
     }
      */
     public List<IndividuoEstrategia> getIndividuos() {
-        return individuos;
+        return this.individuos;
     }
 
     public void setIndividuos(List<IndividuoEstrategia> individuos) {

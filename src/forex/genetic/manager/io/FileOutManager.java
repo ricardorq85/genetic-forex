@@ -17,17 +17,28 @@ import java.util.List;
  */
 public class FileOutManager {
 
-    public void write(Poblacion poblacion, Interval<Date> dateInterval)
+    public void write(String s) {
+        System.out.print(s);
+    }
+
+    public void write(Poblacion poblacion, Interval<Date> dateInterval) throws IOException {
+        write(poblacion, dateInterval, false);
+    }
+
+    public void write(Poblacion poblacion, Interval<Date> dateInterval, boolean first)
             throws IOException {
         /*DateFormat format = new SimpleDateFormat("yyyyMMddHHmm");
         FileOutputStream writer = new FileOutputStream(
-                Constants.SERIALICE_PATH + Constants.OPERATION_TYPE + ""
-                + format.format(dateInterval.getLowInterval()) + "-"
-                + format.format(dateInterval.getHighInterval()) + "_"
-                + format.format(new Date()) + ".gfx");*/
+        PropertiesManager.getPropertyString(Constants.SERIALICE_PATH) + PropertiesManager.getOperationType() + ""
+        + format.format(dateInterval.getLowInterval()) + "-"
+        + format.format(dateInterval.getHighInterval()) + "_"
+        + format.format(new Date()) + ".gfx");*/
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
         for (int i = individuos.size() - 1; i >= 0; i--) {
             IndividuoEstrategia individuo = individuos.get(i);
+            if (first) {
+                write("<First>");
+            }
             System.out.println(i + "," + individuo.toFileString(dateInterval));
             //writer.write(poblacion);
         }

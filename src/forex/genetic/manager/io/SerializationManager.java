@@ -6,6 +6,7 @@ package forex.genetic.manager.io;
 
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Poblacion;
+import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,7 +24,7 @@ import java.util.Date;
  */
 public class SerializationManager {
 
-    public Poblacion readAll(String path, int counter) {
+    public Poblacion readAll(String path, int counter, int processedUntil) {
         Poblacion poblacion = new Poblacion();
 
         File root = new File(path);
@@ -33,9 +34,10 @@ public class SerializationManager {
                 //System.out.print(i);
                 File file = files[i];
                 Poblacion p = this.readObject(file);
-                if ( (p.getOperationType().equals(Constants.OPERATION_TYPE)) &&
-                        (p.getPair().equals(Constants.PAIR)) ) {
-                    poblacion.addAll(p.getFirst(counter));
+                if ( (p.getOperationType().equals(PropertiesManager.getOperationType())) &&
+                        (p.getPair().equals(PropertiesManager.getPropertyString(Constants.PAIR))) ) {
+                    Poblacion poblacionByProcessedUntil = p.getByProcessedUntil(counter, processedUntil);
+                    poblacion.addAll(poblacionByProcessedUntil.getFirst(counter));
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -54,12 +56,12 @@ public class SerializationManager {
         return p;
     }
 
-    public void writeObject(long id, Poblacion poblacion, Interval<Date> dateInterval)
+    public void writeObject(String id, Poblacion poblacion, Interval<Date> dateInterval)
             throws IOException {
         DateFormat format = new SimpleDateFormat("yyyyMMddHHmm");
         ObjectOutputStream writer = new ObjectOutputStream(
                 new FileOutputStream(
-                Constants.SERIALICE_PATH + Constants.OPERATION_TYPE + Constants.PAIR + "" + format.format(dateInterval.getLowInterval()) + "-" + format.format(dateInterval.getHighInterval()) + "_" + id + ".gfx"));
+                PropertiesManager.getPropertyString(Constants.SERIALICE_PATH) + PropertiesManager.getOperationType() + PropertiesManager.getPropertyString(Constants.PAIR) + "" + format.format(dateInterval.getLowInterval()) + "-" + format.format(dateInterval.getHighInterval()) + "_" + id + ".gfx"));
         writer.writeObject(poblacion);
         writer.close();
     }

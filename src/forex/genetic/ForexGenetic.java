@@ -6,6 +6,7 @@ package forex.genetic;
 
 import forex.genetic.entities.Poblacion;
 import forex.genetic.delegate.GeneticDelegate;
+import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -21,10 +22,12 @@ public class ForexGenetic {
      */
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         long id = System.currentTimeMillis();
-        PrintStream out = new PrintStream(Constants.LOG_PATH + id + ".log");
+        PropertiesManager.load();
+        PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + id + ".log");
         System.setOut(out);
         System.setErr(out);
-        GeneticDelegate delegate = new GeneticDelegate(id);
-        Poblacion poblacion = delegate.process(Constants.POBLACION_COUNTER);
+        GeneticDelegate delegate = new GeneticDelegate();
+        GeneticDelegate.id = Long.toString(id);
+        Poblacion poblacion = delegate.process(PropertiesManager.getPropertyInt(Constants.POBLACION_COUNTER));
     }
 }

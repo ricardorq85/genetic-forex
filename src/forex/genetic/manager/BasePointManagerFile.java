@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static forex.genetic.util.Constants.*;
 
 /**
  *
@@ -37,8 +36,8 @@ public class BasePointManagerFile {
 
     public static List<Point> process(String poblacionId) {
         try {
-            String filePath = Constants.FILE_PATH + Constants.PAIR + "-" + Constants.FILE_ID + "-" + poblacionId + ".csv";
-                return readFileAsPoint(filePath);
+            String filePath = PropertiesManager.getPropertyString(Constants.FILE_PATH) + PropertiesManager.getPropertyString(Constants.PAIR) + "-" + PropertiesManager.getPropertyString(Constants.FILE_ID) + "-" + poblacionId + ".csv";
+            return readFileAsPoint(filePath);
         } catch (ParseException ex) {
             Logger.getLogger(BasePointManagerFile.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -69,7 +68,7 @@ public class BasePointManagerFile {
         BufferedReader reader = new BufferedReader(
                 new FileReader(filePath));
         String lineRead = reader.readLine();
-        while ((counter < POINTS_CONTROL) && ((lineRead = reader.readLine()) != null)) {
+        while ((counter < PropertiesManager.getPointsControl()) && ((lineRead = reader.readLine()) != null)) {
             String[] strings = lineRead.split(",");
             Date date = format.parse(strings[1] + strings[2]);
             double baseOpen = Double.parseDouble(strings[3]);

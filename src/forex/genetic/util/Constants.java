@@ -12,41 +12,42 @@ import java.util.Hashtable;
  */
 public class Constants {
 
-    public static final OperationType OPERATION_TYPE = OperationType.Sell;
-    public static final int INITIAL_INDIVIDUOS = 200;
-    public static final int INDIVIDUOS = 100;
-    public static final int POINTS_CONTROL = Integer.MAX_VALUE;
-    public static final int GENERATIONS = 10;
-    public static final int INITIAL_POBLACION = 1;
-    public static final int POBLACION_COUNTER = 5;
-    public static final String FILE_ID = "201103110537";
-    public static final double HARDEST_PERCENT = 0.2;
-    public static final double CROSSOVER_PERCENT = 0.8;
-    public static final double MUTATION_PERCENT = 0.7;
-    public static final double WEAKEST_PERCENT = 0.65;
-    public static final double PIPS_FIXER = 15.0;
-    public static final int MOD_POINTS = 1440 * 5;
-    public static final int VIGENCIA = 1000 * 60 * 60 * 24 * 2;
-    public static final int SHOW_HARDEST = 5;
-    public static final int SHOW_WEAKEST = 5;
-    public static final String PAIR = "EURUSD";
+    public static final String OPERATION_TYPE = "OPERATION_TYPE";
+    public static final String INITIAL_INDIVIDUOS = "INITIAL_INDIVIDUOS";
+    public static final String INDIVIDUOS = "INDIVIDUOS";
+    public static final String POINTS_CONTROL = "POINTS_CONTROL";
+    public static final String GENERATIONS = "GENERATIONS";
+    public static final String INITIAL_POBLACION = "INITIAL_POBLACION";
+    public static final String POBLACION_COUNTER = "POBLACION_COUNTER";
+    public static final String FILE_ID = "FILE_ID";
+    public static final String HARDEST_PERCENT = "HARDEST_PERCENT";
+    public static final String CROSSOVER_PERCENT = "CROSSOVER_PERCENT";
+    public static final String MUTATION_PERCENT = "MUTATION_PERCENT";
+    public static final String WEAKEST_PERCENT = "WEAKEST_PERCENT";
+    public static final String PIPS_FIXER = "PIPS_FIXER";
+    public static final String MOD_POINTS = "MOD_POINTS";
+    public static final String VIGENCIA = "VIGENCIA";
+    public static final String SHOW_HARDEST = "SHOW_HARDEST";
+    public static final String SHOW_WEAKEST = "SHOW_WEAKEST";
+    public static final String PAIR = "PAIR";
+    public static final String MINIMUN_FORTALEZA = "MINIMUN_FORTALEZA";
+    public static final String MIN_TP = "MIN_TP";
+    public static final String MAX_TP = "MAX_TP";
+    public static final String MIN_SL = "MIN_SL";
+    public static final String MAX_SL = "MAX_SL";
+    public static final String MIN_LOT = "MIN_LOT";
+    public static final String MAX_LOT = "MAX_LOT";
+    public static final String MIN_BALANCE = "MIN_BALANCE";
+    public static final String MAX_BALANCE = "MAX_BALANCE";
+    public static final String MINIMUM_INDIVIDUOS = "MINIMUM_INDIVIDUOS";
+    public static final String DEFAULT_SCALE_ROUNDING = "DEFAULT_SCALE_ROUNDING";
+    public static final String LOT_SCALE_ROUNDING = "LOT_SCALE_ROUNDING";
+    public static final String FILE_PATH = "FILE_PATH";
+    public static final String SERIALICE_PATH = "SERIALICE_PATH";
+    public static final String LOG_PATH = "LOG_PATH";
+
     public static final Hashtable<String, Double> PAIR_FACTOR = new Hashtable<String, Double>();
     public static final Hashtable<String, Double> PAIR_MARGIN_REQUIRED = new Hashtable<String, Double>();
-    public static final double MINIMUN_FORTALEZA = 1000.0;
-    public static final int MIN_TP = 100;
-    public static final int MAX_TP = 1000;
-    public static final int MIN_SL = 100;
-    public static final int MAX_SL = 1000;
-    public static final double MIN_LOT = 0.00999;
-    public static final double MAX_LOT = 1;
-    public static final int MIN_BALANCE = 2000;
-    public static final int MAX_BALANCE = 8000;
-    public static final int MINIMUM_INDIVIDUOS = 10;
-    public static final int DEFAULT_SCALE_ROUNDING = 5;
-    public static final int LOT_SCALE_ROUNDING = 2;
-    public static final String FILE_PATH = "c:/Archivos de programa/MetaTrader 5/MQL5/Files/run/";
-    public static final String SERIALICE_PATH = "serialice/";
-    public static final String LOG_PATH = "log/";
 
     public static double getPairFactor(String pair) {
         if (PAIR_FACTOR.isEmpty()) {

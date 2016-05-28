@@ -10,6 +10,7 @@ import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.manager.IntervalManager;
+import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.NumberUtil;
@@ -21,7 +22,7 @@ import java.util.List;
  */
 public class IndicatorController {
 
-    private double pairFactor = Constants.getPairFactor(Constants.PAIR);
+    private double pairFactor = Constants.getPairFactor(PropertiesManager.getPropertyString(Constants.PAIR));
 
     public IndicatorController() {
     }
@@ -93,10 +94,10 @@ public class IndicatorController {
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() <= resultInterval.getLowInterval())
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() >= resultInterval.getHighInterval())
                         ? resultInterval.getLowInterval() : (resultInterval.getLowInterval() + resultInterval.getHighInterval()) / 2;
-                if (Constants.OPERATION_TYPE.equals(Constants.OperationType.Buy)) {
-                    price += Constants.PIPS_FIXER / pairFactor;
+                if (PropertiesManager.getOperationType().equals(Constants.OperationType.Buy)) {
+                    price +=  PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
                 } else {
-                    price -= Constants.PIPS_FIXER / pairFactor;
+                    price -=  PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
                 }
                 price = NumberUtil.round(price);
             }
@@ -136,10 +137,10 @@ public class IndicatorController {
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() <= resultInterval.getLowInterval())
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() >= resultInterval.getHighInterval())
                         ? resultInterval.getLowInterval() : (resultInterval.getLowInterval() + resultInterval.getHighInterval()) / 2;
-                if (Constants.OPERATION_TYPE.equals(Constants.OperationType.Buy)) {
-                    price -= Constants.PIPS_FIXER / pairFactor;
+                if (PropertiesManager.getOperationType().equals(Constants.OperationType.Buy)) {
+                    price -=  PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
                 } else {
-                    price += Constants.PIPS_FIXER / pairFactor;
+                    price +=  PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor;
                 }
                 price = NumberUtil.round(price);
             }

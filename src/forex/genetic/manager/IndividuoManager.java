@@ -5,6 +5,8 @@
 
 package forex.genetic.manager;
 
+import forex.genetic.delegate.GeneticDelegate;
+
 /**
  *
  * @author ricardorq85
@@ -13,8 +15,8 @@ public class IndividuoManager {
 
     private static int individuoCounter = 0;
 
-    public synchronized static int nextId() {
-        return ++individuoCounter;
+    public synchronized static String nextId() {
+        return (GeneticDelegate.id + "." + (++individuoCounter));
     }
 
 }

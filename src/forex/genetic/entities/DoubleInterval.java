@@ -4,7 +4,7 @@
  */
 package forex.genetic.entities;
 
-import forex.genetic.util.Constants;
+import forex.genetic.manager.PropertiesManager;
 import java.io.Serializable;
 
 /**
@@ -48,8 +48,8 @@ public class DoubleInterval extends Interval<Double> implements Serializable {
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
-        buffer.append(Constants.OPERATION_TYPE + this.name + "Lower=" + (this.lowInterval * 100.0) + ",");
-        buffer.append(Constants.OPERATION_TYPE + this.name + "Higher=" + this.highInterval * 100.0);
+        buffer.append(PropertiesManager.getOperationType() + this.name + "Lower=" + (this.lowInterval * 100.0) + ",");
+        buffer.append(PropertiesManager.getOperationType() + this.name + "Higher=" + this.highInterval * 100.0);
 
         return buffer.toString();
     }

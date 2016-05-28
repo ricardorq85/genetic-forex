@@ -11,8 +11,8 @@ import forex.genetic.entities.Point;
 import forex.genetic.manager.controller.IndicatorController;
 import forex.genetic.util.CollectionUtil;
 import forex.genetic.util.Constants;
-import static forex.genetic.util.Constants.*;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -21,10 +21,10 @@ import java.util.List;
  */
 public class FuncionFortalezaManager {
 
-    private double pairFactor = Constants.getPairFactor(Constants.PAIR);
-    private double pairMarginRequired = Constants.getPairMarginRequired(Constants.PAIR);
+    private double pairFactor = Constants.getPairFactor(PropertiesManager.getPropertyString(Constants.PAIR));
+    private double pairMarginRequired = Constants.getPairMarginRequired(PropertiesManager.getPropertyString(Constants.PAIR));
     private IndicatorController indicatorController = new IndicatorController();
-    private double averageFortaleza = Constants.MINIMUN_FORTALEZA;
+    private double averageFortaleza = PropertiesManager.getPropertyDouble(Constants.MINIMUN_FORTALEZA);
     private int individuoCounter = 0;
     private double totalFortaleza = 0.0;
 
@@ -45,6 +45,16 @@ public class FuncionFortalezaManager {
                 if (individuo1.equalsReal(individuo2)) {
                     individuos.remove(j);
                 }
+            }
+        }
+    }
+
+    public void processInvalids(Poblacion poblacion) {
+        List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
+        for (Iterator<IndividuoEstrategia> it = individuos.iterator(); it.hasNext();) {
+            IndividuoEstrategia individuoEstrategia = it.next();
+            if (individuoEstrategia.getFortaleza().getValue() == Double.NEGATIVE_INFINITY) {
+                it.remove();
             }
         }
     }
@@ -70,14 +80,15 @@ public class FuncionFortalezaManager {
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
         for (int i = 0; i < individuos.size(); i++) {
             IndividuoEstrategia individuoEstrategia = individuos.get(i);
-            this.calculateFortaleza(totalSize, points, individuoEstrategia, 
-                    ((recalculate && (!Constants.FILE_ID.equals(individuoEstrategia.getFileId()))) || (individuoEstrategia.getProcessedUntil() >= INITIAL_POBLACION + POBLACION_COUNTER)),
+            this.calculateFortaleza(totalSize, points, individuoEstrategia,
+                    ((recalculate && (!PropertiesManager.getPropertyString(Constants.FILE_ID).equals(individuoEstrategia.getFileId())))
+                    || (individuoEstrategia.getProcessedUntil() >= 1 + PropertiesManager.getPropertyInt(Constants.POBLACION_COUNTER))),
                     poblacionIndex > individuoEstrategia.getProcessedUntil(), poblacionIndex);
-            if ( (poblacionIndex > individuoEstrategia.getProcessedUntil()) ) {
+            if ((poblacionIndex > individuoEstrategia.getProcessedUntil())) {
                 individuoEstrategia.setProcessedUntil(poblacionIndex);
             }
-            if (!Constants.FILE_ID.equals(individuoEstrategia.getFileId())) {
-                individuoEstrategia.setFileId(Constants.FILE_ID);
+            if (!PropertiesManager.getPropertyString(Constants.FILE_ID).equals(individuoEstrategia.getFileId())) {
+                individuoEstrategia.setFileId(PropertiesManager.getPropertyString(Constants.FILE_ID));
             }
             individuoCounter++;
             if (!Double.isInfinite(individuoEstrategia.getFortaleza().getValue())) {
@@ -152,14 +163,14 @@ public class FuncionFortalezaManager {
                     }
                 }
                 if ((activeOperation) && (i != openOperationIndex)) {
-                    double pips = (Constants.OPERATION_TYPE.equals(Constants.OperationType.Buy))
+                    double pips = (PropertiesManager.getOperationType().equals(Constants.OperationType.Buy))
                             ? (indicatorController.calculatePrice(points, i) - openOperationValue) * pairFactor
                             : (-indicatorController.calculatePrice(points, i) + openOperationValue) * pairFactor;
                     boolean operate = (((pips >= takeProfit) || (pips <= -stopLoss) || (i == points.size() - 1)));
                     if (!operate) {
                         operate = indicatorController.operateClose(individuoEstrategia, points, i);
                         if (operate) {
-                            pips = (Constants.OPERATION_TYPE.equals(Constants.OperationType.Buy))
+                            pips = (PropertiesManager.getOperationType().equals(Constants.OperationType.Buy))
                                     ? (indicatorController.calculateClosePrice(individuoEstrategia, points, i) - openOperationValue) * pairFactor
                                     : (-indicatorController.calculateClosePrice(individuoEstrategia, points, i) + openOperationValue) * pairFactor;
                             operate = !Double.isNaN(pips);
@@ -177,7 +188,7 @@ public class FuncionFortalezaManager {
                         //System.out.println("CLOSE " + "Pips=" + pips + " " + points.get(i));
                         activeOperation = false;
                         acumulativePips += pips;
-                            acumulativeProfit += profit;
+                        acumulativeProfit += profit;
                         //System.out.println("Close Buy. i=" + i + "; Close value=" + close + "; Pips=" + pips + "; Pips acumulados=" + acumulativePips);
                         if (pips > 0) {
                             wonNumOperations++;
@@ -224,7 +235,7 @@ public class FuncionFortalezaManager {
                 fortaleza.setMaxConsecutiveLostOperationsNumber(maxConsecutiveLostOperations);
                 fortaleza.setMaxConsecutiveWonPips(maxConsecutiveWonPips);
                 fortaleza.setMaxConsecutiveLostPips(maxConsecutiveLostPips);
-                if ((i % Constants.MOD_POINTS) == 0) {
+                if ((i % PropertiesManager.getPropertyInt(Constants.MOD_POINTS)) == 0) {
                     double value = calculate(totalSize, points, individuoEstrategia);
                     double pipsFactor = value - diffValue;
                     diffValue = value;
@@ -256,7 +267,7 @@ public class FuncionFortalezaManager {
             double value = calculate(totalSize, points, individuoEstrategia);
             double pipsFactor = value - diffValue;
             diffValue = value;
-           if (pipsFactor > 0) {
+            if (pipsFactor > 0) {
                 acumulativePipsFactor += pipsFactor;
             }
             fortaleza.setPipsFactor(Math.abs(acumulativePipsFactor));

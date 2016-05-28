@@ -4,6 +4,8 @@
  */
 package forex.genetic.entities;
 
+import forex.genetic.manager.PropertiesManager;
+import java.util.Collections;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.manager.IndividuoManager;
 import forex.genetic.util.Constants;
@@ -20,7 +22,7 @@ import static forex.genetic.util.Constants.*;
  */
 public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Serializable {
 
-    private int id = 0;
+    private String id = "0";
     private String fileId = null;
     private int processedUntil = 0;
     private int generacion = -1;
@@ -45,7 +47,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     }
 
     public IndividuoEstrategia(int generacion, IndividuoEstrategia parent1, IndividuoEstrategia parent2, IndividuoType individuoType) {
-        setFileId(Constants.FILE_ID);
+        setFileId(PropertiesManager.getPropertyString(Constants.FILE_ID));
         setId(IndividuoManager.nextId());
         setGeneracion(generacion);
         setParent1(parent1);
@@ -89,11 +91,11 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         return fortaleza;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -173,7 +175,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     public boolean equals(Object obj) {
         if (obj instanceof IndividuoEstrategia) {
             IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
-            return (this.openIndicators.equals(objIndividuo.openIndicators)
+            return (this.getId().equals(objIndividuo.getId())) || (this.openIndicators.equals(objIndividuo.openIndicators)
                     && this.closeIndicators.equals(objIndividuo.closeIndicators)
                     && (this.takeProfit == objIndividuo.takeProfit)
                     && (this.stopLoss == objIndividuo.stopLoss));
@@ -185,10 +187,12 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     public boolean equalsReal(Object obj) {
         if (obj instanceof IndividuoEstrategia) {
             IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
-            return (this.openIndicators.equals(objIndividuo.openIndicators)
-                    || this.closeIndicators.equals(objIndividuo.closeIndicators)
-                    || (Math.abs((objIndividuo.takeProfit - this.takeProfit) / new Double(this.takeProfit)) < 0.03)
-                    || (Math.abs((objIndividuo.stopLoss - this.stopLoss) / new Double(this.stopLoss)) < 0.03));
+            return ((this.openIndicators.equals(objIndividuo.openIndicators)
+                        && Collections.frequency(this.openIndicators, null) != this.openIndicators.size())
+                    ||(this.closeIndicators.equals(objIndividuo.closeIndicators)
+                        && Collections.frequency(this.closeIndicators, null) != this.closeIndicators.size())
+                    || ((Math.abs((objIndividuo.takeProfit - this.takeProfit) / new Double(this.takeProfit)) < 0.03)
+                        && (Math.abs((objIndividuo.stopLoss - this.stopLoss) / new Double(this.stopLoss)) < 0.03)));
         } else {
             return false;
         }
@@ -196,14 +200,15 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 
     @Override
     public int hashCode() {
-        return (this.openIndicators.hashCode() + this.closeIndicators.hashCode() + this.takeProfit + this.stopLoss);
+        return (this.getId().hashCode());
     }
 
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         buffer.append(" Id=" + (this.id));
-        buffer.append(" Generacion=" + (this.generacion));
+        buffer.append(" Generacion=" + (this.generacion) + ";");
+        buffer.append(" ProcessedUntil=" + (this.processedUntil));
         buffer.append("; IndividuoType=" + (this.individuoType) + ";");
         buffer.append("\n\t");
         buffer.append(((this.fortaleza == null) ? 0.0 : this.fortaleza.toString()));
@@ -229,12 +234,13 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     public String toFileString(Interval<Date> dateInterval) {
         StringBuilder buffer = new StringBuilder();
         buffer.append("EstrategiaId=" + (this.id) + ",");
-        buffer.append("Pair=" + Constants.PAIR + ",");
-        buffer.append("Operation=" + Constants.OPERATION_TYPE + ",");
+        buffer.append("ProcessedUntil=" + (this.processedUntil) + ",");
+        buffer.append("Pair=" + PropertiesManager.getPropertyString(Constants.PAIR) + ",");
+        buffer.append("Operation=" + PropertiesManager.getOperationType() + ",");
 
         DateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm");
         buffer.append("VigenciaLower=" + format.format(dateInterval.getHighInterval()) + ",");
-        Date vigencia = new Date(dateInterval.getHighInterval().getTime() + Constants.VIGENCIA);
+        Date vigencia = new Date(dateInterval.getHighInterval().getTime() + PropertiesManager.getPropertyInt(Constants.VIGENCIA));
         buffer.append("VigenciaHigher=" + (format.format(vigencia)) + ",");
 
         buffer.append("TakeProfit=" + this.takeProfit + ",");

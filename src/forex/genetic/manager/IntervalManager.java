@@ -17,7 +17,7 @@ import java.util.Random;
  */
 public class IntervalManager {
 
-    private double pairFactor = Constants.getPairFactor(Constants.PAIR);
+    private double pairFactor = Constants.getPairFactor(PropertiesManager.getPropertyString(Constants.PAIR));
     private double min = Double.POSITIVE_INFINITY;
     private double max = Double.NEGATIVE_INFINITY;
     private Random random = new Random();
@@ -91,9 +91,9 @@ public class IntervalManager {
         result.setHighInterval(highIntervalPosibble);
 
         Interval<Double> pointInterval = new DoubleInterval(this.name);
-        if (Constants.OPERATION_TYPE.equals(Constants.OperationType.Buy)) {
-            pointInterval.setLowInterval(point.getLow() + Constants.PIPS_FIXER / pairFactor);
-            pointInterval.setHighInterval(point.getHigh() + Constants.PIPS_FIXER / pairFactor);
+        if (PropertiesManager.getOperationType().equals(Constants.OperationType.Buy)) {
+            pointInterval.setLowInterval(point.getLow() +  PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor);
+            pointInterval.setHighInterval(point.getHigh() +  PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER) / pairFactor);
         } else {
             pointInterval.setLowInterval(point.getLow());
             pointInterval.setHighInterval(point.getHigh());
