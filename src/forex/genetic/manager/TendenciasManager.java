@@ -20,6 +20,7 @@ import forex.genetic.util.NumberUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -58,9 +59,18 @@ public class TendenciasManager {
                     Individuo individuo = individuos.get(i);
                     Order operacion = individuo.getCurrentOrder();
                     LogUtil.logTime("Individuo=" + individuo.getId(), 1);
-                    List<Point> historico = datoHistoricoDAO.consultarHistorico(operacion.getOpenDate(), fechaProceso);
                     Estadistica estadistica = operacionesDAO.consultarEstadisticasIndividuo(individuo);
                     if (estadistica.getCantidadTotal() > 0) {
+                        //List<Point> historico = datoHistoricoDAO.consultarHistorico(operacion.getOpenDate(), fechaProceso);
+                        List<Point> historico = null;
+                        Point tempPoint = new Point();
+                        tempPoint.setDate(fechaProceso);
+                        int indexPoint = points.indexOf(tempPoint);
+                        if (indexPoint >= 0) {
+                            historico = Collections.singletonList(points.get(indexPoint));
+                        } else {
+                            historico = datoHistoricoDAO.consultarHistorico(fechaProceso, fechaProceso);
+                        }
                         if (operacion.getOpenDate().compareTo(fechaProceso) < 0) {
                             pipsActuales = operacionManager.calcularPips(historico, (historico.size() - 1), operacion);
                             duracionActual = DateUtil.calcularDuracion(operacion.getOpenDate(), fechaProceso) / 1000 / 60;
@@ -165,7 +175,7 @@ public class TendenciasManager {
         CalculoTendencia calculoTendencia = new CalculoTendencia();
         double calculoPips = 0.0D;
         long calculoDuracion = 0L;
-        double baseDuracionxMinuto = 0.1;
+        double baseDuracionxMinuto = 0;
         double baseProbabilidad = 0.4;
         double baseModa = 0.6;
         double basePromedio = 0.4;

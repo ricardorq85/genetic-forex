@@ -4,7 +4,11 @@
  */
 package forex.genetic.dao.helper;
 
+import forex.genetic.entities.DateInterval;
+import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Individuo;
+import forex.genetic.entities.Interval;
+import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.Tendencia;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -63,5 +67,37 @@ public class TendenciaHelper {
             list.add(obj);
         }
         return list;
+    }
+
+    public static ProcesoTendencia createProcesoTendencia(ResultSet resultado) throws SQLException {
+        ProcesoTendencia obj = null;
+        if (resultado.next()) {
+            obj = new ProcesoTendencia();
+            Interval<Date> intervaloFecha = new DateInterval();
+            Timestamp ts = resultado.getTimestamp("MIN_FECHA");
+            if (ts != null) {
+                intervaloFecha.setLowInterval(new Date(ts.getTime()));
+            }
+            ts = resultado.getTimestamp("MAX_FECHA");
+            if (ts != null) {
+                intervaloFecha.setHighInterval(new Date(ts.getTime()));
+            }
+            Interval<Double> intervaloPrecio = new DoubleInterval("");
+            if (resultado.getObject("MIN_PRECIO") != null) {
+                intervaloPrecio.setLowInterval(resultado.getDouble("MIN_PRECIO"));
+            }
+            if (resultado.getObject("MAX_PRECIO") != null) {
+                intervaloPrecio.setHighInterval(resultado.getDouble("MAX_PRECIO"));
+            }
+
+            obj.setIntervaloFecha(intervaloFecha);
+            obj.setIntervaloPrecio(intervaloPrecio);
+
+            if ((intervaloFecha.getLowInterval() == null) || (intervaloFecha.getHighInterval() == null)
+                    || (intervaloPrecio.getLowInterval() == null) || (intervaloPrecio.getHighInterval() == null)) {
+                obj = null;
+            }
+        }
+        return obj;
     }
 }

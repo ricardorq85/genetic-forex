@@ -101,8 +101,8 @@ public class Constants {
 
     public enum OperationType {
 
-        Buy,
-        Sell;
+        BUY,
+        SELL;
     }
 
     public enum FortalezaType {

@@ -155,9 +155,9 @@ public class Point implements Serializable {
             return false;
         }
         final Point other = (Point) obj;
-        if (this.index != other.index) {
+/*        if (this.index != other.index) {
             return false;
-        }
+        }*/
         if (this.date != other.date && (this.date == null || !this.date.equals(other.date))) {
             return false;
         }

@@ -12,7 +12,28 @@
             <line>317</line>
         </file>
     </editor-bookmarks>
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="2">
+        <file>
+            <url>src/forex/genetic/manager/PatternManager.java</url>
+            <bookmark id="0">
+                <name/>
+                <line>291</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/forex/genetic/manager/OperacionesManager.java</url>
+            <bookmark id="2">
+                <name/>
+                <line>28</line>
+                <key/>
+            </bookmark>
+            <bookmark id="1">
+                <name/>
+                <line>83</line>
+                <key/>
+            </bookmark>
+        </file>
         <file>
             <url>src/forex/genetic/manager/FuncionFortalezaManager.java</url>
             <bookmark id="0">
@@ -28,14 +49,6 @@
             <bookmark id="0">
                 <name/>
                 <line>317</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>src/forex/genetic/manager/PatternManager.java</url>
-            <bookmark id="0">
-                <name/>
-                <line>291</line>
                 <key/>
             </bookmark>
         </file>

@@ -315,11 +315,11 @@ public class FuncionFortalezaManager {
                     Point closePoint = points.get(i);
                     double pips = 0.0D;
                     double stopLossPips = (PropertiesManager.isBuy())
-                            ? (indicatorController.calculateStopLossPrice(points, i, Constants.OperationType.Buy) - openOperationValue) * PropertiesManager.getPairFactor()
-                            : (-indicatorController.calculateStopLossPrice(points, i, Constants.OperationType.Sell) + openOperationValue) * PropertiesManager.getPairFactor();
+                            ? (indicatorController.calculateStopLossPrice(points, i, Constants.OperationType.BUY) - openOperationValue) * PropertiesManager.getPairFactor()
+                            : (-indicatorController.calculateStopLossPrice(points, i, Constants.OperationType.SELL) + openOperationValue) * PropertiesManager.getPairFactor();
                     double takeProfitPips = (PropertiesManager.isBuy())
-                            ? (indicatorController.calculateTakePrice(points, i, Constants.OperationType.Buy) - openOperationValue) * PropertiesManager.getPairFactor()
-                            : (-indicatorController.calculateTakePrice(points, i, Constants.OperationType.Sell) + openOperationValue) * PropertiesManager.getPairFactor();
+                            ? (indicatorController.calculateTakePrice(points, i, Constants.OperationType.BUY) - openOperationValue) * PropertiesManager.getPairFactor()
+                            : (-indicatorController.calculateTakePrice(points, i, Constants.OperationType.SELL) + openOperationValue) * PropertiesManager.getPairFactor();
                     //if (PropertiesManager.getOperationType().equals(Constants.OperationType.Sell)) {
                     double closeSpread = closePoint.getSpread();
                     stopLossPips = stopLossPips - (openSpread);

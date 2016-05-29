@@ -269,4 +269,56 @@ public class DatoHistoricoDAO {
             JDBCUtil.close(statement);
         }
     }
+
+    public List<Point> consultarPuntoByLow(Date fechaBase1, Date fechaBase2, double base) throws SQLException {
+        List<Point> points = null;
+        String sql = "SELECT * FROM DATOHISTORICO "
+                + " WHERE FECHA BETWEEN ? AND ? "
+                + " AND LOW BETWEEN ? AND ?"
+                + " ORDER BY FECHA ASC";
+
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setTimestamp(1, new Timestamp(fechaBase1.getTime()));
+            stmtConsulta.setTimestamp(2, new Timestamp(fechaBase2.getTime()));
+            stmtConsulta.setDouble(3, base - (100 / PropertiesManager.getPairFactor()));
+            stmtConsulta.setDouble(4, base);
+
+            resultado = stmtConsulta.executeQuery();
+            points = BasePointHelper.createPoints(resultado);
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+
+        return points;
+    }
+
+    public List<Point> consultarPuntoByHigh(Date fechaBase1, Date fechaBase2, double base) throws SQLException {
+        List<Point> points = null;
+        String sql = "SELECT * FROM DATOHISTORICO "
+                + " WHERE FECHA BETWEEN ? AND ? "
+                + " AND HIGH BETWEEN ? AND ?"
+                + " ORDER BY FECHA ASC";
+
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setTimestamp(1, new Timestamp(fechaBase1.getTime()));
+            stmtConsulta.setTimestamp(2, new Timestamp(fechaBase2.getTime()));
+            stmtConsulta.setDouble(3, base);
+            stmtConsulta.setDouble(4, base + (100 / PropertiesManager.getPairFactor()));
+
+            resultado = stmtConsulta.executeQuery();
+            points = BasePointHelper.createPoints(resultado);
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+
+        return points;
+    }
 }

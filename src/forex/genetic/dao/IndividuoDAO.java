@@ -160,7 +160,7 @@ public class IndividuoDAO {
             statement.setDouble(6, individuo.getLot());
             statement.setDouble(7, individuo.getInitialBalance());
             if (individuo.getCreationDate() != null) {
-                statement.setDate(8, new java.sql.Date(individuo.getCreationDate().getTime()));
+                statement.setTimestamp(8, new java.sql.Timestamp(individuo.getCreationDate().getTime()));
             } else {
                 statement.setNull(8, java.sql.Types.DATE);
             }

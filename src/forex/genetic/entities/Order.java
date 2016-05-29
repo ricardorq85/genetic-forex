@@ -4,6 +4,7 @@
  */
 package forex.genetic.entities;
 
+import forex.genetic.util.Constants;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -31,6 +32,24 @@ public class Order implements Serializable {
     private double profit = 0.0D;
     private boolean closeByTakeStop = false;
     private Date closeDate = null;
+    private Constants.OperationType tipo = Constants.OperationType.SELL;
+    private boolean closeImmediate = false;
+
+    public boolean isCloseImmediate() {
+        return closeImmediate;
+    }
+
+    public void setCloseImmediate(boolean closeImmediate) {
+        this.closeImmediate = closeImmediate;
+    }
+
+    public Constants.OperationType getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(Constants.OperationType tipo) {
+        this.tipo = tipo;
+    }
 
     public double getLot() {
         return lot;
@@ -171,7 +190,7 @@ public class Order implements Serializable {
     @Override
     public String toString() {
         //return "Order{" + "openOperationValue=" + openOperationValue + ", openOperationPoblacionIndex=" + openOperationPoblacionIndex + ", openOperationIndex=" + openOperationIndex + ", openPoint=" + openPoint + ", openSpread=" + openSpread + ", openDate=" + openDate + ", closeOperationPoblacionIndex=" + closeOperationPoblacionIndex + ", closeOperationIndex=" + closeOperationIndex + ", closePoint=" + closePoint + ", closeSpread=" + closeSpread + ", pips=" + pips + ", closeByTakeStop=" + closeByTakeStop + ", closeDate=" + closeDate + '}';
-        return "Order{pips=" + pips + "}";
+        return "Order{openDate=" + openDate + ";openOPerationValue=" + openOperationValue + ";pips=" + pips + "}";
     }
 
     public boolean comparePattern(Order other) {

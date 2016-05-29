@@ -65,7 +65,7 @@ public class PropertiesManager {
                 pair = PropertiesManager.getPropertyString(Constants.PAIR);
                 pairCompare = PropertiesManager.getPropertyString(Constants.PAIR_COMPARE);
                 periodLoad = PropertiesManager.getPropertyInt(Constants.PERIOD_LOAD);
-                isBuy = (operationType.equals(Constants.OperationType.Buy));
+                isBuy = (operationType.equals(Constants.OperationType.BUY));
                 pipsFixer = PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER);
                 pairFactor = PropertiesManager.getPropertyDouble(Constants.PAIR_FACTOR);
                 defaultScaleRounding = PropertiesManager.getPropertyInt(Constants.DEFAULT_SCALE_ROUNDING);
@@ -239,10 +239,10 @@ public class PropertiesManager {
     private static OperationType getOwnOperationType() {
         OperationType ot = null;
         String s = getPropertyString(Constants.OPERATION_TYPE);
-        if (s.contains("Sell")) {
-            ot = OperationType.Sell;
-        } else if (s.contains("Buy")) {
-            ot = OperationType.Buy;
+        if ((s.contains("Sell")) || (s.contains("SELL"))) {
+            ot = OperationType.SELL;
+        } else if ((s.contains("Buy")) || (s.contains("BUY"))) {
+            ot = OperationType.BUY;
         }
         return ot;
     }

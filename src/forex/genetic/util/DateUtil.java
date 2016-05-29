@@ -22,13 +22,40 @@ public class DateUtil {
         gc.add(Calendar.MONTH, 1);
         return gc.getTime();
     }
-    
+
     public static Date adicionarMinutos(Date fecha, int minutos) {
         GregorianCalendar gc = new GregorianCalendar();
         gc.setTime(fecha);
         gc.add(Calendar.MINUTE, minutos);
         return gc.getTime();
-    }    
+    }
+
+    public static long diferenciaMinutos(Date f1, Date f2) {
+        long t1 = f1.getTime();
+        long t2 = f2.getTime();
+        long diff = (t2 - t1) / 1000 / 60;
+        return diff;
+    }
+
+    public static Date obtenerFechaMinima(Date f1, Date f2) throws ParseException {
+        if ((f1 != null) && (f2 == null)) {
+            return f1;
+        }
+        if ((f1 == null) && (f2 != null)) {
+            return f2;
+        }
+        return ((f1.before(f2)) ? f1 : f2);
+    }
+
+    public static Date obtenerFechaMaxima(Date f1, Date f2) throws ParseException {
+        if ((f1 != null) && (f2 == null)) {
+            return f1;
+        }
+        if ((f1 == null) && (f2 != null)) {
+            return f2;
+        }
+        return ((f1.after(f2)) ? f1 : f2);
+    }
 
     public static Date obtenerFecha(String strFecha) throws ParseException {
         SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd hh:mm");

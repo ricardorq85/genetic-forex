@@ -5,13 +5,16 @@
 package forex.genetic.dao;
 
 import forex.genetic.dao.helper.TendenciaHelper;
+import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.Tendencia;
+import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -118,5 +121,54 @@ public class TendenciaDAO {
         }
 
         return list;
+    }
+
+    public Date nextFechaBase(Date fecha) throws SQLException {
+        Date obj = null;
+        String sql = "SELECT MIN(FECHA_BASE) FROM TENDENCIA "
+                + " WHERE FECHA_BASE>? ";
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setTimestamp(1, new Timestamp(fecha.getTime()));
+            resultado = stmtConsulta.executeQuery();
+
+            if (resultado.next()) {
+                if (resultado.getObject(1) != null) {
+                    obj = new Date(resultado.getTimestamp(1).getTime());
+                }
+            }
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+
+        return obj;
+    }
+
+    public ProcesoTendencia consultarProcesarTendencia(java.util.Date fecha) throws SQLException {
+        ProcesoTendencia procesoTendencia = null;
+        String sql = PropertiesManager.getQueryProcesarTendencias();
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+        int count = 1;
+
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
+            stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
+            stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
+
+            resultado = stmtConsulta.executeQuery();
+
+            procesoTendencia = TendenciaHelper.createProcesoTendencia(resultado);
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+
+        return procesoTendencia;
     }
 }

@@ -150,7 +150,7 @@ public class IndicatorController {
     public double calculateStopLossPrice(List<Point> points, int index, Constants.OperationType operationType) {
         Point currentPoint = points.get(index);
         double value = 0.0D;
-        if (operationType.equals(Constants.OperationType.Buy)) {
+        if (operationType.equals(Constants.OperationType.BUY)) {
             value = currentPoint.getLow();
         } else {
             value = currentPoint.getHigh();
@@ -161,7 +161,7 @@ public class IndicatorController {
     public double calculateTakePrice(List<Point> points, int index, Constants.OperationType operationType) {
         Point currentPoint = points.get(index);
         double value = 0.0D;
-        if (operationType.equals(Constants.OperationType.Buy)) {
+        if (operationType.equals(Constants.OperationType.BUY)) {
             value = currentPoint.getHigh();
         } else {
             value = currentPoint.getLow();

@@ -54,16 +54,21 @@ public class OperacionesDAO {
                 + " FROM OPERACION OPER"
                 + " WHERE OPER.FECHA_APERTURA<=? AND (OPER.FECHA_CIERRE IS NULL OR OPER.FECHA_CIERRE>?)"
                 + " AND OPER.FECHA_APERTURA>?-30"
+                + " AND OPER.TIPO = 'SELL'"
                 + " AND OPER.ID_INDIVIDUO NOT IN (SELECT ID_INDIVIDUO FROM TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO"
-                + " AND TEND.FECHA_BASE=?)";
+                + " AND TEND.FECHA_BASE=?) "
+                + " AND EXISTS (SELECT 1 FROM OPERACION OPER2 " 
+                + "     WHERE OPER2.ID_INDIVIDUO=OPER.ID_INDIVIDUO " 
+                + "     AND OPER2.FECHA_CIERRE < TO_DATE('2012/01/03 08:00','YYYY/MM/DD HH24:MI'))";
         /*sql = "SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.OPEN_PRICE, OPER.SPREAD, OPER.LOTE "
-         + " FROM OPERACION OPER"
-         + " WHERE OPER.FECHA_APERTURA<=? AND (OPER.FECHA_CIERRE IS NULL OR OPER.FECHA_CIERRE>?)"
-         + " AND OPER.FECHA_APERTURA>?-30"
-         + " AND (OPER.ID_INDIVIDUO NOT IN (SELECT ID_INDIVIDUO FROM TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO"
-         + " AND TEND.FECHA_BASE=?) "
-         + " OR 1=1)"
-         + " AND OPER.ID_INDIVIDUO='1327680134275.188'";*/
+                + " FROM OPERACION OPER"
+                + " WHERE OPER.FECHA_APERTURA<=? AND (OPER.FECHA_CIERRE IS NULL OR OPER.FECHA_CIERRE>?)"
+                + " AND OPER.FECHA_APERTURA>?-30"
+                + " AND OPER.TIPO = 'SELL'"
+                + " AND (OPER.ID_INDIVIDUO NOT IN (SELECT ID_INDIVIDUO FROM TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO"
+                + " AND TEND.FECHA_BASE=?) "
+                + " OR 1=1)"
+                + " AND OPER.ID_INDIVIDUO='1374424395026.1'";*/
 
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
@@ -109,8 +114,8 @@ public class OperacionesDAO {
 
     public void insertOperaciones(Individuo individuo, List<Order> operaciones) throws SQLException {
         String sql = "INSERT INTO OPERACION(ID_INDIVIDUO, TAKE_PROFIT, STOP_LOSS, "
-                + "FECHA_APERTURA, FECHA_CIERRE, SPREAD, OPEN_PRICE, PIPS, LOTE) "
-                + " VALUES (?,?,?,?,?,?,?,?,?)";
+                + "FECHA_APERTURA, FECHA_CIERRE, SPREAD, OPEN_PRICE, PIPS, LOTE, TIPO) "
+                + " VALUES (?,?,?,?,?,?,?,?,?,?)";
 
         for (int i = 0; i < operaciones.size(); i++) {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -130,6 +135,7 @@ public class OperacionesDAO {
             statement.setDouble(7, order.getOpenOperationValue());
             statement.setDouble(8, order.getPips());
             statement.setDouble(9, order.getLot());
+            statement.setString(10, order.getTipo().name());
 
             statement.executeUpdate();
             JDBCUtil.close(statement);

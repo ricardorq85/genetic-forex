@@ -43,7 +43,7 @@ public class BasePointHelper {
         Momentum momentum = null;
         Ichimoku ichimoku = null;
 
-        DateFormat format = new SimpleDateFormat("yyyy/MM/ddHH:mm");
+//        DateFormat format = new SimpleDateFormat("yyyy/MM/ddHH:mm");
 
         while (resultado.next()) {
             Date date = new Date(resultado.getTimestamp("FECHA").getTime());
