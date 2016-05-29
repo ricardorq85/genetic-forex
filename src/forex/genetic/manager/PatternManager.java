@@ -27,7 +27,7 @@ public class PatternManager {
     private Pattern patternModaLostNumberOperation = null;
     private static final int FORTALEZA_VALUE_VARIATION = 50;
     private static final int MAX_FORTALEZA_VALUE = 1000;
-    private static final int MAX_VALUE_SIZE = 20;
+    private static final int MAX_VALUE_SIZE = 10;
 
     public PatternManager() {
     }
@@ -44,54 +44,70 @@ public class PatternManager {
     }
 
     public void processPattern(Poblacion poblacion) {
+        double tendence = 0.0D;
         LogUtil.logTime("processPattern. Individuos=" + poblacion.getIndividuos().size(), 2);
         List<IndividuoEstrategia> individuos = new ArrayList<IndividuoEstrategia>(poblacion.getIndividuos());
+        int count = 0;
         for (Iterator<IndividuoEstrategia> it = individuos.iterator(); it.hasNext();) {
             IndividuoEstrategia individuoEstrategia = it.next();
             this.processPatterns(individuoEstrategia);
+            if ((individuoEstrategia.getCurrentPatterns() != null) && (!individuoEstrategia.getCurrentPatterns().isEmpty())) {
+                tendence += (individuoEstrategia.getFortaleza().getRiskLevel());
+                count++;
+            }
         }
+        poblacion.setTendencia(new Tendencia(tendence / (double) count));
         LogUtil.logTime("End processPattern. Individuos=" + poblacion.getIndividuos().size(), 2);
     }
 
     public void processPatterns(IndividuoEstrategia individuo) {
         List<PatternAdvanced> patternAdvancedList = new ArrayList<PatternAdvanced>();
+        List<PatternAdvanced> tempPatternAdvancedList = new ArrayList<PatternAdvanced>();
         if ((individuo.getPatterns() != null) && (!individuo.getPatterns().isEmpty())) {
-            patternAdvancedList.addAll(individuo.getPatterns());
+            tempPatternAdvancedList = individuo.getPatterns();
+            //patternAdvancedList.addAll(tempPatternAdvancedList);
         }
         int lastProcessedIndex = individuo.getLastOrderPatternIndex();
-        List<Order> ordenesIndividuo = individuo.getOrdenes();
-        int ordenesIndividuoSize = ordenesIndividuo.size();
-        if (ordenesIndividuo != null) {
-            if ((ordenesIndividuoSize > lastProcessedIndex) && (ordenesIndividuoSize > 1)) {
-                LogUtil.logTime("processPattern. Individuo=" + individuo.getId(), 4);
-                //for (int i = Math.min(lastProcessedIndex, Math.max(ordenesIndividuoSize - MAX_VALUE_SIZE, 0)); i < ordenesIndividuoSize - 2; i++) {
-                for (int i = Math.max(-1, lastProcessedIndex - MAX_VALUE_SIZE) + 1; i < ordenesIndividuoSize - 2; i++) {
-                    for (int j = Math.min(ordenesIndividuoSize, i + MAX_VALUE_SIZE); j > i + 2; j--) {
-                        List<Order> tempPattern = new ArrayList(ordenesIndividuo.subList(i, Math.max(lastProcessedIndex, Math.min(ordenesIndividuoSize, j))));
-                        PatternAdvanced tempPatternAdvanced = new PatternAdvanced(tempPattern);
-                        if (tempPatternAdvanced.containsBreakOrder()) {
-                            individuo.setLastOrderPatternIndex(ordenesIndividuoSize);
-                            int index = patternAdvancedList.indexOf(tempPatternAdvanced);
-                            if (index < 0) {
-                                patternAdvancedList.add(tempPatternAdvanced);
-                            } else {
-                                tempPatternAdvanced = patternAdvancedList.get(index);
-                                double tempValue = tempPatternAdvanced.getValue() + 1.0D;
-                                tempPatternAdvanced.setValue(tempValue);
+        int ordenesCompletasIndividuoSize = individuo.getOrdenes().size();
+        List<Order> ordenesCompletasIndividuo = individuo.getOrdenes();
+        for (int k = lastProcessedIndex + 1; k < ordenesCompletasIndividuoSize + 1; k++) {
+            patternAdvancedList.clear();
+            patternAdvancedList.addAll(tempPatternAdvancedList);
+            List<Order> ordenesIndividuo = ordenesCompletasIndividuo.subList(0, k);
+            individuo.setOrdenes(ordenesIndividuo);
+            int ordenesIndividuoSize = ordenesIndividuo.size();
+            if (ordenesIndividuo != null) {
+                if ((ordenesIndividuoSize > lastProcessedIndex) && (ordenesIndividuoSize > 1)) {
+                    LogUtil.logTime("processPattern. Individuo=" + individuo.getId(), 4);
+                    //for (int i = Math.min(lastProcessedIndex, Math.max(ordenesIndividuoSize - MAX_VALUE_SIZE, 0)); i < ordenesIndividuoSize - 2; i++) {
+                    for (int i = Math.max(-1, lastProcessedIndex - MAX_VALUE_SIZE) + 1; i < ordenesIndividuoSize - 2; i++) {
+                        for (int j = Math.min(ordenesIndividuoSize, i + MAX_VALUE_SIZE); j > i + 2; j--) {
+                            List<Order> tempPattern = new ArrayList(ordenesIndividuo.subList(i, Math.max(lastProcessedIndex, Math.min(ordenesIndividuoSize, j))));
+                            PatternAdvanced tempPatternAdvanced = new PatternAdvanced(tempPattern);
+                            if (tempPatternAdvanced.containsBreakOrder()) {
+                                individuo.setLastOrderPatternIndex(ordenesIndividuoSize);
+                                int index = patternAdvancedList.indexOf(tempPatternAdvanced);
+                                if (index < 0) {
+                                    patternAdvancedList.add(tempPatternAdvanced);
+                                } else {
+                                    tempPatternAdvanced = patternAdvancedList.get(index);
+                                    double tempValue = tempPatternAdvanced.getValue() + 1.0D;
+                                    tempPatternAdvanced.setValue(tempValue);
+                                }
                             }
                         }
                     }
+                    //reprocessPatterns(patternAdvancedList);
+                    individuo.setPatterns(patternAdvancedList);
+                    LogUtil.logTime("patternAdvancedList Individuo=" + individuo.getId() + " patternAdvancedList Size=" + patternAdvancedList.size(), 5);
+                    List<PatternAdvancedSpecific> currentPatternAdvancedList = processCurrrentPatterns(individuo);
+                    reprocessCurrentPatterns(currentPatternAdvancedList);
+                    individuo.setCurrentPatterns(currentPatternAdvancedList);
+                    LogUtil.logTime("currentPatternAdvancedList Individuo=" + individuo.getId() + " currentPatternAdvancedList Size=" + currentPatternAdvancedList.size(), 5);
                 }
-                //reprocessPatterns(patternAdvancedList);
-                individuo.setPatterns(patternAdvancedList);
-                LogUtil.logTime("patternAdvancedList Individuo=" + individuo.getId() + " patternAdvancedList Size=" + patternAdvancedList.size(), 5);
-                List<PatternAdvancedSpecific> currentPatternAdvancedList = processCurrrentPatterns(individuo);
-                reprocessCurrentPatterns(currentPatternAdvancedList);
-                individuo.setCurrentPatterns(currentPatternAdvancedList);
-                LogUtil.logTime("currentPatternAdvancedList Individuo=" + individuo.getId() + " currentPatternAdvancedList Size=" + currentPatternAdvancedList.size(), 5);
             }
+            individuo.calculateCurrentPatternValue();
         }
-        individuo.calculateCurrentPatternValue();
     }
 
     private void reprocessPatterns(List<PatternAdvanced> patternAdvancedList) {

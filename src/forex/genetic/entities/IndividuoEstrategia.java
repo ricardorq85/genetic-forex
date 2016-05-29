@@ -11,6 +11,7 @@ import java.util.Collections;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.manager.IndividuoManager;
 import forex.genetic.util.Constants;
+import forex.genetic.util.LogUtil;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import static forex.genetic.util.Constants.*;
-import forex.genetic.util.LogUtil;
 import java.util.Iterator;
 
 /**
@@ -812,13 +812,13 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         if (compare == 0) {
             //LogUtil.logTime(this.id + " compareTo.value.0 " + other.id, 1);
             if ((this.fortaleza != null) && (other.fortaleza != null)) {
+                double thisRisk = this.fortaleza.getRiskLevel();
+                double otherRisk = other.fortaleza.getRiskLevel();
                 double thisValue = this.fortaleza.getValue();
                 double otherValue = other.fortaleza.getValue();
                 compare = (Double.compare(thisValue, otherValue));
                 if (compare == 0) {
                     //      LogUtil.logTime(this.id + " compareTo.value.1 " + other.id, 1);
-                    double thisRisk = this.fortaleza.getRiskLevel();
-                    double otherRisk = other.fortaleza.getRiskLevel();
                     compare = (Double.compare(thisRisk, otherRisk));
                 }
             }
@@ -876,33 +876,37 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
                 }
             }
             if (calcValue == 0.0D) {
-                risk = 0.001D;
-            } else if ((this.activeOperation) || (calcValue == 0.0D)) {
-                calcValue /= 2;
-                risk = 0.002D;
+                //risk = 0.001D;
+            } else if ((calcValue > 0) && (this.activeOperation)) {
+                calcValue /= 5000.0D;
+                //risk = 0.002D;
             } else {
                 double minByPeriod = PropertiesManager.getMinOperNumByPeriod();
                 double countByPeriod = (this.ordenes.size() / (double) this.processedUntil);
-                double promCalcValueByOrders = (calcValue / (double) this.ordenes.size());
-                if (promCalcValueByOrders < (PropertiesManager.getRiskLevel() / 70.0D)) {
-                    calcValue /= 2;
-                    risk = 0.003D;
-                } else if (countByPeriod < minByPeriod) {
-                    calcValue /= 2;
-                    risk = 0.004D;
+                double promCalcValueByOrders = (totalValue / (double) this.ordenes.size());
+                if ((calcValue > 0) && (promCalcValueByOrders < (PropertiesManager.getRiskLevel() / 70.0D))) {
+                    calcValue /= 4000.0D;
+                    //risk = 0.003D;
+                } else if ((calcValue > 0) && (countByPeriod < minByPeriod)) {
+                    calcValue /= 3000.0D;
+                    //risk = 0.004D;
                 } else {
                     if ((won + lost) > 0) {
+                        double riskTemp = ((won) / (won + lost));
                         //risk = ((won) / (won + lost)) * 1.0;
-                        risk = (((won) / (won + lost)) * 0.80 + ((countWon / size)) * 0.10 + (promCalcValueByOrders) * 0.10);
-                        if (risk < (PropertiesManager.getRiskLevel() / 10.0D)) {
-                            calcValue /= 2;
-                            risk *= 0.005D;
+                        risk = (riskTemp * 0.95 + ((countWon / (double) size)) * 0.025 + (promCalcValueByOrders) * 0.025);
+                        if (riskTemp < (PropertiesManager.getRiskLevel() / 10.0D)) {
+                            calcValue = ((calcValue / 1000.0D) * risk);
+                            //risk *= 0.005D;
+                        } else {
+                            LogUtil.logTime(" RISK > RISK LEVEL Individuo=" + this.id + ";Ordenes=" + this.ordenes.size() + ";(risk=" + risk + ")", 1);
                         }
                     }
                 }
             }
         }
         this.fortaleza.setValue(calcValue * risk);
+        //this.fortaleza.setValue(risk);
         this.fortaleza.setRiskLevel(risk);
     }
 }

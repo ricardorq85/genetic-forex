@@ -33,11 +33,16 @@ public class GeneticTesterDelegate extends GeneticDelegate {
     public void process(IndividuoEstrategia individuoEstrategia) throws FileNotFoundException, IOException {
         FuncionFortalezaManager funcionFortalezaManager = new FuncionFortalezaManager();
         funcionFortalezaManager.setTest(true);
+        int endPoblacion = PropertiesManager.getPropertyInt(Constants.END_POBLACION);
         for (int poblacionIndex = PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION);
-                poblacionIndex <= PropertiesManager.getPropertyInt(Constants.END_POBLACION) && !PropertiesManager.getPropertyBoolean(Constants.TERMINAR); poblacionIndex++) {
+                poblacionIndex <= endPoblacion && !PropertiesManager.getPropertyBoolean(Constants.TERMINAR); poblacionIndex++) {
             LogUtil.logTime("Crear poblacion " + poblacionIndex, 1);
             PoblacionManager poblacionManager = new PoblacionManager();
             poblacionManager.load("" + poblacionIndex, false);
+            PoblacionManager nextPoblacionManager = new PoblacionManager();
+            if (poblacionIndex < endPoblacion) {
+                nextPoblacionManager.load("" + (poblacionIndex + 1), false);
+            }
             LogUtil.logTime("Crear poblacion " + poblacionIndex + " Fecha = " + poblacionManager.getDateInterval(), 1);
             /** Se calcula la fortaleza de los individuos */
             LogUtil.logTime("Calcular fortaleza", 1);
@@ -49,13 +54,13 @@ public class GeneticTesterDelegate extends GeneticDelegate {
             if ((poblacionIndex > individuoEstrategia.getProcessedUntil())) {
                 individuoEstrategia.setProcessedUntil(poblacionIndex);
             }
-           if (poblacionIndex > 10) {
+            if (poblacionIndex > 145) {
                 int r = 88;
-            }            
+            }
             patternManager.processPatterns(individuoEstrategia);
             super.outIndividuo(individuoEstrategia);
             try {
-                fileOutManager.write(individuoEstrategia, poblacionManager.getDateInterval(), true, 0);
+                fileOutManager.write(individuoEstrategia, nextPoblacionManager.getDateInterval(), true, 0);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

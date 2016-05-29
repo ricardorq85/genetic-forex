@@ -27,6 +27,7 @@ public class Poblacion implements Serializable, Cloneable {
     private String pair = null;
     private int riskLevel = 0;
     private double dRiskLevel = Constants.MAX_RISK_LEVEL;
+    private Tendencia tendencia = new Tendencia();
 
     public Poblacion() {
         this.individuos = new Vector<IndividuoEstrategia>();
@@ -36,6 +37,14 @@ public class Poblacion implements Serializable, Cloneable {
         if (riskLevel != 0) {
             setRiskLevel(riskLevel);
         }
+    }
+
+    public void setTendencia(Tendencia tendencia) {
+        this.tendencia = tendencia;
+    }
+
+    public Tendencia getTendencia() {
+        return tendencia;
     }
 
     public double getRiskLevel() {

@@ -26,8 +26,7 @@ public class FuncionFortalezaManager {
     private boolean test = false;
     private boolean onlyClose = false;
     private final double pairMarginRequired = PropertiesManager.getPropertyDouble(Constants.MARGIN_REQUIRED);
-    private IndicatorController indicatorController = new IndicatorController();
-    private static PatternManager patternManager = new PatternManager();
+    private IndicatorController indicatorController = new IndicatorController();    
 
     public boolean isTest() {
         return test;
@@ -169,12 +168,6 @@ public class FuncionFortalezaManager {
             if (individuoEstrategia.getFortaleza().getValue() < 0) {
                 individuosNegativos.add(individuoEstrategia);
             }
-        }
-        if (PropertiesManager.getFortalezaType().equals(Constants.FortalezaType.PatternAdvanced)) {
-            if (poblacionIndex > 34) {
-                int r = 88;
-            }
-            patternManager.processPattern(poblacion);
         }
         System.gc();
         return individuosNegativos;
