@@ -22,6 +22,13 @@ public class DateUtil {
         gc.add(Calendar.MONTH, 1);
         return gc.getTime();
     }
+    
+    public static Date adicionarMinutos(Date fecha, int minutos) {
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(fecha);
+        gc.add(Calendar.MINUTE, minutos);
+        return gc.getTime();
+    }    
 
     public static Date obtenerFecha(String strFecha) throws ParseException {
         SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd hh:mm");

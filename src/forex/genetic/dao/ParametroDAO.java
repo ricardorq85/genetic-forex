@@ -23,6 +23,11 @@ public class ParametroDAO {
     public ParametroDAO(Connection connection) {
         this.connection = connection;
     }
+    
+    public int getIntValorParametro(String nombre) throws SQLException {
+        String valor = getValorParametro(nombre);
+        return (Integer.parseInt(valor));
+    }
 
     public String getValorParametro(String nombre) throws SQLException {
         String valor = null;

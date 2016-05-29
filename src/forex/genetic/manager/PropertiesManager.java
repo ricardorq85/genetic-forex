@@ -49,6 +49,8 @@ public class PropertiesManager {
     private static String poblacionBase = null;
     private static String queryIndividuos = null;
     private static String queryIndividuosOptimos = null;
+    private static String nombreEstrategia = null;
+    private static String queryProcesarTendencias = null;
 
     public PropertiesManager() {
     }
@@ -90,10 +92,20 @@ public class PropertiesManager {
                 readSpecific = PropertiesManager.getPropertyBoolean(Constants.READ_SPECIFIC);
                 queryIndividuos = PropertiesManager.getPropertyString(Constants.QUERY_INDIVIDUOS);
                 queryIndividuosOptimos = PropertiesManager.getPropertyString(Constants.QUERY_INDIVIDUOS_OPTIMOS);
+                nombreEstrategia = PropertiesManager.getPropertyString(Constants.NOMBRE_ESTRATEGIA);
+                queryProcesarTendencias = PropertiesManager.getPropertyString(Constants.QUERY_PROCESAR_TENDENCIAS);
             }
         };
         t.start();
         return t;
+    }
+
+    public static String getQueryProcesarTendencias() {
+        return queryProcesarTendencias;
+    }
+
+    public static String getNombreEstrategia() {
+        return nombreEstrategia;
     }
 
     public static String getQueryIndividuos() {

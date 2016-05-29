@@ -54,6 +54,11 @@ public class TendenciaHelper {
             obj.setTipoTendencia(resultado.getString("TIPO_TENDENCIA"));
             obj.setProbabilidadPositivos(resultado.getDouble("PROBABILIDAD_POSITIVOS"));
             obj.setProbabilidadNegativos(resultado.getDouble("PROBABILIDAD_NEGATIVOS"));
+            obj.setProbabilidad(resultado.getDouble("PROBABILIDAD"));
+            ts = resultado.getTimestamp("FECHA");
+            if (ts != null) {
+                obj.setFecha(new Date(ts.getTime()));
+            }
 
             list.add(obj);
         }

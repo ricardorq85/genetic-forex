@@ -80,6 +80,8 @@ public class Constants {
     public static final String QUERY_INDIVIDUOS = "QUERY_INDIVIDUOS";
     public static final String FILTRO_ADICIONAL = "FILTRO_ADICIONAL";
     public static final String QUERY_INDIVIDUOS_OPTIMOS = "QUERY_INDIVIDUOS_OPTIMOS";
+    public static final String NOMBRE_ESTRATEGIA = "NOMBRE_ESTRATEGIA";
+    public static final String QUERY_PROCESAR_TENDENCIAS = "QUERY_PROCESAR_TENDENCIAS";
 
     public enum IndividuoType {
 

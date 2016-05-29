@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @author ricardorq85
  */
-public class TendenciasManager {
+public class ProcesarTendenciasManager {
 
     public static final String TIPO_TENDENCIA = "ESTADISTICAS";
     private Connection conn = null;
@@ -39,12 +39,12 @@ public class TendenciasManager {
         DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
         ParametroDAO parametroDAO = new ParametroDAO(conn);
         TendenciaDAO tendenciaDAO = new TendenciaDAO(conn);
-        Date fechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_TENDENCIA");
-        int stepTendencia = Integer.parseInt(parametroDAO.getValorParametro("STEP_TENDENCIA"));
+        Date fechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");
+        int step = Integer.parseInt(parametroDAO.getValorParametro("STEP_PROCESAR_TENDENCIA"));
         List<Point> points = datoHistoricoDAO.consultarHistorico(fechaInicio);
 
         while ((points != null) && (!points.isEmpty())) {
-            for (int j = 0; j < points.size(); j += stepTendencia) {
+            for (int j = 0; j < points.size(); j += step) {
                 Point pointProceso = points.get(j);
                 Date fechaProceso = pointProceso.getDate();
                 parametroDAO.updateDateValorParametro("FECHA_ESTADISTICAS", fechaProceso);
@@ -165,7 +165,7 @@ public class TendenciasManager {
         CalculoTendencia calculoTendencia = new CalculoTendencia();
         double calculoPips = 0.0D;
         long calculoDuracion = 0L;
-        double baseDuracionxMinuto = 0.1;
+        double baseDuracionxMinuto = 0.8;
         double baseProbabilidad = 0.4;
         double baseModa = 0.6;
         double basePromedio = 0.4;

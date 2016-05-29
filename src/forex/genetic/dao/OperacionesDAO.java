@@ -63,7 +63,7 @@ public class OperacionesDAO {
          + " AND (OPER.ID_INDIVIDUO NOT IN (SELECT ID_INDIVIDUO FROM TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO"
          + " AND TEND.FECHA_BASE=?) "
          + " OR 1=1)"
-         + " AND OPER.ID_INDIVIDUO='1332171586465.1989'";*/
+         + " AND OPER.ID_INDIVIDUO='1327680134275.188'";*/
 
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
