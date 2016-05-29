@@ -11,21 +11,11 @@ package forex.genetic.entities;
 public class PatternAdvancedSpecific implements Comparable<PatternAdvancedSpecific> {
 
     private PatternAdvanced patternAdvanced = null;
-    private Order endOrder = null;
     private int index = 0;
 
-    public PatternAdvancedSpecific(PatternAdvanced patternAdvanced, int index, Order endOrder) {
+    public PatternAdvancedSpecific(PatternAdvanced patternAdvanced, int index) {
         this.patternAdvanced = patternAdvanced;
         this.index = index;
-        this.endOrder = endOrder;
-    }
-
-    public Order getEndOrder() {
-        return endOrder;
-    }
-
-    public void setEndOrder(Order endOrder) {
-        this.endOrder = endOrder;
     }
 
     public int getIndex() {

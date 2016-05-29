@@ -23,7 +23,7 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
 
     public static final long serialVersionUID = 201101251800L;
     //public static final String currentVersion = "v6.1.1.07";
-    public static final Long currentVersionNumber = 71022L;
+    public static final Long currentVersionNumber = 71024L;
     //private String version = "0.0";
     private Long versionNumber = 0L;
     private double pips = 0.0;

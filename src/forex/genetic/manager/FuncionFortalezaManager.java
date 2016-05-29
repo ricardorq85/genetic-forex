@@ -267,7 +267,10 @@ public class FuncionFortalezaManager {
             int numConsecutiveWon = fortaleza.getNumConsecutiveWon();
             double maxConsecutiveWonPips = fortaleza.getMaxConsecutiveWonPips();
             double maxConsecutiveLostPips = fortaleza.getMaxConsecutiveLostPips();
-            boolean enoughMoney = ((lot * pairMarginRequired) < (initialBalance + acumulativeProfit));
+            boolean enoughMoney = true;
+            if (!PropertiesManager.getFortalezaType().equals(Constants.FortalezaType.PatternAdvanced)) {
+                enoughMoney = ((lot * pairMarginRequired) < (initialBalance + acumulativeProfit));
+            }
             boolean hasMinimumCriterion = true;
             boolean showOperations = PropertiesManager.getPropertyBoolean(Constants.SHOW_OPERATIONS);
             for (int i = (indexPoint + 1); ((i < points.size()) && (enoughMoney) && (i < (points.size() / 2) || hasMinimumCriterion)); i++) {
@@ -443,7 +446,10 @@ public class FuncionFortalezaManager {
                         }
                     }
                 }
-                enoughMoney = (lot * pairMarginRequired < (initialBalance + acumulativeProfit));
+                enoughMoney = true;
+                if (!PropertiesManager.getFortalezaType().equals(Constants.FortalezaType.PatternAdvanced)) {
+                    enoughMoney = (lot * pairMarginRequired < (initialBalance + acumulativeProfit));
+                }
 
                 maxConsecutiveWonPips = Math.max(maxConsecutiveWonPips, consecutiveWonPips);
                 maxConsecutiveWonOperations = Math.max(maxConsecutiveWonOperations, consecutiveWonOperations);

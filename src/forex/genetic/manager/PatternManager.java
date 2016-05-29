@@ -138,7 +138,7 @@ public class PatternManager {
                             //if (pattern.getValue() > 1.0D) {
                             if (pattern.containsCurrent(tempPattern)) {
                                 foundAny = true;
-                                PatternAdvancedSpecific patternAdvancedSpecific = new PatternAdvancedSpecific(pattern, tempPattern.size(), tempPattern.get(tempPattern.size() - 1));
+                                PatternAdvancedSpecific patternAdvancedSpecific = new PatternAdvancedSpecific(pattern, tempPattern.size());
                                 if (!currentPatternAdvancedList.contains(patternAdvancedSpecific)) {
                                     currentPatternAdvancedList.add(patternAdvancedSpecific);
                                 }
