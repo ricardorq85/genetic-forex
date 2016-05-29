@@ -4,6 +4,7 @@
  */
 package forex.genetic.thread;
 
+import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.manager.PropertiesManager;

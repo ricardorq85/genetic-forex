@@ -22,13 +22,14 @@ import java.util.Vector;
 public class Poblacion implements Serializable, Cloneable {
 
     public static final long serialVersionUID = 201101251800L;
-    private List<IndividuoEstrategia> individuos = new Vector<IndividuoEstrategia>();
+    private List<IndividuoEstrategia> individuos = null;
     private OperationType operationType = null;
     private String pair = null;
     private int riskLevel = 0;
     private double dRiskLevel = Constants.MAX_RISK_LEVEL;
 
     public Poblacion() {
+        this.individuos = new Vector<IndividuoEstrategia>();
         this.operationType = PropertiesManager.getOperationType();
         this.pair = PropertiesManager.getPair();
         setRiskLevel(PropertiesManager.getRiskLevel() / dRiskLevel);

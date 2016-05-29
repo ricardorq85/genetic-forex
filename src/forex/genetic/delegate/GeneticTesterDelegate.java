@@ -27,6 +27,7 @@ public class GeneticTesterDelegate extends GeneticDelegate {
 
     public GeneticTesterDelegate() throws FileNotFoundException {
         super(false);
+        patternManager.initPatternManager();
     }
 
     public void process(IndividuoEstrategia individuoEstrategia) throws FileNotFoundException, IOException {
@@ -48,7 +49,7 @@ public class GeneticTesterDelegate extends GeneticDelegate {
             if ((poblacionIndex > individuoEstrategia.getProcessedUntil())) {
                 individuoEstrategia.setProcessedUntil(poblacionIndex);
             }
-           if (poblacionIndex > 26) {
+           if (poblacionIndex > 10) {
                 int r = 88;
             }            
             patternManager.processPatterns(individuoEstrategia);

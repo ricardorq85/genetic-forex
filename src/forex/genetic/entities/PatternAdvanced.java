@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class PatternAdvanced {
 
-    private List<Order> pattern = new ArrayList<Order>();
+    private List<Order> pattern = null;
     private double value = 1.0D;
 
     public PatternAdvanced() {
@@ -22,6 +22,9 @@ public class PatternAdvanced {
 
     public PatternAdvanced(List<Order> pattern) {
         this.pattern = pattern;
+        if (this.pattern == null) {
+            this.pattern = new ArrayList<Order>();
+        }
     }
 
     public boolean contains(PatternAdvanced other) {

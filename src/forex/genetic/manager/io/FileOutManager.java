@@ -56,7 +56,7 @@ public class FileOutManager {
             throws IOException {
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
         write("\n");
-        write(GeneticDelegate.id);
+        write(new Date() + " : " + GeneticDelegate.id);
         for (int i = individuos.size() - 1; i >= 0; i--) {
             IndividuoEstrategia individuo = individuos.get(i);
             write(individuo, dateInterval, first, i);

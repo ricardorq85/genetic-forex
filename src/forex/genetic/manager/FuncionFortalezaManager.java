@@ -54,7 +54,6 @@ public class FuncionFortalezaManager {
         if (percentValue > 0) {
             List<IndividuoEstrategia> individuos = poblacionBase.getIndividuos();
             LogUtil.logTime("Procesar patrones. Individuos=" + poblacionBase.getIndividuos().size(), 3);
-            //patternManager.processPattern(poblacionBase);
             Collections.sort(individuos);
             Collections.reverse(individuos);
             zeroPosition = processEquals(individuos);
@@ -68,8 +67,8 @@ public class FuncionFortalezaManager {
     }
 
     private static int processEquals(List<IndividuoEstrategia> individuos1) {
-        List<IndividuoEstrategia> individuos2 = new Vector<IndividuoEstrategia>(individuos1.size());
-        individuos2.addAll(individuos1);
+        //List<IndividuoEstrategia> individuos2 = new Vector<IndividuoEstrategia>(individuos1.size());
+        //individuos2.addAll(individuos1);
         int zeroPosition = -1;
         for (int i = 0; i < individuos1.size(); i++) {
             IndividuoEstrategia individuo1 = individuos1.get(i);
@@ -177,6 +176,7 @@ public class FuncionFortalezaManager {
             }
             patternManager.processPattern(poblacion);
         }
+        System.gc();
         return individuosNegativos;
     }
 

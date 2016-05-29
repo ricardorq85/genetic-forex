@@ -112,9 +112,9 @@ public class GeneticDelegate {
             }
 
             LogUtil.logTime("Reading padres", 1);
-            Poblacion[] padresHijos = serializationPoblacionManager.readPadres(PropertiesManager.getSerialicePath(), poblacion, cachePoblacionPadre);
-            poblacionPadre = padresHijos[0];
-            poblacionHija = padresHijos[1];
+            Poblacion[] padresHijos = null;//serializationPoblacionManager.readPadres(PropertiesManager.getSerialicePath(), poblacion, cachePoblacionPadre);
+            poblacionPadre = new Poblacion();//padresHijos[0];
+            poblacionHija = new Poblacion();//padresHijos[1];
             cachePoblacionPadre.addAll(poblacionPadre);
             for (generacionIndex = 1; generacionIndex <= generations
                     && !PropertiesManager.getPropertyBoolean(Constants.TERMINAR); generacionIndex++) {

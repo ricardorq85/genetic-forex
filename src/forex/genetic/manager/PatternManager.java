@@ -7,7 +7,6 @@ package forex.genetic.manager;
 import forex.genetic.entities.*;
 import forex.genetic.util.LogUtil;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,7 @@ import java.util.Map;
  * @author ricardorq85
  */
 public class PatternManager {
-    
+
     private Pattern patternFortalezaValue = null;
     private Pattern patternNumberOperation = null;
     private Pattern patternMaxWonNumberOperation = null;
@@ -29,8 +28,11 @@ public class PatternManager {
     private static final int FORTALEZA_VALUE_VARIATION = 50;
     private static final int MAX_FORTALEZA_VALUE = 1000;
     private static final int MAX_VALUE_SIZE = 20;
-    
+
     public PatternManager() {
+    }
+
+    public void initPatternManager() {
         patternFortalezaValue = new Pattern();
         patternNumberOperation = new Pattern();
         patternMaxWonNumberOperation = new Pattern();
@@ -40,17 +42,17 @@ public class PatternManager {
         patternModaLostNumberOperation = new Pattern();
         patternModaWonNumberOperation = new Pattern();
     }
-    
+
     public void processPattern(Poblacion poblacion) {
         LogUtil.logTime("processPattern. Individuos=" + poblacion.getIndividuos().size(), 2);
-        List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
+        List<IndividuoEstrategia> individuos = new ArrayList<IndividuoEstrategia>(poblacion.getIndividuos());
         for (Iterator<IndividuoEstrategia> it = individuos.iterator(); it.hasNext();) {
             IndividuoEstrategia individuoEstrategia = it.next();
             this.processPatterns(individuoEstrategia);
         }
         LogUtil.logTime("End processPattern. Individuos=" + poblacion.getIndividuos().size(), 2);
     }
-    
+
     public void processPatterns(IndividuoEstrategia individuo) {
         List<PatternAdvanced> patternAdvancedList = new ArrayList<PatternAdvanced>();
         if ((individuo.getPatterns() != null) && (!individuo.getPatterns().isEmpty())) {
@@ -63,9 +65,9 @@ public class PatternManager {
             if ((ordenesIndividuoSize > lastProcessedIndex) && (ordenesIndividuoSize > 1)) {
                 LogUtil.logTime("processPattern. Individuo=" + individuo.getId(), 4);
                 //for (int i = Math.min(lastProcessedIndex, Math.max(ordenesIndividuoSize - MAX_VALUE_SIZE, 0)); i < ordenesIndividuoSize - 2; i++) {
-                for (int i = lastProcessedIndex; i < ordenesIndividuoSize - 2; i++) {
+                for (int i = Math.max(-1, lastProcessedIndex - MAX_VALUE_SIZE) + 1; i < ordenesIndividuoSize - 2; i++) {
                     for (int j = Math.min(ordenesIndividuoSize, i + MAX_VALUE_SIZE); j > i + 2; j--) {
-                        List<Order> tempPattern = new ArrayList(ordenesIndividuo.subList(i, Math.min(ordenesIndividuoSize, j)));
+                        List<Order> tempPattern = new ArrayList(ordenesIndividuo.subList(i, Math.max(lastProcessedIndex, Math.min(ordenesIndividuoSize, j))));
                         PatternAdvanced tempPatternAdvanced = new PatternAdvanced(tempPattern);
                         if (tempPatternAdvanced.containsBreakOrder()) {
                             individuo.setLastOrderPatternIndex(ordenesIndividuoSize);
@@ -91,7 +93,7 @@ public class PatternManager {
         }
         individuo.calculateCurrentPatternValue();
     }
-    
+
     private void reprocessPatterns(List<PatternAdvanced> patternAdvancedList) {
         for (Iterator<PatternAdvanced> it = patternAdvancedList.iterator(); it.hasNext();) {
             PatternAdvanced patternAdvanced = it.next();
@@ -100,23 +102,45 @@ public class PatternManager {
             }
         }
     }
-    
+
     private void reprocessCurrentPatterns(List<PatternAdvancedSpecific> currentPatternAdvancedList) {
-        Collections.sort(currentPatternAdvancedList);
+        //Collections.sort(currentPatternAdvancedList);
         //Collections.reverse(currentPatternAdvancedList);
-        for (int i = 0; i < currentPatternAdvancedList.size(); i++) {
-            PatternAdvancedSpecific patternAdvancedSpecific = currentPatternAdvancedList.get(i);
+        List<PatternAdvancedSpecific> temp = new ArrayList<PatternAdvancedSpecific>(currentPatternAdvancedList);
+        currentPatternAdvancedList.clear();
+        for (int i = 0; i < temp.size(); i++) {
+            PatternAdvancedSpecific patternAdvancedSpecific = temp.get(i);
             PatternAdvanced patternAdvanced = patternAdvancedSpecific.getPatternAdvanced();
-            for (int j = i + 1; j < currentPatternAdvancedList.size(); j++) {
+            boolean contains = false;
+            for (int j = i + 1; j < temp.size() && !contains; j++) {
+                PatternAdvancedSpecific patternAdvancedSpecific2 = temp.get(j);
+                PatternAdvanced patternAdvanced2 = patternAdvancedSpecific2.getPatternAdvanced();
+                contains = (patternAdvanced.contains(patternAdvanced2));
+            }
+            for (int j = 0; j < currentPatternAdvancedList.size() && !contains; j++) {
                 PatternAdvancedSpecific patternAdvancedSpecific2 = currentPatternAdvancedList.get(j);
                 PatternAdvanced patternAdvanced2 = patternAdvancedSpecific2.getPatternAdvanced();
-                if (patternAdvanced2.contains(patternAdvanced)) {
-                    currentPatternAdvancedList.remove(patternAdvancedSpecific2);
-                }
+                contains = (patternAdvanced.contains(patternAdvanced2));
+            }
+            if (!contains) {
+                currentPatternAdvancedList.add(patternAdvancedSpecific);
             }
         }
+
+        /*
+         * for (int i = 0; i < currentPatternAdvancedList.size(); i++) {
+         * PatternAdvancedSpecific patternAdvancedSpecific =
+         * currentPatternAdvancedList.get(i); PatternAdvanced patternAdvanced =
+         * patternAdvancedSpecific.getPatternAdvanced(); for (int j = i + 1; j <
+         * currentPatternAdvancedList.size(); j++) { PatternAdvancedSpecific
+         * patternAdvancedSpecific2 = currentPatternAdvancedList.get(j);
+         * PatternAdvanced patternAdvanced2 =
+         * patternAdvancedSpecific2.getPatternAdvanced(); if
+         * (patternAdvanced2.contains(patternAdvanced)) {
+         * currentPatternAdvancedList.remove(patternAdvancedSpecific2); } } }
+         */
     }
-    
+
     private List<PatternAdvancedSpecific> processCurrrentPatterns(IndividuoEstrategia individuo) {
         List<PatternAdvancedSpecific> currentPatternAdvancedList = new ArrayList<PatternAdvancedSpecific>();
         List<PatternAdvanced> patternAdvancedList = individuo.getPatterns();
@@ -151,7 +175,7 @@ public class PatternManager {
         }
         return currentPatternAdvancedList;
     }
-    
+
     public void printModas() {
         LogUtil.logTime("patternFortalezaValue " + patternFortalezaValue.toString(), 1);
         LogUtil.logTime("patternNumberOperation " + patternNumberOperation.toString(), 1);
@@ -162,39 +186,39 @@ public class PatternManager {
         LogUtil.logTime("patternModaWonNumberOperation " + patternModaWonNumberOperation.toString(), 1);
         LogUtil.logTime("patternModaLostNumberOperation " + patternModaLostNumberOperation.toString(), 1);
     }
-    
+
     public void addPatternModaLostNumberOperation(double value, double pips) {
         this.addPattern(patternModaLostNumberOperation, value, pips);
     }
-    
+
     public void addPatternModaWonNumberOperation(double value, double pips) {
         this.addPattern(patternModaWonNumberOperation, value, pips);
     }
-    
+
     public void addPatternMaxPromLostNumberOperation(double value, double pips) {
         this.addPattern(patternMaxPromLostNumberOperation, value, pips);
     }
-    
+
     public void addPatternMaxPromWonNumberOperation(double value, double pips) {
         this.addPattern(patternMaxPromWonNumberOperation, value, pips);
     }
-    
+
     public void addPatternMaxLostNumberOperation(double value, double pips) {
         this.addPattern(patternMaxLostNumberOperation, value, pips);
     }
-    
+
     public void addPatternMaxWonNumberOperation(double value, double pips) {
         this.addPattern(patternMaxWonNumberOperation, value, pips);
     }
-    
+
     public void addPatternNumberOperation(double value, double pips) {
         this.addPattern(patternNumberOperation, value, pips);
     }
-    
+
     public void addPatternFortalezaValue(double value, double pips) {
         this.addPattern(patternFortalezaValue, value, pips);
     }
-    
+
     private void addPattern(Pattern pattern, double value, double pips) {
         if (pips > 0) {
             this.addPatternFortalezaValue(pattern.getWinner(), value);
@@ -204,7 +228,7 @@ public class PatternManager {
             this.addPatternFortalezaValue(pattern.getZero(), value);
         }
     }
-    
+
     public void addPatternFortalezaValue(Map<IntegerInterval, Integer> patternValue, double value) {
         boolean found = false;
         for (int i = MAX_FORTALEZA_VALUE; (i > 0) && !found; i -= FORTALEZA_VALUE_VARIATION) {
@@ -214,7 +238,7 @@ public class PatternManager {
             }
         }
     }
-    
+
     private void add(Map<IntegerInterval, Integer> patternValue, IntegerInterval key, Integer addValue) {
         Integer moda = patternValue.get(key);
         if (moda == null) {
@@ -224,27 +248,27 @@ public class PatternManager {
         }
         patternValue.put(key, moda);
     }
-    
+
     public Map<IntegerInterval, Integer> getPatternWinnerFortalezaValue() {
         return patternFortalezaValue.getWinner();
     }
-    
+
     public Map<IntegerInterval, Integer> getPatternLoserFortalezaValue() {
         return patternFortalezaValue.getLoser();
     }
-    
+
     public Map<IntegerInterval, Integer> getPatternZeroFortalezaValue() {
         return patternFortalezaValue.getZero();
     }
-    
+
     public Map<IntegerInterval, Integer> getPatternWinnerNumberOperation() {
         return patternNumberOperation.getWinner();
     }
-    
+
     public Map<IntegerInterval, Integer> getPatternLoserNumberOperation() {
         return patternNumberOperation.getLoser();
     }
-    
+
     public Map<IntegerInterval, Integer> getPatternZeroNumberOperation() {
         return patternNumberOperation.getZero();
     }

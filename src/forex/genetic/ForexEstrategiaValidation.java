@@ -54,6 +54,7 @@ public class ForexEstrategiaValidation {
         int closeOperationIndex = 0;
         IndividuoEstrategia individuo = null;
         PatternManager patternManager = new PatternManager();
+        patternManager.initPatternManager();
         for (int i = initialPoblacion; i < endPoblacion; i++) {
             if (individuo != null) {
                 closeOperationIndex = individuo.getCloseOperationIndex();
