@@ -6,6 +6,7 @@ package forex.genetic.manager;
 
 import forex.genetic.entities.IntegerInterval;
 import forex.genetic.entities.Pattern;
+import forex.genetic.util.LogUtil;
 import java.util.Map;
 
 /**
@@ -16,12 +17,59 @@ public class PatternManager {
 
     private Pattern patternFortalezaValue = null;
     private Pattern patternNumberOperation = null;
-    private static final int FORTALEZA_VALUE_VARIATION = 10;
+    private Pattern patternMaxWonNumberOperation = null;
+    private Pattern patternMaxLostNumberOperation = null;
+    private Pattern patternMaxPromWonNumberOperation = null;
+    private Pattern patternMaxPromLostNumberOperation = null;
+    private Pattern patternModaWonNumberOperation = null;
+    private Pattern patternModaLostNumberOperation = null;
+    private static final int FORTALEZA_VALUE_VARIATION = 50;
     private static final int MAX_FORTALEZA_VALUE = 1000;
 
     public PatternManager() {
         patternFortalezaValue = new Pattern();
         patternNumberOperation = new Pattern();
+        patternMaxWonNumberOperation = new Pattern();
+        patternMaxLostNumberOperation = new Pattern();
+        patternMaxPromWonNumberOperation = new Pattern();
+        patternMaxPromLostNumberOperation = new Pattern();
+        patternModaLostNumberOperation = new Pattern();
+        patternModaWonNumberOperation = new Pattern();
+    }
+
+    public void printModas() {
+        LogUtil.logTime("patternFortalezaValue " + patternFortalezaValue.toString(), 1);
+        LogUtil.logTime("patternNumberOperation " + patternNumberOperation.toString(), 1);
+        LogUtil.logTime("patternMaxWonNumberOperation " + patternMaxWonNumberOperation.toString(), 1);
+        LogUtil.logTime("patternMaxLostNumberOperation " + patternMaxLostNumberOperation.toString(), 1);
+        LogUtil.logTime("patternMaxPromWonNumberOperation " + patternMaxPromWonNumberOperation.toString(), 1);
+        LogUtil.logTime("patternMaxPromLostNumberOperation " + patternMaxPromLostNumberOperation.toString(), 1);
+        LogUtil.logTime("patternModaWonNumberOperation " + patternModaWonNumberOperation.toString(), 1);
+        LogUtil.logTime("patternModaLostNumberOperation " + patternModaLostNumberOperation.toString(), 1);
+    }
+
+    public void addPatternModaLostNumberOperation(double value, double pips) {
+        this.addPattern(patternModaLostNumberOperation, value, pips);
+    }
+
+    public void addPatternModaWonNumberOperation(double value, double pips) {
+        this.addPattern(patternModaWonNumberOperation, value, pips);
+    }
+
+    public void addPatternMaxPromLostNumberOperation(double value, double pips) {
+        this.addPattern(patternMaxPromLostNumberOperation, value, pips);
+    }
+
+    public void addPatternMaxPromWonNumberOperation(double value, double pips) {
+        this.addPattern(patternMaxPromWonNumberOperation, value, pips);
+    }
+
+    public void addPatternMaxLostNumberOperation(double value, double pips) {
+        this.addPattern(patternMaxLostNumberOperation, value, pips);
+    }
+
+    public void addPatternMaxWonNumberOperation(double value, double pips) {
+        this.addPattern(patternMaxWonNumberOperation, value, pips);
     }
 
     public void addPatternNumberOperation(double value, double pips) {

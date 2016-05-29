@@ -152,8 +152,24 @@ public class ForexEstrategiaValidation {
                 Fortaleza fIndividuoBeforeProcess = individuoBeforeProcess.getFortaleza();
                 double fortalezaValue = (fIndividuoBeforeProcess == null) ? 0 : fIndividuoBeforeProcess.getValue();
                 patternManager.addPatternFortalezaValue(fortalezaValue, pipsPattern);
-                double numOperationPercent = 1000 * ((fIndividuoBeforeProcess == null) ? 0 : (fIndividuoBeforeProcess.getOperationsNumber() == 0) ? 0 : (fIndividuoBeforeProcess.getWonOperationsNumber() / (double) fIndividuoBeforeProcess.getOperationsNumber()));
+                double numOperations = (double) fIndividuoBeforeProcess.getOperationsNumber();
+                double numOperationPercent = 1000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getWonOperationsNumber() / numOperations));
                 patternManager.addPatternNumberOperation(numOperationPercent, pipsPattern);
+                double maxWonNumOperationPercent = 1000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getMaxConsecutiveWonOperationsNumber() / numOperations));
+                patternManager.addPatternMaxWonNumberOperation(maxWonNumOperationPercent, pipsPattern);
+                double maxLostNumOperationPercent = 1000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getMaxConsecutiveLostOperationsNumber() / numOperations));
+                patternManager.addPatternMaxLostNumberOperation(maxLostNumOperationPercent, pipsPattern);
+
+                double promWonNumOperationPercent = 1000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getAverageConsecutiveWonOperationsNumber() / numOperations));
+                patternManager.addPatternMaxPromWonNumberOperation(promWonNumOperationPercent, pipsPattern);
+                double promLostNumOperationPercent = 1000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getAverageConsecutiveLostOperationsNumber() / numOperations));
+                patternManager.addPatternMaxPromLostNumberOperation(promLostNumOperationPercent, pipsPattern);
+
+                double modaWonPercent = 1000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getModaGanadora() / numOperations));
+                patternManager.addPatternModaWonNumberOperation(modaWonPercent, pipsPattern);
+
+                double modaLostPercent = 1000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getModaPerdedora() / numOperations));
+                patternManager.addPatternModaLostNumberOperation(modaLostPercent, pipsPattern);
             }
             System.out.println();
             LogUtil.logTime("Población " + (initialPoblacion + i + 1) + " = " + pips, 1);
@@ -162,12 +178,6 @@ public class ForexEstrategiaValidation {
         LogUtil.logTime("12 periodos " + pipsDetail[1], 1);
         LogUtil.logTime("6 periodos " + pipsDetail[2], 1);
         LogUtil.logTime("3 periodos " + pipsDetail[3], 1);
-        LogUtil.logTime("PatternWinnerFortalezaValue " + patternManager.getPatternWinnerFortalezaValue().toString(), 1);
-        LogUtil.logTime("PatternLoserFortalezaValue " + patternManager.getPatternLoserFortalezaValue().toString(), 1);
-        LogUtil.logTime("PatternZeroFortalezaValue " + patternManager.getPatternZeroFortalezaValue().toString(), 1);
-
-        LogUtil.logTime("PatternWinnerNumberOperation " + patternManager.getPatternWinnerNumberOperation().toString(), 1);
-        LogUtil.logTime("PatternLoserNumberOperation " + patternManager.getPatternLoserNumberOperation().toString(), 1);
-        LogUtil.logTime("PatternZeroNumberOperation " + patternManager.getPatternZeroNumberOperation().toString(), 1);
+        patternManager.printModas();
     }
 }

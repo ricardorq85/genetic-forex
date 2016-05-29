@@ -46,4 +46,9 @@ public class Pattern {
     public void setZero(Map<IntegerInterval, Integer> zero) {
         this.zero = zero;
     }
+
+    @Override
+    public String toString() {
+        return "Pattern{" + "winner=" + winner + ", loser=" + loser + ", zero=" + zero + '}';
+    }
 }

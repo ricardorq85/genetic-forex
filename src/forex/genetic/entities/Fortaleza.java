@@ -416,7 +416,17 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
         f.setAverageConsecutiveWonPips(averageConsecutiveWonPips);
         f.setNumConsecutiveLost(numConsecutiveLost);
         f.setNumConsecutiveWon(numConsecutiveWon);
+        f.setModaGanadoras(new TreeMap<Integer, Integer>(modaGanadoras));
+        f.setModaPerdedoras(new TreeMap<Integer, Integer>(modaPerdedoras));
         return f;
+    }
+
+    public Integer getModaPerdedora() {
+        return this.getModa(modaPerdedoras);
+    }
+
+    public Integer getModaGanadora() {
+        return this.getModa(modaGanadoras);
     }
 
     public Integer getModa(Map<Integer, Integer> mapModa) {
