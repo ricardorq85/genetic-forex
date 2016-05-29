@@ -7,8 +7,10 @@ package forex.genetic;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.delegate.GeneticTesterDelegate;
 import forex.genetic.entities.Poblacion;
+import forex.genetic.manager.OptimizationManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.io.SerializationManager;
+import forex.genetic.thread.OptimizationThread;
 import forex.genetic.util.Constants;
 import java.io.File;
 import java.io.IOException;
@@ -55,13 +57,13 @@ public class ForexEstrategiaTester {
         GeneticTesterDelegate.id = Long.toString(System.currentTimeMillis());
         delegate.process(individuoEstrategia);
 
-       /* OptimizationThread optimizationThread =
-                new OptimizationThread("OptimizationThread 0", 0, p, 1, new OptimizationManager());
-        optimizationThread.run();
-        IndividuoEstrategia individuoEstrategiaOptimized = optimizationThread.getNewPoblacion().getIndividuos().get(0);
-        delegate = new GeneticTesterDelegate();
-        delegate.process(individuoEstrategiaOptimized);
-        * 
-        */
+        if (PropertiesManager.getPropertyBoolean(Constants.OPTIMIZE_TEST)) {
+            OptimizationThread optimizationThread =
+                    new OptimizationThread("OptimizationThread 0", 0, p, 1, new OptimizationManager());
+            optimizationThread.run();
+            IndividuoEstrategia individuoEstrategiaOptimized = optimizationThread.getNewPoblacion().getIndividuos().get(0);
+            delegate = new GeneticTesterDelegate();
+            delegate.process(individuoEstrategiaOptimized);
+        }
     }
 }

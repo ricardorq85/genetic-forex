@@ -35,7 +35,7 @@ public class FuncionFortalezaManager {
             Collections.sort(individuos);
             Collections.reverse(individuos);
             zeroPosition = processEquals(individuos);
-            boolean force = PropertiesManager.getPropertyBoolean(Constants.FORCE_INDIVIDUOS);
+            boolean force = PropertiesManager.isForce();
             int toIndex = fromIndex + ((force) ? percentValue : Math.max(percentValue, zeroPosition));
             if ((fromIndex != 0) || (toIndex < individuos.size())) {
                 poblacionBase.setIndividuos(CollectionUtil.subList(individuos, fromIndex, toIndex));

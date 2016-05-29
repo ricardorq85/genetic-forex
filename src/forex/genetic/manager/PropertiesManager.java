@@ -26,6 +26,7 @@ public class PropertiesManager {
     private static String pair = null;
     private static String serialicePath = null;
     private static boolean isThread = true;
+    private static boolean force = true;
     private static int minTP = 0;
     private static int maxTP = 0;
     private static int minSL = 0;
@@ -71,10 +72,15 @@ public class PropertiesManager {
                 fileId = PropertiesManager.getPropertyString(Constants.FILE_ID);
                 riskLevel = PropertiesManager.getPropertyDouble(Constants.RISK_LEVEL);
                 minOperNumByPeriod = PropertiesManager.getPropertyInt(Constants.MIN_OPER_NUM_BY_PERIOD);
+                force = PropertiesManager.getPropertyBoolean(Constants.FORCE_INDIVIDUOS);
             }
         };
         t.start();
         return t;
+    }
+
+    public static boolean isForce() {
+        return force;
     }
 
     public static int getMinOperNumByPeriod() {

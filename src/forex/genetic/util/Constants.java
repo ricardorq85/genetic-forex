@@ -68,6 +68,7 @@ public class Constants {
     public static final String FORCE_INDIVIDUOS = "FORCE_INDIVIDUOS";
     public static final String MIN_OPER_NUM_BY_PERIOD = "MIN_OPER_NUM_BY_PERIOD";
     public static final String HAS_MINIMUM_CRITERION_LEVEL = "HAS_MINIMUM_CRITERION_LEVEL";
+    public static final String OPTIMIZE_TEST = "OPTIMIZE_TEST";
     public static final double MAX_RISK_LEVEL = 10;
 
     public enum IndividuoType {
