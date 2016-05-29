@@ -33,6 +33,7 @@ public class Individuo extends IndividuoEstrategia {
     public void setFechaHistorico(Date fechaHistorico) {
         this.fechaHistorico = fechaHistorico;
     }
+
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();

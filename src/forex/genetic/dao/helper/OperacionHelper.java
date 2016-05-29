@@ -71,6 +71,9 @@ public class OperacionHelper {
             Order order = new Order();
             order.setLot(resultado.getDouble("LOTE"));
             order.setOpenDate(ind.getFechaApertura());
+            if (resultado.getObject("FECHA_CIERRE") != null) {
+                order.setCloseDate(new Date(resultado.getTimestamp("FECHA_CIERRE").getTime()));
+            }
             order.setOpenOperationValue(resultado.getDouble("OPEN_PRICE"));
             order.setOpenSpread(resultado.getDouble("SPREAD"));
             order.setTakeProfit(ind.getTakeProfit());

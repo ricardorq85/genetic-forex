@@ -31,12 +31,21 @@ public class Tendencia implements Serializable {
     private double probabilidadNegativos;
     private Date fecha;
     private double probabilidad;
+    private Date fechaCierre;
 
     public Tendencia() {
     }
 
     public Tendencia(double tendencia) {
         this.tendencia = tendencia;
+    }
+
+    public Date getFechaCierre() {
+        return fechaCierre;
+    }
+
+    public void setFechaCierre(Date fechaCierre) {
+        this.fechaCierre = fechaCierre;
     }
 
     public Date getFecha() {
@@ -54,7 +63,7 @@ public class Tendencia implements Serializable {
     public void setProbabilidad(double probabilidad) {
         this.probabilidad = probabilidad;
     }
-    
+
     public long getDuracionActual() {
         return duracionActual;
     }

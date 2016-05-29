@@ -5,6 +5,7 @@
 package forex.genetic.entities;
 
 import forex.genetic.util.Constants;
+import forex.genetic.util.DateUtil;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -187,10 +188,16 @@ public class Order implements Serializable {
         this.pips = pips;
     }
 
-    @Override
-    public String toString() {
+    public String toString2() {
         //return "Order{" + "openOperationValue=" + openOperationValue + ", openOperationPoblacionIndex=" + openOperationPoblacionIndex + ", openOperationIndex=" + openOperationIndex + ", openPoint=" + openPoint + ", openSpread=" + openSpread + ", openDate=" + openDate + ", closeOperationPoblacionIndex=" + closeOperationPoblacionIndex + ", closeOperationIndex=" + closeOperationIndex + ", closePoint=" + closePoint + ", closeSpread=" + closeSpread + ", pips=" + pips + ", closeByTakeStop=" + closeByTakeStop + ", closeDate=" + closeDate + '}';
         return "Order{openDate=" + openDate + ";openOPerationValue=" + openOperationValue + ";pips=" + pips + "}";
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" + "openOperationValue=" + openOperationValue
+                + ", openDate=" + DateUtil.getDateString(openDate) + ", takeProfit=" + takeProfit + ", stopLoss=" + stopLoss
+                + "\n, pips=" + pips + ", closeDate=" + DateUtil.getDateString(closeDate) + ", tipo=" + tipo + ", closeImmediate=" + closeImmediate + '}';
     }
 
     public boolean comparePattern(Order other) {

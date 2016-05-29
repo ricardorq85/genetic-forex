@@ -51,6 +51,7 @@ public class PropertiesManager {
     private static String queryIndividuosOptimos = null;
     private static String nombreEstrategia = null;
     private static String queryProcesarTendencias = null;
+    private static String queryProcesarTendenciasValorProbable = null;
 
     public PropertiesManager() {
     }
@@ -94,10 +95,15 @@ public class PropertiesManager {
                 queryIndividuosOptimos = PropertiesManager.getPropertyString(Constants.QUERY_INDIVIDUOS_OPTIMOS);
                 nombreEstrategia = PropertiesManager.getPropertyString(Constants.NOMBRE_ESTRATEGIA);
                 queryProcesarTendencias = PropertiesManager.getPropertyString(Constants.QUERY_PROCESAR_TENDENCIAS);
+                queryProcesarTendenciasValorProbable = PropertiesManager.getPropertyString(Constants.QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE);
             }
         };
         t.start();
         return t;
+    }
+
+    public static String getQueryProcesarTendenciasValorProbable() {
+        return queryProcesarTendenciasValorProbable;
     }
 
     public static String getQueryProcesarTendencias() {

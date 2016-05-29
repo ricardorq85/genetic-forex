@@ -8,6 +8,7 @@ import forex.genetic.dao.helper.OperacionHelper;
 import forex.genetic.entities.Estadistica;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
+import forex.genetic.util.Constants;
 import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,26 +50,32 @@ public class OperacionesDAO {
     }
 
     public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase) throws SQLException {
+        return this.consultarIndividuoOperacionActiva(fechaBase, 500);
+    }
+    
+    public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, int filas) throws SQLException {
         List<Individuo> list = null;
-        String sql = "SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.OPEN_PRICE, OPER.SPREAD, OPER.LOTE "
+        String sql = "SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.OPEN_PRICE, OPER.SPREAD, OPER.LOTE "
                 + " FROM OPERACION OPER"
-                + " WHERE OPER.FECHA_APERTURA<=? AND (OPER.FECHA_CIERRE IS NULL OR OPER.FECHA_CIERRE>?)"
+                + " WHERE OPER.FECHA_APERTURA<? AND (OPER.FECHA_CIERRE IS NULL OR OPER.FECHA_CIERRE>?)"
                 + " AND OPER.FECHA_APERTURA>?-30"
                 + " AND OPER.TIPO = 'SELL'"
                 + " AND OPER.ID_INDIVIDUO NOT IN (SELECT ID_INDIVIDUO FROM TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO"
-                + " AND TEND.FECHA_BASE=?) "
+                + " AND TEND.FECHA_BASE=? AND TIPO_TENDENCIA=?) "
                 + " AND EXISTS (SELECT 1 FROM OPERACION OPER2 " 
                 + "     WHERE OPER2.ID_INDIVIDUO=OPER.ID_INDIVIDUO " 
-                + "     AND OPER2.FECHA_CIERRE < TO_DATE('2012/01/03 08:00','YYYY/MM/DD HH24:MI'))";
-        /*sql = "SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.OPEN_PRICE, OPER.SPREAD, OPER.LOTE "
+                + "     AND OPER2.FECHA_CIERRE < OPER.FECHA_APERTURA) "
+                + " AND ROWNUM < ? ";
+        /*sql = "SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.OPEN_PRICE, OPER.SPREAD, OPER.LOTE "
                 + " FROM OPERACION OPER"
-                + " WHERE OPER.FECHA_APERTURA<=? AND (OPER.FECHA_CIERRE IS NULL OR OPER.FECHA_CIERRE>?)"
+                + " WHERE OPER.FECHA_APERTURA<? AND (OPER.FECHA_CIERRE IS NULL OR OPER.FECHA_CIERRE>?)"
                 + " AND OPER.FECHA_APERTURA>?-30"
                 + " AND OPER.TIPO = 'SELL'"
                 + " AND (OPER.ID_INDIVIDUO NOT IN (SELECT ID_INDIVIDUO FROM TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO"
-                + " AND TEND.FECHA_BASE=?) "
+                + " AND TEND.FECHA_BASE=? AND TIPO_TENDENCIA=?) "
                 + " OR 1=1)"
-                + " AND OPER.ID_INDIVIDUO='1374424395026.1'";*/
+                + " AND OPER.ID_INDIVIDUO='1329366953841.3584'"
+                + " AND ROWNUM < ?";*/
 
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
@@ -78,6 +85,8 @@ public class OperacionesDAO {
         stmtConsulta.setTimestamp(2, new Timestamp(fechaBase.getTime()));
         stmtConsulta.setTimestamp(3, new Timestamp(fechaBase.getTime()));
         stmtConsulta.setTimestamp(4, new Timestamp(fechaBase.getTime()));
+        stmtConsulta.setString(5, Constants.TIPO_TENDENCIA);
+        stmtConsulta.setInt(6, filas);
         resultado = stmtConsulta.executeQuery();
 
         list = OperacionHelper.individuosOperacionActiva(resultado);

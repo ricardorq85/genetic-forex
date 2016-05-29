@@ -90,6 +90,8 @@ public class TendenciaHelper {
                 intervaloPrecio.setHighInterval(resultado.getDouble("MAX_PRECIO"));
             }
 
+            obj.setCantidad(resultado.getInt("CANTIDAD"));
+            obj.setValorMasProbable(resultado.getDouble("VALOR_MAS_PROBABLE"));
             obj.setIntervaloFecha(intervaloFecha);
             obj.setIntervaloPrecio(intervaloPrecio);
 

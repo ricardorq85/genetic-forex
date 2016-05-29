@@ -14,7 +14,9 @@ import forex.genetic.entities.indicator.Momentum;
 import forex.genetic.entities.indicator.Rsi;
 import forex.genetic.entities.indicator.Sar;
 import forex.genetic.dao.helper.BasePointHelper;
+import forex.genetic.entities.DoubleInterval;
 import forex.genetic.manager.PropertiesManager;
+import forex.genetic.util.Constants;
 import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -47,6 +49,28 @@ public class DatoHistoricoDAO {
             resultado = stmtConsulta.executeQuery(sql);
             if (resultado.next()) {
                 fechaHistorica = new Date(resultado.getTimestamp(1).getTime());
+            }
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+        return fechaHistorica;
+    }
+
+    public Date getFechaHistoricaMinima(Date fechaMayorQue) throws SQLException {
+        Date fechaHistorica = null;
+        String sql = "SELECT MIN(FECHA) FECHA_MINIMA_HISTORIA FROM DATOHISTORICO "
+                + " WHERE FECHA>?";
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setTimestamp(1, new Timestamp(fechaMayorQue.getTime()));
+            resultado = stmtConsulta.executeQuery();
+            if (resultado.next()) {
+                if (resultado.getObject(1) != null) {
+                    fechaHistorica = new Date(resultado.getTimestamp(1).getTime());
+                }
             }
         } finally {
             JDBCUtil.close(resultado);
@@ -274,7 +298,8 @@ public class DatoHistoricoDAO {
         List<Point> points = null;
         String sql = "SELECT * FROM DATOHISTORICO "
                 + " WHERE FECHA BETWEEN ? AND ? "
-                + " AND LOW BETWEEN ? AND ?"
+                //+ " AND LOW BETWEEN ? AND ?"
+                + " AND LOW <= ? "
                 + " ORDER BY FECHA ASC";
 
         PreparedStatement stmtConsulta = null;
@@ -283,8 +308,8 @@ public class DatoHistoricoDAO {
             stmtConsulta = this.connection.prepareStatement(sql);
             stmtConsulta.setTimestamp(1, new Timestamp(fechaBase1.getTime()));
             stmtConsulta.setTimestamp(2, new Timestamp(fechaBase2.getTime()));
-            stmtConsulta.setDouble(3, base - (100 / PropertiesManager.getPairFactor()));
-            stmtConsulta.setDouble(4, base);
+            stmtConsulta.setDouble(3, base + (Constants.MIN_PIPS_MOVEMENT / PropertiesManager.getPairFactor()));
+            //stmtConsulta.setDouble(4, base);
 
             resultado = stmtConsulta.executeQuery();
             points = BasePointHelper.createPoints(resultado);
@@ -300,7 +325,8 @@ public class DatoHistoricoDAO {
         List<Point> points = null;
         String sql = "SELECT * FROM DATOHISTORICO "
                 + " WHERE FECHA BETWEEN ? AND ? "
-                + " AND HIGH BETWEEN ? AND ?"
+                //+ " AND HIGH BETWEEN ? AND ?"
+                + " AND HIGH >= ?"
                 + " ORDER BY FECHA ASC";
 
         PreparedStatement stmtConsulta = null;
@@ -309,8 +335,8 @@ public class DatoHistoricoDAO {
             stmtConsulta = this.connection.prepareStatement(sql);
             stmtConsulta.setTimestamp(1, new Timestamp(fechaBase1.getTime()));
             stmtConsulta.setTimestamp(2, new Timestamp(fechaBase2.getTime()));
-            stmtConsulta.setDouble(3, base);
-            stmtConsulta.setDouble(4, base + (100 / PropertiesManager.getPairFactor()));
+            //stmtConsulta.setDouble(3, base);
+            stmtConsulta.setDouble(3, base - (Constants.MIN_PIPS_MOVEMENT / PropertiesManager.getPairFactor()));
 
             resultado = stmtConsulta.executeQuery();
             points = BasePointHelper.createPoints(resultado);
@@ -320,5 +346,32 @@ public class DatoHistoricoDAO {
         }
 
         return points;
+    }
+
+    public DoubleInterval consultarMaximoMinimo(Date fecha1, Date fecha2) throws SQLException {
+        String sql = "SELECT MIN(LOW) MINIMO, MAX(HIGH) MAXIMO FROM DATOHISTORICO "
+                + " WHERE FECHA>=? AND FECHA<=?";
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+        DoubleInterval maximoMinimo = null;
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setTimestamp(1, new Timestamp(fecha1.getTime()));
+            stmtConsulta.setTimestamp(2, new Timestamp(fecha2.getTime()));
+            resultado = stmtConsulta.executeQuery();
+            if (resultado.next()) {
+                maximoMinimo = new DoubleInterval("MaximoMinimo");
+                if (resultado.getObject("MINIMO") != null) {
+                    maximoMinimo.setLowInterval(resultado.getDouble("MINIMO"));
+                }
+                if (resultado.getObject("MAXIMO") != null) {
+                    maximoMinimo.setHighInterval(resultado.getDouble("MAXIMO"));
+                }
+            }
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+        return maximoMinimo;
     }
 }

@@ -46,4 +46,9 @@ public class CalculoTendencia {
     public void setPips(double pips) {
         this.pips = pips;
     }
+
+    @Override
+    public String toString() {
+        return "CalculoTendencia{" + "pips=" + pips + ", duracion=" + duracion + ", probabilidadPositivos=" + probabilidadPositivos + ", probabilidadNegativos=" + probabilidadNegativos + '}';
+    }
 }

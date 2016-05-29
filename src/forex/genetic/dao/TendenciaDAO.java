@@ -32,8 +32,8 @@ public class TendenciaDAO {
     public void insertTendencia(Tendencia tendencia) throws SQLException {
         String sql = "INSERT INTO TENDENCIA(FECHA_BASE, PRECIO_BASE, ID_INDIVIDUO, FECHA_TENDENCIA, PIPS, "
                 + " PRECIO_CALCULADO, TIPO_TENDENCIA, FECHA_APERTURA, OPEN_PRICE, "
-                + " DURACION, PIPS_ACTUALES, DURACION_ACTUAL, PROBABILIDAD_POSITIVOS, PROBABILIDAD_NEGATIVOS, PROBABILIDAD, FECHA) "
-                + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                + " DURACION, PIPS_ACTUALES, DURACION_ACTUAL, PROBABILIDAD_POSITIVOS, PROBABILIDAD_NEGATIVOS, PROBABILIDAD, FECHA, FECHA_CIERRE) "
+                + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setTimestamp(1, new Timestamp(tendencia.getFechaBase().getTime()));
@@ -52,6 +52,11 @@ public class TendenciaDAO {
         statement.setDouble(14, tendencia.getProbabilidadNegativos());
         statement.setDouble(15, tendencia.getProbabilidad());
         statement.setTimestamp(16, new Timestamp(tendencia.getFecha().getTime()));
+        if (tendencia.getFechaCierre() == null) {
+            statement.setNull(17, java.sql.Types.DATE);
+        } else {
+            statement.setTimestamp(17, new Timestamp(tendencia.getFechaCierre().getTime()));
+        }
         statement.executeUpdate();
         JDBCUtil.close(statement);
     }
@@ -60,7 +65,7 @@ public class TendenciaDAO {
         String sql = "UPDATE TENDENCIA SET PRECIO_BASE=?, FECHA_TENDENCIA=?, PIPS=?, "
                 + " PRECIO_CALCULADO=?, TIPO_TENDENCIA=?, FECHA_APERTURA=?, OPEN_PRICE=?, "
                 + " DURACION=?, PIPS_ACTUALES=?, DURACION_ACTUAL=?, PROBABILIDAD_POSITIVOS=?, PROBABILIDAD_NEGATIVOS=?,"
-                + " PROBABILIDAD=?, FECHA=? "
+                + " PROBABILIDAD=?, FECHA=?, FECHA_CIERRE=? "
                 + " WHERE ID_INDIVIDUO=? AND FECHA_BASE=?";
 
         PreparedStatement statement = connection.prepareStatement(sql);
@@ -80,6 +85,11 @@ public class TendenciaDAO {
         statement.setDouble(index++, tendencia.getProbabilidadNegativos());
         statement.setDouble(index++, tendencia.getProbabilidad());
         statement.setTimestamp(index++, new Timestamp(tendencia.getFecha().getTime()));
+        if (tendencia.getFechaCierre() == null) {
+            statement.setNull(index++, java.sql.Types.DATE);
+        } else {
+            statement.setTimestamp(index++, new Timestamp(tendencia.getFechaCierre().getTime()));
+        }
 
         statement.setString(index++, tendencia.getIndividuo().getId());
         statement.setTimestamp(index++, new Timestamp(tendencia.getFechaBase().getTime()));
@@ -148,9 +158,41 @@ public class TendenciaDAO {
         return obj;
     }
 
-    public ProcesoTendencia consultarProcesarTendencia(java.util.Date fecha) throws SQLException {
+    public boolean exists(Tendencia ten) throws SQLException {
+        boolean exists = false;
+        String sql = "SELECT COUNT(*) FROM TENDENCIA "
+                + " WHERE ID_INDIVIDUO=? AND FECHA_BASE=? ";
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setString(1, ten.getIndividuo().getId());
+            stmtConsulta.setTimestamp(2, new Timestamp(ten.getFechaBase().getTime()));
+            resultado = stmtConsulta.executeQuery();
+
+            if (resultado.next()) {
+                exists = (resultado.getInt(1) > 0);
+            }
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+        return exists;
+    }
+
+    public ProcesoTendencia consultarProcesarTendencia(java.util.Date fecha, java.util.Date fecha2) throws SQLException {
+        return this.consultarProcesarTendencia(fecha, fecha2, null);
+    }
+
+    public ProcesoTendencia consultarProcesarTendencia(java.util.Date fecha, java.util.Date fecha2, String tipo) throws SQLException {
         ProcesoTendencia procesoTendencia = null;
-        String sql = PropertiesManager.getQueryProcesarTendencias();
+        String sql = null;
+        if ("VALOR_PROBABLE".equalsIgnoreCase(tipo)) {
+            sql = PropertiesManager.getQueryProcesarTendenciasValorProbable();
+        } else {
+            sql = PropertiesManager.getQueryProcesarTendencias();
+        }
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
         int count = 1;
@@ -159,7 +201,7 @@ public class TendenciaDAO {
             stmtConsulta = this.connection.prepareStatement(sql);
             stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
             stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
-            stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
+            stmtConsulta.setTimestamp(count++, new Timestamp(fecha2.getTime()));
 
             resultado = stmtConsulta.executeQuery();
 

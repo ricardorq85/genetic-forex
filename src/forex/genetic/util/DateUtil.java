@@ -83,8 +83,8 @@ public class DateUtil {
         long timeMenor = fechaMenor.getTime();
         int weekMenor = gcMenor.get(Calendar.WEEK_OF_YEAR);
         int weekMayor = gcMayor.get(Calendar.WEEK_OF_YEAR);
-        int yearMenor = gcMenor.get(Calendar.YEAR);
-        int yearMayor = gcMayor.get(Calendar.YEAR);
+        int yearMenor = gcMenor.getWeekYear();
+        int yearMayor = gcMayor.getWeekYear();
 
         long semanasMayor = weekMayor;
         if (yearMayor > yearMenor) {
@@ -117,8 +117,8 @@ public class DateUtil {
         long timeMenor = fechaMenor.getTime();
         int weekMenor = gcMenor.get(Calendar.WEEK_OF_YEAR);
         int weekMayor = gcMayor.get(Calendar.WEEK_OF_YEAR);
-        int yearMenor = gcMenor.get(Calendar.YEAR);
-        int yearMayor = gcMayor.get(Calendar.YEAR);
+        int yearMenor = gcMenor.getWeekYear();
+        int yearMayor = gcMayor.getWeekYear();
 
         long semanasMayor = weekMayor;
         if (yearMayor > yearMenor) {
@@ -131,14 +131,8 @@ public class DateUtil {
         return resultado;
     }
 
-    public static void main(String[] a) throws ParseException {
-        SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd hh:mm");
-        Date menor = f.parse("2012/08/11 01:00");
-        Date mayor = f.parse("2012/08/15 00:00");
-        long duracion = 8000L;//calcularDuracion(menor, mayor);
-        Date result = new Date(menor.getTime() + duracion);
-        //System.out.println(result);
-        Date fechaCalc = calcularFechaXDuracion(duracion, menor);
-        System.out.println(fechaCalc);
+    public static String getDateString(Date fecha) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+        return ((fecha == null) ? null : formatter.format(fecha));
     }
 }

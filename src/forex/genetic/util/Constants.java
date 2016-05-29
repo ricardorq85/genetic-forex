@@ -10,6 +10,7 @@ package forex.genetic.util;
  */
 public class Constants {
 
+    public static final String TIPO_TENDENCIA = "ESTADISTICAS_6";
     public static final String OPERATION_TYPE = "OPERATION_TYPE";
     public static final String INITIAL_INDIVIDUOS = "INITIAL_INDIVIDUOS";
     public static final String INDIVIDUOS = "INDIVIDUOS";
@@ -82,6 +83,8 @@ public class Constants {
     public static final String QUERY_INDIVIDUOS_OPTIMOS = "QUERY_INDIVIDUOS_OPTIMOS";
     public static final String NOMBRE_ESTRATEGIA = "NOMBRE_ESTRATEGIA";
     public static final String QUERY_PROCESAR_TENDENCIAS = "QUERY_PROCESAR_TENDENCIAS";
+    public static final String QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE = "QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE";
+    public static final int MIN_PIPS_MOVEMENT = 100;
 
     public enum IndividuoType {
 
