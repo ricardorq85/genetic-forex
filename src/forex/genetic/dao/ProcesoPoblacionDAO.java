@@ -124,20 +124,22 @@ public class ProcesoPoblacionDAO {
             JDBCUtil.close(stmtConsulta);
         }
     }
-    
-    public void updateProceso(Date fechaOperacion, String idIndividuo) throws SQLException {
+
+    public int updateProceso(Date fechaOperacion, String idIndividuo) throws SQLException {
+        int processed = 0;
         String sql = "UPDATE PROCESO SET FECHA_HISTORICO=?, FECHA_PROCESO=SYSDATE WHERE ID_INDIVIDUO=?";
         PreparedStatement stmtConsulta = null;
         try {
-            stmtConsulta = this.connection.prepareStatement(sql);            
+            stmtConsulta = this.connection.prepareStatement(sql);
             stmtConsulta.setTimestamp(1, new Timestamp(fechaOperacion.getTime()));
             stmtConsulta.setString(2, idIndividuo);
-            stmtConsulta.executeUpdate();
+            processed = stmtConsulta.executeUpdate();
         } finally {
             JDBCUtil.close(stmtConsulta);
         }
-    }    
-    
+        return processed;
+    }
+
     public void insertProcesoRepetidos(String idIndividuo) throws SQLException {
         String sql = "INSERT INTO PROCESO_REPETIDOS(ID_INDIVIDUO_PADRE, FECHA_PROCESO) VALUES (?, SYSDATE)";
         PreparedStatement stmtConsulta = null;
@@ -148,8 +150,8 @@ public class ProcesoPoblacionDAO {
         } finally {
             JDBCUtil.close(stmtConsulta);
         }
-   }
-    
+    }
+
     public void deleteProceso(String idIndividuo) throws SQLException {
         String sql = "DELETE FROM PROCESO WHERE ID_INDIVIDUO=?";
         PreparedStatement stmtConsulta = null;
@@ -160,7 +162,7 @@ public class ProcesoPoblacionDAO {
         } finally {
             JDBCUtil.close(stmtConsulta);
         }
-   }
+    }
 
     public int hasMinimumOperations(Date fechaInicial, Date fechaOperacion, String idIndividuo) throws SQLException {
         int count = 0;

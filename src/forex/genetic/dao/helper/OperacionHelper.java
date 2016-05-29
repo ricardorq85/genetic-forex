@@ -54,8 +54,10 @@ public class OperacionHelper {
             estadistica.setDuracionModaPositivos(resultado.getDouble("DUR_MODA_POS"));
             estadistica.setDuracionModaNegativos(resultado.getDouble("DUR_MODA_NEG"));
             estadistica.setDuracionModa(resultado.getDouble("DUR_MODA"));
+            estadistica.setDuracionDesvEstandarPositivos(resultado.getDouble("DUR_DESV_POS"));
+            estadistica.setDuracionDesvEstandarNegativos(resultado.getDouble("DUR_DESV_NEG"));
+            estadistica.setDuracionDesvEstandar(resultado.getDouble("DUR_DESV"));
         }
-
         return estadistica;
     }
 

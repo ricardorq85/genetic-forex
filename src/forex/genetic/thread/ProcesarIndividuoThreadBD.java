@@ -74,7 +74,10 @@ public class ProcesarIndividuoThreadBD extends Thread {
                 individuo.setFechaApertura(null);
             }
             daoOperaciones.insertOperaciones(individuo, ordenes);
-            daoProceso.updateProceso(lastDate, individuo.getId());
+            int processed = daoProceso.updateProceso(lastDate, individuo.getId());
+            if (processed == 0) {
+                daoProceso.insertProceso(lastDate, individuo.getId());
+            }
             conn.commit();
             points = daoHistorico.consultarHistorico(lastDate);
             if (individuo.getCurrentOrder() != null) {

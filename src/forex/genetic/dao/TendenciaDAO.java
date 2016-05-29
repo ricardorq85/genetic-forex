@@ -96,7 +96,7 @@ public class TendenciaDAO {
     public List<Tendencia> consultarTendenciasActualizar() throws SQLException {
         List<Tendencia> list = null;
         String sql = "SELECT * FROM (SELECT * FROM TENDENCIA WHERE PROBABILIDAD_POSITIVOS IS NULL "
-                //+ " AND ID_INDIVIDUO='1331998280983.16'"
+              //+ " AND ID_INDIVIDUO='1341548450906.1997'"
                 + " ORDER BY FECHA_BASE ASC) WHERE ROWNUM<1000";
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;

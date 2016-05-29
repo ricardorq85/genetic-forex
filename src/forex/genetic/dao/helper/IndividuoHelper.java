@@ -40,13 +40,16 @@ public class IndividuoHelper {
         while (resultado.next()) {
             Individuo ind = new Individuo();
             ind.setId(resultado.getString("ID_INDIVIDUO"));
-            Timestamp ts = resultado.getTimestamp("FECHA_HISTORICO");
-            if (ts != null) {
-                ind.setFechaHistorico(new Date(ts.getTime()));
-            }
-            ts = resultado.getTimestamp("FECHA_APERTURA");
+            Timestamp ts = resultado.getTimestamp("FECHA_APERTURA");
             if (ts != null) {
                 ind.setFechaApertura(new Date(ts.getTime()));
+            }
+            ts = resultado.getTimestamp("FECHA_HISTORICO");
+            if (ts != null) {
+                ind.setFechaHistorico(new Date(ts.getTime()));
+                if ((ind.getFechaApertura() != null) && (ind.getFechaApertura().compareTo(ind.getFechaHistorico()) > 0)) {
+                    ind.setFechaHistorico(new Date(ind.getFechaApertura().getTime()));
+                }
             }
             list.add(ind);
         }

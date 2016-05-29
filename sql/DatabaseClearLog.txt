@@ -1,0 +1,3 @@
+ ALTER DATABASE CLEAR LOGFILE 'c:\app\ricardorq85\oradata\RRQ3\redo02.log';
+ 
+select * from v$log;

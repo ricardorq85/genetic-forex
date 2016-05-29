@@ -60,37 +60,34 @@ public class TendenciasManager {
                     LogUtil.logTime("Individuo=" + individuo.getId(), 1);
                     List<Point> historico = datoHistoricoDAO.consultarHistorico(operacion.getOpenDate(), fechaProceso);
                     Estadistica estadistica = operacionesDAO.consultarEstadisticasIndividuo(individuo);
-                    if (operacion.getOpenDate().compareTo(fechaProceso) < 0) {
-                        pipsActuales = operacionManager.calcularPips(historico, (historico.size() - 1), operacion);
-                        duracionActual = DateUtil.calcularDuracion(operacion.getOpenDate(), fechaProceso) / 1000 / 60;
+                    if (estadistica.getCantidadTotal() > 0) {
+                        if (operacion.getOpenDate().compareTo(fechaProceso) < 0) {
+                            pipsActuales = operacionManager.calcularPips(historico, (historico.size() - 1), operacion);
+                            duracionActual = DateUtil.calcularDuracion(operacion.getOpenDate(), fechaProceso) / 1000 / 60;
+                        }
+                        CalculoTendencia calculoTendencia = calcularProbabilidadTendencia(pipsActuales, duracionActual, estadistica);
+                        double probPips = calculoTendencia.getPips() - pipsActuales;
+                        long probDuracion = calculoTendencia.getDuracion() - duracionActual;
+                        Date probDate = DateUtil.calcularFechaXDuracion(probDuracion, fechaProceso);
+                        Tendencia tendencia = new Tendencia();
+                        tendencia.setFechaBase(fechaProceso);
+                        tendencia.setPrecioBase(precioBase);
+                        tendencia.setIndividuo(individuo);
+                        tendencia.setFechaTendencia(probDate);
+                        tendencia.setPipsActuales(pipsActuales);
+                        tendencia.setDuracion(probDuracion);
+                        tendencia.setPips(probPips);
+                        tendencia.setDuracionActual(duracionActual);
+                        tendencia.setPrecioCalculado(precioBase - probPips / PropertiesManager.getPairFactor());
+                        tendencia.setFechaApertura(operacion.getOpenDate());
+                        tendencia.setPrecioApertura(operacion.getOpenOperationValue());
+                        tendencia.setTipoTendencia(TIPO_TENDENCIA);
+                        tendencia.setProbabilidadPositivos(NumberUtil.round(calculoTendencia.getProbabilidadPositivos(), 5));
+                        tendencia.setProbabilidadNegativos(NumberUtil.round(calculoTendencia.getProbabilidadNegativos(), 5));
+                        tendenciaDAO.insertTendencia(tendencia);
                     }
-                    CalculoTendencia calculoTendencia = calcularProbabilidadTendencia(pipsActuales, estadistica);
-                    double probPips = calculoTendencia.getPips() - pipsActuales;
-                    long probDuracion = 1;
-                    if (calculoTendencia.getDuracion() > duracionActual) {
-                        probDuracion = calculoTendencia.getDuracion() - duracionActual;
-                    } else {
-                        probDuracion = calculoTendencia.getDuracion() / 2;
-                    }
-                    Date probDate = DateUtil.calcularFechaXDuracion(probDuracion, fechaProceso);
-                    Tendencia tendencia = new Tendencia();
-                    tendencia.setFechaBase(fechaProceso);
-                    tendencia.setPrecioBase(precioBase);
-                    tendencia.setIndividuo(individuo);
-                    tendencia.setFechaTendencia(probDate);
-                    tendencia.setPipsActuales(pipsActuales);
-                    tendencia.setDuracion(probDuracion);
-                    tendencia.setPips(probPips);
-                    tendencia.setDuracionActual(duracionActual);
-                    tendencia.setPrecioCalculado(precioBase - probPips / PropertiesManager.getPairFactor());
-                    tendencia.setFechaApertura(operacion.getOpenDate());
-                    tendencia.setPrecioApertura(operacion.getOpenOperationValue());
-                    tendencia.setTipoTendencia(TIPO_TENDENCIA);
-                    tendencia.setProbabilidadPositivos(NumberUtil.round(calculoTendencia.getProbabilidadPositivos(), 5));
-                    tendencia.setProbabilidadNegativos(NumberUtil.round(calculoTendencia.getProbabilidadNegativos(), 5));
-                    tendenciaDAO.insertTendencia(tendencia);
-                    conn.commit();
                 }
+                conn.commit();
             }
             points = datoHistoricoDAO.consultarHistorico(points.get(points.size() - 1).getDate());
         }
@@ -98,9 +95,7 @@ public class TendenciasManager {
 
     public void actualizarTendencias() throws ClassNotFoundException, SQLException {
         conn = JDBCUtil.getConnection();
-        OperacionesManager operacionManager = new OperacionesManager();
         OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
-        DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
         ParametroDAO parametroDAO = new ParametroDAO(conn);
         TendenciaDAO tendenciaDAO = new TendenciaDAO(conn);
         List<Tendencia> tendencias = tendenciaDAO.consultarTendenciasActualizar();
@@ -122,73 +117,113 @@ public class TendenciasManager {
                 long duracionActual = 0L;
                 Individuo individuo = tendencia.getIndividuo();
                 LogUtil.logTime("Individuo=" + individuo.getId(), 1);
-                Estadistica estadistica = operacionesDAO.consultarEstadisticasIndividuo(individuo);
-                Order operacion = new Order();
-                operacion.setOpenOperationValue(tendencia.getPrecioApertura());
-                operacion.setOpenDate(tendencia.getFechaApertura());
-                pipsActuales = tendencia.getPipsActuales();
-                duracionActual = tendencia.getDuracionActual();
-                CalculoTendencia calculoTendencia = calcularProbabilidadTendencia(pipsActuales, estadistica);
-                double probPips = calculoTendencia.getPips() - pipsActuales;
-                long probDuracion = 1;
-                if (calculoTendencia.getDuracion() > duracionActual) {
-                    probDuracion = calculoTendencia.getDuracion() - duracionActual;
-                } else {
-                    probDuracion = calculoTendencia.getDuracion() / 2;
-                }
-                Date probDate = DateUtil.calcularFechaXDuracion(probDuracion, fechaProceso);
-                tendencia.setPrecioBase(precioBase);
-                tendencia.setFechaTendencia(probDate);
-                tendencia.setPipsActuales(pipsActuales);
-                tendencia.setDuracion(probDuracion);
-                tendencia.setPips(probPips);
-                tendencia.setDuracionActual(duracionActual);
-                tendencia.setPrecioCalculado(precioBase - probPips / PropertiesManager.getPairFactor());
-                tendencia.setFechaApertura(operacion.getOpenDate());
-                tendencia.setPrecioApertura(operacion.getOpenOperationValue());
-                tendencia.setTipoTendencia(TIPO_TENDENCIA);
-                tendencia.setProbabilidadPositivos(NumberUtil.round(calculoTendencia.getProbabilidadPositivos(), 5));
-                tendencia.setProbabilidadNegativos(NumberUtil.round(calculoTendencia.getProbabilidadNegativos(), 5));
-                tendenciaDAO.updateTendencia(tendencia);
-                //conn.rollback();
-                conn.commit();
 
+                Estadistica estadistica = operacionesDAO.consultarEstadisticasIndividuo(individuo);
+                if (estadistica.getCantidadTotal() > 0) {
+                    Order operacion = new Order();
+                    operacion.setOpenOperationValue(tendencia.getPrecioApertura());
+                    operacion.setOpenDate(tendencia.getFechaApertura());
+                    pipsActuales = tendencia.getPipsActuales();
+                    duracionActual = tendencia.getDuracionActual();
+                    CalculoTendencia calculoTendencia = calcularProbabilidadTendencia(pipsActuales, duracionActual, estadistica);
+                    double probPips = calculoTendencia.getPips() - pipsActuales;
+                    long probDuracion = calculoTendencia.getDuracion() - duracionActual;
+                    //int times = (int) Math.ceil(Math.abs(duracionActual / (double) calculoTendencia.getDuracion()));
+                    //probDuracion = calculoTendencia.getDuracion() * times - duracionActual;
+                    Date probDate = DateUtil.calcularFechaXDuracion(probDuracion, fechaProceso);
+                    tendencia.setPrecioBase(precioBase);
+                    tendencia.setFechaTendencia(probDate);
+                    tendencia.setPipsActuales(pipsActuales);
+                    tendencia.setDuracion(probDuracion);
+                    tendencia.setPips(probPips);
+                    tendencia.setDuracionActual(duracionActual);
+                    tendencia.setPrecioCalculado(precioBase - probPips / PropertiesManager.getPairFactor());
+                    tendencia.setFechaApertura(operacion.getOpenDate());
+                    tendencia.setPrecioApertura(operacion.getOpenOperationValue());
+                    tendencia.setTipoTendencia(TIPO_TENDENCIA);
+                    tendencia.setProbabilidadPositivos(NumberUtil.round(calculoTendencia.getProbabilidadPositivos(), 5));
+                    tendencia.setProbabilidadNegativos(NumberUtil.round(calculoTendencia.getProbabilidadNegativos(), 5));
+                    tendenciaDAO.updateTendencia(tendencia);
+                }
             }
+            conn.commit();
             tendencias = tendenciaDAO.consultarTendenciasActualizar();
         }
     }
 
-    private CalculoTendencia calcularProbabilidadTendencia(double pipsActuales, Estadistica estadistica) {
+    private CalculoTendencia calcularProbabilidadTendencia(double pipsActuales, double duracionActual, Estadistica estadistica) {
         CalculoTendencia calculoTendencia = new CalculoTendencia();
         double calculoPips = 0.0D;
         long calculoDuracion = 0L;
-        double baseProbabilidad = 0.8;
+        double baseProbabilidad = 0.4;
         double baseModa = 0.6;
         double basePromedio = 0.4;
         double probPositivos = ((double) estadistica.getCantidadPositivos() / (double) estadistica.getCantidadTotal()) * baseProbabilidad;
         double probNegativos = ((double) estadistica.getCantidadNegativos() / (double) estadistica.getCantidadTotal()) * baseProbabilidad;
 
         if (pipsActuales > 0) {
-            probPositivos += (1 - baseProbabilidad);
+            double tempBaseProb = 1;
+            if (estadistica.getCantidadPositivos() > 0) {
+                tempBaseProb = (Math.abs(pipsActuales / estadistica.getPipsPromedioPositivos()));
+            }
+            if (tempBaseProb < 0.5) {
+                tempBaseProb = 0.6;
+            }
+            probPositivos += ((1 - baseProbabilidad) * (tempBaseProb));
+            probNegativos += ((1 - baseProbabilidad) * (1 - tempBaseProb));
         } else if (pipsActuales < 0) {
-            probNegativos += (1 - baseProbabilidad);
+            double tempBaseProb = 1;
+            if (estadistica.getCantidadNegativos() > 0) {
+                tempBaseProb = (Math.abs(pipsActuales / estadistica.getPipsPromedioNegativos()));
+            }
+            if (tempBaseProb < 0.5) {
+                tempBaseProb = 0.6;
+            }
+            probNegativos += ((1 - baseProbabilidad) * (tempBaseProb));
+            probPositivos += ((1 - baseProbabilidad) * (1 - tempBaseProb));
+        } else {
+            double tempBaseProb = 0.5;
+            probNegativos += ((1 - baseProbabilidad) * (tempBaseProb));
+            probPositivos += ((1 - baseProbabilidad) * (1 - tempBaseProb));
+        }
+        double pipsModa;
+        double pipsPromedio;
+        double duracionPromedio;
+        double duracionDesvEstandar;
+        double duracionMinima;
+        if (probPositivos == probNegativos) {
+            pipsModa = estadistica.getPipsModa();
+            pipsPromedio = estadistica.getPipsPromedio();
+            duracionPromedio = estadistica.getDuracionPromedio();
+            duracionDesvEstandar = estadistica.getDuracionDesvEstandar();
+            duracionMinima = estadistica.getDuracionMinima();
+        } else if (probPositivos > probNegativos) {
+            pipsModa = estadistica.getPipsModaPositivos();
+            pipsPromedio = estadistica.getPipsPromedioPositivos();
+            duracionPromedio = estadistica.getDuracionPromedioPositivos();
+            duracionDesvEstandar = estadistica.getDuracionDesvEstandarPositivos();
+            duracionMinima = estadistica.getDuracionMinimaPositivos();
+        } else {
+            pipsModa = estadistica.getPipsModaNegativos();
+            pipsPromedio = estadistica.getPipsPromedioNegativos();
+            duracionPromedio = estadistica.getDuracionPromedioNegativos();
+            duracionDesvEstandar = estadistica.getDuracionDesvEstandarNegativos();
+            duracionMinima = estadistica.getDuracionMinimaNegativos();
         }
 
-        if (probPositivos == probNegativos) {
-            calculoPips += (estadistica.getPipsModa() * baseModa);
-            calculoPips += (estadistica.getPipsPromedio() * basePromedio);
-            calculoDuracion += ((long) (estadistica.getDuracionModa() * baseModa));
-            calculoDuracion += ((long) (estadistica.getDuracionPromedio() * basePromedio));
-        } else if (probPositivos > probNegativos) {
-            calculoPips += (estadistica.getPipsModaPositivos() * baseModa);
-            calculoPips += (estadistica.getPipsPromedioPositivos() * basePromedio);
-            calculoDuracion += ((long) (estadistica.getDuracionModaPositivos() * baseModa));
-            calculoDuracion += ((long) (estadistica.getDuracionPromedioPositivos() * basePromedio));
+        calculoPips += (pipsModa * baseModa);
+        calculoPips += (pipsPromedio * basePromedio);
+        if (duracionActual < duracionPromedio) {
+            if (((duracionPromedio - duracionDesvEstandar) > 0)
+                    && (duracionActual < (duracionPromedio - duracionDesvEstandar))) {
+                calculoDuracion += ((long) (duracionPromedio - duracionDesvEstandar));
+            } else {
+                calculoDuracion += ((long) (duracionPromedio));
+            }
+        } else if (duracionActual < (duracionPromedio + duracionDesvEstandar)) {
+            calculoDuracion += ((long) (duracionPromedio + duracionDesvEstandar));
         } else {
-            calculoPips += (estadistica.getPipsModaNegativos() * baseModa);
-            calculoPips += (estadistica.getPipsPromedioNegativos() * basePromedio);
-            calculoDuracion += ((long) (estadistica.getDuracionModaNegativos() * baseModa));
-            calculoDuracion += ((long) (estadistica.getDuracionPromedioNegativos() * basePromedio));
+            calculoDuracion += ((long) (duracionActual + duracionMinima));
         }
 
         calculoTendencia.setPips(calculoPips);

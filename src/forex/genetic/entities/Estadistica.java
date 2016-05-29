@@ -40,8 +40,35 @@ public class Estadistica {
     double duracionModaPositivos;
     double duracionModaNegativos;
     double duracionModa;
+    double duracionDesvEstandarPositivos;
+    double duracionDesvEstandarNegativos;
+    double duracionDesvEstandar;
 
     public Estadistica() {
+    }
+
+    public double getDuracionDesvEstandarPositivos() {
+        return duracionDesvEstandarPositivos;
+    }
+
+    public void setDuracionDesvEstandarPositivos(double duracionDesvEstandarPositivos) {
+        this.duracionDesvEstandarPositivos = duracionDesvEstandarPositivos;
+    }
+
+    public double getDuracionDesvEstandarNegativos() {
+        return duracionDesvEstandarNegativos;
+    }
+
+    public void setDuracionDesvEstandarNegativos(double duracionDesvEstandarNegativos) {
+        this.duracionDesvEstandarNegativos = duracionDesvEstandarNegativos;
+    }
+
+    public double getDuracionDesvEstandar() {
+        return duracionDesvEstandar;
+    }
+
+    public void setDuracionDesvEstandar(double duracionDesvEstandar) {
+        this.duracionDesvEstandar = duracionDesvEstandar;
     }
 
     public double getPips() {
