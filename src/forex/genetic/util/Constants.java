@@ -77,9 +77,9 @@ public class Constants {
     public static final String POBLACION_BASE = "POBLACION_BASE";
     public static final String READ_SPECIFIC = "READ_SPECIFIC";
     public static final double MAX_RISK_LEVEL = 10;
-    
-    public static final String QUERY_INDIVIDUOS = "QUERY_INDIVIDUOS";    
+    public static final String QUERY_INDIVIDUOS = "QUERY_INDIVIDUOS";
     public static final String FILTRO_ADICIONAL = "FILTRO_ADICIONAL";
+    public static final String QUERY_INDIVIDUOS_OPTIMOS = "QUERY_INDIVIDUOS_OPTIMOS";
 
     public enum IndividuoType {
 

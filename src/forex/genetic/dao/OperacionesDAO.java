@@ -122,10 +122,6 @@ public class OperacionesDAO {
 
             if (order.getCloseDate() != null) {
                 statement.setTimestamp(5, new Timestamp(order.getCloseDate().getTime()));
-                if ((order.getCloseDate().getTime() - order.getOpenDate().getTime()) / 1000 / 60 / 24 / 30 / 12 > 1.0D) {
-                    int g = 0;
-                    g = 9;
-                }
             } else {
                 statement.setNull(5, java.sql.Types.DATE);
             }

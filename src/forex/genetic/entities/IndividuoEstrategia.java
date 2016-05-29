@@ -470,12 +470,13 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         buffer.append("TakeProfit=" + this.takeProfit + ",");
         buffer.append("StopLoss=" + this.stopLoss + ",");
         buffer.append("Lote=" + this.lot + ",");
-        buffer.append("MaxConsecutiveLostOperationsNumber=" + this.fortaleza.getMaxConsecutiveLostOperationsNumber() + ",");
+/*        buffer.append("MaxConsecutiveLostOperationsNumber=" + this.fortaleza.getMaxConsecutiveLostOperationsNumber() + ",");
         buffer.append("MaxConsecutiveWonOperationsNumber=" + this.fortaleza.getMaxConsecutiveWonOperationsNumber() + ",");
         buffer.append("MinConsecutiveLostOperationsNumber=" + this.fortaleza.getMinConsecutiveLostOperationsNumber() + ",");
         buffer.append("MinConsecutiveWonOperationsNumber=" + this.fortaleza.getMinConsecutiveWonOperationsNumber() + ",");
         buffer.append("AverageConsecutiveLostOperationsNumber=" + Math.round(this.fortaleza.getAverageConsecutiveLostOperationsNumber()) + ",");
         buffer.append("AverageConsecutiveWonOperationsNumber=" + Math.round(this.fortaleza.getAverageConsecutiveWonOperationsNumber()) + ",");
+        * */
         for (Indicator indicator : this.openIndicators) {
             if (indicator != null) {
                 buffer.append(indicator.toFileString("open"));

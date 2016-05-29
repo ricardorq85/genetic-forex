@@ -60,7 +60,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
         ProcesoPoblacionDAO daoProceso = new ProcesoPoblacionDAO(conn);
 
         List<Point> points = daoHistorico.consultarHistorico(individuo.getFechaHistorico());
-        daoIndividuo.consultarDetalleIndividuo(individuo);
+        daoIndividuo.consultarDetalleIndividuoProceso(individuo);
         OperacionesManager operacionesManager = new OperacionesManager();
         while ((points != null) && (!points.isEmpty())) {
             Date lastDate = points.get(points.size() - 1).getDate();

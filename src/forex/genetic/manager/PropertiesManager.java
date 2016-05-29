@@ -48,13 +48,13 @@ public class PropertiesManager {
     private static int numberLearning = 10;
     private static String poblacionBase = null;
     private static String queryIndividuos = null;
+    private static String queryIndividuosOptimos = null;
 
     public PropertiesManager() {
     }
 
     public static Thread load() {
         t = new Thread() {
-
             public void run() {
                 FileProperties.load();
                 LogUtil.logTime(FileProperties.propertiesString(), 1);
@@ -89,6 +89,7 @@ public class PropertiesManager {
                 poblacionBase = PropertiesManager.getPropertyString(Constants.POBLACION_BASE);
                 readSpecific = PropertiesManager.getPropertyBoolean(Constants.READ_SPECIFIC);
                 queryIndividuos = PropertiesManager.getPropertyString(Constants.QUERY_INDIVIDUOS);
+                queryIndividuosOptimos = PropertiesManager.getPropertyString(Constants.QUERY_INDIVIDUOS_OPTIMOS);
             }
         };
         t.start();
@@ -97,6 +98,10 @@ public class PropertiesManager {
 
     public static String getQueryIndividuos() {
         return queryIndividuos;
+    }
+
+    public static String getQueryIndividuosOptimos() {
+        return queryIndividuosOptimos;
     }
 
     public static boolean isReadSpecific() {

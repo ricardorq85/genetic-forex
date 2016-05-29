@@ -6,6 +6,7 @@ package forex.genetic.dao.helper;
 
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Individuo;
+import forex.genetic.entities.IndividuoOptimo;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.indicator.Indicator;
@@ -30,6 +31,19 @@ public class IndividuoHelper {
         while (resultado.next()) {
             Individuo ind = new Individuo();
             ind.setId(resultado.getString("ID_INDIVIDUO"));
+            list.add(ind);
+        }
+        return list;
+    }
+
+    public static List<IndividuoOptimo> createIndividuosOptimos(ResultSet resultado) throws SQLException {
+        List<IndividuoOptimo> list = new ArrayList<IndividuoOptimo>();
+        while (resultado.next()) {
+            IndividuoOptimo ind = new IndividuoOptimo();
+            ind.setId(resultado.getString("ID_INDIVIDUO"));
+            ind.setCantidadTotal(resultado.getInt("CANTIDAD_TOTAL"));
+            ind.setFactorPips(resultado.getDouble("FACTOR_PIPS"));
+            ind.setFactorCantidad(resultado.getDouble("FACTOR_CANTIDAD"));
             list.add(ind);
         }
         return list;
