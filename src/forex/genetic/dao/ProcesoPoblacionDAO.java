@@ -4,6 +4,8 @@
  */
 package forex.genetic.dao;
 
+import forex.genetic.dao.helper.IndividuoHelper;
+import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.manager.PropertiesManager;
@@ -18,7 +20,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class ProcesoPoblacionDAO {
     public ProcesoPoblacionDAO(Connection connection) {
         this.connection = connection;
     }
-    
+
     public void restoreConnection() throws SQLException, ClassNotFoundException {
         this.connection = JDBCUtil.getConnection();
     }
@@ -57,66 +58,6 @@ public class ProcesoPoblacionDAO {
         this.connection.rollback();
     }
 
-    public Date getFechaHistoricaMinima() throws SQLException {
-        Date fechaHistorica = null;
-        String sql = "SELECT MIN(FECHA) FECHA_MINIMA_HISTORIA FROM DATOHISTORICO";
-        Statement stmtConsulta = null;
-        ResultSet resultado = null;
-        try {
-            stmtConsulta = this.connection.createStatement();
-            resultado = stmtConsulta.executeQuery(sql);
-            if (resultado.next()) {
-                fechaHistorica = new Date(resultado.getTimestamp(1).getTime());
-            }
-        } finally {
-            if (resultado != null) {
-                try {
-                    resultado.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            if (stmtConsulta != null) {
-                try {
-                    stmtConsulta.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-        return fechaHistorica;
-    }
-
-    public Date getFechaHistoricaMaxima() throws SQLException {
-        Date fechaHistorica = null;
-        String sql = "SELECT MAX(FECHA) FECHA_MAXIMA_HISTORIA FROM DATOHISTORICO";
-        Statement stmtConsulta = null;
-        ResultSet resultado = null;
-        try {
-            stmtConsulta = this.connection.createStatement();
-            resultado = stmtConsulta.executeQuery(sql);
-            if (resultado.next()) {
-                fechaHistorica = new Date(resultado.getTimestamp(1).getTime());
-            }
-        } finally {
-            if (resultado != null) {
-                try {
-                    resultado.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            if (stmtConsulta != null) {
-                try {
-                    stmtConsulta.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-        return fechaHistorica;
-    }
-
     public Date getFechaHistoricaProcesoMaxima() throws SQLException {
         Date fechaHistorica = null;
         String sql = "SELECT MAX(FECHA_HISTORICO) FECHA_MAXIMA_HISTORIA FROM PROCESO";
@@ -130,20 +71,8 @@ public class ProcesoPoblacionDAO {
                 fechaHistorica = new Date(resultado.getTimestamp(1).getTime());
             }
         } finally {
-            if (resultado != null) {
-                try {
-                    resultado.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            if (stmtConsulta != null) {
-                try {
-                    stmtConsulta.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
         }
         return fechaHistorica;
     }
@@ -164,20 +93,8 @@ public class ProcesoPoblacionDAO {
                 count = resultado.getInt(1);
             }
         } finally {
-            if (resultado != null) {
-                try {
-                    resultado.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            if (stmtConsulta != null) {
-                try {
-                    stmtConsulta.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
         }
         return count;
     }
@@ -191,13 +108,7 @@ public class ProcesoPoblacionDAO {
             cstmt.setString(3, idIndividuo);
             cstmt.execute();
         } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
+            JDBCUtil.close(cstmt);
         }
     }
 
@@ -208,17 +119,48 @@ public class ProcesoPoblacionDAO {
             stmtConsulta = this.connection.prepareStatement(sql);
             stmtConsulta.setString(1, idIndividuo);
             stmtConsulta.setTimestamp(2, new Timestamp(fechaOperacion.getTime()));
-            stmtConsulta.executeUpdate();;
+            stmtConsulta.executeUpdate();
         } finally {
-            if (stmtConsulta != null) {
-                try {
-                    stmtConsulta.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
+            JDBCUtil.close(stmtConsulta);
         }
     }
+    
+    public void updateProceso(Date fechaOperacion, String idIndividuo) throws SQLException {
+        String sql = "UPDATE PROCESO SET FECHA_HISTORICO=?, FECHA_PROCESO=SYSDATE WHERE ID_INDIVIDUO=?";
+        PreparedStatement stmtConsulta = null;
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);            
+            stmtConsulta.setTimestamp(1, new Timestamp(fechaOperacion.getTime()));
+            stmtConsulta.setString(2, idIndividuo);
+            stmtConsulta.executeUpdate();
+        } finally {
+            JDBCUtil.close(stmtConsulta);
+        }
+    }    
+    
+    public void insertProcesoRepetidos(String idIndividuo) throws SQLException {
+        String sql = "INSERT INTO PROCESO_REPETIDOS(ID_INDIVIDUO_PADRE, FECHA_PROCESO) VALUES (?, SYSDATE)";
+        PreparedStatement stmtConsulta = null;
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setString(1, idIndividuo);
+            stmtConsulta.executeUpdate();
+        } finally {
+            JDBCUtil.close(stmtConsulta);
+        }
+   }
+    
+    public void deleteProceso(String idIndividuo) throws SQLException {
+        String sql = "DELETE FROM PROCESO WHERE ID_INDIVIDUO=?";
+        PreparedStatement stmtConsulta = null;
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setString(1, idIndividuo);
+            stmtConsulta.executeUpdate();
+        } finally {
+            JDBCUtil.close(stmtConsulta);
+        }
+   }
 
     public int hasMinimumOperations(Date fechaInicial, Date fechaOperacion, String idIndividuo) throws SQLException {
         int count = 0;
@@ -236,20 +178,8 @@ public class ProcesoPoblacionDAO {
                 count = resultado.getInt(1);
             }
         } finally {
-            if (resultado != null) {
-                try {
-                    resultado.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            if (stmtConsulta != null) {
-                try {
-                    stmtConsulta.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
         }
         return count;
     }
@@ -272,35 +202,25 @@ public class ProcesoPoblacionDAO {
                 nuevaFecha = new Date(resultado.getTimestamp(1).getTime());
             }
         } finally {
-            if (resultado != null) {
-                try {
-                    resultado.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            if (stmtConsulta != null) {
-                try {
-                    stmtConsulta.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
         }
         return nuevaFecha;
     }
 
-    public List<String> getIndividuos(String filtroAdicional) throws SQLException {
-        List<String> individuos = new ArrayList<String>();
+    public List<Individuo> getIndividuos(String filtroAdicional) throws SQLException {
+        List<Individuo> individuos = null;
         String sql = PropertiesManager.getQueryIndividuos().replaceAll("<FILTRO_ADICIONAL>", filtroAdicional);
         Statement stmtConsulta = null;
         ResultSet resultado = null;
 
         stmtConsulta = this.connection.createStatement();
         resultado = stmtConsulta.executeQuery(sql);
-        while (resultado.next()) {
-            individuos.add(resultado.getString(1));
-        }
+        individuos = IndividuoHelper.createIndividuos(resultado);
+
+        JDBCUtil.close(resultado);
+        JDBCUtil.close(stmtConsulta);
+
         return individuos;
     }
 

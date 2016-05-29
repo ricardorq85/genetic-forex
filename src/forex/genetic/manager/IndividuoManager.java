@@ -6,6 +6,7 @@
 package forex.genetic.manager;
 
 import forex.genetic.delegate.GeneticDelegate;
+import forex.genetic.entities.Individuo;
 import forex.genetic.manager.statistic.EstadisticaManager;
 
 /**
@@ -19,6 +20,10 @@ public class IndividuoManager {
     public synchronized static String nextId() {
         EstadisticaManager.addIndividuoGenerado(1);
         return (GeneticDelegate.id + "." + (++individuoCounter));
+    }
+    
+    public void smartDelete(Individuo individuo) {
+        
     }
 
 }

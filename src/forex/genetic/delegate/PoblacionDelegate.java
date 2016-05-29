@@ -4,11 +4,9 @@
  */
 package forex.genetic.delegate;
 
-import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.facade.DatoHistoricoFacade;
 import forex.genetic.facade.PoblacionFacade;
-import forex.genetic.manager.FuncionFortalezaManager;
 import forex.genetic.manager.PoblacionManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants;
@@ -22,11 +20,6 @@ import java.io.IOException;
  */
 public class PoblacionDelegate {
     
-    public void procesarPoblacion() {
-        PoblacionFacade facade = new PoblacionFacade();
-        facade.procesarPoblacion();
-    }
-
     public void cargarPoblacion(Poblacion poblacion) {
         PoblacionFacade facade = new PoblacionFacade();
         facade.cargarPoblacion(poblacion);

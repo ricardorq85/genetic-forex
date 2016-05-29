@@ -8,6 +8,7 @@ import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.ProcesoPoblacionDAO;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
+import forex.genetic.manager.PoblacionManagerBD;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.thread.ProcesarIndividuoThread;
 import forex.genetic.util.LogUtil;
@@ -25,7 +26,12 @@ import java.util.logging.Logger;
  */
 public class PoblacionFacade {
 
-    public void procesarPoblacion() {
+    public void process() {
+        PoblacionManagerBD manager = new PoblacionManagerBD();
+        manager.process();
+    }
+    
+    public void process2() {
         List<Thread> threads = new ArrayList<Thread>();
         try {
             int countFiltro = 1;
@@ -33,11 +39,11 @@ public class PoblacionFacade {
             while (filtroAdicional != null) {
                 Connection conn = JDBCUtil.getConnection();
                 ProcesoPoblacionDAO dao = new ProcesoPoblacionDAO(conn);
-                List<String> individuos = dao.getIndividuos(filtroAdicional);
+                List<String> individuos = null;//dao.getIndividuos(filtroAdicional);
                 ProcesarIndividuoThread procesarIndividuoThread = new ProcesarIndividuoThread("FILTRO_ADICIONAL_" + countFiltro, dao, individuos);
                 procesarIndividuoThread.start();
                 threads.add(procesarIndividuoThread);
-                
+
                 countFiltro++;
                 try {
                     filtroAdicional = PropertiesManager.getPropertyString("FILTRO_ADICIONAL_" + countFiltro);
@@ -47,7 +53,7 @@ public class PoblacionFacade {
             }
             for (int i = 0; i < threads.size(); i++) {
                 Thread thread = threads.get(i);
-                thread.join();               
+                thread.join();
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(PoblacionFacade.class.getName()).log(Level.SEVERE, null, ex);
@@ -56,7 +62,7 @@ public class PoblacionFacade {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-    }
+    }    
 
     public void cargarPoblacion(Poblacion poblacion) {
         Connection conn = null;

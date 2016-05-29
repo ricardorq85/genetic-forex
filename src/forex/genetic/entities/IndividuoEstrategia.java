@@ -29,43 +29,43 @@ import java.util.Iterator;
 public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Serializable, Cloneable {
 
     public static final long serialVersionUID = 201101251800L;
-    private static final DateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-    private String id = "0";
-    private String fileId = null;
-    private int processedUntil = 0;
-    private int processedFrom = 0;
-    private int generacion = -1;
-    private IndividuoEstrategia parent1 = null;
-    private IndividuoEstrategia parent2 = null;
-    private String idParent1 = null;
-    private String idParent2 = null;
-    private IndividuoType individuoType = IndividuoType.INITIAL;
-    private int takeProfit = 0;
-    private int stopLoss = 0;
-    private double lot = 0;
-    private int initialBalance = 0;
-    private List<? extends Indicator> openIndicators = null;
-    private List<? extends Indicator> closeIndicators = null;
-    private List<? extends Indicator> optimizedOpenIndicators = null;
-    private List<? extends Indicator> optimizedCloseIndicators = null;
-    private Fortaleza fortaleza = null;
-    private List<Fortaleza> listaFortaleza = null;
-    private Order currentOrder = null;
-    private transient List<Order> ordenes = new ArrayList<Order>();
-    private double openOperationValue = 0.0D;
-    private double openSpread = 0.0D;
-    private int openPoblacionIndex = 1;
-    private int openOperationIndex = 0;
-    private Point prevOpenPoint = null;
-    private Point openPoint = null;
-    private boolean activeOperation = false;
-    private int closePoblacionIndex = -1;
-    private int closeOperationIndex = 0;
-    private Date creationDate = null;
-    private IndividuoReadData individuoReadData = null;
-    private transient List<PatternAdvanced> patterns = null;
-    private transient List<PatternAdvancedSpecific> currentPatterns = null;
-    private transient int lastOrderPatternIndex = 0;
+    protected static final DateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+    protected String id = "0";
+    protected String fileId = null;
+    protected int processedUntil = 0;
+    protected int processedFrom = 0;
+    protected int generacion = -1;
+    protected IndividuoEstrategia parent1 = null;
+    protected IndividuoEstrategia parent2 = null;
+    protected String idParent1 = null;
+    protected String idParent2 = null;
+    protected IndividuoType individuoType = IndividuoType.INITIAL;
+    protected int takeProfit = 0;
+    protected int stopLoss = 0;
+    protected double lot = 0;
+    protected int initialBalance = 0;
+    protected List<? extends Indicator> openIndicators = null;
+    protected List<? extends Indicator> closeIndicators = null;
+    protected List<? extends Indicator> optimizedOpenIndicators = null;
+    protected List<? extends Indicator> optimizedCloseIndicators = null;
+    protected Fortaleza fortaleza = null;
+    protected List<Fortaleza> listaFortaleza = null;
+    protected Order currentOrder = null;
+    protected transient List<Order> ordenes = new ArrayList<Order>();
+    protected double openOperationValue = 0.0D;
+    protected double openSpread = 0.0D;
+    protected int openPoblacionIndex = 1;
+    protected int openOperationIndex = 0;
+    protected Point prevOpenPoint = null;
+    protected Point openPoint = null;
+    protected boolean activeOperation = false;
+    protected int closePoblacionIndex = -1;
+    protected int closeOperationIndex = 0;
+    protected Date creationDate = null;
+    protected IndividuoReadData individuoReadData = null;
+    protected transient List<PatternAdvanced> patterns = null;
+    protected transient List<PatternAdvancedSpecific> currentPatterns = null;
+    protected transient int lastOrderPatternIndex = 0;
 
     public IndividuoEstrategia() {
         this(0, null, null, IndividuoType.INITIAL);
@@ -642,7 +642,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         return riskLevel;
     }
 
-    private boolean isContinuo(List<Fortaleza> fortalezas) {
+    protected boolean isContinuo(List<Fortaleza> fortalezas) {
         boolean continuo = true;
         int presentNumberPoblacion = PropertiesManager.getPresentNumberPoblacion();
         for (int i = fortalezas.size() - 1; (continuo && i >= presentNumberPoblacion); i--) {
@@ -653,7 +653,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         return continuo;
     }
 
-    private boolean processObligatory(IndividuoEstrategia individuoEstrategia) {
+    protected boolean processObligatory(IndividuoEstrategia individuoEstrategia) {
         boolean process = true;
         for (int i = 0; process && (i < IndicatorManager.getIndicatorNumber()); i++) {
             Indicator openIndicator = null;
@@ -708,7 +708,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         corregirIndicadores(this.closeIndicators);
     }
 
-    private void corregirIndicadores(List<? extends Indicator> indicadores) {
+    protected void corregirIndicadores(List<? extends Indicator> indicadores) {
         for (int i = 0; i < indicadores.size(); i++) {
             if (indicadores.get(i) != null) {
                 IntervalIndicator indicator = (IntervalIndicator) indicadores.get(i);
@@ -781,7 +781,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         return (Integer.valueOf(compare).compareTo(Integer.valueOf(0)));
     }
 
-    private int comparePattern(IndividuoEstrategia other) {
+    protected int comparePattern(IndividuoEstrategia other) {
         int compare = 0;
         /*if ((this.currentPatterns != null) && (other.currentPatterns != null)) {
         LogUtil.logTime(this.id + " compareTo.currentPatterns.0 " + other.id, 1);

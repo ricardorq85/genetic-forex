@@ -52,9 +52,9 @@ public class ProcesarIndividuoThread extends Thread {
     }
 
     private void procesarIndividuo(String idIndividuo) throws SQLException {
-        Date fechaInicial = dao.getFechaHistoricaMinima();
+        Date fechaInicial = null;//dao.getFechaHistoricaMinima();
         Date fechaOperacion = fechaInicial;
-        Date fechaMaxima = dao.getFechaHistoricaMaxima();
+        Date fechaMaxima = null;//dao.getFechaHistoricaMaxima();
         boolean hasOperacionesMinimas = true;
         int diasProceso = 10;
 

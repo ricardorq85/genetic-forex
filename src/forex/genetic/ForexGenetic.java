@@ -24,7 +24,7 @@ public class ForexGenetic {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         long id = System.currentTimeMillis();
         PropertiesManager.load().join();
-        LogUtil.logTime("" + id, 1);
+        LogUtil.logTime("ForexGenetic: " + id, 1);
         String name = PropertiesManager.getPropertyString(Constants.LOG_PATH)
                 + PropertiesManager.getOperationType()
                 + PropertiesManager.getPair() + id + "_log.log";

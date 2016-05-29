@@ -24,7 +24,7 @@ public class ForexInsertDatosHistoricos {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         long id = System.currentTimeMillis();
         PropertiesManager.load().join();
-        LogUtil.logTime("" + id, 1);
+        LogUtil.logTime("ForexInsertDatosHistoricos: " + id, 1);
         GeneticTesterDelegate.id = "" + id;
         PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + "InsertDatosHistoricos_" + PropertiesManager.getOperationType() + PropertiesManager.getPair() + id + ".log");
         System.setOut(out);

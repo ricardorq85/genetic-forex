@@ -14,13 +14,14 @@ import java.util.Date;
 public class Order implements Serializable {
 
     public static final long serialVersionUID = 201207182112L;
-    
     private double openOperationValue = 0.0D;
     private int openOperationPoblacionIndex = 0;
     private int openOperationIndex = 0;
     private Point openPoint = null;
     private double openSpread = 0.0D;
     private Date openDate = null;
+    private double takeProfit = 0.0D;
+    private double stopLoss = 0.0D;
     private double lot = 0.0D;
     private int closeOperationPoblacionIndex = 0;
     private int closeOperationIndex = 0;
@@ -45,6 +46,22 @@ public class Order implements Serializable {
 
     public void setProfit(double profit) {
         this.profit = profit;
+    }
+
+    public double getStopLoss() {
+        return stopLoss;
+    }
+
+    public void setStopLoss(double stopLoss) {
+        this.stopLoss = stopLoss;
+    }
+
+    public double getTakeProfit() {
+        return takeProfit;
+    }
+
+    public void setTakeProfit(double takeProfit) {
+        this.takeProfit = takeProfit;
     }
 
     public boolean isCloseByTakeStop() {

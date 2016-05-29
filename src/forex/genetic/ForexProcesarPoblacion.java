@@ -21,13 +21,13 @@ public class ForexProcesarPoblacion {
     public static void main(String[] args) throws InterruptedException, FileNotFoundException {
         long id = System.currentTimeMillis();
         PropertiesManager.load().join();
-        LogUtil.logTime("" + id, 1);
+        LogUtil.logTime("ForexProcesarPoblacion: " + id, 1);
         GeneticTesterDelegate.id = "" + id;
         PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + "ProcesarPoblacion_" + id + ".log");
         System.setOut(out);
         System.setErr(out);
         PoblacionDelegate delegate = new PoblacionDelegate();
-        delegate.procesarPoblacion();
+        //delegate.procesarPoblacion();
         
     }
 }

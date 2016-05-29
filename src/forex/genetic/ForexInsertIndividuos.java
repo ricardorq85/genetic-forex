@@ -24,7 +24,7 @@ public class ForexInsertIndividuos {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         long id = System.currentTimeMillis();
         PropertiesManager.load().join();
-        LogUtil.logTime("" + id, 1);
+        LogUtil.logTime("ForexInsertIndividuos: " + id, 1);
         GeneticTesterDelegate.id = "" + id;
         PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + "InsertIndividuos_" + PropertiesManager.getOperationType() + PropertiesManager.getPair() + id + ".log");
         System.setOut(out);
@@ -33,7 +33,7 @@ public class ForexInsertIndividuos {
         String serPath = PropertiesManager.getSerialicePath();
         Poblacion poblacion = null;
         PoblacionDelegate delegate = new PoblacionDelegate();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 100000; i++) {
             LogUtil.logTime("Init Insert Poblacion i=" + i, 1);
             poblacion = serializationManager.readAll(serPath, 1000, -1, -1, new Learning());
             delegate.cargarPoblacion(poblacion);

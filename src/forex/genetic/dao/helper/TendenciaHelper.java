@@ -1,0 +1,62 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package forex.genetic.dao.helper;
+
+import forex.genetic.entities.Individuo;
+import forex.genetic.entities.Tendencia;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ *
+ * @author ricardorq85
+ */
+public class TendenciaHelper {
+
+    public static List<Tendencia> createTendencia(ResultSet resultado) throws SQLException {
+        List<Tendencia> list = new ArrayList<Tendencia>();
+        while (resultado.next()) {
+            Tendencia obj = new Tendencia();
+
+            Timestamp ts = resultado.getTimestamp("FECHA_BASE");
+            if (ts != null) {
+                obj.setFechaBase(new Date(ts.getTime()));
+            }
+
+            obj.setPrecioBase(resultado.getDouble("PRECIO_BASE"));
+
+            Individuo ind = new Individuo();
+            ind.setId(resultado.getString("ID_INDIVIDUO"));
+            obj.setIndividuo(ind);
+
+            ts = resultado.getTimestamp("FECHA_TENDENCIA");
+            if (ts != null) {
+                obj.setFechaTendencia(new Date(ts.getTime()));
+            }
+
+            obj.setPipsActuales(resultado.getDouble("PIPS_ACTUALES"));
+            obj.setDuracion(resultado.getLong("DURACION"));
+            obj.setPips(resultado.getDouble("PIPS"));
+            obj.setDuracionActual(resultado.getLong("DURACION_ACTUAL"));
+            obj.setPrecioCalculado(resultado.getDouble("PRECIO_CALCULADO"));
+
+            ts = resultado.getTimestamp("FECHA_APERTURA");
+            if (ts != null) {
+                obj.setFechaApertura(new Date(ts.getTime()));
+            }
+            obj.setPrecioApertura(resultado.getDouble("OPEN_PRICE"));
+            obj.setTipoTendencia(resultado.getString("TIPO_TENDENCIA"));
+            obj.setProbabilidadPositivos(resultado.getDouble("PROBABILIDAD_POSITIVOS"));
+            obj.setProbabilidadNegativos(resultado.getDouble("PROBABILIDAD_NEGATIVOS"));
+
+            list.add(obj);
+        }
+        return list;
+    }
+}
