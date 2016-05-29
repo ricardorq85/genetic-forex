@@ -175,35 +175,36 @@ public class IndicatorController {
         List<Indicator> closeOptimized = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
         for (int j = 0; j < IndicatorManager.getIndicatorNumber(); j++) {
             IndicatorManager indicatorManager = IndicatorManager.getInstance(j);
+            Indicator openIndicatorIndividuo = null;
             if (individuoEstrategia.getOpenIndicators().size() > j) {
-                Indicator openIndicatorIndividuo = individuoEstrategia.getOpenIndicators().get(j);
-                Indicator closeIndicatorIndividuo = individuoEstrategia.getCloseIndicators().get(j);
-                Indicator openOptimizedIndividuo = null;
-                Indicator closeOptimizedIndividuo = null;
-                if ((individuoEstrategia.getOptimizedOpenIndicators() != null) && (j < individuoEstrategia.getOptimizedOpenIndicators().size())) {
-                    openOptimizedIndividuo = individuoEstrategia.getOptimizedOpenIndicators().get(j);
-                }
-                if ((individuoEstrategia.getOptimizedCloseIndicators() != null) && (j < individuoEstrategia.getOptimizedCloseIndicators().size())) {
-                    closeOptimizedIndividuo = individuoEstrategia.getOptimizedCloseIndicators().get(j);
-                }
-                Indicator openIndicator = prevOpenPoint.getIndicators().get(j);
-                Indicator closeIndicator = closePoint.getIndicators().get(j);
-                if ((openIndicatorIndividuo != null) && (openIndicator != null)) {
-                    Indicator optimizedIndicator = indicatorManager.optimize(openIndicatorIndividuo, openOptimizedIndividuo, openIndicator, prevOpenPoint, openPoint, pips);
-                    openOptimized.add(optimizedIndicator);
-                } else {
-                    openOptimized.add(null);
-                }
-
-                if ((closeIndicatorIndividuo != null) && (closeIndicator != null)) {
-                    //Indicator optimizedIndicator = indicatorManager.optimize(closeIndicatorIndividuo, closeOptimizedIndividuo, closeIndicator, closePoint);
-                    Indicator optimizedIndicator = closeIndicatorIndividuo;
-                    closeOptimized.add(optimizedIndicator);
-                } else {
-                    closeOptimized.add(null);
-                }
+                openIndicatorIndividuo = individuoEstrategia.getOpenIndicators().get(j);
+            }
+            Indicator closeIndicatorIndividuo = null;
+            if (individuoEstrategia.getCloseIndicators().size() > j) {
+                closeIndicatorIndividuo = individuoEstrategia.getCloseIndicators().get(j);
+            }
+            Indicator openOptimizedIndividuo = null;
+            Indicator closeOptimizedIndividuo = null;
+            if ((individuoEstrategia.getOptimizedOpenIndicators() != null) && (j < individuoEstrategia.getOptimizedOpenIndicators().size())) {
+                openOptimizedIndividuo = individuoEstrategia.getOptimizedOpenIndicators().get(j);
+            }
+            if ((individuoEstrategia.getOptimizedCloseIndicators() != null) && (j < individuoEstrategia.getOptimizedCloseIndicators().size())) {
+                closeOptimizedIndividuo = individuoEstrategia.getOptimizedCloseIndicators().get(j);
+            }
+            Indicator openIndicator = prevOpenPoint.getIndicators().get(j);
+            Indicator closeIndicator = closePoint.getIndicators().get(j);
+            if ((openIndicatorIndividuo != null) && (openIndicator != null)) {
+                Indicator optimizedIndicator = indicatorManager.optimize(openIndicatorIndividuo, openOptimizedIndividuo, openIndicator, prevOpenPoint, openPoint, pips);
+                openOptimized.add(optimizedIndicator);
             } else {
                 openOptimized.add(null);
+            }
+
+            if ((closeIndicatorIndividuo != null) && (closeIndicator != null)) {
+                //Indicator optimizedIndicator = indicatorManager.optimize(closeIndicatorIndividuo, closeOptimizedIndividuo, closeIndicator, closePoint);
+                Indicator optimizedIndicator = closeIndicatorIndividuo;
+                closeOptimized.add(optimizedIndicator);
+            } else {
                 closeOptimized.add(null);
             }
         }

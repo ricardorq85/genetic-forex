@@ -10,6 +10,7 @@ import forex.genetic.util.Constants;
 import forex.genetic.util.Constants.OperationType;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
@@ -18,7 +19,7 @@ import java.util.Vector;
  *
  * @author ricardorq85
  */
-public class Poblacion implements Serializable {
+public class Poblacion implements Serializable, Cloneable {
 
     public static final long serialVersionUID = 201101251800L;
     private List<IndividuoEstrategia> individuos = new Vector<IndividuoEstrategia>();
@@ -64,46 +65,18 @@ public class Poblacion implements Serializable {
         return getFirst(1);
     }
 
-    public Poblacion getByProcessedUntil(int processedUntil, int processedFrom) {
+    public Poblacion getByProcessedUntil(int processedUntil, int processedFrom, IndividuoReadData individuoReadData) {
         Poblacion p = new Poblacion();
         for (int i = 0; i < this.getIndividuos().size(); i++) {
             IndividuoEstrategia individuoEstrategia = this.getIndividuos().get(i);
-            corregirIndividuo(individuoEstrategia);
-            individuoEstrategia.setFortaleza(null);
-            individuoEstrategia.setListaFortaleza(null);
-            individuoEstrategia.setProcessedUntil(0);
-            individuoEstrategia.setProcessedFrom(0);
-            individuoEstrategia.setOptimizedOpenIndicators(null);
-            individuoEstrategia.setOptimizedCloseIndicators(null);
-            individuoEstrategia.setOpenPoint(null);
-            individuoEstrategia.setPrevOpenPoint(null);
-            individuoEstrategia.setOpenOperationIndex(0);
-            individuoEstrategia.setActiveOperation(false);
+            individuoEstrategia.corregir(individuoReadData);
             p.getIndividuos().add(individuoEstrategia);
         }
         return p;
     }
 
-    private void corregirIndividuo(IndividuoEstrategia ind) {
-        if (ind.getTakeProfit() < PropertiesManager.getMinTP()
-                || (ind.getTakeProfit() > PropertiesManager.getMaxTP())) {
-            ind.setTakeProfit(PropertiesManager.getMinTP());
-        }
-        if (ind.getStopLoss() < PropertiesManager.getMinSL()
-                || (ind.getStopLoss() > PropertiesManager.getMaxSL())) {
-            ind.setStopLoss(PropertiesManager.getMaxSL());
-        }
-        if (ind.getLot() < PropertiesManager.getMinLot()
-                || (ind.getLot() > PropertiesManager.getMaxLot())) {
-            ind.setLot(PropertiesManager.getMinLot());
-        }
-    }
-
     public Poblacion getFirst(int cantidad) {
-        Poblacion p = new Poblacion();
-        p.setIndividuos(CollectionUtil.subList(this.getIndividuos(), 0, (cantidad < this.getIndividuos().size()) ? cantidad : this.getIndividuos().size()));
-
-        return p;
+        return this.getFirst(cantidad, 0);
     }
 
     public Poblacion getFirst(int cantidad, int fromIndex) {
@@ -133,10 +106,12 @@ public class Poblacion implements Serializable {
     }
 
     public void addAll(Poblacion poblacion) {
-        Set set = new HashSet<IndividuoEstrategia>(poblacion.getIndividuos());
+        Set set = new HashSet<IndividuoEstrategia>(this.individuos);
+        set.addAll(poblacion.getIndividuos());
         /*        for (IndividuoEstrategia individuoEstrategia : poblacion.getIndividuos()) {
         this.add(individuoEstrategia);
         }*/
+        this.individuos.clear();
         this.individuos.addAll(set);
     }
 
@@ -178,5 +153,25 @@ public class Poblacion implements Serializable {
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Poblacion{" + "individuos=" + individuos.size() + ", operationType=" + operationType + ", pair=" + pair + '}';
+    }
+
+    @Override
+    public Poblacion clone() {
+        Poblacion cloned = new Poblacion();
+        cloned.individuos = new Vector<IndividuoEstrategia>(this.individuos.size());
+        for (Iterator<IndividuoEstrategia> it = this.individuos.iterator(); it.hasNext();) {
+            IndividuoEstrategia individuoEstrategia = it.next();
+            cloned.add(individuoEstrategia.clone());
+        }
+        cloned.operationType = this.operationType;
+        cloned.pair = this.pair;
+        cloned.riskLevel = this.riskLevel;
+        cloned.dRiskLevel = this.dRiskLevel;
+        return cloned;
     }
 }

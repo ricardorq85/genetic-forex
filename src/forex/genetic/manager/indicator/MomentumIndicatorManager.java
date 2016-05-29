@@ -8,7 +8,6 @@ import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.Momentum;
-import forex.genetic.manager.IntervalManager;
 
 /**
  *

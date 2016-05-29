@@ -19,7 +19,7 @@ public abstract class IntervalIndicatorManager<E extends IntervalIndicator> exte
     protected IntervalManager intervalManager = null;
 
     public IntervalIndicatorManager(boolean priceDependence, String name) {
-        this(priceDependence, priceDependence, name);
+        this(priceDependence, false, name);
     }
 
     public IntervalIndicatorManager(boolean priceDependence, boolean obligatory, String name) {

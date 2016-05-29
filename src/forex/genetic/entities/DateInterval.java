@@ -15,7 +15,7 @@ import java.util.Date;
  */
 public class DateInterval extends Interval<Date> implements Serializable {
 
-    public static final long serialVersionUID = 201101251800L;    
+    public static final long serialVersionUID = 201101251800L;
 
     public DateInterval() {
         this(null);
@@ -60,4 +60,5 @@ public class DateInterval extends Interval<Date> implements Serializable {
 
         return buffer.toString();
     }
+
 }

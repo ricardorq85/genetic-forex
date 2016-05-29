@@ -45,6 +45,7 @@ public class Constants {
     public static final String LOT_SCALE_ROUNDING = "LOT_SCALE_ROUNDING";
     public static final String FILE_PATH = "FILE_PATH";
     public static final String SERIALICE_PATH = "SERIALICE_PATH";
+    public static final String LEARNING_PATH = "LEARNING_PATH";
     public static final String LOG_PATH = "LOG_PATH";
     public static final String TERMINAR = "TERMINAR";
     public static final String RECALCULATE_ALL = "RECALCULATE_ALL";
@@ -63,12 +64,16 @@ public class Constants {
     public static final String SHOW_ESTADISTICAS = "SHOW_ESTADISTICAS";
     public static final String NUMBER_BACK_ROOT_POBLACION = "NUMBER_BACK_ROOT_POBLACION";
     public static final String VALIDATION_NUMBER = "VALIDATION_NUMBER";
+    public static final String VALIDATION_ACTIVE = "VALIDATION_ACTIVE";
     public static final String LISTING_NUMBER = "LISTING_NUMBER";
     public static final String MAX_FILE_PER_READ = "MAX_FILE_PER_READ";
     public static final String FORCE_INDIVIDUOS = "FORCE_INDIVIDUOS";
     public static final String MIN_OPER_NUM_BY_PERIOD = "MIN_OPER_NUM_BY_PERIOD";
     public static final String HAS_MINIMUM_CRITERION_LEVEL = "HAS_MINIMUM_CRITERION_LEVEL";
     public static final String OPTIMIZE_TEST = "OPTIMIZE_TEST";
+    public static final String NUMBER_LEARNING = "NUMBER_LEARNING";
+    public static final String POBLACION_BASE = "POBLACION_BASE";
+    public static final String READ_SPECIFIC = "READ_SPECIFIC";
     public static final double MAX_RISK_LEVEL = 10;
 
     public enum IndividuoType {
@@ -97,6 +102,7 @@ public class Constants {
 
         Pips,
         Stable,
-        Embudo;
+        Embudo,
+        Pattern;
     }
 }

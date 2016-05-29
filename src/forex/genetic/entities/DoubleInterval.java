@@ -33,10 +33,12 @@ public class DoubleInterval extends Interval<Double> implements Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof DoubleInterval) {
             Interval<Double> objInterval = (DoubleInterval) obj;
-            double d1 = Math.abs((objInterval.getLowInterval() - this.getLowInterval()) / this.getLowInterval());
-            double d2 = Math.abs((objInterval.getHighInterval() - this.getHighInterval()) / this.getHighInterval());
-            return ((Math.abs((objInterval.getLowInterval() - this.getLowInterval()) / this.getLowInterval()) < 0.0005)
-                    && (Math.abs((objInterval.getHighInterval() - this.getHighInterval()) / this.getHighInterval()) < 0.0005));
+            if (objInterval.getLowInterval().isNaN() && objInterval.getHighInterval().isNaN() && this.getLowInterval().isNaN() && this.getHighInterval().isNaN()) {
+                return true;
+            } else {
+                return ((Math.abs((objInterval.getLowInterval() - this.getLowInterval()) / this.getLowInterval()) < 0.001)
+                        && (Math.abs((objInterval.getHighInterval() - this.getHighInterval()) / this.getHighInterval()) < 0.001));
+            }
         } else {
             return false;
         }

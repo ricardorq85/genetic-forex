@@ -4,9 +4,10 @@
  */
 package forex.genetic.thread;
 
+import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.manager.PropertiesManager;
-import forex.genetic.manager.io.SerializationManager;
+import forex.genetic.manager.io.SerializationPoblacionManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
 
@@ -14,22 +15,24 @@ import forex.genetic.util.LogUtil;
  *
  * @author ricardorq85
  */
-public class SerializationReadAllthread extends Thread {
+public class SerializationReadAllThread extends Thread {
 
     private String path;
     private int counter;
     private int processedUntil;
     private int processedFrom;
-    private SerializationManager sm = null;
+    private SerializationPoblacionManager sm = new SerializationPoblacionManager();
     private Poblacion poblacion = null;
+    private Learning learning = null;
 
-    public SerializationReadAllthread(String name, String path, int counter, int processedUntil, int processedFrom, SerializationManager sm) {
+    public SerializationReadAllThread(String name, String path, int counter,
+            int processedUntil, int processedFrom, Learning learning) {
         super(name);
         this.path = path;
         this.counter = counter;
         this.processedUntil = processedUntil;
         this.processedFrom = processedFrom;
-        this.sm = sm;
+        this.learning = learning;
     }
 
     public void endProcess() {
@@ -38,14 +41,20 @@ public class SerializationReadAllthread extends Thread {
 
     public void run() {
         try {
-            poblacion = sm.readAll(path, counter, processedUntil, processedFrom);
-            /*if (processedUntil == PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION)) {
-                poblacion = sm.readByEstrategyId(path, "1322673642223.74325");
-                //poblacion.addAll(sm.readByEstrategyId(path, "1336344492091.621"));
+            if (!PropertiesManager.isReadSpecific()) {
+                poblacion = sm.readAll(path, counter, processedUntil, processedFrom, learning);
+                LogUtil.logTime("End Cargar poblacion serializada " + this.getName() + " Individuos=" + poblacion.getIndividuos().size(), 2);
             } else {
-                poblacion = new Poblacion();
-            }*/
-            LogUtil.logTime("End Cargar poblacion serializada " + this.getName() + " Individuos=" + poblacion.getIndividuos().size(), 1);
+                String testStrategy = PropertiesManager.getPropertyString(Constants.TEST_STRATEGY);
+                String[] ids = testStrategy.split(",");
+                if (processedUntil == PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION)) {
+                    poblacion = new Poblacion();
+                    for (int k = 0; k < ids.length; k++) {
+                        String id = ids[k];
+                        poblacion.addAll(sm.readByEstrategyId(path, id));
+                    }
+                }
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -57,5 +66,13 @@ public class SerializationReadAllthread extends Thread {
 
     public int getProcessedUntil() {
         return processedUntil;
+    }
+
+    public Poblacion getPoblacionHija() {
+        return sm.getPoblacionHija();
+    }
+
+    public Poblacion getPoblacionPadre() {
+        return sm.getPoblacionPadre();
     }
 }

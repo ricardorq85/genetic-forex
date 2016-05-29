@@ -9,7 +9,7 @@ import forex.genetic.delegate.GeneticTesterDelegate;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.manager.OptimizationManager;
 import forex.genetic.manager.PropertiesManager;
-import forex.genetic.manager.io.SerializationManager;
+import forex.genetic.manager.io.SerializationPoblacionManager;
 import forex.genetic.thread.OptimizationThread;
 import forex.genetic.util.Constants;
 import java.io.File;
@@ -25,12 +25,13 @@ public class ForexEstrategiaTester {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         long id = System.currentTimeMillis();
         PropertiesManager.load().join();
-        PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + "Tester_" + PropertiesManager.getOperationType() + PropertiesManager.getPair() + id + ".log");
-        System.setOut(out);
-        System.setErr(out);
-        SerializationManager serializationManager = new SerializationManager();
         String testStrategy = PropertiesManager.getPropertyString(Constants.TEST_STRATEGY);
         String testFile = PropertiesManager.getPropertyString(Constants.TEST_FILE);
+        GeneticTesterDelegate.id = "" + id;
+        PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + "Tester_" + PropertiesManager.getOperationType() + PropertiesManager.getPair() + testStrategy + ".log");
+        System.setOut(out);
+        System.setErr(out);
+        SerializationPoblacionManager serializationManager = new SerializationPoblacionManager();
         String serPath = PropertiesManager.getSerialicePath();
         Poblacion poblacion = null;
 

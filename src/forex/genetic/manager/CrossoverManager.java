@@ -4,6 +4,7 @@
  */
 package forex.genetic.manager;
 
+import forex.genetic.entities.Learning;
 import forex.genetic.util.LogUtil;
 import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.entities.indicator.Indicator;
@@ -38,7 +39,29 @@ public class CrossoverManager {
         Random random = new Random();
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
         int counter = 0;
-
+        Learning learning = LearningManager.learning;
+        int minTP = PropertiesManager.getMinTP();
+        int maxTP = PropertiesManager.getMaxTP();
+        int minSL = PropertiesManager.getMinSL();
+        int maxSL = PropertiesManager.getMaxSL();
+        if (learning != null) {
+            if (learning.getTakeProfitInterval() != null) {
+                if (learning.getTakeProfitInterval().getLowInterval() != Integer.MAX_VALUE) {
+                    minTP = Math.max(minTP, learning.getTakeProfitInterval().getLowInterval());
+                }
+                if (learning.getTakeProfitInterval().getHighInterval() != Integer.MIN_VALUE) {
+                    maxTP = Math.min(maxTP, learning.getTakeProfitInterval().getHighInterval());
+                }
+            }
+            if (learning.getStopLossInterval() != null) {
+                if (learning.getStopLossInterval().getLowInterval() != Integer.MAX_VALUE) {
+                    minSL = Math.max(minSL, learning.getStopLossInterval().getLowInterval());
+                }
+                if (learning.getStopLossInterval().getHighInterval() != Integer.MIN_VALUE) {
+                    maxSL = Math.min(maxSL, learning.getStopLossInterval().getHighInterval());
+                }
+            }
+        }
         while ((counter < percentValue) && (!endProcess)) {
             int pos1 = counter % individuos.size();
             //int pos1 = random.nextInt(individuos.size());
@@ -89,12 +112,12 @@ public class CrossoverManager {
 
                     int tp1 = individuo1.getTakeProfit();
                     int tp2 = individuo2.getTakeProfit();
-                    int tpHijo = especificCrossoverManager.crossover(tp1, tp2, PropertiesManager.getMinTP(), PropertiesManager.getMaxTP());
+                    int tpHijo = especificCrossoverManager.crossover(tp1, tp2, minTP, maxTP);
                     hijo.setTakeProfit(tpHijo);
 
                     int sl1 = individuo1.getStopLoss();
                     int sl2 = individuo2.getStopLoss();
-                    int slHijo = especificCrossoverManager.crossover(sl1, sl2, PropertiesManager.getMinSL(), PropertiesManager.getMaxSL());
+                    int slHijo = especificCrossoverManager.crossover(sl1, sl2, minSL, maxSL);
                     hijo.setStopLoss(slHijo);
 
                     double lot1 = individuo1.getLot();

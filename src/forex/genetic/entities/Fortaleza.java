@@ -9,6 +9,11 @@ import forex.genetic.util.Constants;
 import forex.genetic.util.Constants.FortalezaType;
 import forex.genetic.util.NumberUtil;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  *
@@ -18,7 +23,7 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
 
     public static final long serialVersionUID = 201101251800L;
     //public static final String currentVersion = "v6.1.1.07";
-    public static final Long currentVersionNumber = 70033L;
+    public static final Long currentVersionNumber = 70068L;
     //private String version = "0.0";
     private Long versionNumber = 0L;
     private double pips = 0.0;
@@ -52,12 +57,32 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
     private double riskLevel = 0.0;
     private FortalezaType type = null;
     private int presentNumberPoblacion = 0;
+    private Map<Integer, Integer> modaGanadoras = null;
+    private Map<Integer, Integer> modaPerdedoras = null;
 
     public Fortaleza() {
         //setVersion(currentVersion);
         setVersionNumber(currentVersionNumber);
         setType(PropertiesManager.getFortalezaType());
         setPresentNumberPoblacion(PropertiesManager.getPresentNumberPoblacion());
+        modaGanadoras = new TreeMap<Integer, Integer>();
+        modaPerdedoras = new TreeMap<Integer, Integer>();
+    }
+
+    public Map<Integer, Integer> getModaGanadoras() {
+        return modaGanadoras;
+    }
+
+    public void setModaGanadoras(Map<Integer, Integer> modaGanadoras) {
+        this.modaGanadoras = modaGanadoras;
+    }
+
+    public Map<Integer, Integer> getModaPerdedoras() {
+        return modaPerdedoras;
+    }
+
+    public void setModaPerdedoras(Map<Integer, Integer> modaPerdedoras) {
+        this.modaPerdedoras = modaPerdedoras;
     }
 
     public Long getVersionNumber() {
@@ -343,47 +368,25 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
         buffer.append("; Min. Numero Consecutivo Operaciones Ganadoras=" + (this.minConsecutiveWonOperationsNumber));
         buffer.append("; Min. Numero Consecutivo Operaciones Perdedoras=" + (this.minConsecutiveLostOperationsNumber));
         buffer.append("\n\t\t");
-        buffer.append("; Promedio de operaciones ganadas=" + this.averageConsecutiveWonOperationsNumber);
-        buffer.append("; Promedio de pips ganados=" + this.averageConsecutiveWonPips);
-        buffer.append("; Numero de operaciones que ganan consecutivamente=" + this.numConsecutiveWon);
+        buffer.append("; Promedio de operaciones consecutivas ganadas=" + this.averageConsecutiveWonOperationsNumber);
+        buffer.append("; Promedio de pips consecutivos ganados=" + this.averageConsecutiveWonPips);
+        buffer.append("; Numero de veces que realiza operaciones ganando=" + this.numConsecutiveWon);
         buffer.append("\n\t\t");
-        buffer.append("; Promedio de operaciones perdidas=" + this.averageConsecutiveLostOperationsNumber);
-        buffer.append("; Promedio de pips perdidos=" + this.averageConsecutiveLostPips);
-        buffer.append("; Numero de operaciones que pierden consecutivamente=" + this.numConsecutiveLost);
+        buffer.append("; Promedio de operaciones consecutivas perdidas=" + this.averageConsecutiveLostOperationsNumber);
+        buffer.append("; Promedio de pips consecutivos perdidos=" + this.averageConsecutiveLostPips);
+        buffer.append("; Numero de veces que realiza operaciones perdiendo=" + this.numConsecutiveLost);
+        buffer.append("\n\t\t");
+        buffer.append("; Numero actual de operaciones ganadas=" + this.currentConsecutiveWonOperationsNumber);
+        buffer.append("; Numero actual de operaciones perdidas=" + this.currentConsecutiveLostOperationsNumber);
+        buffer.append("\n\t\t");
+        buffer.append("; Moda ganadora=" + this.getModa(modaGanadoras));
+        buffer.append("; Moda perdedora=" + this.getModa(modaPerdedoras));
 
         return buffer.toString();
     }
 
-    public int compareTo(Fortaleza o) {
-        int compare = (Double.compare((this.value == 0.0D) ? -1000.0D : this.value, (o.getValue() == 0.0D) ? -1000.0D : o.getValue())) * 50;
-        if (this.getType().equals(Constants.FortalezaType.Stable)) {
-            if (compare == 0) {
-                compare += (Double.compare(this.getPips(), o.getPips())) * 30;
-                compare += (Double.compare(this.getOperationsNumber(), o.getOperationsNumber())) * 10;
-                compare += (Double.compare(this.getWonOperationsNumber() / NumberUtil.zeroToOne(this.getLostOperationsNumber()),
-                        o.getWonOperationsNumber() / NumberUtil.zeroToOne(o.getLostOperationsNumber()))) * 5;
-                compare += (Double.compare(this.getMaxConsecutiveWonOperationsNumber() / NumberUtil.zeroToOne(this.getMaxConsecutiveLostOperationsNumber()),
-                        o.getMaxConsecutiveWonOperationsNumber() / NumberUtil.zeroToOne(o.getMaxConsecutiveLostOperationsNumber()))) * 2;
-                compare += (Double.compare(Math.abs(this.getMaxConsecutiveWonPips() / NumberUtil.zeroToOne(this.getMaxConsecutiveLostPips())),
-                        Math.abs(o.getMaxConsecutiveWonPips() / NumberUtil.zeroToOne(o.getMaxConsecutiveLostPips())))) * 3;
-            }
-        } else if (this.getType().equals(Constants.FortalezaType.Pips)) {
-            if (compare == 0) {
-                compare += (Double.compare(this.getPips(), o.getPips())) * 50;
-            }
-        } else if (this.getType().equals(Constants.FortalezaType.Embudo)) {
-            if (compare == 0) {
-                compare += (Double.compare(this.getOperationsNumber(), o.getOperationsNumber())) * 50;
-            }
-        }
-        if (compare == 0) {
-            compare += (Double.compare(this.getPips(), o.getPips())) * 50;
-        }
-        return compare;
-    }
-
     @Override
-    public Fortaleza clone() throws CloneNotSupportedException {
+    public Fortaleza clone() {
         Fortaleza f = new Fortaleza();
         f.setDiffValue(diffValue);
         f.setCurrentConsecutiveLostOperationsNumber(currentConsecutiveLostOperationsNumber);
@@ -416,22 +419,19 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
         return f;
     }
 
-    public double calculate() {
-        double fortalezaValue = 0.0;
-        if (this.getVersionNumber() == null) {
-            this.setType(PropertiesManager.getFortalezaType());
+    public Integer getModa(Map<Integer, Integer> mapModa) {
+        Integer moda = -1;
+        if (!mapModa.isEmpty()) {
+            Integer max = Collections.max(mapModa.values());
+            Set modaSet = mapModa.keySet();
+            for (Iterator<Integer> it = modaSet.iterator(); it.hasNext() && moda < 0;) {
+                Integer value = it.next();
+                if (mapModa.get(value) == max) {
+                    moda = value;
+                }
+            }
         }
-        if (this.getType().equals(Constants.FortalezaType.Stable)) {
-            fortalezaValue += (Double.compare(this.getPips(), 0.0D)) * 50.0D;
-            fortalezaValue += (Double.compare((this.getWonOperationsNumber() - this.getLostOperationsNumber()), 0.0D)) * 30.0D;
-            fortalezaValue += (Double.compare((this.getMaxConsecutiveWonOperationsNumber() - this.getMaxConsecutiveLostOperationsNumber()), 0.0D)) * 10.0D;
-        } else if (this.getType().equals(Constants.FortalezaType.Pips)) {
-            //fortalezaValue += (this.getPips() / 1000);
-            fortalezaValue += (Double.compare(this.getPips(), 0.0D));
-        } else if (this.getType().equals(Constants.FortalezaType.Embudo)) {
-            fortalezaValue += (Double.compare(this.getPips(), 0.0D));
-        }
-        return fortalezaValue;
+        return moda;
     }
 
     public Fortaleza calculateDifference(Fortaleza f2) {
@@ -501,5 +501,146 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
             return false;
         }
         return true;
+    }
+
+    public int compareTo(Fortaleza o) {
+        int compare = (Double.compare((this.operationsNumber == 0.0D) ? -100000.0D : this.value, (o.operationsNumber == 0.0D) ? -100000.0D : o.getValue())) * 50;
+        if (this.getType().equals(Constants.FortalezaType.Stable)) {
+            if (compare == 0) {
+                compare += (Double.compare(this.getPips(), o.getPips())) * 30;
+                compare += (Double.compare(this.getOperationsNumber(), o.getOperationsNumber())) * 10;
+                compare += (Double.compare(this.getWonOperationsNumber() / NumberUtil.zeroToOne(this.getLostOperationsNumber()),
+                        o.getWonOperationsNumber() / NumberUtil.zeroToOne(o.getLostOperationsNumber()))) * 5;
+                compare += (Double.compare(this.getMaxConsecutiveWonOperationsNumber() / NumberUtil.zeroToOne(this.getMaxConsecutiveLostOperationsNumber()),
+                        o.getMaxConsecutiveWonOperationsNumber() / NumberUtil.zeroToOne(o.getMaxConsecutiveLostOperationsNumber()))) * 2;
+                compare += (Double.compare(Math.abs(this.getMaxConsecutiveWonPips() / NumberUtil.zeroToOne(this.getMaxConsecutiveLostPips())),
+                        Math.abs(o.getMaxConsecutiveWonPips() / NumberUtil.zeroToOne(o.getMaxConsecutiveLostPips())))) * 3;
+            }
+        } else if (this.getType().equals(Constants.FortalezaType.Pips)) {
+            if (compare == 0) {
+                compare += (Double.compare(this.getPips(), o.getPips())) * 50;
+            }
+        } else if (this.getType().equals(Constants.FortalezaType.Embudo)) {
+            if (compare == 0) {
+                compare += (Double.compare(this.getOperationsNumber(), o.getOperationsNumber())) * 50;
+            }
+        } else if (this.getType().equals(Constants.FortalezaType.Pattern)) {
+            if (compare == 0) {
+                if ((this.value > 0.0D) && (this.operationsNumber > 0)) {
+                    compare += (Double.compare((this.pips / this.wonOperationsNumber), (o.pips / o.wonOperationsNumber))) * 50;
+                } else if ((this.value < 0.0D) && (this.operationsNumber > 0)) {
+                    compare += (Double.compare((this.pips / this.lostOperationsNumber), (o.pips / o.lostOperationsNumber))) * 50;
+                }
+            }
+        }
+        if (compare == 0) {
+            compare += (Double.compare(this.getPips(), o.getPips())) * 50;
+        }
+        return compare;
+    }
+
+    public double calculate() {
+        return this.calculate(0.0D);
+    }
+
+    public double calculate(double otherValue) {
+        double fortalezaValue = 0.0;
+        if (this.getVersionNumber() == null) {
+            this.setType(PropertiesManager.getFortalezaType());
+        }
+        if (this.getType().equals(Constants.FortalezaType.Stable)) {
+            fortalezaValue += (Double.compare(this.getPips(), 0.0D)) * 50.0D;
+            fortalezaValue += (Double.compare((this.getWonOperationsNumber() - this.getLostOperationsNumber()), 0.0D)) * 30.0D;
+            fortalezaValue += (Double.compare((this.getMaxConsecutiveWonOperationsNumber() - this.getMaxConsecutiveLostOperationsNumber()), 0.0D)) * 10.0D;
+        } else if (this.getType().equals(Constants.FortalezaType.Pips)) {
+            //fortalezaValue += (this.getPips() / 1000);
+            fortalezaValue += (this.getPips());
+        } else if (this.getType().equals(Constants.FortalezaType.Embudo)) {
+            fortalezaValue += (this.getPips());
+        } else if (this.getType().equals(Constants.FortalezaType.Pattern)) {
+            if (this.currentConsecutiveWonOperationsNumber > 0) {
+                Integer moda = getModa(modaGanadoras);
+                if ((moda != null) && (this.currentConsecutiveWonOperationsNumber < moda)) {
+                    if (this.currentConsecutiveWonOperationsNumber < this.averageConsecutiveWonOperationsNumber) {
+                        fortalezaValue += otherValue * 0.2;
+                        fortalezaValue += (100 - (currentConsecutiveWonOperationsNumber * 100 / moda)) * 0.25;
+                        fortalezaValue += (100 - (currentConsecutiveWonOperationsNumber * 100 / averageConsecutiveWonOperationsNumber)) * 0.30;
+                        fortalezaValue += (100 - (currentConsecutiveWonOperationsNumber * 100 / maxConsecutiveWonOperationsNumber)) * 0.10;
+                        if (this.currentConsecutiveWonOperationsNumber < wonOperationsNumber) {
+                            fortalezaValue += (100 - (currentConsecutiveWonOperationsNumber * 100 / (double) wonOperationsNumber)) * 0.15;
+                        }
+                    } else {
+                        fortalezaValue += otherValue * 0.2;
+                        fortalezaValue += (100 - (currentConsecutiveWonOperationsNumber * 100 / moda)) * 0.25;
+                        fortalezaValue += (100 - (currentConsecutiveWonOperationsNumber * 100 / maxConsecutiveWonOperationsNumber)) * 0.10;
+                        if (this.currentConsecutiveWonOperationsNumber < wonOperationsNumber) {
+                            fortalezaValue += (100 - (currentConsecutiveWonOperationsNumber * 100 / (double) wonOperationsNumber)) * 0.15;
+                        }
+                    }
+                    //fortalezaValue += (100 - (currentConsecutiveWonOperationsNumber * 100 / maxConsecutiveWonOperationsNumber)) * 0.15;
+                } else if (this.currentConsecutiveWonOperationsNumber < this.averageConsecutiveWonOperationsNumber) {
+                    fortalezaValue += otherValue * 0.2;
+                    fortalezaValue += (100 - (currentConsecutiveWonOperationsNumber * 100 / averageConsecutiveWonOperationsNumber)) * 0.30;
+                    fortalezaValue += (100 - (currentConsecutiveWonOperationsNumber * 100 / maxConsecutiveWonOperationsNumber)) * 0.10;
+                    if (this.currentConsecutiveWonOperationsNumber < wonOperationsNumber) {
+                        fortalezaValue += (100 - (currentConsecutiveWonOperationsNumber * 100 / (double) wonOperationsNumber)) * 0.15;
+                    }
+                } else if (this.currentConsecutiveWonOperationsNumber < this.maxConsecutiveWonOperationsNumber) {
+                    fortalezaValue += (100 - (currentConsecutiveWonOperationsNumber * 100 / maxConsecutiveWonOperationsNumber)) * 0.10;
+                    if (this.currentConsecutiveWonOperationsNumber < wonOperationsNumber) {
+                        fortalezaValue += (100 - (currentConsecutiveWonOperationsNumber * 100 / (double) wonOperationsNumber)) * 0.15;
+                    }
+                } else {
+                    fortalezaValue = -(35.0D);
+                }
+            } else if (this.currentConsecutiveLostOperationsNumber > 0) {
+                Integer moda = getModa(modaPerdedoras);
+                if ((moda != null) && (this.currentConsecutiveLostOperationsNumber < moda)) {
+                    if (this.currentConsecutiveLostOperationsNumber < this.averageConsecutiveLostOperationsNumber) {
+                        fortalezaValue -= otherValue * 0.2;
+                        fortalezaValue -= (100 - (currentConsecutiveLostOperationsNumber * 100 / moda)) * 0.25;
+                        fortalezaValue -= (100 - (currentConsecutiveLostOperationsNumber * 100 / averageConsecutiveLostOperationsNumber)) * 0.30;
+                        fortalezaValue -= (100 - (currentConsecutiveLostOperationsNumber * 100 / maxConsecutiveLostOperationsNumber)) * 0.10;
+                        if (this.currentConsecutiveLostOperationsNumber < lostOperationsNumber) {
+                            fortalezaValue -= (100 - (currentConsecutiveLostOperationsNumber * 100 / (double) lostOperationsNumber)) * 0.15;
+                        }
+                    } else {
+                        fortalezaValue -= otherValue * 0.2;
+                        fortalezaValue -= (100 - (currentConsecutiveLostOperationsNumber * 100 / moda)) * 0.25;
+                        fortalezaValue -= (100 - (currentConsecutiveLostOperationsNumber * 100 / maxConsecutiveLostOperationsNumber)) * 0.10;
+                        if (this.currentConsecutiveLostOperationsNumber < lostOperationsNumber) {
+                            fortalezaValue -= (100 - (currentConsecutiveLostOperationsNumber * 100 / (double) lostOperationsNumber)) * 0.15;
+                        }
+                    }
+                    //fortalezaValue -= (100 - (currentConsecutiveLostOperationsNumber * 100 / maxConsecutiveLostOperationsNumber)) * 0.15;
+                } else if (this.currentConsecutiveLostOperationsNumber < this.averageConsecutiveLostOperationsNumber) {
+                    fortalezaValue -= otherValue * 0.2;
+                    fortalezaValue -= (100 - (currentConsecutiveLostOperationsNumber * 100 / averageConsecutiveLostOperationsNumber)) * 0.30;
+                    fortalezaValue -= (100 - (currentConsecutiveLostOperationsNumber * 100 / maxConsecutiveLostOperationsNumber)) * 0.10;
+                    if (this.currentConsecutiveLostOperationsNumber < lostOperationsNumber) {
+                        fortalezaValue -= (100 - (currentConsecutiveLostOperationsNumber * 100 / (double) lostOperationsNumber)) * 0.15;
+                    }
+                } else if (this.currentConsecutiveLostOperationsNumber < this.maxConsecutiveLostOperationsNumber) {
+                    fortalezaValue -= (100 - (currentConsecutiveLostOperationsNumber * 100 / maxConsecutiveLostOperationsNumber)) * 0.10;
+                    if (this.currentConsecutiveLostOperationsNumber < lostOperationsNumber) {
+                        fortalezaValue -= (100 - (currentConsecutiveLostOperationsNumber * 100 / (double) lostOperationsNumber)) * 0.15;
+                    }
+                } else {
+                    fortalezaValue = (35.0D);
+                }
+            } else {
+                fortalezaValue = (15D);
+            }
+//            else {
+//                if (this.currentConsecutiveWonOperationsNumber > 0) {
+//                    fortalezaValue = 10.0D * (this.maxConsecutiveWonOperationsNumber - this.currentConsecutiveWonOperationsNumber);
+//                } else if (this.currentConsecutiveLostOperationsNumber > 0) {
+//                    fortalezaValue = -10.0D * (this.maxConsecutiveLostOperationsNumber - this.currentConsecutiveLostOperationsNumber);
+//                } else {
+//                    fortalezaValue = 20.0D;
+//                }
+//            }
+        }
+        return fortalezaValue;
     }
 }

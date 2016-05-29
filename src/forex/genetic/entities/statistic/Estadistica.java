@@ -101,6 +101,7 @@ public class Estadistica {
         buffer.append(this.individuosPositivos);
         buffer.append(" IndividusNegativos ");
         buffer.append(this.individuosNegativos);
+        buffer.append(" RelacionMonedas ");
 
         return buffer.toString();
     }

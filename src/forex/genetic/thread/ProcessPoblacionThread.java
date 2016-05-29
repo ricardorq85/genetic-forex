@@ -15,6 +15,8 @@ public class ProcessPoblacionThread extends Thread {
     private List<Point> points;
     protected Poblacion poblacion;
     protected Poblacion newPoblacion = new Poblacion();
+    protected Poblacion poblacionHija = new Poblacion();
+    protected Poblacion poblacionPadre = new Poblacion();
     private boolean recalculate;
     private int poblacionIndex;
     private int poblacionFromIndex;
@@ -53,6 +55,14 @@ public class ProcessPoblacionThread extends Thread {
 
     public Poblacion getNewPoblacion() {
         return newPoblacion;
+    }
+
+    public Poblacion getPoblacionHija() {
+        return poblacionHija;
+    }
+
+    public Poblacion getPoblacionPadre() {
+        return poblacionPadre;
     }
 
     public int getPoblacionIndex() {

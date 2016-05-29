@@ -8,7 +8,6 @@ import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Ichimoku;
 import forex.genetic.entities.indicator.Indicator;
-import forex.genetic.util.LogUtil;
 
 /**
  *
@@ -17,7 +16,7 @@ import forex.genetic.util.LogUtil;
 public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
 
     public IchimokuTrendIndicatorManager() {
-        super(true, true, "IchiTrend");
+        super(true, false, "IchiTrend");
     }
 
     public Ichimoku getIndicatorInstance() {

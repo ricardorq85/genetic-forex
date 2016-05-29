@@ -18,6 +18,8 @@ public class OptimizationThread extends Thread {
     private Poblacion newPoblacion = new Poblacion();
     private int percentValue;
     private OptimizationManager optimizationManager;
+    private Poblacion poblacionHija = new Poblacion();
+    private Poblacion poblacionPadre = new Poblacion();
 
     public OptimizationThread(String name, int generacion, Poblacion poblacion, int percentValue, OptimizationManager optimizationManager) {
         super(name);
@@ -30,6 +32,8 @@ public class OptimizationThread extends Thread {
     public void run() {
         Poblacion[] optimizationPoblacion = optimizationManager.optimize(generacion, poblacion, percentValue);
         newPoblacion.addAll(optimizationPoblacion[1]);
+        poblacionPadre.addAll(optimizationPoblacion[0]);
+        poblacionHija.addAll(optimizationPoblacion[1]);
     }
 
     public void endProcess() {
@@ -38,5 +42,13 @@ public class OptimizationThread extends Thread {
 
     public Poblacion getNewPoblacion() {
         return newPoblacion;
+    }
+
+    public Poblacion getPoblacionHija() {
+        return poblacionHija;
+    }
+
+    public Poblacion getPoblacionPadre() {
+        return poblacionPadre;
     }
 }

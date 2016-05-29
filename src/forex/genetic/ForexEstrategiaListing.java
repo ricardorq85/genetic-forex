@@ -6,16 +6,16 @@ package forex.genetic;
 
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.delegate.GeneticTesterDelegate;
-import forex.genetic.entities.Fortaleza;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.manager.PropertiesManager;
-import forex.genetic.manager.io.SerializationManager;
+import forex.genetic.manager.io.SerializationPoblacionManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,9 +26,10 @@ public class ForexEstrategiaListing {
 
     public static void main(String[] args) throws ClassNotFoundException, FileNotFoundException, InterruptedException {
         PropertiesManager.load().join();
-        SerializationManager serializationManager = new SerializationManager();
+        SerializationPoblacionManager serializationManager = new SerializationPoblacionManager();
         String listingId = PropertiesManager.getPropertyString(Constants.LISTING_ID);
         String id = listingId;
+        GeneticTesterDelegate.id = id;
         PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + "Listing_" + PropertiesManager.getOperationType() + PropertiesManager.getPair() + id + ".log");
         System.setOut(out);
         System.setErr(out);
@@ -42,6 +43,7 @@ public class ForexEstrategiaListing {
         Poblacion resultPoblacion = new Poblacion();
 
         GeneticTesterDelegate delegate = new GeneticTesterDelegate();
+        List<Poblacion> listPoblacion = new ArrayList<Poblacion>();
         for (int i = initialPoblacion; i <= endPoblacion; i++) {
             String filename = serPath
                     + PropertiesManager.getOperationType() + PropertiesManager.getPair()
@@ -54,23 +56,15 @@ public class ForexEstrategiaListing {
                 ex.printStackTrace();
             }
             Poblacion poblacion = p.getFirst(indivNum);
-            resultPoblacion.addAll(poblacion);
+            listPoblacion.add(poblacion);
         }
-        delegate.process(resultPoblacion, initialPoblacion, endPoblacion);
 
-        List<IndividuoEstrategia> individuos = resultPoblacion.getIndividuos();
-        for (int j = 0; j < individuos.size(); j++) {
-            IndividuoEstrategia individuoEstrategia = individuos.get(j);
-            LogUtil.logTime(individuoEstrategia.toString(), 1);
-            if ((individuoEstrategia != null) && (individuoEstrategia.getFortaleza() != null)) {
-                List<Fortaleza> fortalezas = individuoEstrategia.getListaFortaleza();
-                for (int i = 0; i < fortalezas.size(); i++) {
-                    Fortaleza fortaleza = fortalezas.get(i);
-                    if (fortaleza != null) {
-                        double pips = fortaleza.getPips();
-                        LogUtil.logTime(j + ". Individuo='" + individuoEstrategia.getId() + " Pips=" + pips, 1);
-                    }
-                }
+        for (int i = 0; i < listPoblacion.size(); i++) {
+            Poblacion poblacion = listPoblacion.get(i);
+            List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
+            for (int j = 0; j < individuos.size(); j++) {
+                IndividuoEstrategia individuoEstrategia = individuos.get(j);
+                LogUtil.logTime((individuos.size() - j + 1) + "-" + individuoEstrategia.toString(), 1);
             }
         }
     }

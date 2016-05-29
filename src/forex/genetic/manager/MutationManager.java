@@ -4,6 +4,8 @@
  */
 package forex.genetic.manager;
 
+import forex.genetic.entities.RelacionGeneraciones;
+import forex.genetic.entities.Learning;
 import forex.genetic.util.LogUtil;
 import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.entities.indicator.Indicator;
@@ -38,14 +40,39 @@ public class MutationManager {
         Random random = new Random();
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
         int counter = 0;
-
+        Learning learning = LearningManager.learning;
+        RelacionGeneraciones relacionMutation = null;
+        if ((learning.getRelacionMutation() != null) && (learning.getRelacionMutation().size() > 0)) {
+            relacionMutation = learning.getRelacionMutation().get(0);
+        }
+        int minTP = PropertiesManager.getMinTP();
+        int maxTP = PropertiesManager.getMaxTP();
+        int minSL = PropertiesManager.getMinSL();
+        int maxSL = PropertiesManager.getMaxSL();
+        if (learning != null) {
+            if (learning.getTakeProfitInterval() != null) {
+                if (learning.getTakeProfitInterval().getLowInterval() != Integer.MAX_VALUE) {
+                    minTP = Math.max(minTP, learning.getTakeProfitInterval().getLowInterval());
+                }
+                if (learning.getTakeProfitInterval().getHighInterval() != Integer.MIN_VALUE) {
+                    maxTP = Math.min(maxTP, learning.getTakeProfitInterval().getHighInterval());
+                }
+            }
+            if (learning.getStopLossInterval() != null) {
+                if (learning.getStopLossInterval().getLowInterval() != Integer.MAX_VALUE) {
+                    minSL = Math.max(minSL, learning.getStopLossInterval().getLowInterval());
+                }
+                if (learning.getStopLossInterval().getHighInterval() != Integer.MIN_VALUE) {
+                    maxSL = Math.min(maxSL, learning.getStopLossInterval().getHighInterval());
+                }
+            }
+        }
         while ((counter < percentValue) && (!endProcess)) {
             int pos1 = counter % individuos.size();
             //int pos1 = random.nextInt(individuos.size());
             if (pos1 < individuos.size()) {
                 try {
                     IndividuoEstrategia individuo1 = individuos.get(pos1);
-
                     IndividuoEstrategia hijo = new IndividuoEstrategia(generacion, individuo1, null, IndividuoType.MUTATION);
                     List<Indicator> openIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
                     List<Indicator> closeIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
@@ -55,43 +82,65 @@ public class MutationManager {
                             openIndicator = individuo1.getOpenIndicators().get(i);
                         }
                         IndicatorManager indicatorManager = IndicatorManager.getInstance(i);
-                        /*if ((!indicatorManager.isObligatory()) && random.nextDouble() < 0.1) {
-                            openIndicators.add(null);
-                        } else {*/
-                            Indicator indHijo = openIndicator;
-                            if ((random.nextDouble() < 0.7) || (openIndicator == null)) {
+                        Indicator indHijo = openIndicator;
+                        if (relacionMutation != null) {
+                            if (relacionMutation.getLearningParametrosIndividuo().getOpenIndicators().size() > i) {
+                                boolean openIndicatorLearning = relacionMutation.getLearningParametrosIndividuo().getOpenIndicators().get(i);
+                                if (openIndicatorLearning) {
+                                    indHijo = indicatorManager.mutate(openIndicator);
+                                }
+                            }
+                        } else {
+                            if ((random.nextDouble() < 0.5) || (openIndicator == null)) {
                                 indHijo = indicatorManager.mutate(openIndicator);
                             }
-                            openIndicators.add(indHijo);
-                        //}
+                        }
+                        openIndicators.add(indHijo);
                         Indicator closeIndicator = null;
                         if (individuo1.getCloseIndicators().size() > i) {
                             closeIndicator = individuo1.getCloseIndicators().get(i);
                         }
-                        /*if ((!indicatorManager.isObligatory()) && random.nextDouble() < 0.1) {
-                            closeIndicators.add(null);
-                        } else {*/
-                            indHijo = closeIndicator;
-                            if ((random.nextDouble() < 0.7) || (closeIndicator == null)) {
+                        indHijo = closeIndicator;
+                        if (relacionMutation != null) {
+                            if (relacionMutation.getLearningParametrosIndividuo().getCloseIndicators().size() > i) {
+                                boolean closeIndicatorLearning = relacionMutation.getLearningParametrosIndividuo().getCloseIndicators().get(i);
+                                if (closeIndicatorLearning) {
+                                    indHijo = indicatorManager.mutate(openIndicator);
+                                }
+                            }
+                        } else {
+                            if ((random.nextDouble() < 0.5) || (closeIndicator == null)) {
                                 indHijo = indicatorManager.mutate(closeIndicator);
                             }
                             closeIndicators.add(indHijo);
-                        //}
+                        }
                     }
                     hijo.setOpenIndicators(openIndicators);
                     hijo.setCloseIndicators(closeIndicators);
 
                     int tp1 = individuo1.getTakeProfit();
                     int tpHijo = tp1;
-                    if (random.nextBoolean()) {
-                        tpHijo = especificMutationManager.mutate(tp1, PropertiesManager.getMinTP(), PropertiesManager.getMaxTP());
+                    if (relacionMutation != null) {
+                        if (relacionMutation.getLearningParametrosIndividuo().isTakeProfit()) {
+                            tpHijo = especificMutationManager.mutate(tp1, minTP, maxTP);
+                        }
+                    } else {
+                        if (random.nextBoolean()) {
+                            tpHijo = especificMutationManager.mutate(tp1, minTP, maxTP);
+                        }
                     }
                     hijo.setTakeProfit(tpHijo);
 
                     int sl1 = individuo1.getStopLoss();
                     int slHijo = sl1;
-                    if (random.nextBoolean()) {
-                        slHijo = especificMutationManager.mutate(sl1, PropertiesManager.getMinSL(), PropertiesManager.getMaxSL());
+                    if (relacionMutation != null) {
+                        if (relacionMutation.getLearningParametrosIndividuo().isStopLoss()) {
+                            slHijo = especificMutationManager.mutate(sl1, minSL, maxSL);
+                        }
+                    } else {
+                        if (random.nextBoolean()) {
+                            slHijo = especificMutationManager.mutate(sl1, minSL, maxSL);
+                        }
                     }
                     hijo.setStopLoss(slHijo);
 

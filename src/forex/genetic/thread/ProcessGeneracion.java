@@ -35,10 +35,10 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
     }
 
     public void run() {
-        LogUtil.logTime("Procesar Generacion " + this.getName() + " Individuos=" + poblacion.getIndividuos().size(), 1);
+        LogUtil.logTime("Procesar Generacion " + this.getName() + " Individuos=" + poblacion.getIndividuos().size(), 2);
         this.processGeneracion(poblacion);
         this.joinProcessGeneracion();
-        LogUtil.logTime("Procesar Generacion " + this.getName() + " Individuos Nuevos=" + newPoblacion.getIndividuos().size(), 1);
+        LogUtil.logTime("Procesar Generacion " + this.getName() + " Individuos Nuevos=" + newPoblacion.getIndividuos().size(), 2);
     }
 
     private void processGeneracion(Poblacion poblacion) {
@@ -83,12 +83,16 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
             if (p.getIndividuos() != null) {
                 super.getNewPoblacion().addAll(p);
                 EstadisticaManager.addIndividuoMutado(p.getIndividuos().size());
+                super.getPoblacionHija().addAll(mutationThread.getPoblacionHija());
+                super.getPoblacionPadre().addAll(mutationThread.getPoblacionPadre());
             }
             ThreadUtil.joinThread(optimizationThread);
             p = optimizationThread.getNewPoblacion();
             if (p.getIndividuos() != null) {
                 super.getNewPoblacion().addAll(p);
                 EstadisticaManager.addIndividuoOptimizado(p.getIndividuos().size());
+                super.poblacionHija.addAll(optimizationThread.getPoblacionHija());
+                super.poblacionPadre.addAll(optimizationThread.getPoblacionPadre());
             }
         }
     }

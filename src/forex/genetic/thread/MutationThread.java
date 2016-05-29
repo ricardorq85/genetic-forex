@@ -18,6 +18,8 @@ public class MutationThread extends Thread {
     private Poblacion newPoblacion = new Poblacion();
     private int percentValue;
     private MutationManager mutationManager;
+    private Poblacion poblacionHija = new Poblacion();
+    private Poblacion poblacionPadre = new Poblacion();
 
     public MutationThread(String name, int generacion, Poblacion poblacion, int percentValue, MutationManager mutationManager) {
         super(name);
@@ -30,6 +32,8 @@ public class MutationThread extends Thread {
     public void run() {
         Poblacion[] mutationPoblacion = mutationManager.mutate(generacion, poblacion, percentValue);
         newPoblacion.addAll(mutationPoblacion[1]);
+        poblacionPadre.addAll(mutationPoblacion[0]);
+        poblacionHija.addAll(mutationPoblacion[1]);
     }
 
     public void endProcess() {
@@ -38,5 +42,13 @@ public class MutationThread extends Thread {
 
     public Poblacion getNewPoblacion() {
         return newPoblacion;
+    }
+
+    public Poblacion getPoblacionHija() {
+        return poblacionHija;
+    }
+
+    public Poblacion getPoblacionPadre() {
+        return poblacionPadre;
     }
 }

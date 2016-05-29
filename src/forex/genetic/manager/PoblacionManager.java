@@ -9,11 +9,10 @@ import forex.genetic.entities.DateInterval;
 import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.entities.Interval;
+import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.Point;
 import forex.genetic.util.NumberUtil;
-import java.util.Date;
 import java.util.Random;
 import java.util.List;
 import java.util.Vector;
@@ -25,8 +24,8 @@ import java.util.Vector;
 public class PoblacionManager {
 
     private List<Point> points = null;
-    private Poblacion poblacion = null;
-    private Interval<Date> dateInterval = new DateInterval();
+    private Poblacion poblacion = new Poblacion();
+    private DateInterval dateInterval = new DateInterval();
 
     public PoblacionManager() {
     }
@@ -44,7 +43,7 @@ public class PoblacionManager {
 
     private void generatePoints(String poblacionId) {
         this.points = BasePointManagerFile.process(poblacionId);
-        if (!(this.points.isEmpty())) {
+        if ((this.points != null) && (!(this.points.isEmpty()))) {
             this.dateInterval.setLowInterval(this.points.get(0).getDate());
             this.dateInterval.setHighInterval(this.points.get(this.points.size() - 1).getDate());
         }
@@ -59,11 +58,30 @@ public class PoblacionManager {
         Indicator closeIndicator = null;
 
         Random random = new Random();
-        int counter = 0;        
+        int counter = 0;
+        Learning learning = LearningManager.learning;
         int minTP = PropertiesManager.getMinTP();
         int maxTP = PropertiesManager.getMaxTP();
         int minSL = PropertiesManager.getMinSL();
         int maxSL = PropertiesManager.getMaxSL();
+        if (learning != null) {
+            if (learning.getTakeProfitInterval() != null) {
+                if (learning.getTakeProfitInterval().getLowInterval() != Integer.MAX_VALUE) {
+                    minTP = Math.max(minTP, learning.getTakeProfitInterval().getLowInterval());
+                }
+                if (learning.getTakeProfitInterval().getHighInterval() != Integer.MIN_VALUE) {
+                    maxTP = Math.min(maxTP, learning.getTakeProfitInterval().getHighInterval());
+                }
+            }
+            if (learning.getStopLossInterval() != null) {
+                if (learning.getStopLossInterval().getLowInterval() != Integer.MAX_VALUE) {
+                    minSL = Math.max(minSL, learning.getStopLossInterval().getLowInterval());
+                }
+                if (learning.getStopLossInterval().getHighInterval() != Integer.MIN_VALUE) {
+                    maxSL = Math.min(maxSL, learning.getStopLossInterval().getHighInterval());
+                }
+            }
+        }
         double minLot = PropertiesManager.getMinLot();
         double maxLot = PropertiesManager.getMaxLot();
         int minBalance = PropertiesManager.getMinBalance();
@@ -102,12 +120,14 @@ public class PoblacionManager {
 
             individuo.setOpenIndicators(openIndicators);
             individuo.setCloseIndicators(closeIndicators);
-
-            individuo.setTakeProfit(minTP + random.nextInt(maxTP - minTP));
-            individuo.setStopLoss(minSL + random.nextInt(maxSL - minSL));
-            individuo.setLot(NumberUtil.round(minLot + random.nextDouble() * (maxLot - minLot), lotScaleRounding));
-            individuo.setInitialBalance(minBalance + random.nextInt(maxBalance - minBalance));
-
+            try {
+                individuo.setTakeProfit(minTP + random.nextInt(maxTP - minTP));
+                individuo.setStopLoss(minSL + random.nextInt(maxSL - minSL));
+                individuo.setLot(NumberUtil.round(minLot + random.nextDouble() * (maxLot - minLot), lotScaleRounding));
+                individuo.setInitialBalance(minBalance + random.nextInt(maxBalance - minBalance));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             if (!individuos.contains(individuo)) {
                 individuos.add(individuo);
             }
@@ -132,11 +152,11 @@ public class PoblacionManager {
         this.points = points;
     }
 
-    public Interval<Date> getDateInterval() {
+    public DateInterval getDateInterval() {
         return dateInterval;
     }
 
-    public void setDateInterval(Interval<Date> dateInterval) {
+    public void setDateInterval(DateInterval dateInterval) {
         this.dateInterval = dateInterval;
     }
 

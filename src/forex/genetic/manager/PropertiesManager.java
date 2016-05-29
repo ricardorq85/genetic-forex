@@ -25,8 +25,10 @@ public class PropertiesManager {
     private static FortalezaType fortalezaType = null;
     private static String pair = null;
     private static String serialicePath = null;
+    private static String learningPath = null;
     private static boolean isThread = true;
     private static boolean force = true;
+    private static boolean readSpecific = false;
     private static int minTP = 0;
     private static int maxTP = 0;
     private static int minSL = 0;
@@ -39,7 +41,10 @@ public class PropertiesManager {
     private static int lotScaleRounding = 0;
     private static double riskLevel = 0;
     private static String fileId = null;
-    private static int minOperNumByPeriod = 0;
+    private static double minOperNumByPeriod = 0;
+    private static int maxFilePerRead = 0;
+    private static int numberLearning = 10;
+    private static String poblacionBase = null;
 
     public PropertiesManager() {
     }
@@ -58,6 +63,7 @@ public class PropertiesManager {
                 pairFactor = PropertiesManager.getPropertyDouble(Constants.PAIR_FACTOR);
                 defaultScaleRounding = PropertiesManager.getPropertyInt(Constants.DEFAULT_SCALE_ROUNDING);
                 serialicePath = PropertiesManager.getPropertyString(Constants.SERIALICE_PATH);
+                learningPath = PropertiesManager.getPropertyString(Constants.LEARNING_PATH);
                 isThread = PropertiesManager.getPropertyBoolean(Constants.THREAD);
                 minTP = PropertiesManager.getPropertyInt(Constants.MIN_TP);
                 maxTP = PropertiesManager.getPropertyInt(Constants.MAX_TP);
@@ -71,19 +77,43 @@ public class PropertiesManager {
                 presentNumberPoblacion = PropertiesManager.getPropertyInt(Constants.PRESENT_NUMBER_POBLACION);
                 fileId = PropertiesManager.getPropertyString(Constants.FILE_ID);
                 riskLevel = PropertiesManager.getPropertyDouble(Constants.RISK_LEVEL);
-                minOperNumByPeriod = PropertiesManager.getPropertyInt(Constants.MIN_OPER_NUM_BY_PERIOD);
+                minOperNumByPeriod = PropertiesManager.getPropertyDouble(Constants.MIN_OPER_NUM_BY_PERIOD);
                 force = PropertiesManager.getPropertyBoolean(Constants.FORCE_INDIVIDUOS);
+                maxFilePerRead = PropertiesManager.getPropertyInt(Constants.MAX_FILE_PER_READ);
+                numberLearning = PropertiesManager.getPropertyInt(Constants.NUMBER_LEARNING);
+                poblacionBase = PropertiesManager.getPropertyString(Constants.POBLACION_BASE);
+                readSpecific = PropertiesManager.getPropertyBoolean(Constants.READ_SPECIFIC);
             }
         };
         t.start();
         return t;
     }
 
+    public static boolean isReadSpecific() {
+        return readSpecific;
+    }
+
+    public static String getPoblacionBase() {
+        return poblacionBase;
+    }
+
+    public static int getNumberLearning() {
+        return numberLearning;
+    }
+
+    public static String getLearningPath() {
+        return learningPath;
+    }
+
+    public static int getMaxFilePerRead() {
+        return maxFilePerRead;
+    }
+
     public static boolean isForce() {
         return force;
     }
 
-    public static int getMinOperNumByPeriod() {
+    public static double getMinOperNumByPeriod() {
         return minOperNumByPeriod;
     }
 
@@ -191,6 +221,8 @@ public class PropertiesManager {
             t = Constants.FortalezaType.Pips;
         } else if (s.contains("Embudo")) {
             t = Constants.FortalezaType.Embudo;
+        } else if (s.contains("Pattern")) {
+            t = Constants.FortalezaType.Pattern;
         }
         return t;
     }

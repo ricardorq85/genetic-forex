@@ -7,7 +7,6 @@ package forex.genetic.manager;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
-import forex.genetic.util.Constants;
 import forex.genetic.util.NumberUtil;
 import java.util.Random;
 

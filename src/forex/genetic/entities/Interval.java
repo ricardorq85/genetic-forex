@@ -22,8 +22,8 @@ public abstract class Interval<E> implements Serializable {
     }
 
     public Interval(E lowInterval, E highInterval) {
-        this.setLowInterval(lowInterval);
-        this.setHighInterval(highInterval);
+        this.lowInterval = lowInterval;
+        this.highInterval = highInterval;
     }
 
     public String getName() {
