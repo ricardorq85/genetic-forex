@@ -8,6 +8,7 @@ import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.Point;
 import forex.genetic.manager.FuncionFortalezaManager;
+import forex.genetic.manager.PatternManager;
 import forex.genetic.manager.PoblacionManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants;
@@ -21,7 +22,9 @@ import java.util.List;
  * @author ricardorq85
  */
 public class GeneticTesterDelegate extends GeneticDelegate {
-    
+
+    private PatternManager patternManager = new PatternManager();
+
     public GeneticTesterDelegate() throws FileNotFoundException {
         super(false);
     }
@@ -39,19 +42,22 @@ public class GeneticTesterDelegate extends GeneticDelegate {
             LogUtil.logTime("Calcular fortaleza", 1);
             funcionFortalezaManager.calculateFortaleza(poblacionManager.getPoints(), individuoEstrategia,
                     (poblacionIndex == PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION)),
-                    (poblacionIndex > PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION)), 
+                    (poblacionIndex > PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION)),
                     poblacionIndex,
                     PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION));
             if ((poblacionIndex > individuoEstrategia.getProcessedUntil())) {
                 individuoEstrategia.setProcessedUntil(poblacionIndex);
             }
+           if (poblacionIndex > 26) {
+                int r = 88;
+            }            
+            patternManager.processPatterns(individuoEstrategia);
             super.outIndividuo(individuoEstrategia);
             try {
                 fileOutManager.write(individuoEstrategia, poblacionManager.getDateInterval(), true, 0);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-
         }
     }
 

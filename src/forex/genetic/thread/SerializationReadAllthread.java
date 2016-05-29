@@ -10,6 +10,7 @@ import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.io.SerializationPoblacionManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
+import java.io.File;
 
 /**
  *
@@ -41,19 +42,28 @@ public class SerializationReadAllThread extends Thread {
 
     public void run() {
         try {
-            if (!PropertiesManager.isReadSpecific()) {
-                poblacion = sm.readAll(path, counter, processedUntil, processedFrom, learning);
-                LogUtil.logTime("End Cargar poblacion serializada " + this.getName() + " Individuos=" + poblacion.getIndividuos().size(), 2);
-            } else {
-                String testStrategy = PropertiesManager.getPropertyString(Constants.TEST_STRATEGY);
+            poblacion = new Poblacion();
+            String testFile = PropertiesManager.getPropertyString(Constants.TEST_FILE);
+            String testStrategy = PropertiesManager.getPropertyString(Constants.TEST_STRATEGY);
+            if ((testStrategy != null) && (!testStrategy.isEmpty()) && (testFile != null) && (!testFile.isEmpty())) {
                 String[] ids = testStrategy.split(",");
+                String[] files = testFile.split(",");
+                String serPath = PropertiesManager.getSerialicePath();
                 if (processedUntil == PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION)) {
-                    poblacion = new Poblacion();
                     for (int k = 0; k < ids.length; k++) {
                         String id = ids[k];
-                        poblacion.addAll(sm.readByEstrategyId(path, id));
+                        String f = files[k];
+                        poblacion.addAll(sm.readStrategy(new File(
+                                serPath
+                                + File.separatorChar
+                                + f), id));
+                        //poblacion.addAll(sm.readByEstrategyId(path, id));
                     }
                 }
+            }
+            if (!PropertiesManager.isReadSpecific()) {
+                poblacion.addAll(sm.readAll(path, counter, processedUntil, processedFrom, learning));
+                LogUtil.logTime("End Cargar poblacion serializada " + this.getName() + " Individuos=" + poblacion.getIndividuos().size(), 2);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

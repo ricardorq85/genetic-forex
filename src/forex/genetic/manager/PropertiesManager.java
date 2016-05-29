@@ -215,14 +215,16 @@ public class PropertiesManager {
     public static FortalezaType getOwnFortalezaType() {
         FortalezaType t = null;
         String s = getPropertyString(Constants.FORTALEZA_TYPE);
-        if (s.contains("Stable")) {
+        if (s.equals("FortalezaType.Stable")) {
             t = Constants.FortalezaType.Stable;
-        } else if (s.contains("Pips")) {
+        } else if (s.equals("FortalezaType.Pips")) {
             t = Constants.FortalezaType.Pips;
-        } else if (s.contains("Embudo")) {
+        } else if (s.equals("FortalezaType.Embudo")) {
             t = Constants.FortalezaType.Embudo;
-        } else if (s.contains("Pattern")) {
+        } else if (s.equals("FortalezaType.Pattern")) {
             t = Constants.FortalezaType.Pattern;
+            } else if (s.equals("FortalezaType.PatternAdvanced")) {
+                t = Constants.FortalezaType.PatternAdvanced;
         }
         return t;
     }

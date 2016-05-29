@@ -192,7 +192,12 @@ public class SerializationPoblacionManager {
         ie.setId(id);
         int index = pFile.getIndividuos().indexOf(ie);
         if (index >= 0) {
-            p.add(pFile.getIndividuos().get(index));
+            IndividuoReadData individuoReadData = new IndividuoReadData();
+            individuoReadData.setOperationType(pFile.getOperationType());
+            individuoReadData.setPair(pFile.getPair());
+            IndividuoEstrategia ind = pFile.getIndividuos().get(index);
+            p.add(ind);
+            ind.corregir(individuoReadData);
         }
         return p;
     }

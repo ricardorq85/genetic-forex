@@ -23,7 +23,7 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
 
     public static final long serialVersionUID = 201101251800L;
     //public static final String currentVersion = "v6.1.1.07";
-    public static final Long currentVersionNumber = 70068L;
+    public static final Long currentVersionNumber = 71022L;
     //private String version = "0.0";
     private Long versionNumber = 0L;
     private double pips = 0.0;
@@ -542,8 +542,10 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
                     compare += (Double.compare((this.pips / this.lostOperationsNumber), (o.pips / o.lostOperationsNumber))) * 50;
                 }
             }
+        } else if (this.getType().equals(Constants.FortalezaType.PatternAdvanced)) {
+            compare = 0;
         }
-        if (compare == 0) {
+        if ((compare == 0) && (!this.getType().equals(Constants.FortalezaType.PatternAdvanced))) {
             compare += (Double.compare(this.getPips(), o.getPips())) * 50;
         }
         return compare;
@@ -650,6 +652,8 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
 //                    fortalezaValue = 20.0D;
 //                }
 //            }
+        } else if (this.getType().equals(Constants.FortalezaType.PatternAdvanced)) {
+            fortalezaValue = (0.0D);
         }
         return fortalezaValue;
     }

@@ -11,6 +11,7 @@ import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.manager.FuncionFortalezaManager;
 import forex.genetic.manager.LearningManager;
+import forex.genetic.manager.PatternManager;
 import forex.genetic.manager.PoblacionManager;
 import forex.genetic.manager.io.FileOutManager;
 import forex.genetic.manager.io.SerializationLearningManager;
@@ -43,6 +44,7 @@ public class GeneticDelegate {
     private FuncionFortalezaManager funcionFortalezaManager = new FuncionFortalezaManager();
     private SerializationLearningManager serializationLearningManager = new SerializationLearningManager();
     private LearningManager learningManager = new LearningManager();
+    private PatternManager patternManager = new PatternManager();
     private int rootPoblacion = -1;
     private int backPoblacion = -1;
     private int initialPoblacion = -1;
@@ -78,7 +80,7 @@ public class GeneticDelegate {
         ProcessGeneracion threadProcessGeneracion = null;
         List<ProcessPoblacionThread> threads = new ArrayList<ProcessPoblacionThread>(generations);
         List<ProcessPoblacionThread> threadsNew = new ArrayList<ProcessPoblacionThread>(generations);
-        PoblacionLoadThread[] threadPoblacionesLoad = new PoblacionLoadThread[PropertiesManager.getPropertyInt(Constants.END_POBLACION)];
+        PoblacionLoadThread[] threadPoblacionesLoad = new PoblacionLoadThread[PropertiesManager.getPropertyInt(Constants.END_POBLACION) + 1];
 
         List<SerializationReadAllThread> readSerialize = new ArrayList<SerializationReadAllThread>();
         SerializationReadAllThread threadSerReadAll = null;
@@ -105,8 +107,8 @@ public class GeneticDelegate {
             if (poblacionFromIndex > root1) {
                 threadPoblacionesLoad[poblacionFromIndex - 2] = null;
             }
-            if (threadPoblacionesLoad[poblacionIndex - 1] == null) {
-                threadPoblacionesLoad[poblacionIndex - 1] = launchLoad(poblacionIndex, poblacionIndex, 0, true);
+            if (threadPoblacionesLoad[poblacionIndex] == null) {
+                threadPoblacionesLoad[poblacionIndex] = launchLoad(poblacionIndex + 1, poblacionIndex + 1, 0, true);
             }
 
             LogUtil.logTime("Reading padres", 1);
@@ -121,8 +123,8 @@ public class GeneticDelegate {
                 if (threadPoblacionesLoad[poblacionFromIndex - 1] == null) {
                     threadPoblacionesLoad[poblacionFromIndex - 1] = launchLoad(poblacionFromIndex, poblacionFromIndex, 0, false);
                 }
-                if (threadPoblacionesLoad[poblacionIndex] == null) {
-                    threadPoblacionesLoad[poblacionIndex] = launchLoad(poblacionIndex, poblacionIndex, 0, false);
+                if (threadPoblacionesLoad[poblacionIndex - 1] == null) {
+                    threadPoblacionesLoad[poblacionIndex - 1] = launchLoad(poblacionIndex, poblacionIndex, 0, false);
                 }
 
                 PoblacionLoadThread currentThreadPoblacionLoad = threadPoblacionesLoad[poblacionIndex - 1];
@@ -269,16 +271,16 @@ public class GeneticDelegate {
             outPoblacion(poblacion.getFirst(PropertiesManager.getPropertyInt(Constants.SHOW_HARDEST)));
             try {
                 PoblacionManager nextPoblacionManager = null;
-                if (threadPoblacionesLoad.length > poblacionIndex) {
+                if (threadPoblacionesLoad.length > (poblacionIndex)) {
                     PoblacionLoadThread nextThreadPoblacionLoad = threadPoblacionesLoad[poblacionIndex];
                     nextPoblacionManager = nextThreadPoblacionLoad.getPoblacionManager();
                 }
                 fileOutManager.write(poblacion.getFirst(PropertiesManager.getPropertyInt(Constants.SHOW_HARDEST)),
                         (nextPoblacionManager != null) ? nextPoblacionManager.getDateInterval() : null, true);
                 //if ((currentPoblacionManager.getPoblacion() != null) && (!currentPoblacionManager.getPoblacion().getIndividuos().isEmpty())) {
-                    serializationPoblacionManager.writeObject(id, poblacion,
-                            currentPoblacionManager.getDateInterval(),
-                            poblacionIndex, poblacionFromIndex);
+                serializationPoblacionManager.writeObject(id, poblacion,
+                        currentPoblacionManager.getDateInterval(),
+                        poblacionIndex, poblacionFromIndex);
                 //}
                 serializationLearningManager.writeObject(learning);
             } catch (IOException ex) {

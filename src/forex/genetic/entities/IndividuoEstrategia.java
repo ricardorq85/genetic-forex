@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import static forex.genetic.util.Constants.*;
+import java.util.Iterator;
 
 /**
  *
@@ -47,6 +48,8 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     private List<? extends Indicator> optimizedCloseIndicators = null;
     private Fortaleza fortaleza = null;
     private List<Fortaleza> listaFortaleza = new ArrayList<Fortaleza>();
+    private Order currentOrder = null;
+    private List<Order> ordenes = new ArrayList<Order>();
     private double openOperationValue = 0.0D;
     private double openSpread = 0.0D;
     private int openPoblacionIndex = 1;
@@ -58,6 +61,9 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     private int closeOperationIndex = 0;
     private Date creationDate = null;
     private IndividuoReadData individuoReadData = null;
+    private transient List<PatternAdvanced> patterns = null;
+    private transient List<PatternAdvancedSpecific> currentPatterns = null;
+    private transient int lastOrderPatternIndex = -1;
 
     public IndividuoEstrategia() {
         this(0, null, null, IndividuoType.INITIAL);
@@ -80,6 +86,46 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         this.individuoReadData = new IndividuoReadData();
         this.individuoReadData.setOperationType(PropertiesManager.getOperationType());
         this.individuoReadData.setPair(PropertiesManager.getPair());
+    }
+
+    public int getLastOrderPatternIndex() {
+        return lastOrderPatternIndex;
+    }
+
+    public void setLastOrderPatternIndex(int lastOrderPatternIndex) {
+        this.lastOrderPatternIndex = lastOrderPatternIndex;
+    }
+
+    public List<PatternAdvancedSpecific> getCurrentPatterns() {
+        return currentPatterns;
+    }
+
+    public void setCurrentPatterns(List<PatternAdvancedSpecific> currentPatterns) {
+        this.currentPatterns = currentPatterns;
+    }
+
+    public List<PatternAdvanced> getPatterns() {
+        return patterns;
+    }
+
+    public void setPatterns(List<PatternAdvanced> patterns) {
+        this.patterns = patterns;
+    }
+
+    public Order getCurrentOrder() {
+        return currentOrder;
+    }
+
+    public void setCurrentOrder(Order currentOrder) {
+        this.currentOrder = currentOrder;
+    }
+
+    public List<Order> getOrdenes() {
+        return ordenes;
+    }
+
+    public void setOrdenes(List<Order> ordenes) {
+        this.ordenes = ordenes;
     }
 
     public IndividuoReadData getIndividuoReadData() {
@@ -336,7 +382,9 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 
     public boolean isActive() {
         if (fortaleza.getType().equals(Constants.FortalezaType.Pattern)) {
-            return (this.fortaleza.getValue() >= 800.0);
+            return ((this.fortaleza.getValue() >= 800.0) && (!this.activeOperation));
+        } else if (fortaleza.getType().equals(Constants.FortalezaType.PatternAdvanced)) {
+            return ((this.fortaleza.getRiskLevel() >= (PropertiesManager.getRiskLevel() / 10.0D)) && (!this.activeOperation));
         } else {
             return (this.fortaleza.getValue() > 1.0);
         }
@@ -351,10 +399,10 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         buffer.append(" Id=" + (this.id));
-        buffer.append(" Generacion=" + (this.generacion) + ";");
-        buffer.append(" ProcessedFrom=" + (this.processedFrom));
-        buffer.append(" ProcessedUntil=" + (this.processedUntil));
-        buffer.append("; IndividuoType=" + (this.individuoType) + ";");
+        buffer.append("; Generacion=" + (this.generacion));
+        buffer.append("; ProcessedFrom=" + (this.processedFrom));
+        buffer.append("; ProcessedUntil=" + (this.processedUntil));
+        buffer.append("; IndividuoType=" + (this.individuoType));
         buffer.append("; ActiveOperation=" + (this.activeOperation) + ";");
         buffer.append("\n\t");
         buffer.append(((this.fortaleza == null) ? 0.0 : this.fortaleza.toString()));
@@ -374,6 +422,13 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         buffer.append("; Open Indicadores=" + (this.openIndicators));
         buffer.append("\n\t");
         buffer.append("; Close Indicadores=" + (this.closeIndicators));
+//        buffer.append("\n\t");
+//        buffer.append("; Orden actual=" + (this.currentOrder));
+        buffer.append("\n\t");
+        buffer.append("; Ordenes=" + (this.ordenes));
+        buffer.append("\n\t");
+        buffer.append("; Patrones=" + ((this.patterns == null) ? 0 : this.patterns.size()));
+        buffer.append("; Patrones actuales=" + ((this.currentPatterns == null) ? 0 : this.currentPatterns.size()) + "-" + ((this.currentPatterns == null) ? "" : this.currentPatterns));
 
         return buffer.toString();
     }
@@ -490,8 +545,47 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         }
     }
 
+    @Override
+    public IndividuoEstrategia clone() {
+        IndividuoEstrategia cloned = new IndividuoEstrategia();
+        cloned.id = this.id;
+        cloned.fileId = this.fileId;
+        cloned.processedUntil = this.processedUntil;
+        cloned.processedFrom = this.processedFrom;
+        cloned.generacion = this.generacion;
+        cloned.parent1 = null;
+        cloned.parent2 = null;
+        cloned.idParent1 = this.idParent1;
+        cloned.idParent2 = this.idParent2;
+        cloned.individuoType = this.individuoType;
+        cloned.takeProfit = this.takeProfit;
+        cloned.stopLoss = this.stopLoss;
+        cloned.lot = this.lot;
+        cloned.initialBalance = this.initialBalance;
+        cloned.openIndicators = this.openIndicators;
+        cloned.closeIndicators = this.closeIndicators;
+        cloned.optimizedOpenIndicators = this.optimizedOpenIndicators;
+        cloned.optimizedCloseIndicators = this.optimizedCloseIndicators;
+        cloned.fortaleza = this.fortaleza.clone();
+        cloned.listaFortaleza = this.listaFortaleza;
+        cloned.openOperationValue = this.openOperationValue;
+        cloned.openSpread = this.openSpread;
+        cloned.openPoblacionIndex = this.openPoblacionIndex;
+        cloned.openOperationIndex = this.openOperationIndex;
+        cloned.prevOpenPoint = this.prevOpenPoint;
+        cloned.openPoint = this.openPoint;
+        cloned.activeOperation = this.activeOperation;
+        cloned.closePoblacionIndex = this.closePoblacionIndex;
+        cloned.closeOperationIndex = this.closeOperationIndex;
+        cloned.creationDate = this.creationDate;
+        cloned.individuoReadData = this.individuoReadData;
+        cloned.currentOrder = this.currentOrder;
+        cloned.ordenes = new ArrayList(this.ordenes);
+        return cloned;
+    }
+
     public double calculateRiskLevel(Fortaleza fortaleza, int index) {
-        double riskLevel = 10.0;
+        double riskLevel = 1.0;
         if (fortaleza == null) {
             fortaleza = this.getFortaleza();
         }
@@ -590,6 +684,8 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         this.setActiveOperation(false);
         this.setCloseOperationIndex(0);
         this.setClosePoblacionIndex(-1);
+        this.setOrdenes(new ArrayList<Order>());
+        this.setCurrentOrder(null);
         this.setIndividuoReadData(individuoReadData);
         if (this.getTakeProfit() < PropertiesManager.getMinTP()) {
             this.setTakeProfit(PropertiesManager.getMinTP());
@@ -608,42 +704,46 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         }
     }
 
-    public int compareTo(IndividuoEstrategia o) {
+    public int compareTo(IndividuoEstrategia other) {
         int compare = 0;
-        if (!this.equals(o)) {
-            if ((this.fortaleza == null) && (o.fortaleza == null)) {
+        if (!this.equals(other)) {
+            if ((this.fortaleza == null) && (other.fortaleza == null)) {
                 compare = 1;
             } else if (this.fortaleza == null) {
                 compare = 1;
-            } else if (o.fortaleza == null) {
+            } else if (other.fortaleza == null) {
                 compare = -1;
             } else {
-                Fortaleza f1 = this.fortaleza;
-                Fortaleza fo1 = o.fortaleza;
-                int presentNumberPoblacion = PropertiesManager.getPresentNumberPoblacion();
-                int size = this.listaFortaleza.size();
-                compare = f1.compareTo(fo1);
-                compare *= (presentNumberPoblacion + 1);
-                //if ((compare == 0) && ((f1.getValue() != 0.0) || (fo1.getValue() != 0.0))) {
-                if ((f1.getValue() != 0.0) && (fo1.getValue() != 0.0)
-                        && (f1.getValue() != Double.NEGATIVE_INFINITY) && (fo1.getValue() != Double.NEGATIVE_INFINITY)) {
-                    for (int i = size - 1; (i > (size - presentNumberPoblacion) + 1) && (i > 0); i--) {
-                        Fortaleza f2 = this.listaFortaleza.get(i - 1);
-                        Fortaleza f = f2.calculateDifference(f1);
-                        Fortaleza fo2 = o.listaFortaleza.get(i - 1);
-                        Fortaleza fo = fo2.calculateDifference(fo1);
-                        f1 = f2;
-                        fo1 = fo2;
-                        if ((f == null) && (fo == null)) {
-                            compare += 0;
-                        } else if (f == null) {
-                            compare = 1;
-                        } else if (fo == null) {
-                            compare = -1;
-                        } else {
-                            f.setValue(f.calculate() * this.calculateRiskLevel(f, i - 1));
-                            fo.setValue(fo.calculate() * this.calculateRiskLevel(fo, i - 1));
-                            compare += f.compareTo(fo) * (presentNumberPoblacion - (size - i - 1));
+                if (fortaleza.getType().equals(Constants.FortalezaType.PatternAdvanced)) {
+                    compare = this.comparePattern(other);
+                } else {
+                    Fortaleza f1 = this.fortaleza;
+                    Fortaleza fo1 = other.fortaleza;
+                    int presentNumberPoblacion = PropertiesManager.getPresentNumberPoblacion();
+                    int size = this.listaFortaleza.size();
+                    compare = f1.compareTo(fo1);
+                    compare *= (presentNumberPoblacion + 1);
+                    //if ((compare == 0) && ((f1.getValue() != 0.0) || (fo1.getValue() != 0.0))) {
+                    if ((f1.getValue() != 0.0) && (fo1.getValue() != 0.0)
+                            && (f1.getValue() != Double.NEGATIVE_INFINITY) && (fo1.getValue() != Double.NEGATIVE_INFINITY)) {
+                        for (int i = size - 1; (i > (size - presentNumberPoblacion) + 1) && (i > 0); i--) {
+                            Fortaleza f2 = this.listaFortaleza.get(i - 1);
+                            Fortaleza f = f2.calculateDifference(f1);
+                            Fortaleza fo2 = other.listaFortaleza.get(i - 1);
+                            Fortaleza fo = fo2.calculateDifference(fo1);
+                            f1 = f2;
+                            fo1 = fo2;
+                            if ((f == null) && (fo == null)) {
+                                compare += 0;
+                            } else if (f == null) {
+                                compare = 1;
+                            } else if (fo == null) {
+                                compare = -1;
+                            } else {
+                                f.setValue(f.calculate() * this.calculateRiskLevel(f, i - 1));
+                                fo.setValue(fo.calculate() * this.calculateRiskLevel(fo, i - 1));
+                                compare += f.compareTo(fo) * (presentNumberPoblacion - (size - i - 1));
+                            }
                         }
                     }
                 }
@@ -652,49 +752,126 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         if (compare == 0) {
             if (this.creationDate == null) {
                 compare = -1;
-            } else if (o.creationDate == null) {
+            } else if (other.creationDate == null) {
                 compare = 1;
             } else {
-                compare = (this.creationDate).compareTo((o.creationDate));
+                compare = (this.creationDate).compareTo((other.creationDate));
             }
         }
         return (Integer.valueOf(compare).compareTo(Integer.valueOf(0)));
     }
 
-    @Override
-    public IndividuoEstrategia clone() {
-        IndividuoEstrategia cloned = new IndividuoEstrategia();
-        cloned.id = this.id;
-        cloned.fileId = this.fileId;
-        cloned.processedUntil = this.processedUntil;
-        cloned.processedFrom = this.processedFrom;
-        cloned.generacion = this.generacion;
-        cloned.parent1 = null;
-        cloned.parent2 = null;
-        cloned.idParent1 = this.idParent1;
-        cloned.idParent2 = this.idParent2;
-        cloned.individuoType = this.individuoType;
-        cloned.takeProfit = this.takeProfit;
-        cloned.stopLoss = this.stopLoss;
-        cloned.lot = this.lot;
-        cloned.initialBalance = this.initialBalance;
-        cloned.openIndicators = this.openIndicators;
-        cloned.closeIndicators = this.closeIndicators;
-        cloned.optimizedOpenIndicators = this.optimizedOpenIndicators;
-        cloned.optimizedCloseIndicators = this.optimizedCloseIndicators;
-        cloned.fortaleza = this.fortaleza.clone();
-        cloned.listaFortaleza = this.listaFortaleza;
-        cloned.openOperationValue = this.openOperationValue;
-        cloned.openSpread = this.openSpread;
-        cloned.openPoblacionIndex = this.openPoblacionIndex;
-        cloned.openOperationIndex = this.openOperationIndex;
-        cloned.prevOpenPoint = this.prevOpenPoint;
-        cloned.openPoint = this.openPoint;
-        cloned.activeOperation = this.activeOperation;
-        cloned.closePoblacionIndex = this.closePoblacionIndex;
-        cloned.closeOperationIndex = this.closeOperationIndex;
-        cloned.creationDate = this.creationDate;
-        cloned.individuoReadData = this.individuoReadData;
-        return cloned;
+    private int comparePattern(IndividuoEstrategia other) {
+        int compare = 0;
+        if ((this.currentPatterns != null) && (other.currentPatterns != null)) {
+            if ((compare == 0) && (this.currentPatterns != null) && (other.currentPatterns == null)) {
+                compare = 1;
+            }
+            if ((compare == 0) && (this.currentPatterns == null) && (other.currentPatterns != null)) {
+                compare = -1;
+            }
+            if ((compare == 0) && (!this.currentPatterns.isEmpty()) && (other.currentPatterns.isEmpty())) {
+                compare = 1;
+            }
+            if ((compare == 0) && (this.currentPatterns.isEmpty()) && (!other.currentPatterns.isEmpty())) {
+                compare = -1;
+            }
+        }
+        if ((this.patterns != null) && (other.patterns != null)) {
+            if ((compare == 0) && (this.patterns == null) && (other.patterns == null)) {
+                compare = 0;
+            }
+            if ((compare == 0) && (!this.patterns.isEmpty()) && (other.patterns.isEmpty())) {
+                compare = 1;
+            }
+            if ((compare == 0) && (this.patterns.isEmpty()) && (!other.patterns.isEmpty())) {
+                compare = -1;
+            }
+        }
+        if ((this.ordenes != null) && (other.ordenes != null)) {
+            if ((compare == 0) && (this.ordenes == null) && (other.ordenes == null)) {
+                compare = 0;
+            }
+            if ((compare == 0) && (!this.ordenes.isEmpty()) && (other.ordenes.isEmpty())) {
+                compare = 1;
+            }
+            if ((compare == 0) && (this.ordenes.isEmpty()) && (!other.ordenes.isEmpty())) {
+                compare = -1;
+            }
+        }
+        if ((this.fortaleza != null) && (other.fortaleza != null)) {
+            if ((compare == 0) && (this.fortaleza.getOperationsNumber() != 0.0D) && (other.fortaleza.getOperationsNumber() == 0.0D)) {
+                compare = 1;
+            }
+            if ((compare == 0) && (this.getFortaleza().getOperationsNumber() == 0.0D) && (other.getFortaleza().getOperationsNumber() != 0.0D)) {
+                compare = -1;
+            }
+        }
+        if (compare == 0) {
+            double thisValue = this.fortaleza.getValue();
+            double otherValue = other.fortaleza.getValue();
+            compare = (Double.compare(thisValue, otherValue));
+            if (compare == 0) {
+                double thisRisk = this.fortaleza.getRiskLevel();
+                double otherRisk = other.fortaleza.getRiskLevel();
+                compare = (Double.compare(thisRisk, otherRisk));
+            }
+            if (compare == 0) {
+                if ((this.currentPatterns != null) && (other.currentPatterns != null)) {
+                    compare = Integer.valueOf(this.currentPatterns.size()).compareTo(Integer.valueOf(other.currentPatterns.size()));
+                }
+            }
+            if (compare == 0) {
+                if ((this.ordenes != null) && (other.ordenes != null)) {
+                    compare = Integer.valueOf(this.ordenes.size()).compareTo(Integer.valueOf(other.ordenes.size()));
+                }
+            }
+        }
+        if (compare == 0) {
+            compare = Integer.valueOf(this.fortaleza.getOperationsNumber()).compareTo(Integer.valueOf(other.fortaleza.getOperationsNumber()));
+        }
+        return compare;
+    }
+
+    public void calculateCurrentPatternValue() {
+        double calcValue = 0.0D;
+        double risk = 0.0D;
+        double won = 0.0D;
+        double lost = 0.0D;
+        double totalValue = 0.0D;
+        double wonPattern = 0.0D;
+        if (this.currentPatterns != null) {
+            for (Iterator<PatternAdvancedSpecific> it = this.currentPatterns.iterator(); it.hasNext();) {
+                PatternAdvancedSpecific patternAdvancedSpecific = it.next();
+                PatternAdvanced pattern = patternAdvancedSpecific.getPatternAdvanced();
+                List<Order> patternList = pattern.getPattern();
+                int index = patternAdvancedSpecific.getIndex();
+                if (index < patternList.size()) {
+                    Order order = patternList.get(index);
+                    if (pattern.getValue() > 1.0D) {
+                        calcValue += ((Double.compare(order.getPips(), 0.0D)) * pattern.getValue());
+                        wonPattern += (Double.compare(order.getPips(), 0.0D) > 0.0D) ? pattern.getValue() : 0.0D;
+                    }
+                    totalValue += pattern.getValue();
+                    won += (Double.compare(order.getPips(), 0.0D) > 0.0D) ? pattern.getValue() : 0.0D;
+                    lost += (Double.compare(order.getPips(), 0.0D) < 0.0D) ? pattern.getValue() : 0.0D;
+                }
+            }
+            if ((this.activeOperation) || (calcValue == 0.0D)) {
+                risk = 0.0001;
+            } else {
+                if ((won + lost) > 0) {
+                    //risk = ((wonPattern) / (won + lost));
+                    risk = ((won) / (won + lost));
+                    //risk = ((won) / (won + lost) + (wonPattern) / (won + lost)) / 2;
+                    if (risk < (PropertiesManager.getRiskLevel() / 10.0D)) {
+                        calcValue /= 2;
+                        risk *= 0.001D;
+                    }
+                }
+            }
+        }
+        this.fortaleza.setValue(calcValue * risk);
+        this.fortaleza.setRiskLevel(risk);
     }
 }

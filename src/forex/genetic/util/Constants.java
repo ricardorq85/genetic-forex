@@ -103,6 +103,7 @@ public class Constants {
         Pips,
         Stable,
         Embudo,
-        Pattern;
+        Pattern,
+        PatternAdvanced;
     }
 }
