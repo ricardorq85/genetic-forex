@@ -17,6 +17,7 @@ public class BollingerIndicatorManager extends IntervalIndicatorManager<Bollinge
 
     public BollingerIndicatorManager() {
         super(false, "Bollinger");
+        this.id = "BOLLINGER";
     }
 
     public Bollinger getIndicatorInstance() {

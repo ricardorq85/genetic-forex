@@ -29,6 +29,7 @@ public abstract class IndicatorManager<E> {
     private static List<IndicatorManager> list = null;
     private boolean priceDependence = false;
     private boolean obligatory = false;
+    protected String id = null;
 
     protected IndicatorManager(boolean priceDependence) {
         this(priceDependence, false);
@@ -87,6 +88,10 @@ public abstract class IndicatorManager<E> {
 
     public void setObligatory(boolean obligatory) {
         this.obligatory = obligatory;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public abstract Indicator generate(E indicator, Point point);

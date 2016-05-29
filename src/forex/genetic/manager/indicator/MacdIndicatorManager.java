@@ -17,6 +17,7 @@ public class MacdIndicatorManager extends IntervalIndicatorManager<Macd> {
 
     public MacdIndicatorManager() {
         super(false, "Macd");
+        this.id = "MACD";
     }
 
     public Macd getIndicatorInstance() {

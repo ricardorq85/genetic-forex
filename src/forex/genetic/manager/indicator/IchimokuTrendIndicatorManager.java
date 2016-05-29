@@ -17,6 +17,7 @@ public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
 
     public IchimokuTrendIndicatorManager() {
         super(true, false, "IchiTrend");
+        this.id = "ICHIMOKU_TREND";
     }
 
     public Ichimoku getIndicatorInstance() {

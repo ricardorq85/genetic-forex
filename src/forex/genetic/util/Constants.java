@@ -31,6 +31,8 @@ public class Constants {
     public static final String READ_HARDEST = "READ_HARDEST";
     public static final String SHOW_WEAKEST = "SHOW_WEAKEST";
     public static final String PAIR = "PAIR";
+    public static final String PAIR_COMPARE = "PAIR_COMPARE";
+    public static final String PERIOD_LOAD = "PERIOD_LOAD";
     public static final String MINIMUN_FORTALEZA = "MINIMUN_FORTALEZA";
     public static final String MIN_TP = "MIN_TP";
     public static final String MAX_TP = "MAX_TP";
@@ -75,6 +77,9 @@ public class Constants {
     public static final String POBLACION_BASE = "POBLACION_BASE";
     public static final String READ_SPECIFIC = "READ_SPECIFIC";
     public static final double MAX_RISK_LEVEL = 10;
+    
+    public static final String QUERY_INDIVIDUOS = "QUERY_INDIVIDUOS";    
+    public static final String FILTRO_ADICIONAL = "FILTRO_ADICIONAL";
 
     public enum IndividuoType {
 

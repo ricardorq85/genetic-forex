@@ -9,6 +9,7 @@ import java.util.Vector;
 import forex.genetic.manager.PropertiesManager;
 import java.util.Collections;
 import forex.genetic.entities.indicator.Indicator;
+import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.manager.IndividuoManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
@@ -702,6 +703,23 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
             this.setLot(PropertiesManager.getMinLot());
         } else if ((this.getLot() > PropertiesManager.getMaxLot())) {
             this.setLot(PropertiesManager.getMaxLot());
+        }
+        corregirIndicadores(this.openIndicators);
+        corregirIndicadores(this.closeIndicators);
+    }
+
+    private void corregirIndicadores(List<? extends Indicator> indicadores) {
+        for (int i = 0; i < indicadores.size(); i++) {
+            if (indicadores.get(i) != null) {
+                IntervalIndicator indicator = (IntervalIndicator) indicadores.get(i);
+                if ((indicator.getInterval() == null) 
+                        || (indicator.getInterval().getLowInterval() == null) 
+                        || (indicator.getInterval().getHighInterval() == null)
+                        || (Double.isNaN(indicator.getInterval().getLowInterval())) 
+                        || (Double.isNaN(indicator.getInterval().getHighInterval()))) {
+                    indicadores.set(i, null);
+                }
+            }
         }
     }
 

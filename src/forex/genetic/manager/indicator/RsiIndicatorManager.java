@@ -17,6 +17,7 @@ public class RsiIndicatorManager extends IntervalIndicatorManager<Rsi> {
 
     protected RsiIndicatorManager() {
         super(false, "Rsi");
+        this.id = "RSI";
     }
 
     public Rsi getIndicatorInstance() {

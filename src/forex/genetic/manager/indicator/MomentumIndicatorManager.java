@@ -17,6 +17,7 @@ public class MomentumIndicatorManager extends IntervalIndicatorManager<Momentum>
 
     protected MomentumIndicatorManager() {
         super(false, "Momentum");
+        this.id = "MOMENTUM";
     }
 
     public Momentum getIndicatorInstance() {

@@ -18,6 +18,7 @@ public class CompareMaIndicatorManager extends IntervalIndicatorManager<Average>
 
     public CompareMaIndicatorManager() {
         super(false, false, "MaCompare");
+        this.id = "COMPARE_MA";
     }
 
     public Average getIndicatorInstance() {

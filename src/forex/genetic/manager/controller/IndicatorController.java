@@ -9,7 +9,6 @@ import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
-import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.manager.IntervalManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.indicator.IndicatorManager;

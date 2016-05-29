@@ -17,6 +17,7 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 
     public AdxIndicatorManager() {
         super(false, true, "Adx");
+        this.id = "ADX";
     }
 
     public Adx getIndicatorInstance() {

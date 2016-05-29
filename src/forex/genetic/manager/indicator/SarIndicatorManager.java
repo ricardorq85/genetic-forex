@@ -17,6 +17,7 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
 
     protected SarIndicatorManager(boolean priceDependence) {
         super(priceDependence, "Sar");
+        this.id = "SAR";
     }
 
     public Sar getIndicatorInstance() {

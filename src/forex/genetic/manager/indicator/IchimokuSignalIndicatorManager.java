@@ -17,6 +17,7 @@ public class IchimokuSignalIndicatorManager extends IchimokuIndicatorManager {
 
     public IchimokuSignalIndicatorManager() {
         super(false, false, "IchiSignal");
+        this.id = "ICHIMOKU_SIGNAL";
     }
 
     public Ichimoku getIndicatorInstance() {

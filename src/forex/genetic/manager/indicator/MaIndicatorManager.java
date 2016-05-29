@@ -17,6 +17,7 @@ public class MaIndicatorManager extends IntervalIndicatorManager<Average> {
 
     public MaIndicatorManager() {
         super(true, false, "Ma");
+        this.id = "MA";
     }
 
     public Average getIndicatorInstance() {

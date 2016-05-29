@@ -24,6 +24,8 @@ public class PropertiesManager {
     private static OperationType operationType = null;
     private static FortalezaType fortalezaType = null;
     private static String pair = null;
+    private static String pairCompare = null;
+    private static int periodLoad = 1;
     private static String serialicePath = null;
     private static String learningPath = null;
     private static boolean isThread = true;
@@ -45,6 +47,7 @@ public class PropertiesManager {
     private static int maxFilePerRead = 0;
     private static int numberLearning = 10;
     private static String poblacionBase = null;
+    private static String queryIndividuos = null;
 
     public PropertiesManager() {
     }
@@ -58,6 +61,8 @@ public class PropertiesManager {
                 operationType = getOwnOperationType();
                 fortalezaType = getOwnFortalezaType();
                 pair = PropertiesManager.getPropertyString(Constants.PAIR);
+                pairCompare = PropertiesManager.getPropertyString(Constants.PAIR_COMPARE);
+                periodLoad = PropertiesManager.getPropertyInt(Constants.PERIOD_LOAD);
                 isBuy = (operationType.equals(Constants.OperationType.Buy));
                 pipsFixer = PropertiesManager.getPropertyDouble(Constants.PIPS_FIXER);
                 pairFactor = PropertiesManager.getPropertyDouble(Constants.PAIR_FACTOR);
@@ -83,10 +88,15 @@ public class PropertiesManager {
                 numberLearning = PropertiesManager.getPropertyInt(Constants.NUMBER_LEARNING);
                 poblacionBase = PropertiesManager.getPropertyString(Constants.POBLACION_BASE);
                 readSpecific = PropertiesManager.getPropertyBoolean(Constants.READ_SPECIFIC);
+                queryIndividuos = PropertiesManager.getPropertyString(Constants.QUERY_INDIVIDUOS);
             }
         };
         t.start();
         return t;
+    }
+
+    public static String getQueryIndividuos() {
+        return queryIndividuos;
     }
 
     public static boolean isReadSpecific() {
@@ -157,6 +167,14 @@ public class PropertiesManager {
         return pair;
     }
 
+    public static String getPairCompare() {
+        return pairCompare;
+    }
+
+    public static int getPeriodLoad() {
+        return periodLoad;
+    }
+
     public static String getSerialicePath() {
         return serialicePath;
     }
@@ -223,8 +241,8 @@ public class PropertiesManager {
             t = Constants.FortalezaType.Embudo;
         } else if (s.equals("FortalezaType.Pattern")) {
             t = Constants.FortalezaType.Pattern;
-            } else if (s.equals("FortalezaType.PatternAdvanced")) {
-                t = Constants.FortalezaType.PatternAdvanced;
+        } else if (s.equals("FortalezaType.PatternAdvanced")) {
+            t = Constants.FortalezaType.PatternAdvanced;
         }
         return t;
     }
