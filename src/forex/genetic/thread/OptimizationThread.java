@@ -5,6 +5,7 @@
 package forex.genetic.thread;
 
 import forex.genetic.entities.Poblacion;
+import forex.genetic.manager.OptimizationIndividuoManager;
 import forex.genetic.manager.OptimizationManager;
 
 /**

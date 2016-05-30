@@ -14,7 +14,9 @@ import forex.genetic.entities.indicator.Ichimoku;
 import forex.genetic.entities.indicator.Momentum;
 import forex.genetic.entities.indicator.Rsi;
 import forex.genetic.entities.indicator.Sar;
-import forex.genetic.manager.indicator.IndicatorManager;
+import forex.genetic.factory.ControllerFactory;
+import forex.genetic.manager.controller.IndicadorController;
+import forex.genetic.manager.indicator.IndicadorIndividuoManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.NumberUtil;
 import java.io.BufferedReader;
@@ -23,6 +25,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -50,6 +54,7 @@ public class BasePointManagerFile {
 
     private static List<Point> readFileAsPoint(String filePath)
             throws java.io.IOException, ParseException {
+        
         List<Point> points = new Vector<Point>();
         int counter = 0;
 
@@ -73,6 +78,7 @@ public class BasePointManagerFile {
         boolean hasSpread = lineRead.contains("Spread");
         int indexField = 0;
         int pointsControl = PropertiesManager.getPointsControl();
+        IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
         while ((counter < pointsControl) && ((lineRead = reader.readLine()) != null)) {
             indexField = 0;
             String[] strings = lineRead.split(",");
@@ -154,7 +160,7 @@ public class BasePointManagerFile {
             ichimoku.setSenkouSpanB(baseIchimokuSenkouSpanB);
             ichimoku.setTenkanSen(baseIchimokuTenkanSen);
 
-            indicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
+            indicators = Collections.synchronizedList(new ArrayList<>(indicadorController.getIndicatorNumber()));
             indicators.add(average);//0
             indicators.add(macd);//1
             indicators.add(compareAverage);//2

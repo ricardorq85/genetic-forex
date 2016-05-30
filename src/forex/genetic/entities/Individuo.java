@@ -5,6 +5,7 @@
 package forex.genetic.entities;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  *
@@ -16,6 +17,10 @@ public class Individuo extends IndividuoEstrategia {
     private Date fechaApertura = null;
 
     public Individuo() {
+    }
+
+    public Individuo(String id) {
+        super(id);
     }
 
     public Date getFechaApertura() {
@@ -37,22 +42,22 @@ public class Individuo extends IndividuoEstrategia {
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
-        buffer.append(" Id=" + (this.id));
+        buffer.append(" Id=").append(this.id);
         if (idParent1 != null) {
-            buffer.append("; Padre 1=" + idParent1);
+            buffer.append("; Padre 1=").append(idParent1);
         }
         if (idParent2 != null) {
-            buffer.append("; Padre 2=" + idParent2);
+            buffer.append("; Padre 2=").append(idParent2);
         }
-        buffer.append("; CreationDate=" + this.creationDate);
-        buffer.append("; TakeProfit=" + this.takeProfit);
-        buffer.append("; Stoploss=" + this.stopLoss);
-        buffer.append("; Lot=" + this.lot);
-        buffer.append("; Initial Balance=" + this.initialBalance);
+        buffer.append("; CreationDate=").append(this.creationDate);
+        buffer.append("; TakeProfit=").append(this.takeProfit);
+        buffer.append("; Stoploss=").append(this.stopLoss);
+        buffer.append("; Lot=").append(this.lot);
+        buffer.append("; Initial Balance=").append(this.initialBalance);
         buffer.append("\n\t");
-        buffer.append("; Open Indicadores=" + (this.openIndicators));
+        buffer.append("; Open Indicadores=").append(this.openIndicators);
         buffer.append("\n\t");
-        buffer.append("; Close Indicadores=" + (this.closeIndicators));
+        buffer.append("; Close Indicadores=").append(this.closeIndicators);
         buffer.append("\n\t");
         return buffer.toString();
     }
@@ -70,5 +75,30 @@ public class Individuo extends IndividuoEstrategia {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 41 * hash + Objects.hashCode(this.fechaHistorico);
+        hash = 41 * hash + Objects.hashCode(this.fechaApertura);
+        return hash;
+    }
+
+    public void copy(IndividuoEstrategia individuoEstrategia) {
+        this.setId(individuoEstrategia.getId());
+        this.setOpenIndicators(individuoEstrategia.getOpenIndicators());
+        this.setCloseIndicators(individuoEstrategia.getCloseIndicators());
+        this.setCreationDate(individuoEstrategia.getCreationDate());
+        this.setGeneracion(individuoEstrategia.getGeneracion());
+        this.setParent1(individuoEstrategia.getParent1());
+        this.setParent2(individuoEstrategia.getParent2());
+        this.setIdParent1(individuoEstrategia.getIdParent1());
+        this.setIdParent2(individuoEstrategia.getIdParent2());
+        this.setIndividuoType(individuoEstrategia.getIndividuoType());
+        this.setInitialBalance(individuoEstrategia.getInitialBalance());
+        this.setLot(individuoEstrategia.getLot());
+        this.setStopLoss(individuoEstrategia.getStopLoss());
+        this.setTakeProfit(individuoEstrategia.getTakeProfit());
     }
 }

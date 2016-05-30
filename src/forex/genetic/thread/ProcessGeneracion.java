@@ -5,10 +5,13 @@
 package forex.genetic.thread;
 
 import forex.genetic.entities.Poblacion;
+import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.CrossoverManager;
 import forex.genetic.manager.MutationManager;
 import forex.genetic.manager.OptimizationManager;
 import forex.genetic.manager.PropertiesManager;
+import forex.genetic.manager.controller.GeneticController;
+import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.statistic.EstadisticaManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
@@ -20,20 +23,29 @@ import forex.genetic.util.ThreadUtil;
  */
 public class ProcessGeneracion extends ProcessPoblacionThread {
 
-    private CrossoverManager crossoverManager = new CrossoverManager();
-    private MutationManager mutationManager = new MutationManager();
-    private OptimizationManager optimizationManager = new OptimizationManager();
-    private int generacion;
-    private CrossoverThread crossoverThread = null;
-    private MutationThread mutationThread = null;
-    private OptimizationThread optimizationThread = null;
+    private final IndicadorController indicadorController;
+    private final GeneticController geneticController;
+    private final CrossoverManager crossoverManager;
+    private final MutationManager mutationManager;
+    private final OptimizationManager optimizationManager;
+    private final int generacion;
+    private CrossoverThread crossoverThread;
+    private MutationThread mutationThread;
+    private OptimizationThread optimizationThread;
 
-    public ProcessGeneracion(String name, Poblacion poblacion, int generacion) {
+    public ProcessGeneracion(String name, Poblacion poblacion, int generacion,
+            ControllerFactory.ControllerType controllerType) {
         super(name);
+        this.indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
         super.poblacion = poblacion;
         this.generacion = generacion;
+        this.geneticController = ControllerFactory.createGeneticController(controllerType);
+        this.crossoverManager = this.geneticController.getCrossoverManager();
+        this.mutationManager = this.geneticController.getMutationManager();
+        this.optimizationManager = this.geneticController.getOptimizationManager();
     }
 
+    @Override
     public void run() {
         LogUtil.logTime("Procesar Generacion " + this.getName() + " Individuos=" + poblacion.getIndividuos().size(), 2);
         this.processGeneracion(poblacion);
@@ -42,7 +54,9 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
     }
 
     private void processGeneracion(Poblacion poblacion) {
-        /** Se mezclan los individuos */
+        /**
+         * Se mezclan los individuos
+         */
         crossoverThread = new CrossoverThread("crossoverThread " + generacion,
                 generacion, poblacion, PropertiesManager.getPropertyInt(Constants.CROSSOVER), crossoverManager);
         if (PropertiesManager.isThread()) {
@@ -51,7 +65,9 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
             crossoverThread.run();
         }
 
-        /** Se mutan los individuos */
+        /**
+         * Se mutan los individuos
+         */
         mutationThread = new MutationThread("mutationThread " + generacion,
                 generacion, poblacion, PropertiesManager.getPropertyInt(Constants.MUTATION), mutationManager);
         if (PropertiesManager.isThread()) {
@@ -60,13 +76,17 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
             mutationThread.run();
         }
 
-        /** Optimizacion */
-        optimizationThread = new OptimizationThread("optimization " + generacion,
-                generacion, poblacion, PropertiesManager.getPropertyInt(Constants.OPTIMIZATION), optimizationManager);
-        if (PropertiesManager.isThread()) {
-            optimizationThread.start();
-        } else {
-            optimizationThread.run();
+        /**
+         * Optimizacion
+         */
+        if (optimizationManager != null) {
+            optimizationThread = new OptimizationThread("optimization " + generacion,
+                    generacion, poblacion, PropertiesManager.getPropertyInt(Constants.OPTIMIZATION), optimizationManager);
+            if (PropertiesManager.isThread()) {
+                optimizationThread.start();
+            } else {
+                optimizationThread.run();
+            }
         }
     }
 
@@ -86,17 +106,20 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
                 super.getPoblacionHija().addAll(mutationThread.getPoblacionHija());
                 super.getPoblacionPadre().addAll(mutationThread.getPoblacionPadre());
             }
-            ThreadUtil.joinThread(optimizationThread);
-            p = optimizationThread.getNewPoblacion();
-            if (p.getIndividuos() != null) {
-                super.getNewPoblacion().addAll(p);
-                EstadisticaManager.addIndividuoOptimizado(p.getIndividuos().size());
-                super.poblacionHija.addAll(optimizationThread.getPoblacionHija());
-                super.poblacionPadre.addAll(optimizationThread.getPoblacionPadre());
+            if (optimizationManager != null) {
+                ThreadUtil.joinThread(optimizationThread);
+                p = optimizationThread.getNewPoblacion();
+                if (p.getIndividuos() != null) {
+                    super.getNewPoblacion().addAll(p);
+                    EstadisticaManager.addIndividuoOptimizado(p.getIndividuos().size());
+                    super.poblacionHija.addAll(optimizationThread.getPoblacionHija());
+                    super.poblacionPadre.addAll(optimizationThread.getPoblacionPadre());
+                }
             }
         }
     }
 
+    @Override
     public synchronized void endProcess() {
         if (crossoverThread != null) {
             crossoverThread.endProcess();

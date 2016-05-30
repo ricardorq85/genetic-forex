@@ -9,6 +9,7 @@ import java.io.Serializable;
 /**
  *
  * @author ricardorq85
+ * @param <E>
  */
 public abstract class Interval<E> implements Serializable {
 
@@ -83,8 +84,8 @@ public abstract class Interval<E> implements Serializable {
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
-        buffer.append(this.name + "Lower=" + (this.lowInterval.toString()) + ",");
-        buffer.append(this.name + "Higher=" + (this.highInterval.toString()));
+        buffer.append(this.name).append("Lower=").append(this.lowInterval.toString()).append(",");
+        buffer.append(this.name).append("Higher=").append(this.highInterval.toString());
 
         return buffer.toString();
     }

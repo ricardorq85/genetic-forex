@@ -103,12 +103,7 @@ public class SerializationPoblacionManager {
                             if (poblacion.getIndividuos().size() != sizePrev) {
                                 fileCounter++;
                             }
-                        } catch (IOException ex) {
-                            if (file != null) {
-                                LogUtil.logTime("Error: " + file.getName(), 1);
-                            }
-                            ex.printStackTrace();
-                        } catch (ClassNotFoundException ex) {
+                        } catch (IOException | ClassNotFoundException ex) {
                             if (file != null) {
                                 LogUtil.logTime("Error: " + file.getName(), 1);
                             }

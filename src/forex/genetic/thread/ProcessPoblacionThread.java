@@ -44,6 +44,7 @@ public class ProcessPoblacionThread extends Thread {
         this.ffm = ffm;
     }
 
+    @Override
     public void run() {
         LogUtil.logTime("Procesar Generacion " + this.getName() + " Individuos=" + poblacion.getIndividuos().size(), 3);
         LogUtil.logTime("Calcular fortaleza " + this.getName() + " Individuos=" + poblacion.getIndividuos().size() + " Points=" + points.size(), 2);

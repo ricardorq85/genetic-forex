@@ -52,9 +52,9 @@ public class ProcesarTendenciasGraficaManager {
         int rangoMaxMin = Integer.parseInt(parametroDAO.getValorParametro("RANGO_MAX_MIN_TENDENCIA"));
         boolean actualizarTendencia = Boolean.parseBoolean(parametroDAO.getValorParametro("SN_UPDATE_TENDENCIA"));
 
-        List<ProcesoTendencia> procesoTendenciaList = null;
-        AnalyzeProcesoTendencia analyzeProcesoTendencia = null;
-        ProcesoTendencia procesoTendencia = null;
+        List<ProcesoTendencia> procesoTendenciaList;
+        AnalyzeProcesoTendencia analyzeProcesoTendencia;
+        ProcesoTendencia procesoTendencia;
         Date fechaProceso = null;
         Date ultimaFechaProceso = null;
         Individuo individuo = new Individuo();
@@ -66,7 +66,7 @@ public class ProcesarTendenciasGraficaManager {
         double ultimoPrecioApertura = 0.0D;
         Date ultimaFechaApertura = null;
         boolean inicio = true;
-        while (inicio || (fechaProceso != null)) {
+        while ((inicio) || ((fechaProceso != null)) && (individuo.getCurrentOrder() == null)) {
             analyzeProcesoTendencia = null;
             procesoTendencia = null;
             procesoTendenciaList = null;
@@ -220,7 +220,9 @@ public class ProcesarTendenciasGraficaManager {
                                 points = null;
                             } else if (order.getCloseDate() == null) {
                                 points = datoHistoricoDAO.consultarHistorico(lastDateForClose);
-                                lastDateForClose = points.get(points.size() - 1).getDate();
+                                if ((points != null) && (!points.isEmpty())) {
+                                    lastDateForClose = points.get(points.size() - 1).getDate();
+                                }
                             }
                         }
                         fechaCierre = order.getCloseDate();

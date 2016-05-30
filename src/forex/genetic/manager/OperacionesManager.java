@@ -7,15 +7,13 @@ import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
-import forex.genetic.entities.indicator.Indicator;
-import forex.genetic.manager.controller.IndicatorController;
+import forex.genetic.manager.controller.OperationController;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.NumberUtil;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +24,7 @@ import java.util.List;
 public class OperacionesManager {
 
     private Connection conn = null;
-    private IndicatorController indicatorController = new IndicatorController();
+    private final OperationController indicatorController = new OperationController();
 
     public OperacionesManager() {
     }
@@ -63,14 +61,14 @@ public class OperacionesManager {
     }
 
     public List<Order> calcularOperaciones(List<Point> points, Individuo individuo) {
-        List<Order> ordenes = new ArrayList<Order>();
+        List<Order> ordenes = new ArrayList<>();
         double takeProfit = individuo.getTakeProfit();
         double stopLoss = individuo.getStopLoss();
         double lot = individuo.getLot();
 
         boolean hasMinimumCriterion = true;
         boolean activeOperation = (individuo.getFechaApertura() != null);
-        Point openPoint = null;
+        Point openPoint;
         Order currentOrder = individuo.getCurrentOrder();
         double openOperationValue = (activeOperation) ? currentOrder.getOpenOperationValue() : 0.0D;
         for (int i = 1; (i < points.size() && hasMinimumCriterion); i++) {
@@ -216,14 +214,12 @@ public class OperacionesManager {
         OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
         List<Individuo> individuos = operacionesDAO.consultarOperacionesIndividuoRetroceso(fechaMaximo);
         while ((individuos != null) && (!individuos.isEmpty())) {
-            for (int i = 0; i < individuos.size(); i++) {
-                Individuo individuo = individuos.get(i);
-
+            for (Individuo individuo : individuos) {
                 if (individuo.getOpenIndicators() == null) {
-                    individuo.setOpenIndicators(new ArrayList<Indicator>());
+                    individuo.setOpenIndicators(new ArrayList<>());
                 }
                 if (individuo.getCloseIndicators() == null) {
-                    individuo.setCloseIndicators(new ArrayList<Indicator>());
+                    individuo.setCloseIndicators(new ArrayList<>());
                 }
                 LogUtil.logTime("Individuo="+individuo.getId()+";Orden="+individuo.getOrdenes().toString(), 1);
                 this.procesarMaximosReproceso(individuo);
@@ -237,10 +233,10 @@ public class OperacionesManager {
         individuo = operacionesDAO.consultarOperacionesIndividuoRetroceso(individuo, fechaMaximo);
 
         if (individuo.getOpenIndicators() == null) {
-            individuo.setOpenIndicators(new ArrayList<Indicator>());
+            individuo.setOpenIndicators(new ArrayList<>());
         }
         if (individuo.getCloseIndicators() == null) {
-            individuo.setCloseIndicators(new ArrayList<Indicator>());
+            individuo.setCloseIndicators(new ArrayList<>());
         }
         this.procesarMaximosReproceso(individuo);
     }
@@ -249,8 +245,7 @@ public class OperacionesManager {
         DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
         OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
         List<Order> ordenes = individuo.getOrdenes();
-        for (int i = 0; i < ordenes.size(); i++) {
-            Order currentOrder = ordenes.get(i);
+        for (Order currentOrder : ordenes) {
             if ((currentOrder != null) && (currentOrder.getOpenDate() != null) && (currentOrder.getCloseDate() != null)) {
                 Point pointRetroceso = datoHistoricoDAO.consultarRetroceso(currentOrder);
                 if (pointRetroceso != null) {

@@ -10,7 +10,8 @@ import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.IndividuoOptimo;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.manager.PropertiesManager;
-import forex.genetic.manager.indicator.IndicatorManager;
+import forex.genetic.manager.controller.IndicadorController;
+import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.util.NumberUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.CallableStatement;
@@ -18,8 +19,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -124,12 +123,14 @@ public class IndividuoDAO {
         }
     }
 
-    public void consultarDetalleIndividuo(Individuo individuo) throws SQLException {
+    public void consultarDetalleIndividuo(IndicadorController indicadorController, Individuo individuo)
+            throws SQLException {
         String sql = "SELECT IND2.ID ID_INDIVIDUO, IND2.PARENT_ID_1, IND2.PARENT_ID_2, IND2.TAKE_PROFIT, IND2.STOP_LOSS, "
                 + "IND2.LOTE, IND2.INITIAL_BALANCE, IND2.CREATION_DATE, "
                 + "IND3.ID_INDICADOR, IND3.INTERVALO_INFERIOR, IND3.INTERVALO_SUPERIOR, IND3.TIPO "
                 + " FROM INDIVIDUO IND2"
-                + "  INNER JOIN INDICADOR_INDIVIDUO IND3 ON IND2.ID=IND3.ID_INDIVIDUO"
+                + "  INNER JOIN " + indicadorController.getNombreTabla()
+                + " IND3 ON IND2.ID=IND3.ID_INDIVIDUO"
                 + " WHERE IND2.ID=?"
                 + " ORDER BY IND2.ID DESC";
 
@@ -140,7 +141,7 @@ public class IndividuoDAO {
             stmtConsulta.setString(1, individuo.getId());
             resultado = stmtConsulta.executeQuery();
 
-            IndividuoHelper.detalleIndividuo(individuo, resultado);
+            IndividuoHelper.detalleIndividuo(individuo, resultado, indicadorController);
 
         } finally {
             JDBCUtil.close(resultado);
@@ -177,16 +178,16 @@ public class IndividuoDAO {
 
     }
 
-    public void insertIndicadorIndividuo(IndividuoEstrategia individuo) throws SQLException {
-        String sql = "INSERT INTO INDICADOR_INDIVIDUO"
+    public void insertIndicadorIndividuo(IndicadorController indicadorController, IndividuoEstrategia individuo) throws SQLException {
+        String sql = "INSERT INTO " + indicadorController.getNombreTabla()
                 + " (ID_INDICADOR, ID_INDIVIDUO, INTERVALO_INFERIOR, INTERVALO_SUPERIOR, TIPO) "
                 + " VALUES (?,?,?,?, ?)";
 
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(sql);
-            for (int i = 0; i < IndicatorManager.getIndicatorNumber(); i++) {
-                IndicatorManager indicatorManager = IndicatorManager.getInstance(i);
+            for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
+                IndicadorManager indicatorManager = indicadorController.getManagerInstance(i);
                 IntervalIndicator indicator = null;
                 if (individuo.getOpenIndicators().size() > i) {
                     indicator = (IntervalIndicator) individuo.getOpenIndicators().get(i);
@@ -250,8 +251,8 @@ public class IndividuoDAO {
     public int getCountIndicadoresOpen(Individuo individuo) throws SQLException {
         int count = 0;
         String sql = "SELECT COUNT(*) FROM INDICADOR_INDIVIDUO II "
-                + " WHERE II.TIPO='OPEN' AND II.INTERVALO_INFERIOR IS NOT NULL " +
-                  " AND II.ID_INDIVIDUO=?";
+                + " WHERE II.TIPO='OPEN' AND II.INTERVALO_INFERIOR IS NOT NULL "
+                + " AND II.ID_INDIVIDUO=?";
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
         try {

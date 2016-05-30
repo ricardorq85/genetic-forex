@@ -13,8 +13,9 @@ import forex.genetic.manager.IntervalManager;
 /**
  *
  * @author ricardorq85
+ * @param <E> Tipo
  */
-public abstract class IntervalIndicatorManager<E extends IntervalIndicator> extends IndicatorManager<E> {
+public abstract class IntervalIndicatorManager<E extends IntervalIndicator> extends IndicadorIndividuoManager<E> {
 
     protected IntervalManager intervalManager = null;
 
@@ -27,11 +28,24 @@ public abstract class IntervalIndicatorManager<E extends IntervalIndicator> exte
         this.intervalManager = new IntervalManager(name);
     }
 
+    public IntervalIndicatorManager() {
+        super(false, false);
+    }
+
+    public IntervalManager getIntervalManager() {
+        return intervalManager;
+    }
+
+    public void setIntervalManager(IntervalManager intervalManager) {
+        this.intervalManager = intervalManager;
+    }
+
     public abstract IntervalIndicator getIndicatorInstance();
 
+    @Override
     public Indicator crossover(E obj1, E obj2) {
         IntervalIndicator objHijo = this.getIndicatorInstance();
-        Interval interval = null;
+        Interval interval;
         if ((obj1 == null) && (obj2 == null)) {
             objHijo = null;
         } else {
@@ -43,6 +57,7 @@ public abstract class IntervalIndicatorManager<E extends IntervalIndicator> exte
         return objHijo;
     }
 
+    @Override
     public Indicator mutate(E obj) {
         IntervalIndicator objHijo = this.getIndicatorInstance();
         Interval interval = intervalManager.mutate((obj == null) ? null : obj.getInterval());
@@ -50,10 +65,12 @@ public abstract class IntervalIndicatorManager<E extends IntervalIndicator> exte
         return objHijo;
     }
 
+    @Override
     public Interval calculateInterval(E objIndividuo, E iE, Point point) {
         throw new UnsupportedOperationException("Not supported.");
     }
 
+    @Override
     public void round(E indicator) {
         if (indicator != null) {
             Interval<Double> interval = indicator.getInterval();
@@ -63,6 +80,7 @@ public abstract class IntervalIndicatorManager<E extends IntervalIndicator> exte
         }
     }
 
+    @Override
     public Indicator optimize(E individuo, E optimizedIndividuo, E indicator, Point prevPoint, Point point, double pips) {
         IntervalIndicator optimized = getIndicatorInstance();
         double value = getValue(indicator, prevPoint, point);

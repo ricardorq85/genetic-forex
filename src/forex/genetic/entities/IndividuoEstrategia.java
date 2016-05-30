@@ -4,13 +4,15 @@
  */
 package forex.genetic.entities;
 
-import forex.genetic.manager.indicator.IndicatorManager;
-import java.util.Vector;
+import forex.genetic.manager.indicator.IndicadorIndividuoManager;
 import forex.genetic.manager.PropertiesManager;
 import java.util.Collections;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
+import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.IndividuoManager;
+import forex.genetic.manager.controller.IndicadorController;
+import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
 import java.io.Serializable;
@@ -51,7 +53,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     protected Fortaleza fortaleza = null;
     protected List<Fortaleza> listaFortaleza = null;
     protected Order currentOrder = null;
-    protected transient List<Order> ordenes = new ArrayList<Order>();
+    protected transient List<Order> ordenes = new ArrayList<>();
     protected double openOperationValue = 0.0D;
     protected double openSpread = 0.0D;
     protected int openPoblacionIndex = 1;
@@ -66,6 +68,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     protected transient List<PatternAdvanced> patterns = null;
     protected transient List<PatternAdvancedSpecific> currentPatterns = null;
     protected transient int lastOrderPatternIndex = 0;
+    IndicadorController indicadorController;
 
     public IndividuoEstrategia() {
         this(0, null, null, IndividuoType.INITIAL);
@@ -75,16 +78,28 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         this(0, parent1, null, IndividuoType.INITIAL);
     }
 
-    public IndividuoEstrategia(int generacion, IndividuoEstrategia parent1, IndividuoEstrategia parent2, IndividuoType individuoType) {
+    public IndividuoEstrategia(String id) {
+        this(0, null, null, null, id);
+    }
+
+    public IndividuoEstrategia(int generacion, IndividuoEstrategia parent1,
+            IndividuoEstrategia parent2, IndividuoType individuoType) {
+        this(generacion, parent1, parent2, individuoType, IndividuoManager.nextId());
+    }
+
+    public IndividuoEstrategia(int generacion, IndividuoEstrategia parent1,
+            IndividuoEstrategia parent2, IndividuoType individuoType,
+            String id) {
         setFileId(PropertiesManager.getFileId());
-        setId(IndividuoManager.nextId());
+        setId(id);
         setGeneracion(generacion);
         setParent1(parent1);
         setParent2(parent2);
         setIndividuoType(individuoType);
         setCreationDate(new Date());
-        this.optimizedCloseIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
-        this.optimizedOpenIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
+        indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+        this.optimizedCloseIndicators = Collections.synchronizedList(new ArrayList(indicadorController.getIndicatorNumber()));
+        this.optimizedOpenIndicators = Collections.synchronizedList(new ArrayList(indicadorController.getIndicatorNumber()));
         this.individuoReadData = new IndividuoReadData();
         this.individuoReadData.setOperationType(PropertiesManager.getOperationType());
         this.individuoReadData.setPair(PropertiesManager.getPair());
@@ -470,13 +485,13 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         buffer.append("TakeProfit=" + this.takeProfit + ",");
         buffer.append("StopLoss=" + this.stopLoss + ",");
         buffer.append("Lote=" + this.lot + ",");
-/*        buffer.append("MaxConsecutiveLostOperationsNumber=" + this.fortaleza.getMaxConsecutiveLostOperationsNumber() + ",");
-        buffer.append("MaxConsecutiveWonOperationsNumber=" + this.fortaleza.getMaxConsecutiveWonOperationsNumber() + ",");
-        buffer.append("MinConsecutiveLostOperationsNumber=" + this.fortaleza.getMinConsecutiveLostOperationsNumber() + ",");
-        buffer.append("MinConsecutiveWonOperationsNumber=" + this.fortaleza.getMinConsecutiveWonOperationsNumber() + ",");
-        buffer.append("AverageConsecutiveLostOperationsNumber=" + Math.round(this.fortaleza.getAverageConsecutiveLostOperationsNumber()) + ",");
-        buffer.append("AverageConsecutiveWonOperationsNumber=" + Math.round(this.fortaleza.getAverageConsecutiveWonOperationsNumber()) + ",");
-        * */
+        /*        buffer.append("MaxConsecutiveLostOperationsNumber=" + this.fortaleza.getMaxConsecutiveLostOperationsNumber() + ",");
+         buffer.append("MaxConsecutiveWonOperationsNumber=" + this.fortaleza.getMaxConsecutiveWonOperationsNumber() + ",");
+         buffer.append("MinConsecutiveLostOperationsNumber=" + this.fortaleza.getMinConsecutiveLostOperationsNumber() + ",");
+         buffer.append("MinConsecutiveWonOperationsNumber=" + this.fortaleza.getMinConsecutiveWonOperationsNumber() + ",");
+         buffer.append("AverageConsecutiveLostOperationsNumber=" + Math.round(this.fortaleza.getAverageConsecutiveLostOperationsNumber()) + ",");
+         buffer.append("AverageConsecutiveWonOperationsNumber=" + Math.round(this.fortaleza.getAverageConsecutiveWonOperationsNumber()) + ",");
+         * */
         for (Indicator indicator : this.openIndicators) {
             if (indicator != null) {
                 buffer.append(indicator.toFileString("open"));
@@ -500,7 +515,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     public boolean equals(Object obj) {
         if (obj instanceof IndividuoEstrategia) {
             IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
-            boolean value = false;
+            boolean value;
             value = (this.getId().equals(objIndividuo.getId()));
             if (!value) {
                 value = ((((this.openIndicators == null) && (objIndividuo.openIndicators == null))
@@ -656,7 +671,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 
     protected boolean processObligatory(IndividuoEstrategia individuoEstrategia) {
         boolean process = true;
-        for (int i = 0; process && (i < IndicatorManager.getIndicatorNumber()); i++) {
+        for (int i = 0; process && (i < indicadorController.getIndicatorNumber()); i++) {
             Indicator openIndicator = null;
             if (individuoEstrategia.getOpenIndicators().size() > i) {
                 openIndicator = individuoEstrategia.getOpenIndicators().get(i);
@@ -665,7 +680,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
             if (individuoEstrategia.getCloseIndicators().size() > i) {
                 closeIndicator = individuoEstrategia.getCloseIndicators().get(i);
             }
-            IndicatorManager indicatorManager = IndicatorManager.getInstance(i);
+            IndicadorManager indicatorManager = indicadorController.getManagerInstance(i);
             if (indicatorManager.isObligatory() && ((openIndicator == null) || (closeIndicator == null))) {
                 process = false;
             }
@@ -713,10 +728,10 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         for (int i = 0; i < indicadores.size(); i++) {
             if (indicadores.get(i) != null) {
                 IntervalIndicator indicator = (IntervalIndicator) indicadores.get(i);
-                if ((indicator.getInterval() == null) 
-                        || (indicator.getInterval().getLowInterval() == null) 
+                if ((indicator.getInterval() == null)
+                        || (indicator.getInterval().getLowInterval() == null)
                         || (indicator.getInterval().getHighInterval() == null)
-                        || (Double.isNaN(indicator.getInterval().getLowInterval())) 
+                        || (Double.isNaN(indicator.getInterval().getLowInterval()))
                         || (Double.isNaN(indicator.getInterval().getHighInterval()))) {
                     indicadores.set(i, null);
                 }
@@ -785,49 +800,49 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
     protected int comparePattern(IndividuoEstrategia other) {
         int compare = 0;
         /*if ((this.currentPatterns != null) && (other.currentPatterns != null)) {
-        LogUtil.logTime(this.id + " compareTo.currentPatterns.0 " + other.id, 1);
-        if ((compare == 0) && (!this.currentPatterns.isEmpty()) && (other.currentPatterns.isEmpty())) {
-        LogUtil.logTime(this.id + " compareTo.currentPatterns.1 " + other.id, 1);
-        compare = 1;
-        }
-        if ((compare == 0) && (this.currentPatterns.isEmpty()) && (!other.currentPatterns.isEmpty())) {
-        LogUtil.logTime(this.id + " compareTo.currentPatterns.-1 " + other.id, 1);
-        compare = -1;
-        }
-        }
-        if ((this.patterns != null) && (other.patterns != null)) {
-        LogUtil.logTime(this.id + " compareTo.patterns.0 " + other.id, 1);
-        if ((compare == 0) && (!this.patterns.isEmpty()) && (other.patterns.isEmpty())) {
-        LogUtil.logTime(this.id + " compareTo.patterns.1 " + other.id, 1);
-        compare = 1;
-        }
-        if ((compare == 0) && (this.patterns.isEmpty()) && (!other.patterns.isEmpty())) {
-        LogUtil.logTime(this.id + " compareTo.patterns.-1 " + other.id, 1);
-        compare = -1;
-        }
-        }
-        if ((this.ordenes != null) && (other.ordenes != null)) {
-        LogUtil.logTime(this.id + " compareTo.ordenes.0 " + other.id, 1);
-        if ((compare == 0) && (!this.ordenes.isEmpty()) && (other.ordenes.isEmpty())) {
-        LogUtil.logTime(this.id + " compareTo.ordenes.1 " + other.id, 1);
-        compare = 1;
-        }
-        if ((compare == 0) && (this.ordenes.isEmpty()) && (!other.ordenes.isEmpty())) {
-        LogUtil.logTime(this.id + " compareTo.ordenes.-1 " + other.id, 1);
-        compare = -1;
-        }
-        }
-        if ((this.fortaleza != null) && (other.fortaleza != null)) {
-        LogUtil.logTime(this.id + " compareTo.fortaleza.0 " + other.id, 1);
-        if ((compare == 0) && (this.fortaleza.getOperationsNumber() != 0.0D) && (other.fortaleza.getOperationsNumber() == 0.0D)) {
-        LogUtil.logTime(this.id + " compareTo.fortaleza.1 " + other.id, 1);
-        compare = 1;
-        }
-        if ((compare == 0) && (this.getFortaleza().getOperationsNumber() == 0.0D) && (other.getFortaleza().getOperationsNumber() != 0.0D)) {
-        LogUtil.logTime(this.id + " compareTo.fortaleza.-1 " + other.id, 1);
-        compare = -1;
-        }
-        }*/
+         LogUtil.logTime(this.id + " compareTo.currentPatterns.0 " + other.id, 1);
+         if ((compare == 0) && (!this.currentPatterns.isEmpty()) && (other.currentPatterns.isEmpty())) {
+         LogUtil.logTime(this.id + " compareTo.currentPatterns.1 " + other.id, 1);
+         compare = 1;
+         }
+         if ((compare == 0) && (this.currentPatterns.isEmpty()) && (!other.currentPatterns.isEmpty())) {
+         LogUtil.logTime(this.id + " compareTo.currentPatterns.-1 " + other.id, 1);
+         compare = -1;
+         }
+         }
+         if ((this.patterns != null) && (other.patterns != null)) {
+         LogUtil.logTime(this.id + " compareTo.patterns.0 " + other.id, 1);
+         if ((compare == 0) && (!this.patterns.isEmpty()) && (other.patterns.isEmpty())) {
+         LogUtil.logTime(this.id + " compareTo.patterns.1 " + other.id, 1);
+         compare = 1;
+         }
+         if ((compare == 0) && (this.patterns.isEmpty()) && (!other.patterns.isEmpty())) {
+         LogUtil.logTime(this.id + " compareTo.patterns.-1 " + other.id, 1);
+         compare = -1;
+         }
+         }
+         if ((this.ordenes != null) && (other.ordenes != null)) {
+         LogUtil.logTime(this.id + " compareTo.ordenes.0 " + other.id, 1);
+         if ((compare == 0) && (!this.ordenes.isEmpty()) && (other.ordenes.isEmpty())) {
+         LogUtil.logTime(this.id + " compareTo.ordenes.1 " + other.id, 1);
+         compare = 1;
+         }
+         if ((compare == 0) && (this.ordenes.isEmpty()) && (!other.ordenes.isEmpty())) {
+         LogUtil.logTime(this.id + " compareTo.ordenes.-1 " + other.id, 1);
+         compare = -1;
+         }
+         }
+         if ((this.fortaleza != null) && (other.fortaleza != null)) {
+         LogUtil.logTime(this.id + " compareTo.fortaleza.0 " + other.id, 1);
+         if ((compare == 0) && (this.fortaleza.getOperationsNumber() != 0.0D) && (other.fortaleza.getOperationsNumber() == 0.0D)) {
+         LogUtil.logTime(this.id + " compareTo.fortaleza.1 " + other.id, 1);
+         compare = 1;
+         }
+         if ((compare == 0) && (this.getFortaleza().getOperationsNumber() == 0.0D) && (other.getFortaleza().getOperationsNumber() != 0.0D)) {
+         LogUtil.logTime(this.id + " compareTo.fortaleza.-1 " + other.id, 1);
+         compare = -1;
+         }
+         }*/
         if (compare == 0) {
             //LogUtil.logTime(this.id + " compareTo.value.0 " + other.id, 1);
             if ((this.fortaleza != null) && (other.fortaleza != null)) {

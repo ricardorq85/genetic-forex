@@ -17,7 +17,8 @@ import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.exception.GeneticException;
-import forex.genetic.manager.indicator.IndicatorManager;
+import forex.genetic.factory.ControllerFactory;
+import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -38,12 +39,15 @@ public class TendenciasManager {
     private Connection conn = null;
     private final double probInterna = 0.6D;
     private final double probExterna = 0.4D;
+    private final IndicadorController indicadorControllerCalculo;
 
     public TendenciasManager() {
+        this(null);
     }
 
     public TendenciasManager(Connection conn) {
         this.conn = conn;
+        this.indicadorControllerCalculo = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
     }
 
     public void setConn(Connection conn) {
@@ -86,7 +90,13 @@ public class TendenciasManager {
         DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
         ParametroDAO parametroDAO = new ParametroDAO(conn);
         TendenciaDAO tendenciaDAO = new TendenciaDAO(conn);
-        List<Point> points = datoHistoricoDAO.consultarHistorico(fechaInicio);
+        List<Point> points;
+        if (stepTendencia == 0) {
+            points = datoHistoricoDAO.consultarHistorico(DateUtil.adicionarMinutos(fechaInicio, 1),
+                    DateUtil.adicionarMinutos(fechaInicio, 1));
+        } else {
+            points = datoHistoricoDAO.consultarHistorico(fechaInicio);
+        }
 
         if (filasTendencia <= 0) {
             filasTendencia = Integer.parseInt(parametroDAO.getValorParametro("INDIVIDUOS_X_TENDENCIA"));
@@ -98,12 +108,14 @@ public class TendenciasManager {
                 fechaProceso = pointProceso.getDate();
                 parametroDAO.updateDateValorParametro("FECHA_ESTADISTICAS", fechaProceso);
                 conn.commit();
+                LogUtil.logTime("DiferenciaMaximaHistorico...", 1);
                 DiferenciaMaximaHistorico diferenciaMaximaHistorico = new DiferenciaMaximaHistorico();
                 diferenciaMaximaHistorico.setMovHistxMinuto(datoHistoricoDAO.consultarMaximaDiferencia(fechaProceso, "YYYYMMDD HH24:MI"));
                 diferenciaMaximaHistorico.setMovHistxHora(datoHistoricoDAO.consultarMaximaDiferencia(fechaProceso, "YYYYMMDD HH24"));
                 diferenciaMaximaHistorico.setMovHistxDia(datoHistoricoDAO.consultarMaximaDiferencia(fechaProceso, "YYYYMMDD"));
                 diferenciaMaximaHistorico.setMovHistxSemana(datoHistoricoDAO.consultarMaximaDiferencia(fechaProceso, "YYYYWW"));
                 diferenciaMaximaHistorico.setMovHistxMes(datoHistoricoDAO.consultarMaximaDiferencia(fechaProceso, "YYYY"));
+                LogUtil.logTime("ConsultarIndividuoOperacionActiva...", 1);
                 List<Individuo> individuos = operacionesDAO.consultarIndividuoOperacionActiva(fechaProceso, fechaFin, filasTendencia);
                 double precioBase = operacionManager.calculateOpenPrice(pointProceso);
                 LogUtil.logTime("Calcular Tendencias... Fecha inicio=" + DateUtil.getDateString(fechaInicio) + " Fecha Proceso=" + DateUtil.getDateString(fechaProceso) + " Precio base=" + precioBase, 1);
@@ -114,8 +126,8 @@ public class TendenciasManager {
                     Order operacion = individuo.getCurrentOrder();
 
                     LogUtil.logTime((i + 1) + " de " + individuos.size() + ";Fecha Proceso=" + DateUtil.getDateString(fechaProceso) + ";Individuo=" + individuo.getId() + ";Fecha apertura=" + DateUtil.getDateString(individuo.getFechaApertura()), 1);
-                    //LogUtil.logTime("Procesando retrocesos...", 1);
                     operacionManager.procesarMaximosRetroceso(individuo, individuo.getFechaApertura());
+                    //LogUtil.logTime("Procesados retrocesos...", 1);
 
                     parametroDAO.updateValorParametro("RETROCESO_ESTADISTICAS", null);
                     parametroDAO.updateValorParametro("DURACION_ESTADISTICAS", null);
@@ -214,7 +226,7 @@ public class TendenciasManager {
             double duracionActual, Estadistica estadistica, Estadistica estadisticaActual, int tipoCalculo) throws GeneticException {
         CalculoTendencia calculoTendencia = new CalculoTendencia();
         int calculoPips;
-        long calculoDuracion = 0L;
+        long calculoDuracion;
         double baseDuracionxMinuto = 0.0D;
 
         double baseProbabilidad = 0.3D;
@@ -435,7 +447,7 @@ public class TendenciasManager {
          */
         IndividuoDAO idao = new IndividuoDAO(conn);
         int count = idao.getCountIndicadoresOpen(individuo);
-        probExternaCalculada += (((double) count / IndicatorManager.getIndicatorNumber()) * probNumIndicadores);
+        probExternaCalculada += (((double) count / indicadorControllerCalculo.getIndicatorNumber()) * probNumIndicadores);
 
         if (tipoCalculo > 0) {
             probExternaCalculada += (Math.min(60,

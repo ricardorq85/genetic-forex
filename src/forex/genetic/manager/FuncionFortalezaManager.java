@@ -5,7 +5,7 @@ import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.Point;
-import forex.genetic.manager.controller.IndicatorController;
+import forex.genetic.manager.controller.OperationController;
 import forex.genetic.manager.statistic.EstadisticaManager;
 import forex.genetic.util.CollectionUtil;
 import forex.genetic.util.Constants;
@@ -26,7 +26,7 @@ public class FuncionFortalezaManager {
     private boolean test = false;
     private boolean onlyClose = false;
     private final double pairMarginRequired = PropertiesManager.getPropertyDouble(Constants.MARGIN_REQUIRED);
-    private IndicatorController indicatorController = new IndicatorController();    
+    private OperationController indicatorController = new OperationController();    
 
     public boolean isTest() {
         return test;

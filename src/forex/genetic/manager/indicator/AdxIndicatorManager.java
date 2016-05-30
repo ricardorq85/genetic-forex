@@ -20,10 +20,12 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
         this.id = "ADX";
     }
 
+    @Override
     public Adx getIndicatorInstance() {
         return new Adx("Adx");
     }
 
+    @Override
     public Indicator generate(Adx indicator, Point point) {
         Interval interval = null;
         Adx adx = new Adx("Adx");
@@ -46,6 +48,7 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
         return intervalManager.operate(adxIndividuo.getInterval(), iAdx.getAdxValue() * (iAdx.getAdxPlus() - iAdx.getAdxMinus()), 0.0);
     }
     
+    @Override
     public double getValue(Adx indicator, Point prevPoint, Point point) {
         double value = indicator.getAdxValue() * (indicator.getAdxPlus() - indicator.getAdxMinus());
         return value;

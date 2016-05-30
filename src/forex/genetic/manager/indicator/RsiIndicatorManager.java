@@ -15,7 +15,7 @@ import forex.genetic.entities.indicator.Rsi;
  */
 public class RsiIndicatorManager extends IntervalIndicatorManager<Rsi> {
 
-    protected RsiIndicatorManager() {
+    public RsiIndicatorManager() {
         super(false, "Rsi");
         this.id = "RSI";
     }

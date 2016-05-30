@@ -11,7 +11,8 @@ import forex.genetic.entities.Interval;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
-import forex.genetic.manager.indicator.IndicatorManager;
+import forex.genetic.factory.ControllerFactory;
+import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,8 +27,10 @@ import java.util.List;
  */
 public class IndividuoHelper {
 
+    private static final IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+
     public static List<Individuo> createIndividuosById(ResultSet resultado) throws SQLException {
-        List<Individuo> list = new ArrayList<Individuo>();
+        List<Individuo> list = new ArrayList<>();
         while (resultado.next()) {
             Individuo ind = new Individuo();
             ind.setId(resultado.getString("ID_INDIVIDUO"));
@@ -37,7 +40,8 @@ public class IndividuoHelper {
     }
 
     public static List<IndividuoOptimo> createIndividuosOptimos(ResultSet resultado) throws SQLException {
-        List<IndividuoOptimo> list = new ArrayList<IndividuoOptimo>();
+        List<IndividuoOptimo> list;
+        list = new ArrayList<>();
         while (resultado.next()) {
             IndividuoOptimo ind = new IndividuoOptimo();
             ind.setId(resultado.getString("ID_INDIVIDUO"));
@@ -50,7 +54,7 @@ public class IndividuoHelper {
     }
 
     public static List<Individuo> createIndividuos(ResultSet resultado) throws SQLException {
-        List<Individuo> list = new ArrayList<Individuo>();
+        List<Individuo> list = new ArrayList<>();
         while (resultado.next()) {
             Individuo ind = new Individuo();
             ind.setId(resultado.getString("ID_INDIVIDUO"));
@@ -69,11 +73,16 @@ public class IndividuoHelper {
         }
         return list;
     }
-
+    
     public static void detalleIndividuo(Individuo ind, ResultSet resultado) throws SQLException {
+        detalleIndividuo(ind, resultado, indicadorController);        
+    }
+
+    public static void detalleIndividuo(Individuo ind, ResultSet resultado, IndicadorController indController) throws SQLException {
         boolean first = true;
-        List<Indicator> openIndicator = new ArrayList<Indicator>(IndicatorManager.getIndicatorNumber());
-        List<Indicator> closeIndicator = new ArrayList<Indicator>(IndicatorManager.getIndicatorNumber());
+        List<Indicator> openIndicator = new ArrayList<>(indController.getIndicatorNumber());
+        List<Indicator> closeIndicator;
+        closeIndicator = new ArrayList<>(indController.getIndicatorNumber());
         while (resultado.next()) {
             if (first) {
                 first = false;
@@ -113,10 +122,14 @@ public class IndividuoHelper {
             String tipoIndicador = resultado.getString("TIPO");
             boolean found = false;
 
-            for (int i = 0; !found && i < IndicatorManager.getIndicatorNumber(); i++) {
-                openIndicator.add(null);
-                closeIndicator.add(null);
-                IntervalIndicatorManager indManager = (IntervalIndicatorManager) IndicatorManager.getInstance(i);
+            for (int i = 0; !found && i < indController.getIndicatorNumber(); i++) {
+                if (openIndicator.size() < indController.getIndicatorNumber()) {
+                    openIndicator.add(null);
+                }
+                if (closeIndicator.size() < indController.getIndicatorNumber()) {
+                    closeIndicator.add(null);
+                }
+                IntervalIndicatorManager indManager = (IntervalIndicatorManager) indController.getManagerInstance(i);
                 if (indManager.getId().equalsIgnoreCase(idIndicador)) {
                     found = true;
                     IntervalIndicator indicator = indManager.getIndicatorInstance();

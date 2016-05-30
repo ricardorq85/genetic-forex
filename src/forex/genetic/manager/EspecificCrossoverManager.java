@@ -10,7 +10,7 @@ package forex.genetic.manager;
  */
 public abstract class EspecificCrossoverManager {
 
-    private static EspecificCrossoverManager instance = new SimpleCrossoverManager();
+    private static final EspecificCrossoverManager instance = new SimpleCrossoverManager();
 
     public static EspecificCrossoverManager getInstance() {
         return instance;

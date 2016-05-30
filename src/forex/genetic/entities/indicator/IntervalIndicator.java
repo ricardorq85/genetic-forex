@@ -38,10 +38,11 @@ public abstract class IntervalIndicator extends Indicator implements Serializabl
         this.interval = interval;
     }
 
+    @Override
     public String toFileString(String prefix) {
         StringBuilder buffer = new StringBuilder();
-        buffer.append(prefix + this.interval.getName() + "Lower=" + (this.interval.getLowInterval() * 100) + ",");
-        buffer.append(prefix + this.interval.getName() + "Higher=" + (this.interval.getHighInterval() * 100) + ",");
+        buffer.append(prefix).append(this.interval.getName()).append("Lower=").append(this.interval.getLowInterval() * 100).append(",");
+        buffer.append(prefix).append(this.interval.getName()).append("Higher=").append(this.interval.getHighInterval() * 100).append(",");
 
         return buffer.toString();
     }

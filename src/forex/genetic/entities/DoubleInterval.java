@@ -52,8 +52,8 @@ public class DoubleInterval extends Interval<Double> implements Serializable {
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
-        buffer.append(PropertiesManager.getOperationType() + this.name + "Lower=" + (this.lowInterval * 100.0) + ",");
-        buffer.append(PropertiesManager.getOperationType() + this.name + "Higher=" + (this.highInterval * 100.0));
+        buffer.append(PropertiesManager.getOperationType()).append(this.name).append("Lower=").append(this.lowInterval * 100.0).append(",");
+        buffer.append(PropertiesManager.getOperationType()).append(this.name).append("Higher=").append(this.highInterval * 100.0);
 
         return buffer.toString();
     }

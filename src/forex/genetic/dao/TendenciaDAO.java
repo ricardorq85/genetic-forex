@@ -279,4 +279,34 @@ public class TendenciaDAO {
 
         return procesoTendenciaList;
     }
+
+    public List<ProcesoTendencia> consultarTendenciaGenetica(java.util.Date fecha, 
+            java.util.Date fecha2, int groupByHours, 
+            int groupByMinutes, int pipsMinimos, int cantidadIndividuosMinimos) throws SQLException {
+        List<ProcesoTendencia> procesoTendenciaList = null;
+        String sql;
+        sql = PropertiesManager.getQueryTendenciaGenetica();
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+        int count = 1;
+
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
+            stmtConsulta.setTimestamp(count++, new Timestamp(fecha2.getTime()));
+            stmtConsulta.setInt(count++, groupByHours);
+            stmtConsulta.setInt(count++, groupByMinutes);
+            stmtConsulta.setInt(count++, pipsMinimos);
+            stmtConsulta.setInt(count++, cantidadIndividuosMinimos);
+
+            resultado = stmtConsulta.executeQuery();
+
+            procesoTendenciaList = TendenciaHelper.createProcesoTendenciaDetail(resultado);
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+
+        return procesoTendenciaList;
+    }
 }

@@ -7,8 +7,10 @@ package forex.genetic.delegate;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.facade.DatoHistoricoFacade;
 import forex.genetic.facade.PoblacionFacade;
+import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.PoblacionManager;
 import forex.genetic.manager.PropertiesManager;
+import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
 import java.io.FileNotFoundException;
@@ -21,8 +23,9 @@ import java.io.IOException;
 public class PoblacionDelegate {
     
     public void cargarPoblacion(Poblacion poblacion) {
+        IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
         PoblacionFacade facade = new PoblacionFacade();
-        facade.cargarPoblacion(poblacion);
+        facade.cargarPoblacion(indicadorController, poblacion);
     }
     
     public void cargarDatosHistoricos() throws FileNotFoundException, IOException {

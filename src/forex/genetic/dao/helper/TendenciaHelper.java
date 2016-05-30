@@ -109,7 +109,7 @@ public class TendenciaHelper {
         obj.setValorMasProbable(resultado.getDouble("VALOR_MAS_PROBABLE"));
         obj.setPipsMasProbable(resultado.getDouble("PIPS_MAS_PROBABLE"));
         obj.setPrecioBasePromedio(resultado.getDouble("PRECIO_BASE_PROM"));
-        obj.setProbabilidad(resultado.getDouble("PROM_PROB"));
+        obj.setProbabilidad(resultado.getDouble("PROBABILIDAD"));
         obj.setIntervaloFecha(intervaloFecha);
         obj.setIntervaloPrecio(intervaloPrecio);
 

@@ -6,13 +6,17 @@ package forex.genetic.manager;
 
 import forex.genetic.util.Constants;
 import forex.genetic.entities.DateInterval;
-import forex.genetic.manager.indicator.IndicatorManager;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.Point;
+import forex.genetic.factory.ControllerFactory;
+import forex.genetic.manager.controller.IndicadorController;
+import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.util.NumberUtil;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import java.util.List;
 import java.util.Vector;
@@ -26,6 +30,7 @@ public class PoblacionManager {
     private List<Point> points = null;
     private Poblacion poblacion = new Poblacion();
     private DateInterval dateInterval = new DateInterval();
+    private final IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 
     public PoblacionManager() {
     }
@@ -90,15 +95,15 @@ public class PoblacionManager {
         while (counter < initialIndividuos) {
             individuo = new IndividuoEstrategia();
 
-            List<Indicator> openIndicators = null;
-            List<Indicator> closeIndicators = null;
+            List<Indicator> openIndicators;
+            List<Indicator> closeIndicators;
 
             int position = random.nextInt(points.size());
             Point point = points.get(position);
-            openIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
-            closeIndicators = new Vector<Indicator>(IndicatorManager.getIndicatorNumber());
-            for (int i = 0; i < IndicatorManager.getIndicatorNumber(); i++) {
-                IndicatorManager indicatorManager = IndicatorManager.getInstance(i);
+            openIndicators = Collections.synchronizedList(new ArrayList<Indicator>(indicadorController.getIndicatorNumber()));
+            closeIndicators = Collections.synchronizedList(new ArrayList<Indicator>(indicadorController.getIndicatorNumber()));
+            for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
+                IndicadorManager indicatorManager = indicadorController.getManagerInstance(i);
                 List<? extends Indicator> indicators = point.getIndicators();
                 if (!indicatorManager.isObligatory() && (random.nextDouble() < 0.1)) {
                     openIndicator = null;

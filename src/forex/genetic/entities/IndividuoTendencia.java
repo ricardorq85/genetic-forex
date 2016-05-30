@@ -11,13 +11,23 @@ package forex.genetic.entities;
  */
 public class IndividuoTendencia {
 
-    private int minutosAgrupacion = 0;
+    private Integer minutosAgrupacion = null;
 
-    public int getMinutosAgrupacion() {
+    private Integer horasAgrupacion;
+
+    public Integer getHorasAgrupacion() {
+        return horasAgrupacion;
+    }
+
+    public void setHorasAgrupacion(Integer horasAgrupacion) {
+        this.horasAgrupacion = horasAgrupacion;
+    }
+
+    public Integer getMinutosAgrupacion() {
         return minutosAgrupacion;
     }
 
-    public void setMinutosAgrupacion(int minutosAgrupacion) {
+    public void setMinutosAgrupacion(Integer minutosAgrupacion) {
         this.minutosAgrupacion = minutosAgrupacion;
     }
 

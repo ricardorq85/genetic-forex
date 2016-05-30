@@ -10,6 +10,8 @@ import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.ParametroDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.IndividuoOptimo;
+import forex.genetic.factory.ControllerFactory;
+import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -36,6 +38,7 @@ public class IndividuosOptimosManager {
         Date fechaMaxHistorico = datoHistoricoDAO.getFechaHistoricaMaxima();
         Date fechaPeriodo = parametroDAO.getDateValorParametro("FECHA_INDIVIDUO_OPTIMO");
         int periodo = parametroDAO.getIntValorParametro("PERIODO_OPTIMOS");
+        IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 
         while (fechaPeriodo.compareTo(fechaMaxHistorico) < 0) {
             Date fechaSiguiente = DateUtil.adicionarMinutos(fechaPeriodo, periodo);
@@ -49,7 +52,7 @@ public class IndividuosOptimosManager {
                 individuoOptimo.setFechaVigencia(fechaPeriodo);
                 individuoOptimo.setMinutosFuturo(periodo);
                 individuoOptimo.setNombreEstrategia(PropertiesManager.getNombreEstrategia());
-                individuoDAO.consultarDetalleIndividuo(individuoOptimo);
+                individuoDAO.consultarDetalleIndividuo(indicadorController,individuoOptimo);
                 estrategiaDAO.insertIndividuoEstrategia(individuoOptimo);
                 String strIndividuo = individuoOptimo.toFileString(dateInterval);
                 System.out.println(strIndividuo);

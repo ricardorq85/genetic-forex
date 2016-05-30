@@ -14,18 +14,35 @@ import java.util.Random;
  *
  * @author ricardorq85
  */
-public class IntervalManager {    
-    private double min = Double.POSITIVE_INFINITY;
-    private double max = Double.NEGATIVE_INFINITY;
-    private static final Random random = new Random();
-    private static EspecificMutationManager especificMutationManager = EspecificMutationManager.getInstance();
-    private String name = null;
+public class IntervalManager {
+
+    protected double min = Double.POSITIVE_INFINITY;
+    protected double max = Double.NEGATIVE_INFINITY;
+    protected static final Random random = new Random();
+    protected static final EspecificMutationManager especificMutationManager = EspecificMutationManager.getInstance();
+    protected String name = null;
 
     public IntervalManager(String name) {
         this.name = name;
     }
 
-    private double generateDefault() {
+    public double getMin() {
+        return min;
+    }
+
+    public void setMin(double min) {
+        this.min = min;
+    }
+
+    public double getMax() {
+        return max;
+    }
+
+    public void setMax(double max) {
+        this.max = max;
+    }
+
+    protected double generateDefault() {
         if (Double.isInfinite(min) || Double.isInfinite(max)
                 || Double.isNaN(min) || Double.isNaN(max)) {
             return (random.nextBoolean()) ? random.nextDouble() : -random.nextDouble();
@@ -36,8 +53,8 @@ public class IntervalManager {
 
     public Interval generate(double value, double i1, double i2) {
         Interval<Double> interval = new DoubleInterval(this.name);
-        double interval1 = 0.0;
-        double interval2 = 0.0;
+        double interval1;
+        double interval2;
         if (Double.isInfinite(value) || Double.isNaN(value) || (value == 0.0)) {
             interval1 = generateDefault();
             interval2 = generateDefault();
@@ -261,19 +278,19 @@ public class IntervalManager {
     }
 
     public void round(Interval<Double> interval) {
-/*        double val1 = interval.getLowInterval();
-        double val2 = interval.getHighInterval();
-        /*if (val1 >= 0) {
-        val1 *= 0.999999999;
-        } else {
-        val1 *= 1.000000001;
-        }
-        if (val2 >= 0) {
-        val2 *= 1.000000001;
-        } else {
-        val2 *= 0.999999999;
-        }
-        interval.setLowInterval(NumberUtil.round(val1));
-        interval.setHighInterval(NumberUtil.round(val2));*/
+        /*        double val1 = interval.getLowInterval();
+         double val2 = interval.getHighInterval();
+         /*if (val1 >= 0) {
+         val1 *= 0.999999999;
+         } else {
+         val1 *= 1.000000001;
+         }
+         if (val2 >= 0) {
+         val2 *= 1.000000001;
+         } else {
+         val2 *= 0.999999999;
+         }
+         interval.setLowInterval(NumberUtil.round(val1));
+         interval.setHighInterval(NumberUtil.round(val2));*/
     }
 }

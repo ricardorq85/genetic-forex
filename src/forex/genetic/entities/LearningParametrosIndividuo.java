@@ -4,7 +4,9 @@
  */
 package forex.genetic.entities;
 
-import forex.genetic.manager.indicator.IndicatorManager;
+import forex.genetic.factory.ControllerFactory;
+import forex.genetic.manager.controller.IndicadorController;
+import forex.genetic.manager.indicator.IndicadorIndividuoManager;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +24,11 @@ public class LearningParametrosIndividuo implements Serializable {
     private boolean initialBalance = false;
     private List<Boolean> openIndicators = null;
     private List<Boolean> closeIndicators = null;
+    private final IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 
     public LearningParametrosIndividuo() {
-        this.openIndicators = new ArrayList<Boolean>(IndicatorManager.getIndicatorNumber());
-        this.closeIndicators = new ArrayList<Boolean>(IndicatorManager.getIndicatorNumber());
+        this.openIndicators = new ArrayList<>(indicadorController.getIndicatorNumber());
+        this.closeIndicators = new ArrayList<>(indicadorController.getIndicatorNumber());
     }
 
     public List<Boolean> getCloseIndicators() {

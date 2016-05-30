@@ -8,7 +8,6 @@ import forex.genetic.entities.indicator.Average;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
-import static forex.genetic.util.Constants.PriceType;
 
 /**
  *
@@ -21,10 +20,12 @@ public class CompareMaIndicatorManager extends IntervalIndicatorManager<Average>
         this.id = "COMPARE_MA";
     }
 
+    @Override
     public Average getIndicatorInstance() {
         return new Average("MaCompare");
     }
 
+    @Override
     public Indicator generate(Average indicator, Point point) {
         Interval interval = null;
         Average average = getIndicatorInstance();

@@ -10,6 +10,7 @@ import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.manager.PoblacionManagerBD;
 import forex.genetic.manager.PropertiesManager;
+import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.thread.ProcesarIndividuoThread;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -30,7 +31,7 @@ public class PoblacionFacade {
         PoblacionManagerBD manager = new PoblacionManagerBD();
         manager.process();
     }
-    
+
     public void process2() {
         List<Thread> threads = new ArrayList<Thread>();
         try {
@@ -57,14 +58,12 @@ public class PoblacionFacade {
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(PoblacionFacade.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (SQLException ex) {
+        } catch (ClassNotFoundException | SQLException ex) {
             ex.printStackTrace();
         }
-    }    
+    }
 
-    public void cargarPoblacion(Poblacion poblacion) {
+    public void cargarPoblacion(IndicadorController indicadorController, Poblacion poblacion) {
         Connection conn = null;
         try {
             conn = JDBCUtil.getConnection();
@@ -72,21 +71,19 @@ public class PoblacionFacade {
 
             List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
             int countError = 0;
-            for (int i = 0; i < individuos.size(); i++) {
+            for (IndividuoEstrategia individuo1 : individuos) {
                 try {
-                    IndividuoEstrategia individuo = individuos.get(i);
+                    IndividuoEstrategia individuo = individuo1;
                     dao.insertIndividuo(individuo);
-                    dao.insertIndicadorIndividuo(individuo);
+                    dao.insertIndicadorIndividuo(indicadorController, individuo);
                 } catch (SQLException ex) {
                     //ex.printStackTrace();
                     countError++;
                 }
-            }
+            }            
             conn.commit();
             LogUtil.logTime("Individuos cargados=" + (individuos.size() - countError) + ";Individuos con error=" + countError, 1);
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (SQLException ex) {
+        } catch (ClassNotFoundException | SQLException ex) {
             ex.printStackTrace();
         } finally {
             JDBCUtil.close(conn);

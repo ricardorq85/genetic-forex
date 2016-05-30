@@ -14,11 +14,10 @@ import forex.genetic.entities.indicator.Macd;
 import forex.genetic.entities.indicator.Momentum;
 import forex.genetic.entities.indicator.Rsi;
 import forex.genetic.entities.indicator.Sar;
-import forex.genetic.manager.indicator.IndicatorManager;
+import forex.genetic.factory.ControllerFactory;
+import forex.genetic.manager.controller.IndicadorController;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,28 +29,28 @@ import java.util.List;
 public class BasePointHelper {
 
     public static List<Point> createPoints(ResultSet resultado) throws SQLException {
-        List<Point> points = new ArrayList<Point>();
-        Point point = null;
-        List<Indicator> indicators = null;
-        Average average = null;
-        Macd macd = null;
-        Average compareAverage = null;
-        Sar sar = null;
-        Adx adx = null;
-        Rsi rsi = null;
-        Bollinger bollingerBand = null;
-        Momentum momentum = null;
-        Ichimoku ichimoku = null;
+        List<Point> points = new ArrayList<>();
+        Point point;
+        List<Indicator> indicators;
+        Average average;
+        Macd macd;
+        Average compareAverage;
+        Sar sar;
+        Adx adx;
+        Rsi rsi;
+        Bollinger bollingerBand;
+        Momentum momentum;
+        Ichimoku ichimoku;
 
 //        DateFormat format = new SimpleDateFormat("yyyy/MM/ddHH:mm");
-
+        IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
         while (resultado.next()) {
             Date date = new Date(resultado.getTimestamp("FECHA").getTime());
             double baseOpen = resultado.getDouble("OPEN");
             double baseLow = resultado.getDouble("LOW");
             double baseHigh = resultado.getDouble("HIGH");
             double baseClose = resultado.getDouble("CLOSE");
-            int volume = resultado.getInt("VOLUME");
+            int volume = new Long(resultado.getLong("VOLUME")).intValue();
             int spread = resultado.getInt("SPREAD");
 
             double baseAverage = resultado.getDouble("AVERAGE");
@@ -117,8 +116,8 @@ public class BasePointHelper {
             ichimoku.setSenkouSpanA(baseIchimokuSenkouSpanA);
             ichimoku.setSenkouSpanB(baseIchimokuSenkouSpanB);
             ichimoku.setTenkanSen(baseIchimokuTenkanSen);
-
-            indicators = new ArrayList<Indicator>(IndicatorManager.getIndicatorNumber());
+            
+            indicators = new ArrayList<>(indicadorController.getIndicatorNumber());
             indicators.add(average);//0
             indicators.add(macd);//1
             indicators.add(compareAverage);//2

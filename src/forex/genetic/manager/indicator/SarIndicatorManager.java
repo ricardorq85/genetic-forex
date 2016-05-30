@@ -15,7 +15,7 @@ import forex.genetic.entities.indicator.Sar;
  */
 public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
 
-    protected SarIndicatorManager(boolean priceDependence) {
+    public SarIndicatorManager(boolean priceDependence) {
         super(priceDependence, "Sar");
         this.id = "SAR";
     }

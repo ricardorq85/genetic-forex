@@ -13,7 +13,9 @@ import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.RelacionGeneraciones;
 import forex.genetic.entities.RelacionPair;
 import forex.genetic.entities.indicator.Indicator;
-import forex.genetic.manager.indicator.IndicatorManager;
+import forex.genetic.factory.ControllerFactory;
+import forex.genetic.manager.controller.IndicadorController;
+import forex.genetic.manager.indicator.IndicadorIndividuoManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
 import java.util.ArrayList;
@@ -173,7 +175,8 @@ public class LearningManager {
         learningParametrosIndividuo.setStopLoss((hijo.getStopLoss() == padre.getStopLoss()));
         //learningParametrosIndividuo.setLot((hijo.getLot() == padre.getLot()));
         //learningParametrosIndividuo.setInitialBalance((hijo.getInitialBalance() == padre.getInitialBalance()));
-        for (int i = 0; i < IndicatorManager.getIndicatorNumber(); i++) {
+        IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+        for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
             Indicator openIndicatorHijo = null;
             if (hijo.getOpenIndicators().size() > i) {
                 openIndicatorHijo = hijo.getOpenIndicators().get(i);

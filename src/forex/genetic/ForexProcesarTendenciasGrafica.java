@@ -38,9 +38,7 @@ public class ForexProcesarTendenciasGrafica {
         try {
             ProcesarTendenciasGraficaManager manager = new ProcesarTendenciasGraficaManager();
             manager.procesarTendencias();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } catch (GeneticException ex) {
+        } catch (SQLException | GeneticException ex) {
             ex.printStackTrace();
         }
         LogUtil.logTime("Fin: " + id, 1);

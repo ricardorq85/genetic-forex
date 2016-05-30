@@ -21,9 +21,11 @@ import java.util.List;
 public class PoblacionManagerBD {
 
     public void process() {
-        for (int j = 0; j < 3; j++) {
+        boolean any;
+        do {
+            any = false;
             try {
-                List<Thread> threads = new ArrayList<Thread>();
+                List<Thread> threads = new ArrayList<>();
                 int countFiltro = 1;
                 String filtroAdicional = PropertiesManager.getPropertyString("FILTRO_ADICIONAL_" + countFiltro);
                 while (filtroAdicional != null) {
@@ -31,10 +33,11 @@ public class PoblacionManagerBD {
                     ProcesoPoblacionDAO dao = new ProcesoPoblacionDAO(conn);
                     List<Individuo> individuos = dao.getIndividuos(filtroAdicional);
                     if ((individuos != null) && (!individuos.isEmpty())) {
-                        ProcesarIndividuoThreadBD procesarIndividuoThread =
-                                new ProcesarIndividuoThreadBD("FILTRO_ADICIONAL_" + countFiltro, individuos);
+                        ProcesarIndividuoThreadBD procesarIndividuoThread
+                                = new ProcesarIndividuoThreadBD("FILTRO_ADICIONAL_" + countFiltro, individuos);
                         procesarIndividuoThread.start();
                         threads.add(procesarIndividuoThread);
+                        any = true;
                     } else {
                         LogUtil.logTime("No existen individuos para el filtro " + countFiltro, 1);
                     }
@@ -46,17 +49,12 @@ public class PoblacionManagerBD {
                         filtroAdicional = null;
                     }
                 }
-                for (int i = 0; i < threads.size(); i++) {
-                    Thread thread = threads.get(i);
+                for (Thread thread : threads) {
                     thread.join();
                 }
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            } catch (ClassNotFoundException ex) {
-                ex.printStackTrace();
-            } catch (SQLException ex) {
+            } catch (InterruptedException | ClassNotFoundException | SQLException ex) {
                 ex.printStackTrace();
             }
-        }
+        } while (any);
     }
 }

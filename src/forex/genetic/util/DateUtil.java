@@ -134,7 +134,7 @@ public class DateUtil {
     }
 
     public static String getDateString(Date fecha) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm.ss");
         return ((fecha == null) ? null : formatter.format(fecha));
     }
 }

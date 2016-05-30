@@ -15,7 +15,7 @@ import forex.genetic.entities.indicator.Momentum;
  */
 public class MomentumIndicatorManager extends IntervalIndicatorManager<Momentum> {
 
-    protected MomentumIndicatorManager() {
+    public MomentumIndicatorManager() {
         super(false, "Momentum");
         this.id = "MOMENTUM";
     }

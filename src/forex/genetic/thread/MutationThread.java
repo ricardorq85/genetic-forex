@@ -13,16 +13,19 @@ import forex.genetic.manager.MutationManager;
  */
 public class MutationThread extends Thread {
 
-    private int generacion;
-    private Poblacion poblacion;
-    private Poblacion newPoblacion = new Poblacion();
-    private int percentValue;
-    private MutationManager mutationManager;
-    private Poblacion poblacionHija = new Poblacion();
-    private Poblacion poblacionPadre = new Poblacion();
+    private final int generacion;
+    private final Poblacion poblacion;
+    private final Poblacion newPoblacion;
+    private final int percentValue;
+    private final MutationManager mutationManager;
+    private final Poblacion poblacionHija;
+    private final Poblacion poblacionPadre;
 
     public MutationThread(String name, int generacion, Poblacion poblacion, int percentValue, MutationManager mutationManager) {
         super(name);
+        this.poblacionPadre = new Poblacion();
+        this.poblacionHija = new Poblacion();
+        this.newPoblacion = new Poblacion();
         this.generacion = generacion;
         this.poblacion = poblacion;
         this.percentValue = percentValue;

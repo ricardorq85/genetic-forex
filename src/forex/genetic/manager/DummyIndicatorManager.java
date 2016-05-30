@@ -5,7 +5,7 @@
 package forex.genetic.manager;
 
 import forex.genetic.entities.Interval;
-import forex.genetic.manager.indicator.IndicatorManager;
+import forex.genetic.manager.indicator.IndicadorIndividuoManager;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.Point;
 
@@ -13,7 +13,7 @@ import forex.genetic.entities.Point;
  *
  * @author ricardorq85
  */
-public class DummyIndicatorManager extends IndicatorManager<Object> {
+public class DummyIndicatorManager extends IndicadorIndividuoManager<Object> {
 
     public DummyIndicatorManager(boolean priceDependence) {
         super(priceDependence);

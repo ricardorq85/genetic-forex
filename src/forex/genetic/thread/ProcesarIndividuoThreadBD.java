@@ -37,8 +37,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
     public void run() {
         try {
             conn = JDBCUtil.getConnection();
-            for (int i = 0; i < individuos.size(); i++) {
-                Individuo individuo = individuos.get(i);
+            for (Individuo individuo : individuos) {
                 try {
                     procesarIndividuo(individuo);
                 } catch (SQLException ex) {
@@ -47,9 +46,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
                     System.err.println(ex.getMessage() + " " + individuo.getId());
                 }
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } catch (ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
     }

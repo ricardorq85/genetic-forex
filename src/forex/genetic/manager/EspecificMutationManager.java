@@ -10,7 +10,7 @@ package forex.genetic.manager;
  */
 public abstract class EspecificMutationManager {
 
-    private static EspecificMutationManager instance = new SimpleMutationManager();
+    private static final EspecificMutationManager instance = new SimpleMutationManager();
 
     public static EspecificMutationManager getInstance() {
         return instance;

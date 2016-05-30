@@ -9,6 +9,7 @@ import forex.genetic.manager.PropertiesManager;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
+import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.FuncionFortalezaManager;
 import forex.genetic.manager.LearningManager;
 import forex.genetic.manager.PatternManager;
@@ -72,19 +73,19 @@ public class GeneticDelegate {
     public Poblacion process() throws IOException {
         Poblacion poblacion = new Poblacion();
         Poblacion newPoblacion = null;
-        Poblacion poblacionHija = null;
+        Poblacion poblacionHija;
         Poblacion poblacionPadre = new Poblacion();
         Poblacion cachePoblacionPadre = new Poblacion();
         ProcessPoblacionThread threadProcessPoblacionAcumulada = null;
         ProcessPoblacionThread threadProcessPoblacionNueva = null;
-        ProcessGeneracion threadProcessGeneracion = null;
-        List<ProcessPoblacionThread> threads = new ArrayList<ProcessPoblacionThread>(generations);
-        List<ProcessPoblacionThread> threadsNew = new ArrayList<ProcessPoblacionThread>(generations);
+        ProcessGeneracion threadProcessGeneracion;
+        List<ProcessPoblacionThread> threads = new ArrayList<>(generations);
+        List<ProcessPoblacionThread> threadsNew = new ArrayList<>(generations);
         PoblacionLoadThread[] threadPoblacionesLoad = new PoblacionLoadThread[PropertiesManager.getPropertyInt(Constants.END_POBLACION) + 1];
 
-        List<SerializationReadAllThread> readSerialize = new ArrayList<SerializationReadAllThread>();
+        List<SerializationReadAllThread> readSerialize = new ArrayList<>();
         SerializationReadAllThread threadSerReadAll = null;
-        PoblacionManager currentPoblacionManager = null;
+        PoblacionManager currentPoblacionManager;
         String strPoblacionBase = PropertiesManager.getPoblacionBase();
         Poblacion poblacionBase = null;
         if ((!PropertiesManager.isReadSpecific()) && (strPoblacionBase != null) && (!strPoblacionBase.isEmpty())) {
@@ -218,7 +219,7 @@ public class GeneticDelegate {
                         processedWeakestPoblacion = true;
                         //learningManager.processLearning(learning, poblacion, poblacionHija, poblacionPadre);
                         if (poblacion.getIndividuos().size() > 0) {
-                            threadProcessGeneracion = new ProcessGeneracion("threadProcessGeneracion " + poblacionIndex + "." + generacionIndex, poblacion, generacionIndex);
+                            threadProcessGeneracion = new ProcessGeneracion("threadProcessGeneracion " + poblacionIndex + "." + generacionIndex, poblacion, generacionIndex, ControllerFactory.ControllerType.Individuo);
                             ThreadUtil.launchThread(threadProcessGeneracion);
                             threads.add(threadProcessGeneracion);
                         }
