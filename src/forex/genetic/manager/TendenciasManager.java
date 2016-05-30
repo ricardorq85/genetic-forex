@@ -60,7 +60,7 @@ public class TendenciasManager {
         }
         ParametroDAO parametroDAO = new ParametroDAO(conn);
         Date fechaInicio = DateUtil.adicionarMinutos(parametroDAO.getDateValorParametro("FECHA_INICIO_TENDENCIA"), -1);
-        int stepTendencia = Integer.parseInt(parametroDAO.getValorParametro("STEP_TENDENCIA"));
+        int stepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
         this.calcularTendenciasFacade(fechaInicio, null, stepTendencia, -1);
     }
 
@@ -73,7 +73,7 @@ public class TendenciasManager {
             conn = JDBCUtil.getConnection();
         }
         ParametroDAO parametroDAO = new ParametroDAO(conn);
-        int stepTendencia = Integer.parseInt(parametroDAO.getValorParametro("STEP_TENDENCIA"));
+        int stepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
         this.calcularTendenciasFacade(fechaInicio, fechaFin, stepTendencia, filasTendencia);
     }
 
@@ -99,7 +99,7 @@ public class TendenciasManager {
         }
 
         if (filasTendencia <= 0) {
-            filasTendencia = Integer.parseInt(parametroDAO.getValorParametro("INDIVIDUOS_X_TENDENCIA"));
+            filasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
         }
         Date fechaProceso = fechaInicio;
         while ((points != null) && (!points.isEmpty()) && ((fechaFin == null) || fechaFin.after(fechaProceso))) {

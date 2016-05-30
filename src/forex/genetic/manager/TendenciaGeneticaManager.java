@@ -18,7 +18,6 @@ import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.indicator.Indicator;
-import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
@@ -55,6 +54,7 @@ public class TendenciaGeneticaManager {
     private Date fechaInicio = null;
     private int step = 0;
     private boolean actualizarTendencia = false;
+    private String individuosTendencia;
     private final IndicadorController indicadorController;
 
     public TendenciaGeneticaManager() throws ClassNotFoundException, SQLException {
@@ -67,12 +67,16 @@ public class TendenciaGeneticaManager {
         tendenciaDAO = new TendenciaDAO(conn);
         individuoDAO = new IndividuoTendenciaDAO(conn);
         fechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");
-        step = Integer.parseInt(parametroDAO.getValorParametro("STEP_PROCESAR_TENDENCIA"));
+        step = parametroDAO.getIntValorParametro("STEP_PROCESAR_TENDENCIA");
         actualizarTendencia = Boolean.parseBoolean(parametroDAO.getValorParametro("SN_UPDATE_TENDENCIA"));
+        individuosTendencia = parametroDAO.getValorParametro("INDIVIDUOS_TENDENCIA");
     }
 
     public void procesarGenetica() throws ClassNotFoundException, SQLException, ParseException, GeneticException {
         //this.crearIndividuos();
+        if (individuosTendencia != null) {
+            this.crearIndividuos(individuosTendencia.split(","));
+        }
         for (int i = 0; i < 10; i++) {
             Poblacion poblacion = this.consultarPoblacion();
             Poblacion procesarGeneticaPoblacion = this.procesarGeneticaPoblacion(poblacion);
@@ -125,10 +129,27 @@ public class TendenciaGeneticaManager {
         }
     }
 
+    private void crearIndividuos(String[] individuos) throws ClassNotFoundException, SQLException, ParseException, GeneticException {
+        for (String individuoStr : individuos) {
+            Individuo indConsulta = new Individuo(individuoStr);
+            individuoDAO.consultarDetalleIndividuo(indicadorController, indConsulta);
+            Individuo ind = new Individuo();
+            ind.setOpenIndicators(indConsulta.getOpenIndicators());
+            ind.setCloseIndicators(indConsulta.getCloseIndicators());
+            this.procesarTendencias(ind, true);
+        }
+    }
+
     private void procesarTendencias(IndividuoEstrategia individuoEstrategia) throws ClassNotFoundException, SQLException, ParseException, GeneticException {
+        procesarTendencias(individuoEstrategia, false);
+    }
+
+    private void procesarTendencias(IndividuoEstrategia individuoEstrategia,
+            boolean calcularTendencia) throws ClassNotFoundException, SQLException, ParseException, GeneticException {
         List<ProcesoTendencia> procesoTendenciaList;
         AnalyzeProcesoTendencia analyzeProcesoTendencia;
         ProcesoTendencia procesoTendencia;
+        TendenciasManager tendenciasManager = new TendenciasManager();
         Date fechaProceso = new Date(fechaInicio.getTime());
         List<? extends Indicator> indicadoresTendencia = individuoEstrategia.getOpenIndicators();
         LogUtil.logTime("Individuo=" + individuoEstrategia.getId(), 1);
@@ -139,17 +160,20 @@ public class TendenciaGeneticaManager {
         Date fechaCierre = null;
         Date lastDateForClose = null;
         Date ultimaFechaApertura = null;
-        ParametroTendenciaGenetica parametroTendenciaGenetica = 
-                ParametroTendenciaGeneticaHelper.createParametro(indicadoresTendencia);
+        ParametroTendenciaGenetica parametroTendenciaGenetica
+                = ParametroTendenciaGeneticaHelper.createParametro(indicadoresTendencia);
         while ((fechaProceso != null) && (individuo.getCurrentOrder() == null)) {
             analyzeProcesoTendencia = null;
             procesoTendencia = null;
             assert fechaProceso != null : fechaProceso;
             Date fechaProcesoStep = DateUtil.adicionarMinutos(fechaProceso, step);
             Date fechaProcesoFinal = DateUtil.calcularFechaXDuracion(
-                    (long) parametroTendenciaGenetica.getRangoTendenciaMinutos(), 
+                    (long) parametroTendenciaGenetica.getRangoTendenciaMinutos(),
                     fechaProceso);
-            LogUtil.logTime("Individuo="+individuo.getId()+", Fecha proceso tendencia=" + DateUtil.getDateString(fechaProceso), 1);
+            LogUtil.logTime("Individuo=" + individuo.getId() + ", Fecha proceso tendencia=" + DateUtil.getDateString(fechaProceso), 1);
+            if (calcularTendencia) {
+                tendenciasManager.calcularTendencias(DateUtil.adicionarMinutos(fechaProceso, -1), 0, -1);
+            }
             int cantidadTendenciaFechaProceso = tendenciaDAO.count(fechaProceso);
             if (cantidadTendenciaFechaProceso > parametroTendenciaGenetica.getCantidadTotalIndividuosMinimos()) {
                 if ((actualizarTendencia) || (individuo.getCurrentOrder() == null)) {

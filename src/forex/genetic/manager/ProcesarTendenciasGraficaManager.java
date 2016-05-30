@@ -48,8 +48,8 @@ public class ProcesarTendenciasGraficaManager {
         TendenciaDAO tendenciaDAO = new TendenciaDAO(conn);
         IndividuoDAO individuoDAO = new IndividuoDAO(conn);
         Date fechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");
-        int step = Integer.parseInt(parametroDAO.getValorParametro("STEP_PROCESAR_TENDENCIA"));
-        int rangoMaxMin = Integer.parseInt(parametroDAO.getValorParametro("RANGO_MAX_MIN_TENDENCIA"));
+        int step = parametroDAO.getIntValorParametro("STEP_PROCESAR_TENDENCIA");
+        int rangoMaxMin = parametroDAO.getIntValorParametro("RANGO_MAX_MIN_TENDENCIA");
         boolean actualizarTendencia = Boolean.parseBoolean(parametroDAO.getValorParametro("SN_UPDATE_TENDENCIA"));
 
         List<ProcesoTendencia> procesoTendenciaList;

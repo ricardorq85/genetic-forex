@@ -6,10 +6,7 @@ package forex.genetic;
 
 import forex.genetic.delegate.GeneticTesterDelegate;
 import forex.genetic.delegate.PoblacionDelegate;
-import forex.genetic.entities.Learning;
-import forex.genetic.entities.Poblacion;
 import forex.genetic.manager.PropertiesManager;
-import forex.genetic.manager.io.SerializationPoblacionManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
 import java.io.IOException;
