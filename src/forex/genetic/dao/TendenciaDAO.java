@@ -110,6 +110,19 @@ public class TendenciaDAO {
         }
     }
 
+    public void deleteTendencia(String idIndividuo, Date fechaBase) throws SQLException {
+        String sql = "DELETE FROM TENDENCIA WHERE ID_INDIVIDUO=? AND FECHA_BASE=?";
+        PreparedStatement stmtConsulta = null;
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setString(1, idIndividuo);
+            stmtConsulta.setTimestamp(2, new Timestamp(fechaBase.getTime()));
+            stmtConsulta.executeUpdate();
+        } finally {
+            JDBCUtil.close(stmtConsulta);
+        }
+    }
+
     public List<Tendencia> consultarTendenciasActualizar() throws SQLException {
         List<Tendencia> list = null;
         String sql = "SELECT * FROM (SELECT * FROM TENDENCIA "

@@ -24,15 +24,15 @@ import java.util.List;
  * @author ricardorq85
  */
 public class ProcesarIndividuoThreadBD extends Thread {
-
+    
     private List<Individuo> individuos = null;
     private Connection conn = null;
-
+    
     public ProcesarIndividuoThreadBD(String name, List<Individuo> individuos) {
         super(name);
         this.individuos = individuos;
     }
-
+    
     public void run() {
         try {
             conn = JDBCUtil.getConnection();
@@ -52,13 +52,13 @@ public class ProcesarIndividuoThreadBD extends Thread {
             ex.printStackTrace();
         }
     }
-
+    
     private void procesarIndividuo(Individuo individuo) throws SQLException, ClassNotFoundException {
         DatoHistoricoDAO daoHistorico = new DatoHistoricoDAO(conn);
         OperacionesDAO daoOperaciones = new OperacionesDAO(conn);
         IndividuoDAO daoIndividuo = new IndividuoDAO(conn);
         ProcesoPoblacionDAO daoProceso = new ProcesoPoblacionDAO(conn);
-
+        
         List<Point> points = daoHistorico.consultarHistorico(individuo.getFechaHistorico());
         daoIndividuo.consultarDetalleIndividuoProceso(individuo);
         OperacionesManager operacionesManager = new OperacionesManager();
@@ -66,9 +66,11 @@ public class ProcesarIndividuoThreadBD extends Thread {
             Date lastDate = points.get(points.size() - 1).getDate();
             LogUtil.logTime("Procesar Individuo;" + this.getName() + ";" + individuo.getId() + ";lastDate=" + lastDate, 1);
             List<Order> ordenes = operacionesManager.calcularOperaciones(points, individuo);
+            Order updateOrder = null;
             if (individuo.getFechaApertura() != null) {
                 if (ordenes.get(0).getCloseDate() != null) {
                     daoOperaciones.updateOperacion(individuo, ordenes.get(0), individuo.getFechaApertura());
+                    updateOrder = ordenes.get(0);
                 }
                 ordenes.remove(0);
                 individuo.setFechaApertura(null);
@@ -79,6 +81,10 @@ public class ProcesarIndividuoThreadBD extends Thread {
                 daoProceso.insertProceso(lastDate, individuo.getId());
             }
             conn.commit();
+            if (updateOrder != null) {
+                ordenes.add(updateOrder);
+            }
+            operacionesManager.procesarMaximosReproceso(individuo, ordenes);
             points = daoHistorico.consultarHistorico(lastDate);
             if (individuo.getCurrentOrder() != null) {
                 individuo.setFechaApertura(individuo.getCurrentOrder().getOpenDate());

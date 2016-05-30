@@ -10,7 +10,7 @@ package forex.genetic.util;
  */
 public class Constants {
 
-    public static final String TIPO_TENDENCIA = "ESTADISTICAS_6";
+    public static final String TIPO_TENDENCIA = "ESTADISTICAS_RETROCESO_8";
     public static final String OPERATION_TYPE = "OPERATION_TYPE";
     public static final String INITIAL_INDIVIDUOS = "INITIAL_INDIVIDUOS";
     public static final String INDIVIDUOS = "INDIVIDUOS";

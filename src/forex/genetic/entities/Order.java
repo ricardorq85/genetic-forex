@@ -35,6 +35,33 @@ public class Order implements Serializable {
     private Date closeDate = null;
     private Constants.OperationType tipo = Constants.OperationType.SELL;
     private boolean closeImmediate = false;
+    private double maxPipsRetroceso = 0.0D;
+    private double maxValueRetroceso = 0.0D;
+    private Date maxFechaRetroceso = null;
+
+    public double getMaxPipsRetroceso() {
+        return maxPipsRetroceso;
+    }
+
+    public void setMaxPipsRetroceso(double maxPipsRetroceso) {
+        this.maxPipsRetroceso = maxPipsRetroceso;
+    }
+
+    public double getMaxValueRetroceso() {
+        return maxValueRetroceso;
+    }
+
+    public void setMaxValueRetroceso(double maxValueRetroceso) {
+        this.maxValueRetroceso = maxValueRetroceso;
+    }
+
+    public Date getMaxFechaRetroceso() {
+        return maxFechaRetroceso;
+    }
+
+    public void setMaxFechaRetroceso(Date maxFechaRetroceso) {
+        this.maxFechaRetroceso = maxFechaRetroceso;
+    }
 
     public boolean isCloseImmediate() {
         return closeImmediate;

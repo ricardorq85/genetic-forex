@@ -1,14 +1,21 @@
 package forex.genetic.manager;
 
+import forex.genetic.dao.DatoHistoricoDAO;
+import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.manager.controller.IndicatorController;
 import forex.genetic.util.Constants;
 import forex.genetic.util.NumberUtil;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,7 +24,15 @@ import java.util.List;
  */
 public class OperacionesManager {
 
+    private Connection conn = null;
     private IndicatorController indicatorController = new IndicatorController();
+
+    public OperacionesManager() {
+    }
+
+    public OperacionesManager(Connection conn) {
+        this.conn = conn;
+    }
 
     public boolean hasMinimumCriterion(Individuo individuo) {
         boolean has = true;
@@ -194,5 +209,49 @@ public class OperacionesManager {
             }
         }
         return price;
+    }
+
+    public void procesarMaximosRetroceso(Individuo individuo, Date fechaMaximo) throws ClassNotFoundException, SQLException {
+        OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
+        List<Order> list = operacionesDAO.consultarOperacionesIndividuoRetroceso(individuo, fechaMaximo);
+
+        if (individuo.getOpenIndicators() == null) {
+            individuo.setOpenIndicators(new ArrayList<Indicator>());
+        }
+        if (individuo.getCloseIndicators() == null) {
+            individuo.setCloseIndicators(new ArrayList<Indicator>());
+        }
+        this.procesarMaximosReproceso(individuo, list);
+    }
+
+    public void procesarMaximosReproceso(Individuo individuo, Order orden) throws ClassNotFoundException, SQLException {
+        this.procesarMaximosReproceso(individuo, Collections.singletonList(orden));
+    }
+
+    public void procesarMaximosReproceso(Individuo individuo, List<Order> ordenes) throws ClassNotFoundException, SQLException {
+        DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
+        OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
+        for (int i = 0; i < ordenes.size(); i++) {
+            Order currentOrder = ordenes.get(i);
+            if ((currentOrder != null) && (currentOrder.getOpenDate() != null) && (currentOrder.getCloseDate() != null)) {
+                Point pointRetroceso = datoHistoricoDAO.consultarRetroceso(currentOrder);
+                if (pointRetroceso != null) {
+                    double valueRetroceso = ((currentOrder.getPips() > 0) ? pointRetroceso.getHigh() : pointRetroceso.getLow());
+                    double pips = (currentOrder.getTipo().equals(Constants.OperationType.BUY))
+                            ? (valueRetroceso - currentOrder.getOpenOperationValue()) * PropertiesManager.getPairFactor()
+                            : (-valueRetroceso + currentOrder.getOpenOperationValue()) * PropertiesManager.getPairFactor();
+                    pips = (pips - currentOrder.getOpenSpread());
+                    currentOrder.setMaxPipsRetroceso(pips);
+                    currentOrder.setMaxValueRetroceso(valueRetroceso);
+                    currentOrder.setMaxFechaRetroceso(pointRetroceso.getDate());
+                } else {
+                    currentOrder.setMaxPipsRetroceso(0.0D);
+                    currentOrder.setMaxValueRetroceso(0.0D);
+                    currentOrder.setMaxFechaRetroceso(null);
+                }
+                operacionesDAO.updateMaximosReprocesoOperacion(individuo, currentOrder);
+            }
+        }
+        conn.commit();
     }
 }

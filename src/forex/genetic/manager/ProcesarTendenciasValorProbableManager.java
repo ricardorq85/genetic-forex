@@ -48,7 +48,7 @@ public class ProcesarTendenciasValorProbableManager {
         int step = Integer.parseInt(parametroDAO.getValorParametro("STEP_PROCESAR_TENDENCIA"));
         int rangoMaxMin = Integer.parseInt(parametroDAO.getValorParametro("RANGO_MAX_MIN_TENDENCIA"));
         boolean actualizarTendencia = Boolean.parseBoolean(parametroDAO.getValorParametro("SN_UPDATE_TENDENCIA"));
-        //actualizarTendencia = false;
+        actualizarTendencia = false;
 
         ProcesoTendencia procesoTendencia = null;
         Date fechaProceso = new Date(fechaInicio.getTime());
@@ -100,31 +100,37 @@ public class ProcesarTendenciasValorProbableManager {
                             sl = order.getStopLoss();
                         } else {
                             double tpTmp = order.getTakeProfit();
-                            /*double cambioTendencia = 0.0D;
-                             if (Constants.OperationType.BUY.equals(individuo.getCurrentOrder().getTipo())) {
-                             cambioTendencia = ((procesoTendencia.getValorMasProbable() - order.getOpenOperationValue())
-                             * PropertiesManager.getPairFactor());
-                             } else {
-                             cambioTendencia = ((order.getOpenOperationValue() - procesoTendencia.getValorMasProbable())
-                             * PropertiesManager.getPairFactor());
-                             }
-                             //if (tpTmp < Constants.MIN_PIPS_MOVEMENT) {
-                             if (cambioTendencia < 0) {
-                             order.setCloseImmediate(true);
-                             tp = order.getTakeProfit();
-                             sl = order.getStopLoss();
-                             } else {*/
-                            tp = tpTmp;
+                            double cambioTendencia = 0.0D;
                             if (Constants.OperationType.BUY.equals(individuo.getCurrentOrder().getTipo())) {
-                                sl = Math.max(((order.getOpenOperationValue() - procesoTendencia.getIntervaloPrecio().getLowInterval())
-                                        * 2 * PropertiesManager.getPairFactor()), order.getStopLoss());
+                                tpTmp = (procesoTendencia.getValorMasProbable() - order.getOpenOperationValue())
+                                        * 0.5 * PropertiesManager.getPairFactor();
+                                cambioTendencia = ((procesoTendencia.getValorMasProbable() - order.getOpenOperationValue())
+                                        * PropertiesManager.getPairFactor());
                             } else {
-                                sl = Math.max(((procesoTendencia.getIntervaloPrecio().getHighInterval() - order.getOpenOperationValue())
-                                        * 2 * PropertiesManager.getPairFactor()), order.getStopLoss());
+                                tpTmp = (order.getOpenOperationValue() - procesoTendencia.getValorMasProbable())
+                                        * 0.5 * PropertiesManager.getPairFactor();
+                                cambioTendencia = ((order.getOpenOperationValue() - procesoTendencia.getValorMasProbable())
+                                        * PropertiesManager.getPairFactor());
+                            }                            //if (tpTmp < Constants.MIN_PIPS_MOVEMENT) {
+                            if ((tpTmp < Constants.MIN_PIPS_MOVEMENT) || (cambioTendencia < 0)) {
+                                order.setCloseImmediate(true);
+                                tp = order.getTakeProfit();
+                                sl = order.getStopLoss();
+                            } else {
+                                tp = tpTmp;
+                                sl = order.getStopLoss();
+                                /*if (Constants.OperationType.BUY.equals(individuo.getCurrentOrder().getTipo())) {
+                                 sl = Math.max(((order.getOpenOperationValue() - procesoTendencia.getIntervaloPrecio().getLowInterval())
+                                 * 2 * PropertiesManager.getPairFactor()), order.getStopLoss());
+                                 } else {
+                                 sl = Math.max(((procesoTendencia.getIntervaloPrecio().getHighInterval() - order.getOpenOperationValue())
+                                 * 2 * PropertiesManager.getPairFactor()), order.getStopLoss());
+                                 }*/
                             }
-                            //}
                         }
                     } else if (point != null) {
+                        //if ((precioApertura < procesoTendencia.getIntervaloPrecio().getHighInterval())
+                        //      && (precioApertura > procesoTendencia.getIntervaloPrecio().getLowInterval())) {
                         lastDate = point.getDate();
                         order = new Order();
                         order.setOpenDate(point.getDate());
@@ -133,19 +139,26 @@ public class ProcesarTendenciasValorProbableManager {
                         order.setTipo((byLow) ? Constants.OperationType.BUY : Constants.OperationType.SELL);
                         order.setLot(0.1);
                         order.setOpenSpread(point.getSpread());
-                        tp = (Math.abs(procesoTendencia.getValorMasProbable() - precioApertura)
-                                * 0.5 * PropertiesManager.getPairFactor());
+                        //tp = (Math.abs(procesoTendencia.getValorMasProbable() - precioApertura)
+                        //      * 0.5 * PropertiesManager.getPairFactor());
                         if (byLow) {
-                            sl = Math.max(((precioApertura - procesoTendencia.getIntervaloPrecio().getLowInterval())
-                                    * 2 * PropertiesManager.getPairFactor()), tp * 2);
+                            tp = ((procesoTendencia.getIntervaloPrecio().getHighInterval() - precioApertura)
+                                    * 0.5 * PropertiesManager.getPairFactor());
+                            sl = tp * 2;
+                            //sl = Math.max(((precioApertura - procesoTendencia.getIntervaloPrecio().getLowInterval())
+                            //      * 2 * PropertiesManager.getPairFactor()), tp * 2);
                         } else {
-                            sl = Math.max(((procesoTendencia.getIntervaloPrecio().getHighInterval() - precioApertura)
-                                    * 2 * PropertiesManager.getPairFactor()), tp * 2);
+                            tp = ((precioApertura - procesoTendencia.getIntervaloPrecio().getLowInterval())
+                                    * 0.5 * PropertiesManager.getPairFactor());
+                            sl = tp * 2;
+                            //sl = Math.max(((procesoTendencia.getIntervaloPrecio().getHighInterval() - precioApertura)
+                            //      * 2 * PropertiesManager.getPairFactor()), tp * 2);
                         }
+//                        }
                     }
                     if (order != null) {
-                        order.setTakeProfit(tp);
-                        order.setStopLoss(sl);
+                        order.setTakeProfit((int) tp);
+                        order.setStopLoss((int) sl);
                         individuo.setTakeProfit((int) tp);
                         individuo.setStopLoss((int) sl);
                     }
@@ -156,6 +169,10 @@ public class ProcesarTendenciasValorProbableManager {
                     } else if ((actualizarTendencia) && (procesoTendencia != null)) {
                         LogUtil.logTime("Orden Modificada: " + order.toString(), 1);
                     }
+                    if (DateUtil.diferenciaMinutos(order.getOpenDate(), fechaProceso) >= rangoMaxMin) {
+                        order.setCloseImmediate(true);
+                    }
+
                     individuo.setLot(0.1);
                     individuo.setFechaApertura(order.getOpenDate());
                     individuo.setCurrentOrder(order);
@@ -202,13 +219,13 @@ public class ProcesarTendenciasValorProbableManager {
                     fechaProceso = DateUtil.obtenerFechaMaxima(DateUtil.adicionarMinutos(fechaProceso, step), nextFechaBase);
                 }
             } else {
-                Date fechaHistorico = datoHistoricoDAO.getFechaHistoricaMinima(fechaProceso);
-                if (fechaHistorico == null) {
-                    fechaProceso = null;
-                } else {
-                    fechaProceso = DateUtil.obtenerFechaMaxima(DateUtil.adicionarMinutos(fechaProceso, step),
-                            fechaHistorico);
-                }
+                Date fechaHistorico = datoHistoricoDAO.getFechaHistoricaMinima(DateUtil.adicionarMinutos(fechaProceso, step - 1));
+                /*if (fechaHistorico == null) {
+                 fechaProceso = null;
+                 } else {*/
+                fechaProceso = fechaHistorico;//DateUtil.obtenerFechaMaxima(DateUtil.adicionarMinutos(fechaProceso, step),
+                //fechaHistorico);
+                //}
             }
         }
         if (individuo.getCurrentOrder() != null) {

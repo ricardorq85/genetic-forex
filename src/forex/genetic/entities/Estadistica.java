@@ -28,6 +28,18 @@ public class Estadistica {
     double pipsModaPositivos;
     double pipsModaNegativos;
     double pipsModa;
+    double pipsMaximosRetrocesoPositivos;
+    double pipsMaximosRetrocesoNegativos;
+    double pipsMaximosRetroceso;
+    double pipsMinimosRetrocesoPositivos;
+    double pipsMinimosRetrocesoNegativos;
+    double pipsMinimosRetroceso;
+    double pipsPromedioRetrocesoPositivos;
+    double pipsPromedioRetrocesoNegativos;
+    double pipsPromedioRetroceso;
+    double pipsModaRetrocesoPositivos;
+    double pipsModaRetrocesoNegativos;
+    double pipsModaRetroceso;
     double duracionMinimaPositivos;
     double duracionMinimaNegativos;
     double duracionMinima;
@@ -309,5 +321,106 @@ public class Estadistica {
 
     public void setCantidadTotal(int cantidadTotal) {
         this.cantidadTotal = cantidadTotal;
+    }
+
+    public double getPipsMaximosRetrocesoPositivos() {
+        return pipsMaximosRetrocesoPositivos;
+    }
+
+    public void setPipsMaximosRetrocesoPositivos(double pipsMaximosRetrocesoPositivos) {
+        this.pipsMaximosRetrocesoPositivos = pipsMaximosRetrocesoPositivos;
+    }
+
+    public double getPipsMaximosRetrocesoNegativos() {
+        return pipsMaximosRetrocesoNegativos;
+    }
+
+    public void setPipsMaximosRetrocesoNegativos(double pipsMaximosRetrocesoNegativos) {
+        this.pipsMaximosRetrocesoNegativos = pipsMaximosRetrocesoNegativos;
+    }
+
+    public double getPipsMaximosRetroceso() {
+        return pipsMaximosRetroceso;
+    }
+
+    public void setPipsMaximosRetroceso(double pipsMaximosRetroceso) {
+        this.pipsMaximosRetroceso = pipsMaximosRetroceso;
+    }
+
+    public double getPipsMinimosRetrocesoPositivos() {
+        return pipsMinimosRetrocesoPositivos;
+    }
+
+    public void setPipsMinimosRetrocesoPositivos(double pipsMinimosRetrocesoPositivos) {
+        this.pipsMinimosRetrocesoPositivos = pipsMinimosRetrocesoPositivos;
+    }
+
+    public double getPipsMinimosRetrocesoNegativos() {
+        return pipsMinimosRetrocesoNegativos;
+    }
+
+    public void setPipsMinimosRetrocesoNegativos(double pipsMinimosRetrocesoNegativos) {
+        this.pipsMinimosRetrocesoNegativos = pipsMinimosRetrocesoNegativos;
+    }
+
+    public double getPipsMinimosRetroceso() {
+        return pipsMinimosRetroceso;
+    }
+
+    public void setPipsMinimosRetroceso(double pipsMinimosRetroceso) {
+        this.pipsMinimosRetroceso = pipsMinimosRetroceso;
+    }
+
+    public double getPipsPromedioRetrocesoPositivos() {
+        return pipsPromedioRetrocesoPositivos;
+    }
+
+    public void setPipsPromedioRetrocesoPositivos(double pipsPromedioRetrocesoPositivos) {
+        this.pipsPromedioRetrocesoPositivos = pipsPromedioRetrocesoPositivos;
+    }
+
+    public double getPipsPromedioRetrocesoNegativos() {
+        return pipsPromedioRetrocesoNegativos;
+    }
+
+    public void setPipsPromedioRetrocesoNegativos(double pipsPromedioRetrocesoNegativos) {
+        this.pipsPromedioRetrocesoNegativos = pipsPromedioRetrocesoNegativos;
+    }
+
+    public double getPipsPromedioRetroceso() {
+        return pipsPromedioRetroceso;
+    }
+
+    public void setPipsPromedioRetroceso(double pipsPromedioRetroceso) {
+        this.pipsPromedioRetroceso = pipsPromedioRetroceso;
+    }
+
+    public double getPipsModaRetrocesoPositivos() {
+        return pipsModaRetrocesoPositivos;
+    }
+
+    public void setPipsModaRetrocesoPositivos(double pipsModaRetrocesoPositivos) {
+        this.pipsModaRetrocesoPositivos = pipsModaRetrocesoPositivos;
+    }
+
+    public double getPipsModaRetrocesoNegativos() {
+        return pipsModaRetrocesoNegativos;
+    }
+
+    public void setPipsModaRetrocesoNegativos(double pipsModaRetrocesoNegativos) {
+        this.pipsModaRetrocesoNegativos = pipsModaRetrocesoNegativos;
+    }
+
+    public double getPipsModaRetroceso() {
+        return pipsModaRetroceso;
+    }
+
+    public void setPipsModaRetroceso(double pipsModaRetroceso) {
+        this.pipsModaRetroceso = pipsModaRetroceso;
+    }
+
+    @Override
+    public String toString() {
+        return "Estadistica{" + "cantidadPositivos=" + cantidadPositivos + ", cantidadNegativos=" + cantidadNegativos + ", cantidadTotal=" + cantidadTotal + ", pipsPositivos=" + pipsPositivos + ", pipsNegativos=" + pipsNegativos + ", pips=" + pips + ", pipsMinimosPositivos=" + pipsMinimosPositivos + ", pipsMinimosNegativos=" + pipsMinimosNegativos + ", pipsMinimos=" + pipsMinimos + ", pipsMaximosPositivos=" + pipsMaximosPositivos + ", pipsMaximosNegativos=" + pipsMaximosNegativos + ", pipsMaximos=" + pipsMaximos + ", pipsPromedioPositivos=" + pipsPromedioPositivos + ", pipsPromedioNegativos=" + pipsPromedioNegativos + ", pipsPromedio=" + pipsPromedio + ", pipsModaPositivos=" + pipsModaPositivos + ", pipsModaNegativos=" + pipsModaNegativos + ", pipsModa=" + pipsModa + ", pipsMaximosRetrocesoPositivos=" + pipsMaximosRetrocesoPositivos + ", pipsMaximosRetrocesoNegativos=" + pipsMaximosRetrocesoNegativos + ", pipsMaximosRetroceso=" + pipsMaximosRetroceso + ", pipsMinimosRetrocesoPositivos=" + pipsMinimosRetrocesoPositivos + ", pipsMinimosRetrocesoNegativos=" + pipsMinimosRetrocesoNegativos + ", pipsMinimosRetroceso=" + pipsMinimosRetroceso + ", pipsPromedioRetrocesoPositivos=" + pipsPromedioRetrocesoPositivos + ", pipsPromedioRetrocesoNegativos=" + pipsPromedioRetrocesoNegativos + ", pipsPromedioRetroceso=" + pipsPromedioRetroceso + ", pipsModaRetrocesoPositivos=" + pipsModaRetrocesoPositivos + ", pipsModaRetrocesoNegativos=" + pipsModaRetrocesoNegativos + ", pipsModaRetroceso=" + pipsModaRetroceso + ", duracionMinimaPositivos=" + duracionMinimaPositivos + ", duracionMinimaNegativos=" + duracionMinimaNegativos + ", duracionMinima=" + duracionMinima + ", duracionMaximaPositivos=" + duracionMaximaPositivos + ", duracionMaximaNegativos=" + duracionMaximaNegativos + ", duracionMaxima=" + duracionMaxima + ", duracionPromedioPositivos=" + duracionPromedioPositivos + ", duracionPromedioNegativos=" + duracionPromedioNegativos + ", duracionPromedio=" + duracionPromedio + ", duracionModaPositivos=" + duracionModaPositivos + ", duracionModaNegativos=" + duracionModaNegativos + ", duracionModa=" + duracionModa + ", duracionDesvEstandarPositivos=" + duracionDesvEstandarPositivos + ", duracionDesvEstandarNegativos=" + duracionDesvEstandarNegativos + ", duracionDesvEstandar=" + duracionDesvEstandar + '}';
     }
 }

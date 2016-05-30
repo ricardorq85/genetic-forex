@@ -52,29 +52,30 @@ public class OperacionesDAO {
     public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase) throws SQLException {
         return this.consultarIndividuoOperacionActiva(fechaBase, 500);
     }
-    
+
     public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, int filas) throws SQLException {
         List<Individuo> list = null;
-        String sql = "SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.OPEN_PRICE, OPER.SPREAD, OPER.LOTE "
+        String sql = "SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, "
+                + " OPER.OPEN_PRICE, OPER.SPREAD, OPER.LOTE, OPER.PIPS, OPER.TIPO "
                 + " FROM OPERACION OPER"
                 + " WHERE OPER.FECHA_APERTURA<? AND (OPER.FECHA_CIERRE IS NULL OR OPER.FECHA_CIERRE>?)"
                 + " AND OPER.FECHA_APERTURA>?-30"
                 + " AND OPER.TIPO = 'SELL'"
                 + " AND OPER.ID_INDIVIDUO NOT IN (SELECT ID_INDIVIDUO FROM TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO"
                 + " AND TEND.FECHA_BASE=? AND TIPO_TENDENCIA=?) "
-                + " AND EXISTS (SELECT 1 FROM OPERACION OPER2 " 
-                + "     WHERE OPER2.ID_INDIVIDUO=OPER.ID_INDIVIDUO " 
+                + " AND EXISTS (SELECT 1 FROM OPERACION OPER2 "
+                + "     WHERE OPER2.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
                 + "     AND OPER2.FECHA_CIERRE < OPER.FECHA_APERTURA) "
                 + " AND ROWNUM < ? ";
-        /*sql = "SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.OPEN_PRICE, OPER.SPREAD, OPER.LOTE "
+        /*sql = "SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.OPEN_PRICE, OPER.SPREAD, OPER.LOTE, OPER.PIPS, OPER.TIPO "
                 + " FROM OPERACION OPER"
                 + " WHERE OPER.FECHA_APERTURA<? AND (OPER.FECHA_CIERRE IS NULL OR OPER.FECHA_CIERRE>?)"
                 + " AND OPER.FECHA_APERTURA>?-30"
                 + " AND OPER.TIPO = 'SELL'"
                 + " AND (OPER.ID_INDIVIDUO NOT IN (SELECT ID_INDIVIDUO FROM TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO"
-                + " AND TEND.FECHA_BASE=? AND TIPO_TENDENCIA=?) "
+                + " AND TEND.FECHA_BASE=? AND (TIPO_TENDENCIA=? OR 1=1)) "
                 + " OR 1=1)"
-                + " AND OPER.ID_INDIVIDUO='1329366953841.3584'"
+                + " AND OPER.ID_INDIVIDUO='1329698332371.78'"
                 + " AND ROWNUM < ?";*/
 
         PreparedStatement stmtConsulta = null;
@@ -110,7 +111,8 @@ public class OperacionesDAO {
     }
 
     public void updateOperacion(Individuo individuo, Order operacion, Date fechaApertura) throws SQLException {
-        String sql = "UPDATE OPERACION SET FECHA_CIERRE=?, PIPS=? WHERE ID_INDIVIDUO=? AND FECHA_APERTURA=?";
+        String sql = "UPDATE OPERACION SET FECHA_CIERRE=?, PIPS=? "
+                + " WHERE ID_INDIVIDUO=? AND FECHA_APERTURA=?";
 
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setTimestamp(1, new Timestamp(operacion.getCloseDate().getTime()));
@@ -121,9 +123,27 @@ public class OperacionesDAO {
         JDBCUtil.close(statement);
     }
 
+    public void updateMaximosReprocesoOperacion(Individuo individuo, Order operacion) throws SQLException {
+        String sql = "UPDATE OPERACION SET MAX_PIPS_RETROCESO=?, MAX_VALUE_RETROCESO=?, MAX_FECHA_RETROCESO=? "
+                + " WHERE ID_INDIVIDUO=? AND FECHA_APERTURA=?";
+
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setDouble(1, operacion.getMaxPipsRetroceso());
+        statement.setDouble(2, operacion.getMaxValueRetroceso());
+        if (operacion.getMaxFechaRetroceso() != null) {
+            statement.setTimestamp(3, new Timestamp(operacion.getMaxFechaRetroceso().getTime()));
+        } else {
+            statement.setNull(3, java.sql.Types.DATE);
+        }
+        statement.setString(4, individuo.getId());
+        statement.setTimestamp(5, new Timestamp(operacion.getOpenDate().getTime()));
+        statement.executeUpdate();
+        JDBCUtil.close(statement);
+    }
+
     public void insertOperaciones(Individuo individuo, List<Order> operaciones) throws SQLException {
         String sql = "INSERT INTO OPERACION(ID_INDIVIDUO, TAKE_PROFIT, STOP_LOSS, "
-                + "FECHA_APERTURA, FECHA_CIERRE, SPREAD, OPEN_PRICE, PIPS, LOTE, TIPO) "
+                + " FECHA_APERTURA, FECHA_CIERRE, SPREAD, OPEN_PRICE, PIPS, LOTE, TIPO) "
                 + " VALUES (?,?,?,?,?,?,?,?,?,?)";
 
         for (int i = 0; i < operaciones.size(); i++) {
@@ -139,7 +159,6 @@ public class OperacionesDAO {
             } else {
                 statement.setNull(5, java.sql.Types.DATE);
             }
-
             statement.setDouble(6, order.getOpenSpread());
             statement.setDouble(7, order.getOpenOperationValue());
             statement.setDouble(8, order.getPips());
@@ -149,5 +168,29 @@ public class OperacionesDAO {
             statement.executeUpdate();
             JDBCUtil.close(statement);
         }
+    }
+
+    public List<Order> consultarOperacionesIndividuoRetroceso(Individuo ind, Date fechaMaximo) throws SQLException {
+        List<Order> list = null;
+        String sql = "SELECT OPER.ID_INDIVIDUO, OPER.TAKE_PROFIT, OPER.STOP_LOSS, "
+                + " OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.SPREAD, OPER.OPEN_PRICE, OPER.LOTE, OPER.PIPS, "
+                + " OPER.TIPO, OPER.MAX_PIPS_RETROCESO, OPER.MAX_VALUE_RETROCESO, OPER.MAX_FECHA_RETROCESO "
+                + " FROM OPERACION OPER "
+                + " WHERE OPER.TIPO='SELL' AND ID_INDIVIDUO=? AND FECHA_APERTURA<=? AND MAX_PIPS_RETROCESO IS NULL";
+
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+
+        stmtConsulta = this.connection.prepareStatement(sql);
+        stmtConsulta.setString(1, ind.getId());
+        stmtConsulta.setTimestamp(2, new Timestamp(fechaMaximo.getTime()));
+        resultado = stmtConsulta.executeQuery();
+
+        list = OperacionHelper.operacionesIndividuo(resultado);
+
+        JDBCUtil.close(resultado);
+        JDBCUtil.close(stmtConsulta);
+
+        return list;
     }
 }

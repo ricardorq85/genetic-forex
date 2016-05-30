@@ -15,6 +15,7 @@ import forex.genetic.entities.indicator.Rsi;
 import forex.genetic.entities.indicator.Sar;
 import forex.genetic.dao.helper.BasePointHelper;
 import forex.genetic.entities.DoubleInterval;
+import forex.genetic.entities.Order;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -373,5 +374,41 @@ public class DatoHistoricoDAO {
             JDBCUtil.close(stmtConsulta);
         }
         return maximoMinimo;
+    }
+
+    public Point consultarRetroceso(Order orden) throws SQLException {
+        String sql = null;
+        if (orden.getPips() > 0) {
+            sql = "SELECT * FROM DATOHISTORICO DH WHERE HIGH=(SELECT MAX(HIGH) MAXIMO FROM DATOHISTORICO "
+                    + " WHERE FECHA>? AND FECHA<? AND HIGH>?) "
+                    + " AND FECHA>? AND FECHA<? AND HIGH>? AND ROWNUM<2";
+        } else {
+            sql = "SELECT * FROM DATOHISTORICO DH WHERE LOW=(SELECT MIN(LOW) MINIMO FROM DATOHISTORICO "
+                    + " WHERE FECHA>? AND FECHA<? AND LOW<?) "
+                    + " AND FECHA>? AND FECHA<? AND LOW<? AND ROWNUM<2";            
+        }
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+        List<Point> points = null;
+        Point point = null;
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setTimestamp(1, new Timestamp(orden.getOpenDate().getTime()));
+            stmtConsulta.setTimestamp(2, new Timestamp(orden.getCloseDate().getTime()));
+            stmtConsulta.setDouble(3, orden.getOpenOperationValue());
+            stmtConsulta.setTimestamp(4, new Timestamp(orden.getOpenDate().getTime()));
+            stmtConsulta.setTimestamp(5, new Timestamp(orden.getCloseDate().getTime()));
+            stmtConsulta.setDouble(6, orden.getOpenOperationValue());
+
+            resultado = stmtConsulta.executeQuery();
+            points = BasePointHelper.createPoints(resultado);
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+        if (points.size() > 0) {
+            point = points.get(0);
+        }
+        return point;
     }
 }

@@ -96,6 +96,15 @@ public class IndividuoHelper {
                     order.setOpenSpread(resultado.getDouble("SPREAD"));
                     order.setTakeProfit(ind.getTakeProfit());
                     order.setStopLoss(ind.getStopLoss());
+                    /*                    if (resultado.getObject("MAX_PIPS_RETROCESO") != null) {
+                     order.setMaxPipsRetroceso(resultado.getDouble("MAX_PIPS_RETROCESO"));
+                     }
+                     if (resultado.getObject("MAX_VALUE_RETROCESO") != null) {
+                     order.setMaxValueRetroceso(resultado.getDouble("MAX_VALUE_RETROCESO"));
+                     }
+                     if (resultado.getDate("MAX_FECHA_RETROCESO") != null) {
+                     order.setMaxFechaRetroceso(new Date(resultado.getDate("MAX_FECHA_RETROCESO").getTime()));
+                     }*/
                     ind.setCurrentOrder(order);
                 }
             }

@@ -7,6 +7,7 @@ package forex.genetic.dao.helper;
 import forex.genetic.entities.Estadistica;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
+import forex.genetic.util.Constants;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -42,6 +43,21 @@ public class OperacionHelper {
             estadistica.setPipsModaNegativos(resultado.getDouble("PIPS_MODA_NEG"));
             estadistica.setPipsModa(resultado.getDouble("PIPS_MODA"));
 
+            estadistica.setPipsMaximosRetrocesoPositivos(resultado.getDouble("PIPS_RETROCESO_MAXIMO_POS"));
+            estadistica.setPipsMinimosRetrocesoPositivos(resultado.getDouble("PIPS_RETROCESO_MINIMO_POS"));
+            estadistica.setPipsPromedioRetrocesoPositivos(resultado.getDouble("PIPS_RETROCESO_PROMEDIO_POS"));
+            estadistica.setPipsModaRetrocesoPositivos(resultado.getDouble("PIPS_RETROCESO_MODA_POS"));
+
+            estadistica.setPipsMaximosRetrocesoNegativos(resultado.getDouble("PIPS_RETROCESO_MAXIMO_NEG"));
+            estadistica.setPipsMinimosRetrocesoNegativos(resultado.getDouble("PIPS_RETROCESO_MINIMO_NEG"));
+            estadistica.setPipsPromedioRetrocesoNegativos(resultado.getDouble("PIPS_RETROCESO_PROMEDIO_NEG"));
+            estadistica.setPipsModaRetrocesoNegativos(resultado.getDouble("PIPS_RETROCESO_MODA_NEG"));
+
+            estadistica.setPipsMaximosRetroceso(resultado.getDouble("PIPS_RETROCESO_MAXIMO_TOTAL"));
+            estadistica.setPipsMinimosRetroceso(resultado.getDouble("PIPS_RETROCESO_MINIMO_TOTAL"));
+            estadistica.setPipsPromedioRetroceso(resultado.getDouble("PIPS_RETROCESO_PROMEDIO_TOTAL"));
+            estadistica.setPipsModaRetroceso(resultado.getDouble("PIPS_RETROCESO_MODA_TOTAL"));
+
             estadistica.setDuracionMinimaPositivos(resultado.getDouble("DUR_MIN_POS"));
             estadistica.setDuracionMinimaNegativos(resultado.getDouble("DUR_MIN_NEG"));
             estadistica.setDuracionMinima(resultado.getDouble("DUR_MIN"));
@@ -76,11 +92,46 @@ public class OperacionHelper {
             }
             order.setOpenOperationValue(resultado.getDouble("OPEN_PRICE"));
             order.setOpenSpread(resultado.getDouble("SPREAD"));
+            order.setPips(resultado.getDouble("PIPS"));
+            order.setTipo("SELL".equalsIgnoreCase(resultado.getString("TIPO"))
+                    ? Constants.OperationType.SELL : Constants.OperationType.BUY);
             order.setTakeProfit(ind.getTakeProfit());
             order.setStopLoss(ind.getStopLoss());
             ind.setCurrentOrder(order);
 
             list.add(ind);
+        }
+        return list;
+    }
+
+    public static List<Order> operacionesIndividuo(ResultSet resultado) throws SQLException {
+        List<Order> list = new ArrayList<Order>();
+        while (resultado.next()) {
+            Order order = new Order();
+            order.setLot(resultado.getDouble("LOTE"));
+            order.setOpenDate(new Date(resultado.getTimestamp("FECHA_APERTURA").getTime()));
+            if (resultado.getObject("FECHA_CIERRE") != null) {
+                order.setCloseDate(new Date(resultado.getTimestamp("FECHA_CIERRE").getTime()));
+            }
+            order.setOpenOperationValue(resultado.getDouble("OPEN_PRICE"));
+            order.setOpenSpread(resultado.getDouble("SPREAD"));
+            order.setPips(resultado.getDouble("PIPS"));
+            order.setTipo("SELL".equalsIgnoreCase(resultado.getString("TIPO"))
+                    ? Constants.OperationType.SELL : Constants.OperationType.BUY);
+            order.setTakeProfit(resultado.getDouble("TAKE_PROFIT"));
+            order.setStopLoss(resultado.getDouble("STOP_LOSS"));
+
+            if (resultado.getObject("MAX_PIPS_RETROCESO") != null) {
+                order.setMaxPipsRetroceso(resultado.getDouble("MAX_PIPS_RETROCESO"));
+            }
+            if (resultado.getObject("MAX_VALUE_RETROCESO") != null) {
+                order.setMaxPipsRetroceso(resultado.getDouble("MAX_VALUE_RETROCESO"));
+            }
+            if (resultado.getObject("MAX_FECHA_RETROCESO") != null) {
+                order.setCloseDate(new Date(resultado.getTimestamp("MAX_FECHA_RETROCESO").getTime()));
+            }
+
+            list.add(order);
         }
         return list;
     }

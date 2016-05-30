@@ -26,8 +26,6 @@ public class Point implements Serializable {
     private double close = 0.0;
     private int volume = 0;
     private double closeCompare = 0.0;
-    private double min = 0.0;
-    private double max = 0.0;
     private double spread = 0.0;
     private List<? extends Indicator> indicators = null;
 
@@ -84,22 +82,6 @@ public class Point implements Serializable {
 
     public void setIndicators(List<? extends Indicator> indicators) {
         this.indicators = indicators;
-    }
-
-    public double getMax() {
-        return max;
-    }
-
-    public void setMax(double max) {
-        this.max = max;
-    }
-
-    public double getMin() {
-        return min;
-    }
-
-    public void setMin(double min) {
-        this.min = min;
     }
 
     public double getOpen() {

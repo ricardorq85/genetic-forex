@@ -14,6 +14,7 @@ import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.indicator.Indicator;
+import forex.genetic.exception.GeneticException;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -34,9 +35,10 @@ public class ProcesarTendenciasMaxMinManager {
 
     private Connection conn = null;
 
-    public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException {
+    public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, GeneticException {
         conn = JDBCUtil.getConnection();
         OperacionesManager operacionManager = new OperacionesManager();
+        TendenciasManager tendenciasManager = new TendenciasManager();
         OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
         DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
         ParametroDAO parametroDAO = new ParametroDAO(conn);
@@ -67,6 +69,7 @@ public class ProcesarTendenciasMaxMinManager {
             Date fechaProcesoStep = DateUtil.adicionarMinutos(fechaProceso, step);
             Date fechaProcesoFinal = DateUtil.adicionarMinutos(fechaProceso, rangoMaxMin);
             if ((actualizarTendencia) || (individuo.getCurrentOrder() == null)) {
+                tendenciasManager.calcularTendencias(DateUtil.adicionarMinutos(fechaProceso, -1), 0);
                 procesoTendencia = tendenciaDAO.consultarProcesarTendencia(fechaProceso, fechaProcesoFinal);
             }
             LogUtil.logTime("Fecha proceso tendencia=" + DateUtil.getDateString(fechaProceso), 1);
@@ -75,8 +78,7 @@ public class ProcesarTendenciasMaxMinManager {
             Point pointLow = null;
             Point pointHigh = null;
             if (procesoTendencia != null) {
-                LogUtil.logTime("Intervalo precio=" + procesoTendencia.getIntervaloPrecio().toString()
-                        + ";Cantidad=" + procesoTendencia.getCantidad(), 1);
+                LogUtil.logTime("Proceso Tendencia=" + procesoTendencia.toString(), 1);
                 List<Point> pointsLow = datoHistoricoDAO.consultarPuntoByLow(
                         //procesoTendencia.getIntervaloFecha().getLowInterval(),
                         fechaProceso,
@@ -221,13 +223,13 @@ public class ProcesarTendenciasMaxMinManager {
                     fechaProceso = DateUtil.obtenerFechaMaxima(DateUtil.adicionarMinutos(fechaProceso, step), nextFechaBase);
                 }
             } else {
-                Date fechaHistorico = datoHistoricoDAO.getFechaHistoricaMinima(fechaProceso);
-                if (fechaHistorico == null) {
-                    fechaProceso = null;
-                } else {
-                    fechaProceso = DateUtil.obtenerFechaMaxima(DateUtil.adicionarMinutos(fechaProceso, step),
-                            fechaHistorico);
-                }
+                Date fechaHistorico = datoHistoricoDAO.getFechaHistoricaMinima(DateUtil.adicionarMinutos(fechaProceso, step - 1));
+                /*if (fechaHistorico == null) {
+                 fechaProceso = null;
+                 } else {*/
+                fechaProceso = fechaHistorico;//DateUtil.obtenerFechaMaxima(DateUtil.adicionarMinutos(fechaProceso, step),
+                //fechaHistorico);
+                //}
             }
         }
         if (individuo.getCurrentOrder() != null) {
