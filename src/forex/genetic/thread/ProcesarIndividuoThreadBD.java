@@ -34,6 +34,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
         this.individuos = individuos;
     }
     
+    @Override
     public void run() {
         try {
             conn = JDBCUtil.getConnection();

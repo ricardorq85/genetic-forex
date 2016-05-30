@@ -55,6 +55,9 @@ public class PropertiesManager {
     private static String queryProcesarTendenciasValorProbableBase = null;
     private static String queryProcesarTendenciasValorProbableDetalle = null;
     private static String queryTendenciaGenetica = null;
+    private static String urlDB = null;
+    private static String userDB = null;
+    private static String pwdDB = null;
 
     public PropertiesManager() {
     }
@@ -102,10 +105,26 @@ public class PropertiesManager {
                 queryProcesarTendenciasValorProbableBase = PropertiesManager.getPropertyString(Constants.QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE_BASE);
                 queryProcesarTendenciasValorProbableDetalle = PropertiesManager.getPropertyString(Constants.QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE_DETALLE);
                 queryTendenciaGenetica = PropertiesManager.getPropertyString(Constants.QUERY_TENDENCIA_GENETICA);
+
+                urlDB = PropertiesManager.getPropertyString(Constants.URL_DB);
+                userDB = PropertiesManager.getPropertyString(Constants.USER_DB);
+                pwdDB = PropertiesManager.getPropertyString(Constants.PWD_DB);
             }
         };
         t.start();
         return t;
+    }
+
+    public static String getUrlDB() {
+        return urlDB;
+    }
+
+    public static String getUserDB() {
+        return userDB;
+    }
+
+    public static String getPwdDB() {
+        return pwdDB;
     }
 
     public static String getQueryProcesarTendenciasValorProbableBase() {

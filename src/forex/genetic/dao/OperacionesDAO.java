@@ -92,8 +92,8 @@ public class OperacionesDAO {
          + " AND OPER.ID_INDIVIDUO='1341461434490.61685'"
          + " AND ROWNUM < ?";*/
 
-        PreparedStatement stmtConsulta = null;
-        ResultSet resultado = null;
+        PreparedStatement stmtConsulta;
+        ResultSet resultado;
 
         stmtConsulta = this.connection.prepareStatement(sql);
         stmtConsulta.setTimestamp(1, new Timestamp(fechaBase.getTime()));
@@ -130,20 +130,21 @@ public class OperacionesDAO {
     }
 
     public void updateOperacion(Individuo individuo, Order operacion, Date fechaApertura) throws SQLException {
-        String sql = "UPDATE OPERACION SET FECHA_CIERRE=?, PIPS=? "
+        String sql = "UPDATE OPERACION SET FECHA_CIERRE=?, PIPS=?, FECHA=? "
                 + " WHERE ID_INDIVIDUO=? AND FECHA_APERTURA=?";
 
         PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setTimestamp(1, new Timestamp(operacion.getCloseDate().getTime()));
+        statement.setTimestamp(1, new Timestamp(operacion.getCloseDate().getTime()));        
         statement.setDouble(2, operacion.getPips());
-        statement.setString(3, individuo.getId());
-        statement.setTimestamp(4, new Timestamp(operacion.getOpenDate().getTime()));
+        statement.setTimestamp(3, new Timestamp(new java.util.Date().getTime()));
+        statement.setString(4, individuo.getId());
+        statement.setTimestamp(5, new Timestamp(operacion.getOpenDate().getTime()));
         statement.executeUpdate();
         JDBCUtil.close(statement);
     }
 
     public void updateMaximosReprocesoOperacion(Individuo individuo, Order operacion) throws SQLException {
-        String sql = "UPDATE OPERACION SET MAX_PIPS_RETROCESO=?, MAX_VALUE_RETROCESO=?, MAX_FECHA_RETROCESO=? "
+        String sql = "UPDATE OPERACION SET MAX_PIPS_RETROCESO=?, MAX_VALUE_RETROCESO=?, MAX_FECHA_RETROCESO=?, FECHA=? "
                 + " WHERE ID_INDIVIDUO=? AND FECHA_APERTURA=?";
 
         PreparedStatement statement = connection.prepareStatement(sql);
@@ -154,25 +155,25 @@ public class OperacionesDAO {
         } else {
             statement.setNull(3, java.sql.Types.DATE);
         }
-        statement.setString(4, individuo.getId());
-        statement.setTimestamp(5, new Timestamp(operacion.getOpenDate().getTime()));
+        statement.setTimestamp(4, new Timestamp(new java.util.Date().getTime()));
+        statement.setString(5, individuo.getId());
+        statement.setTimestamp(6, new Timestamp(operacion.getOpenDate().getTime()));
         statement.executeUpdate();
         JDBCUtil.close(statement);
     }
 
     public void insertOperaciones(Individuo individuo, List<Order> operaciones) throws SQLException {
         String sql = "INSERT INTO OPERACION(ID_INDIVIDUO, TAKE_PROFIT, STOP_LOSS, "
-                + " FECHA_APERTURA, FECHA_CIERRE, SPREAD, OPEN_PRICE, PIPS, LOTE, TIPO) "
-                + " VALUES (?,?,?,?,?,?,?,?,?,?)";
+                + " FECHA_APERTURA, FECHA_CIERRE, SPREAD, OPEN_PRICE, PIPS, LOTE, TIPO, FECHA) "
+                + " VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
-        for (int i = 0; i < operaciones.size(); i++) {
+        for (Order operacion : operaciones) {
             PreparedStatement statement = connection.prepareStatement(sql);
-            Order order = operaciones.get(i);
+            Order order = operacion;
             statement.setString(1, individuo.getId());
             statement.setDouble(2, individuo.getTakeProfit());
             statement.setDouble(3, individuo.getStopLoss());
             statement.setTimestamp(4, new Timestamp(order.getOpenDate().getTime()));
-
             if (order.getCloseDate() != null) {
                 statement.setTimestamp(5, new Timestamp(order.getCloseDate().getTime()));
             } else {
@@ -183,9 +184,8 @@ public class OperacionesDAO {
             statement.setDouble(8, order.getPips());
             statement.setDouble(9, order.getLot());
             statement.setString(10, order.getTipo().name());
-
+            statement.setTimestamp(11, new Timestamp(new java.util.Date().getTime()));
             statement.executeUpdate();
-            
             JDBCUtil.close(statement);
         }
     }

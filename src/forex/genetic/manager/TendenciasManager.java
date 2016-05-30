@@ -137,7 +137,7 @@ public class TendenciasManager {
                     //if ((estadistica.getCantidadPositivos() > 0) && (estadistica.getCantidadNegativos() > 0)) {
                     //if (estadistica.getCantidadTotal() > 10) {
                     if (true) {
-                        List<Point> historico = null;
+                        List<Point> historico;
                         Point tempPoint = new Point();
                         tempPoint.setDate(fechaProceso);
                         int indexPoint = points.indexOf(tempPoint);

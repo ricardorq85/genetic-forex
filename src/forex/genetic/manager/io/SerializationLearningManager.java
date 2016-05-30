@@ -43,15 +43,17 @@ public class SerializationLearningManager {
                 return accept;
             }
         };
-        File[] files = root.listFiles(nameFilter);
-        for (int i = 0; i < Math.min(1, files.length); i++) {
-            try {
-                File file = files[i];
-                learning = this.readObject(file);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (ClassNotFoundException ex) {
-                ex.printStackTrace();
+        if ((root != null) && (root.exists())) {
+            File[] files = root.listFiles(nameFilter);
+            for (int i = 0; i < Math.min(1, files.length); i++) {
+                try {
+                    File file = files[i];
+                    learning = this.readObject(file);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
         return learning;
@@ -61,8 +63,8 @@ public class SerializationLearningManager {
             throws IOException {
         ObjectOutputStream writer = new ObjectOutputStream(
                 new FileOutputStream(
-                PropertiesManager.getLearningPath()
-                + PropertiesManager.getOperationType() + PropertiesManager.getPair() + ".gfl"));
+                        PropertiesManager.getLearningPath()
+                        + PropertiesManager.getOperationType() + PropertiesManager.getPair() + ".gfl"));
         writer.writeObject(learning);
         writer.close();
     }

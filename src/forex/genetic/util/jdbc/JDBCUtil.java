@@ -1,5 +1,6 @@
 package forex.genetic.util.jdbc;
 
+import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.LogUtil;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -14,9 +15,12 @@ public class JDBCUtil {
     public synchronized static Connection getConnection() throws ClassNotFoundException, SQLException {
         Connection conn = null;
         String driver = "oracle.jdbc.OracleDriver";
-        String url = "jdbc:oracle:thin:@localhost:1521/FOREX2";
-        String username = "FOREX";
-        String password = "forex";
+        String url = PropertiesManager.getUrlDB();
+                //"jdbc:oracle:thin:@localhost:1521/FOREX2";
+        String username = PropertiesManager.getUserDB();
+                //"FOREX";
+        String password = PropertiesManager.getPwdDB();
+                //"forex";
         Class.forName(driver);
         conn = DriverManager.getConnection(url, username, password);
         conn.setAutoCommit(false);
