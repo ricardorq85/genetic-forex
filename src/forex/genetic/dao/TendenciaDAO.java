@@ -5,10 +5,10 @@
 package forex.genetic.dao;
 
 import forex.genetic.dao.helper.TendenciaHelper;
+import forex.genetic.entities.ParametroTendenciaGenetica;
 import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.manager.PropertiesManager;
-import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.Connection;
@@ -218,6 +218,28 @@ public class TendenciaDAO {
         return exists;
     }
 
+    public int count(java.util.Date fecha) throws SQLException {
+        int cantidad = 0;
+        String sql = "SELECT COUNT(*) FROM TENDENCIA "
+                + " WHERE FECHA_BASE=?";
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setTimestamp(1, new Timestamp(fecha.getTime()));
+            resultado = stmtConsulta.executeQuery();
+
+            if (resultado.next()) {
+                cantidad = resultado.getInt(1);
+            }
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+        return cantidad;
+    }
+
     public ProcesoTendencia consultarProcesarTendencia(java.util.Date fecha, java.util.Date fecha2) throws SQLException {
         return this.consultarProcesarTendencia(fecha, fecha2, null);
     }
@@ -280,9 +302,10 @@ public class TendenciaDAO {
         return procesoTendenciaList;
     }
 
-    public List<ProcesoTendencia> consultarTendenciaGenetica(java.util.Date fecha, 
-            java.util.Date fecha2, int groupByHours, 
-            int groupByMinutes, int pipsMinimos, int cantidadIndividuosMinimos) throws SQLException {
+    public List<ProcesoTendencia> consultarTendenciaGenetica(
+            java.util.Date fecha,
+            java.util.Date fecha2,
+            ParametroTendenciaGenetica parametroTendenciaGenetica) throws SQLException {
         List<ProcesoTendencia> procesoTendenciaList = null;
         String sql;
         sql = PropertiesManager.getQueryTendenciaGenetica();
@@ -294,10 +317,17 @@ public class TendenciaDAO {
             stmtConsulta = this.connection.prepareStatement(sql);
             stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
             stmtConsulta.setTimestamp(count++, new Timestamp(fecha2.getTime()));
-            stmtConsulta.setInt(count++, groupByHours);
-            stmtConsulta.setInt(count++, groupByMinutes);
-            stmtConsulta.setInt(count++, pipsMinimos);
-            stmtConsulta.setInt(count++, cantidadIndividuosMinimos);
+
+            stmtConsulta.setInt(count++, parametroTendenciaGenetica.getHorasFechaTendencia());
+            stmtConsulta.setInt(count++, parametroTendenciaGenetica.getMinutosFechaTendencia());
+
+            stmtConsulta.setInt(count++, parametroTendenciaGenetica.getHorasFechaApertura());
+            stmtConsulta.setInt(count++, parametroTendenciaGenetica.getMinutosFechaApertura());
+
+            stmtConsulta.setInt(count++, parametroTendenciaGenetica.getHoras());
+            stmtConsulta.setInt(count++, parametroTendenciaGenetica.getMinutos());
+            stmtConsulta.setInt(count++, parametroTendenciaGenetica.getPipsMinimos());
+            stmtConsulta.setInt(count++, parametroTendenciaGenetica.getCantidadRegistroIndividuosMinimos());
 
             resultado = stmtConsulta.executeQuery();
 

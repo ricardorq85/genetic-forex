@@ -32,14 +32,16 @@ public class IndividuoTendenciaDAO extends IndividuoDAO {
                 + "    (SELECT 1  FROM INDICADOR_INDIVIDUO_TENDENCIAS IIT "
                 + "    WHERE OPER.ID_INDIVIDUO=IIT.ID_INDIVIDUO "
                 + "    ) "
+                + " AND OPER.ID_INDIVIDUO='1422733861735.1037'"
                 + "  GROUP BY OPER.ID_INDIVIDUO "
                 + "  ORDER BY SUM(OPER.PIPS) DESC) "
-                + "WHERE ROWNUM<?";
+                + " WHERE PIPS>0";
+                //+ " WHERE ROWNUM<?";
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
         try {
             stmtConsulta = this.connection.prepareStatement(sql);
-            stmtConsulta.setInt(1, cantidad);
+            //stmtConsulta.setInt(1, cantidad);
             resultado = stmtConsulta.executeQuery();
 
             list = IndividuoHelper.createIndividuosById(resultado);

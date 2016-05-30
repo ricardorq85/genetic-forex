@@ -26,8 +26,16 @@ public class IndicadorIndividuoTendenciaController extends IndicadorController {
             list.add(new PeriodoAgrupadorIndicatorManager(1, 10, "AGRUPADOR_HORAS"));//0-Horas
             list.add(new PeriodoAgrupadorIndicatorManager(1, 60, "AGRUPADOR_MINUTOS"));//1-Minutos
             list.add(new PeriodoAgrupadorIndicatorManager(1, 1440 * 10, "RANGO_MINUTOS"));//2-Rango
-            list.add(new PeriodoAgrupadorIndicatorManager(50, 1000, "MIN_PIPS_MOVEMENT"));//2-Movimiento minimos de pips
-            list.add(new PeriodoAgrupadorIndicatorManager(0, 30, "MIN_CANTIDAD_INDIVIDUOS"));//2-Cantidad de individuos mínimos
+            list.add(new PeriodoAgrupadorIndicatorManager(50, 1000, "MIN_PIPS_MOVEMENT"));//3-Movimiento minimos de pips
+            list.add(new PeriodoAgrupadorIndicatorManager(0, 30, "MIN_CANTIDAD_INDIVIDUOS"));//4-Cantidad de individuos del registro mínimos
+
+            list.add(new PeriodoAgrupadorIndicatorManager(0, 5000, "MIN_CANTIDAD_TOTAL_INDIVIDUOS"));//5-Cantidad de individuos totales mínimos
+
+            list.add(new PeriodoAgrupadorIndicatorManager(1, 10, "AGRUPADOR_HORAS_FECHA_TENDENCIA"));//6-Horas fecha tendencia
+            list.add(new PeriodoAgrupadorIndicatorManager(1, 60, "AGRUPADOR_MINUTOS_FECHA_TENDENCIA"));//7-Minutos fecha tendencia
+
+            list.add(new PeriodoAgrupadorIndicatorManager(1, 10, "AGRUPADOR_HORAS_FECHA_APERTURA"));//8-Horas fecha apertura
+            list.add(new PeriodoAgrupadorIndicatorManager(1, 60, "AGRUPADOR_MINUTOS_FECHA_APERTURA"));//9-Minutos fecha apertura
         }
     }
 }

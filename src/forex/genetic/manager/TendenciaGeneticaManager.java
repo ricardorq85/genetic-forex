@@ -13,6 +13,7 @@ import forex.genetic.entities.AnalyzeProcesoTendencia;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
+import forex.genetic.entities.ParametroTendenciaGenetica;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.ProcesoTendencia;
@@ -21,6 +22,7 @@ import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
+import forex.genetic.manager.helper.ParametroTendenciaGeneticaHelper;
 import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.thread.ProcessGeneracion;
 import forex.genetic.util.Constants;
@@ -99,7 +101,7 @@ public class TendenciaGeneticaManager {
 
     private Poblacion consultarPoblacion() throws SQLException {
         Poblacion poblacion = new Poblacion();
-        List<Individuo> individuosConsultados = individuoDAO.consultarIndividuosTendencia(20);
+        List<Individuo> individuosConsultados = individuoDAO.consultarIndividuosTendencia(50);
         for (Individuo individuo : individuosConsultados) {
             individuoDAO.consultarDetalleIndividuo(indicadorController, individuo);
             poblacion.add(individuo);
@@ -137,39 +139,26 @@ public class TendenciaGeneticaManager {
         Date fechaCierre = null;
         Date lastDateForClose = null;
         Date ultimaFechaApertura = null;
-        int horas = 1;
-        if (indicadoresTendencia.get(0) != null) {
-            horas = Math.max(1, ((IntervalIndicator) indicadoresTendencia.get(0)).getInterval().getLowInterval().intValue());
-        }
-        int minutos = 1;
-        if (indicadoresTendencia.get(1) != null) {
-            minutos = Math.max(1, ((IntervalIndicator) indicadoresTendencia.get(1)).getInterval().getLowInterval().intValue());
-        }
-        int rangoTendenciaMinutos = 1;
-        if (indicadoresTendencia.get(2) != null) {
-            rangoTendenciaMinutos = Math.max(1, ((IntervalIndicator) indicadoresTendencia.get(2)).getInterval().getLowInterval().intValue());
-        }
-        int pipsMinimos = 0;
-        if (indicadoresTendencia.get(3) != null) {
-            pipsMinimos = Math.max(0, ((IntervalIndicator) indicadoresTendencia.get(3)).getInterval().getLowInterval().intValue());
-        }
-        int cantidadIndividuosMinimos = 0;
-        if (indicadoresTendencia.get(4) != null) {
-            cantidadIndividuosMinimos = Math.max(0, ((IntervalIndicator) indicadoresTendencia.get(4)).getInterval().getLowInterval().intValue());
-        }
+        ParametroTendenciaGenetica parametroTendenciaGenetica = 
+                ParametroTendenciaGeneticaHelper.createParametro(indicadoresTendencia);
         while ((fechaProceso != null) && (individuo.getCurrentOrder() == null)) {
             analyzeProcesoTendencia = null;
             procesoTendencia = null;
             assert fechaProceso != null : fechaProceso;
             Date fechaProcesoStep = DateUtil.adicionarMinutos(fechaProceso, step);
-            Date fechaProcesoFinal = DateUtil.calcularFechaXDuracion((long) rangoTendenciaMinutos, fechaProceso);
-            LogUtil.logTime("Fecha proceso tendencia=" + DateUtil.getDateString(fechaProceso), 1);
-            if ((actualizarTendencia) || (individuo.getCurrentOrder() == null)) {
-                procesoTendenciaList = tendenciaDAO.consultarTendenciaGenetica(fechaProceso,
-                        fechaProcesoFinal, horas, minutos, pipsMinimos, cantidadIndividuosMinimos);
-                analyzeProcesoTendencia = analyzeTendencia(procesoTendenciaList,
-                        ((individuo.getCurrentOrder() == null) ? null : individuo.getCurrentOrder().getTipo().equals(Constants.OperationType.BUY)));
-                procesoTendencia = analyzeProcesoTendencia.getProcesoTendencia();
+            Date fechaProcesoFinal = DateUtil.calcularFechaXDuracion(
+                    (long) parametroTendenciaGenetica.getRangoTendenciaMinutos(), 
+                    fechaProceso);
+            LogUtil.logTime("Individuo="+individuo.getId()+", Fecha proceso tendencia=" + DateUtil.getDateString(fechaProceso), 1);
+            int cantidadTendenciaFechaProceso = tendenciaDAO.count(fechaProceso);
+            if (cantidadTendenciaFechaProceso > parametroTendenciaGenetica.getCantidadTotalIndividuosMinimos()) {
+                if ((actualizarTendencia) || (individuo.getCurrentOrder() == null)) {
+                    procesoTendenciaList = tendenciaDAO.consultarTendenciaGenetica(fechaProceso,
+                            fechaProcesoFinal, parametroTendenciaGenetica);
+                    analyzeProcesoTendencia = analyzeTendencia(procesoTendenciaList,
+                            ((individuo.getCurrentOrder() == null) ? null : individuo.getCurrentOrder().getTipo().equals(Constants.OperationType.BUY)));
+                    procesoTendencia = analyzeProcesoTendencia.getProcesoTendencia();
+                }
             }
             Point point = null;
             Boolean byLow = null;
