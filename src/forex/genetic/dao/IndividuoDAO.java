@@ -18,6 +18,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,10 +34,10 @@ public class IndividuoDAO {
         this.connection = connection;
     }
 
-    public List<Individuo> consultarIndividuosPadreRepetidos() throws SQLException {
+    public List<Individuo> consultarIndividuosPadreRepetidos(String tipoProceso) throws SQLException {
         List<Individuo> list = null;
         String sql = "SELECT * FROM (SELECT IND.ID ID_INDIVIDUO FROM INDIVIDUO IND "
-                + "WHERE IND.ID NOT IN (SELECT PR.ID_INDIVIDUO_PADRE FROM PROCESO_REPETIDOS PR)"
+                + "WHERE IND.ID NOT IN (SELECT PR.ID_INDIVIDUO_PADRE FROM PROCESO_REPETIDOS PR WHERE TIPO_PROCESO=?)"
                 + " ORDER BY ID DESC) "
                 + " WHERE ROWNUM<1000";
         PreparedStatement stmtConsulta = null;
@@ -43,6 +45,7 @@ public class IndividuoDAO {
 
         try {
             stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setString(1, tipoProceso);
             resultado = stmtConsulta.executeQuery();
 
             list = IndividuoHelper.createIndividuosById(resultado);
@@ -69,7 +72,9 @@ public class IndividuoDAO {
 
     public List<Individuo> consultarIndividuosRepetidos(Individuo individuoPadre) throws SQLException {
         List<Individuo> list = null;
-        String sql = "SELECT ID_INDIVIDUO2 ID_INDIVIDUO FROM INDIVIDUOS_REPETIDOS WHERE ID_INDIVIDUO1 = ? AND ROWNUM < 100";
+        String sql = "SELECT ID_INDIVIDUO2 ID_INDIVIDUO FROM INDIVIDUOS_REPETIDOS_OPER"
+                //+ "INDIVIDUOS_REPETIDOS "
+                + " WHERE ID_INDIVIDUO1 = ? AND ROWNUM < 100";
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
         try {
@@ -240,5 +245,26 @@ public class IndividuoDAO {
         }
 
         return list;
+    }
+
+    public int getCountIndicadoresOpen(Individuo individuo) throws SQLException {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM INDICADOR_INDIVIDUO II "
+                + " WHERE II.TIPO='OPEN' AND II.INTERVALO_INFERIOR IS NOT NULL " +
+                  " AND II.ID_INDIVIDUO=?";
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setString(1, individuo.getId());
+            resultado = stmtConsulta.executeQuery();
+            if (resultado.next()) {
+                count = resultado.getInt(1);
+            }
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+        return count;
     }
 }

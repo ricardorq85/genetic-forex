@@ -38,6 +38,15 @@ public class Order implements Serializable {
     private double maxPipsRetroceso = 0.0D;
     private double maxValueRetroceso = 0.0D;
     private Date maxFechaRetroceso = null;
+    DoubleInterval maxMinHistoriaApertura = null;
+
+    public DoubleInterval getMaxMinHistoriaApertura() {
+        return maxMinHistoriaApertura;
+    }
+
+    public void setMaxMinHistoriaApertura(DoubleInterval maxMinHistoriaApertura) {
+        this.maxMinHistoriaApertura = maxMinHistoriaApertura;
+    }        
 
     public double getMaxPipsRetroceso() {
         return maxPipsRetroceso;
@@ -224,7 +233,7 @@ public class Order implements Serializable {
     public String toString() {
         return "Order{" + "openOperationValue=" + openOperationValue
                 + ", openDate=" + DateUtil.getDateString(openDate) + ", takeProfit=" + takeProfit + ", stopLoss=" + stopLoss
-                + "\n, pips=" + pips + ", closeDate=" + DateUtil.getDateString(closeDate) + ", tipo=" + tipo + ", closeImmediate=" + closeImmediate + '}';
+                + "\n, pips=" + pips + ", closeDate=" + DateUtil.getDateString(closeDate) + ", tipo=" + tipo + ", closeImmediate=" + closeImmediate + ", spread=" + openSpread + '}';
     }
 
     public boolean comparePattern(Order other) {

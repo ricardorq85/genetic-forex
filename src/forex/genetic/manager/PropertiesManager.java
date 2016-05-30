@@ -53,6 +53,7 @@ public class PropertiesManager {
     private static String queryProcesarTendencias = null;
     private static String queryProcesarTendenciasValorProbable = null;
     private static String queryProcesarTendenciasValorProbableBase = null;
+    private static String queryProcesarTendenciasValorProbableDetalle = null;
 
     public PropertiesManager() {
     }
@@ -98,6 +99,7 @@ public class PropertiesManager {
                 queryProcesarTendencias = PropertiesManager.getPropertyString(Constants.QUERY_PROCESAR_TENDENCIAS);
                 queryProcesarTendenciasValorProbable = PropertiesManager.getPropertyString(Constants.QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE);
                 queryProcesarTendenciasValorProbableBase = PropertiesManager.getPropertyString(Constants.QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE_BASE);
+                queryProcesarTendenciasValorProbableDetalle = PropertiesManager.getPropertyString(Constants.QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE_DETALLE);
             }
         };
         t.start();
@@ -110,6 +112,10 @@ public class PropertiesManager {
 
     public static String getQueryProcesarTendenciasValorProbable() {
         return queryProcesarTendenciasValorProbable;
+    }
+    
+    public static String getQueryProcesarTendenciasValorProbableDetalle() {
+        return queryProcesarTendenciasValorProbableDetalle;
     }
 
     public static String getQueryProcesarTendencias() {

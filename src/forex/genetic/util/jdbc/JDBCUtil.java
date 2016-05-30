@@ -13,7 +13,7 @@ public class JDBCUtil {
     public synchronized static Connection getConnection() throws ClassNotFoundException, SQLException {
         Connection conn = null;
         String driver = "oracle.jdbc.OracleDriver";
-        String url = "jdbc:oracle:thin:@localhost:1521/FOREX";
+        String url = "jdbc:oracle:thin:@localhost:1521/FOREX2";
         String username = "FOREX";
         String password = "forex";
         Class.forName(driver);

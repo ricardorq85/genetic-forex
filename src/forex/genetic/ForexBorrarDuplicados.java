@@ -35,7 +35,7 @@ public class ForexBorrarDuplicados {
         LogUtil.logTime("Inicio: " + id, 1);
         GeneticDelegate.id = Long.toString(id);
         DuplicadosManager manager = new DuplicadosManager();
-        manager.borrarDuplicados();
+        manager.borrarDuplicados("DUPLICADO_OPERACIONES");
         LogUtil.logTime("Fin: " + id, 1);
     }
 }

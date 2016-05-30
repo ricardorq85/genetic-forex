@@ -299,7 +299,7 @@ public class DatoHistoricoDAO {
         List<Point> points = null;
         String sql = "SELECT * FROM DATOHISTORICO "
                 + " WHERE FECHA BETWEEN ? AND ? "
-                + " AND LOW > ? "
+                + " AND HIGH >= ? "
                 + " AND FECHA > (SELECT MIN(DH2.FECHA) FROM DATOHISTORICO DH2 "
                 + " WHERE DH2.FECHA BETWEEN ? AND ? "
                 + " AND DH2.LOW < ?)"
@@ -315,7 +315,7 @@ public class DatoHistoricoDAO {
             stmtConsulta.setDouble(index++, base + (Constants.MIN_PIPS_MOVEMENT / PropertiesManager.getPairFactor()));
             stmtConsulta.setTimestamp(index++, new Timestamp(fechaBase1.getTime()));
             stmtConsulta.setTimestamp(index++, new Timestamp(fechaBase2.getTime()));
-            stmtConsulta.setDouble(index++, base);
+            stmtConsulta.setDouble(index++, base - (Constants.MIN_PIPS_MOVEMENT / PropertiesManager.getPairFactor()));
 
             resultado = stmtConsulta.executeQuery();
             points = BasePointHelper.createPoints(resultado);
@@ -331,7 +331,7 @@ public class DatoHistoricoDAO {
         List<Point> points = null;
         String sql = "SELECT * FROM DATOHISTORICO "
                 + " WHERE FECHA BETWEEN ? AND ? "
-                + " AND HIGH < ? "
+                + " AND LOW <= ? "
                 + " AND FECHA > (SELECT MIN(DH2.FECHA) FROM DATOHISTORICO DH2 "
                 + " WHERE DH2.FECHA BETWEEN ? AND ? "
                 + " AND DH2.HIGH > ?)"
@@ -348,7 +348,7 @@ public class DatoHistoricoDAO {
             stmtConsulta.setDouble(index++, base - (Constants.MIN_PIPS_MOVEMENT / PropertiesManager.getPairFactor()));
             stmtConsulta.setTimestamp(index++, new Timestamp(fechaBase1.getTime()));
             stmtConsulta.setTimestamp(index++, new Timestamp(fechaBase2.getTime()));
-            stmtConsulta.setDouble(index++, base);
+            stmtConsulta.setDouble(index++, base + (Constants.MIN_PIPS_MOVEMENT / PropertiesManager.getPairFactor()));
 
             resultado = stmtConsulta.executeQuery();
             points = BasePointHelper.createPoints(resultado);
@@ -421,5 +421,29 @@ public class DatoHistoricoDAO {
             point = points.get(0);
         }
         return point;
+    }
+
+    public double consultarMaximaDiferencia(Date fecha, String formatoAgrupador) throws SQLException {
+        String sql = "SELECT AVG(MAX_DIFF) AVG_MAX_DIFF FROM ("
+                + "  SELECT (MAX(DH.HIGH)-MIN(DH.LOW)) MAX_DIFF "
+                + "  FROM DATOHISTORICO DH "
+                + "  WHERE DH.FECHA<? "
+                + "  GROUP BY TO_CHAR(DH.FECHA, ?))";
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+        double maximaDiferencia = 0.0D;
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setTimestamp(1, new Timestamp(fecha.getTime()));
+            stmtConsulta.setString(2, formatoAgrupador);
+            resultado = stmtConsulta.executeQuery();
+            if (resultado.next()) {
+                maximaDiferencia = resultado.getDouble("AVG_MAX_DIFF") * PropertiesManager.getPairFactor();
+            }
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+        return maximaDiferencia;
     }
 }

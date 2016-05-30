@@ -140,12 +140,13 @@ public class ProcesoPoblacionDAO {
         return processed;
     }
 
-    public void insertProcesoRepetidos(String idIndividuo) throws SQLException {
-        String sql = "INSERT INTO PROCESO_REPETIDOS(ID_INDIVIDUO_PADRE, FECHA_PROCESO) VALUES (?, SYSDATE)";
+    public void insertProcesoRepetidos(String idIndividuo, String tipoProceso) throws SQLException {
+        String sql = "INSERT INTO PROCESO_REPETIDOS(ID_INDIVIDUO_PADRE, FECHA_PROCESO, TIPO_PROCESO) VALUES (?, SYSDATE, ?)";
         PreparedStatement stmtConsulta = null;
         try {
             stmtConsulta = this.connection.prepareStatement(sql);
             stmtConsulta.setString(1, idIndividuo);
+            stmtConsulta.setString(2, tipoProceso);
             stmtConsulta.executeUpdate();
         } finally {
             JDBCUtil.close(stmtConsulta);

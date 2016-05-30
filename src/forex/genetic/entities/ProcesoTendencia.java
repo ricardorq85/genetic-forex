@@ -21,6 +21,15 @@ public class ProcesoTendencia {
     private int cantidad = 0;
     private Interval<Date> intervaloFecha = null;
     private double precioBasePromedio = 0.0D;
+    private double probabilidad = 0.0D;
+
+    public double getProbabilidad() {
+        return probabilidad;
+    }
+
+    public void setProbabilidad(double probabilidad) {
+        this.probabilidad = probabilidad;
+    }
 
     public Date getFechaBase() {
         return fechaBase;
@@ -96,6 +105,10 @@ public class ProcesoTendencia {
 
     @Override
     public String toString() {
-        return "ProcesoTendencia{" + "intervaloPrecio=" + intervaloPrecio + ", valorMasProbable=" + valorMasProbable + ", pipsMasProbable=" + pipsMasProbable + ", cantidad=" + cantidad + ", intervaloFecha=" + intervaloFecha + ", precioBasePromedio=" + precioBasePromedio + '}';
+        return "ProcesoTendencia{" + "fechaBase=" + fechaBase + ", tipo=" + tipo + ", fechaBaseFin=" + fechaBaseFin + ", "
+                + " \n intervaloPrecio=" + intervaloPrecio + ", valorMasProbable=" + valorMasProbable + ", pipsMasProbable=" + pipsMasProbable + ", cantidad=" + cantidad + ", intervaloFecha=" + intervaloFecha + ", precioBasePromedio=" + precioBasePromedio + ", probabilidad=" + probabilidad + '}';
     }
+    
+    
+    
 }

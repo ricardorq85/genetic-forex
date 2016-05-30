@@ -12,6 +12,7 @@ import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.manager.OperacionesManager;
+import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.Connection;
@@ -64,7 +65,8 @@ public class ProcesarIndividuoThreadBD extends Thread {
         OperacionesManager operacionesManager = new OperacionesManager(conn);
         while ((points != null) && (!points.isEmpty())) {
             Date lastDate = points.get(points.size() - 1).getDate();
-            LogUtil.logTime("Procesar Individuo;" + this.getName() + ";" + individuo.getId() + ";lastDate=" + lastDate, 1);
+            LogUtil.logTime("Procesar Individuo;" + this.getName() + ";" + individuo.getId() + ";lastDate=" + 
+                    DateUtil.getDateString(lastDate), 1);
             List<Order> ordenes = operacionesManager.calcularOperaciones(points, individuo);
             Order updateOrder = null;
             if (individuo.getFechaApertura() != null) {

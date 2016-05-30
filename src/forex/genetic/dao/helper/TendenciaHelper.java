@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 /**
  *
@@ -72,35 +73,49 @@ public class TendenciaHelper {
     public static ProcesoTendencia createProcesoTendencia(ResultSet resultado) throws SQLException {
         ProcesoTendencia obj = null;
         if (resultado.next()) {
-            obj = new ProcesoTendencia();
-            Interval<Date> intervaloFecha = new DateInterval();
-            Timestamp ts = resultado.getTimestamp("MIN_FECHA");
-            if (ts != null) {
-                intervaloFecha.setLowInterval(new Date(ts.getTime()));
-            }
-            ts = resultado.getTimestamp("MAX_FECHA");
-            if (ts != null) {
-                intervaloFecha.setHighInterval(new Date(ts.getTime()));
-            }
-            Interval<Double> intervaloPrecio = new DoubleInterval("");
-            if (resultado.getObject("MIN_PRECIO") != null) {
-                intervaloPrecio.setLowInterval(resultado.getDouble("MIN_PRECIO"));
-            }
-            if (resultado.getObject("MAX_PRECIO") != null) {
-                intervaloPrecio.setHighInterval(resultado.getDouble("MAX_PRECIO"));
-            }
+            obj = mapProcesoTendencia(resultado);
+        }
+        return obj;
+    }
 
-            obj.setCantidad(resultado.getInt("CANTIDAD"));
-            obj.setValorMasProbable(resultado.getDouble("VALOR_MAS_PROBABLE"));
-            obj.setPipsMasProbable(resultado.getDouble("PIPS_MAS_PROBABLE"));
-            obj.setPrecioBasePromedio(resultado.getDouble("PRECIO_BASE_PROM"));
-            obj.setIntervaloFecha(intervaloFecha);
-            obj.setIntervaloPrecio(intervaloPrecio);
+    public static List<ProcesoTendencia> createProcesoTendenciaDetail(ResultSet resultado) throws SQLException {
+        List<ProcesoTendencia> obj = new ArrayList<ProcesoTendencia>();
+        while (resultado.next()) {
+            obj.add(mapProcesoTendencia(resultado));
+        }
+        return obj;
+    }
 
-            if ((intervaloFecha.getLowInterval() == null) || (intervaloFecha.getHighInterval() == null)
-                    || (intervaloPrecio.getLowInterval() == null) || (intervaloPrecio.getHighInterval() == null)) {
-                obj = null;
-            }
+    private static ProcesoTendencia mapProcesoTendencia(ResultSet resultado) throws SQLException {
+        ProcesoTendencia obj = new ProcesoTendencia();
+        Interval<Date> intervaloFecha = new DateInterval();
+        Timestamp ts = resultado.getTimestamp("MIN_FECHA");
+        if (ts != null) {
+            intervaloFecha.setLowInterval(new Date(ts.getTime()));
+        }
+        ts = resultado.getTimestamp("MAX_FECHA");
+        if (ts != null) {
+            intervaloFecha.setHighInterval(new Date(ts.getTime()));
+        }
+        Interval<Double> intervaloPrecio = new DoubleInterval("");
+        if (resultado.getObject("MIN_PRECIO") != null) {
+            intervaloPrecio.setLowInterval(resultado.getDouble("MIN_PRECIO"));
+        }
+        if (resultado.getObject("MAX_PRECIO") != null) {
+            intervaloPrecio.setHighInterval(resultado.getDouble("MAX_PRECIO"));
+        }
+
+        obj.setCantidad(resultado.getInt("CANTIDAD"));
+        obj.setValorMasProbable(resultado.getDouble("VALOR_MAS_PROBABLE"));
+        obj.setPipsMasProbable(resultado.getDouble("PIPS_MAS_PROBABLE"));
+        obj.setPrecioBasePromedio(resultado.getDouble("PRECIO_BASE_PROM"));
+        obj.setProbabilidad(resultado.getDouble("PROM_PROB"));
+        obj.setIntervaloFecha(intervaloFecha);
+        obj.setIntervaloPrecio(intervaloPrecio);
+
+        if ((intervaloFecha.getLowInterval() == null) || (intervaloFecha.getHighInterval() == null)
+                || (intervaloPrecio.getLowInterval() == null) || (intervaloPrecio.getHighInterval() == null)) {
+            obj = null;
         }
         return obj;
     }

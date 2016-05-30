@@ -32,6 +32,24 @@ public class Tendencia implements Serializable {
     private Date fecha;
     private double probabilidad;
     private Date fechaCierre;
+    private int tipoCalculo;
+    private double pipsReales;
+
+    public double getPipsReales() {
+        return pipsReales;
+    }
+
+    public void setPipsReales(double pipsReales) {
+        this.pipsReales = pipsReales;
+    }
+
+    public int getTipoCalculo() {
+        return tipoCalculo;
+    }
+
+    public void setTipoCalculo(int tipoCalculo) {
+        this.tipoCalculo = tipoCalculo;
+    }
 
     public Tendencia() {
     }
@@ -183,4 +201,10 @@ public class Tendencia implements Serializable {
     public void setProbabilidadPositivos(double probabilidadPositivos) {
         this.probabilidadPositivos = probabilidadPositivos;
     }
+
+    @Override
+    public String toString() {
+        return "Tendencia{" + "tendencia=" + ", individuo=" + individuo + tendencia + ", fechaBase=" + fechaBase + ", precioBase=" + precioBase + ", fechaTendencia=" + fechaTendencia + ", pips=" + pips + ", precioCalculado=" + precioCalculado + ", tipoTendencia=" + tipoTendencia + ", fechaApertura=" + fechaApertura + ", precioApertura=" + precioApertura + ", duracion=" + duracion + ", pipsActuales=" + pipsActuales + ", duracionActual=" + duracionActual + ", probabilidadPositivos=" + probabilidadPositivos + ", probabilidadNegativos=" + probabilidadNegativos + ", fecha=" + fecha + ", probabilidad=" + probabilidad + ", fechaCierre=" + fechaCierre + ", tipoCalculo=" + tipoCalculo + '}';
+    }
+
 }

@@ -64,7 +64,7 @@ public class DateUtil {
     }
 
     public static Date calcularFechaXDuracion(long duracionMinutos, Date fechaBase) {
-        Date fechaCalculadaInicial = new Date(fechaBase.getTime() + ((long) duracionMinutos * 60 * 1000));
+        Date fechaCalculadaInicial = new Date(fechaBase.getTime() + ((long) (duracionMinutos) * 60 * 1000));
 
         Date fechaCalculada = adicionarDuracion(fechaBase, fechaCalculadaInicial);
         return fechaCalculada;
@@ -94,7 +94,9 @@ public class DateUtil {
 
         resultado = (timeMayor - timeMenor) + (semanasMayor - semanasMenor) * 49 * 60 * 60 * 1000;
         gcMayor.setTimeInMillis(timeMenor + resultado);
-        if (((gcMayor.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) && (gcMayor.get(Calendar.HOUR_OF_DAY) > 23))
+        if (((gcMayor.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
+                && (gcMayor.get(Calendar.HOUR_OF_DAY) == 23)
+                && (gcMayor.get(Calendar.MINUTE) > 0))
                 || (gcMayor.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
                 || (gcMayor.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)) {
             resultado = resultado + (49 * 60 * 60 * 1000);

@@ -42,12 +42,12 @@ public class OperacionesManager {
 
     public double calcularPips(List<Point> points, int index, Order operacion) {
         double pips = 0.0D;
-        double stopLossPips = (PropertiesManager.isBuy())
+        double stopLossPips = (operacion.getTipo().equals(Constants.OperationType.BUY))
                 ? (indicatorController.calculateStopLossPrice(points, index, Constants.OperationType.BUY)
                 - operacion.getOpenOperationValue()) * PropertiesManager.getPairFactor()
                 : (-indicatorController.calculateStopLossPrice(points, index, Constants.OperationType.SELL)
                 + operacion.getOpenOperationValue()) * PropertiesManager.getPairFactor();
-        double takeProfitPips = (PropertiesManager.isBuy())
+        double takeProfitPips = (operacion.getTipo().equals(Constants.OperationType.BUY))
                 ? (indicatorController.calculateTakePrice(points, index, Constants.OperationType.BUY)
                 - operacion.getOpenOperationValue()) * PropertiesManager.getPairFactor()
                 : (-indicatorController.calculateTakePrice(points, index, Constants.OperationType.SELL)

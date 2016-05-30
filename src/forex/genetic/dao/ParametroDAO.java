@@ -81,4 +81,19 @@ public class ParametroDAO {
             JDBCUtil.close(stmtConsulta);
         }
     }
+    
+    public void updateValorParametro(String nombre, String valor) throws SQLException {
+        String sql = "UPDATE PARAMETRO SET VALOR=? WHERE NOMBRE=?";
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setString(1, valor);
+            stmtConsulta.setString(2, nombre);
+            stmtConsulta.executeUpdate();
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+    }    
 }

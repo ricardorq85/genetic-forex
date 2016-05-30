@@ -8,6 +8,8 @@ import forex.genetic.dao.helper.TendenciaHelper;
 import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.manager.PropertiesManager;
+import forex.genetic.util.DateUtil;
+import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,73 +31,94 @@ public class TendenciaDAO {
         this.connection = connection;
     }
 
-    public void insertTendencia(Tendencia tendencia) throws SQLException {
-        String sql = "INSERT INTO TENDENCIA(FECHA_BASE, PRECIO_BASE, ID_INDIVIDUO, FECHA_TENDENCIA, PIPS, "
-                + " PRECIO_CALCULADO, TIPO_TENDENCIA, FECHA_APERTURA, OPEN_PRICE, "
-                + " DURACION, PIPS_ACTUALES, DURACION_ACTUAL, PROBABILIDAD_POSITIVOS, PROBABILIDAD_NEGATIVOS, PROBABILIDAD, FECHA, FECHA_CIERRE) "
-                + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    public void insertTendencia(Tendencia tendencia) {
+        PreparedStatement statement = null;
+        try {
+            String sql = "INSERT INTO TENDENCIA(FECHA_BASE, PRECIO_BASE, ID_INDIVIDUO, FECHA_TENDENCIA, PIPS, "
+                    + " PRECIO_CALCULADO, TIPO_TENDENCIA, FECHA_APERTURA, OPEN_PRICE, "
+                    + " DURACION, PIPS_ACTUALES, DURACION_ACTUAL, "
+                    + " PROBABILIDAD_POSITIVOS, PROBABILIDAD_NEGATIVOS, PROBABILIDAD, "
+                    + " FECHA, FECHA_CIERRE, TIPO_CALCULO, PIPS_REALES) "
+                    + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setTimestamp(1, new Timestamp(tendencia.getFechaBase().getTime()));
-        statement.setDouble(2, tendencia.getPrecioBase());
-        statement.setString(3, tendencia.getIndividuo().getId());
-        statement.setTimestamp(4, new Timestamp(tendencia.getFechaTendencia().getTime()));
-        statement.setDouble(5, tendencia.getPips());
-        statement.setDouble(6, tendencia.getPrecioCalculado());
-        statement.setString(7, tendencia.getTipoTendencia());
-        statement.setTimestamp(8, new Timestamp(tendencia.getFechaApertura().getTime()));
-        statement.setDouble(9, tendencia.getPrecioApertura());
-        statement.setLong(10, tendencia.getDuracion());
-        statement.setDouble(11, tendencia.getPipsActuales());
-        statement.setLong(12, tendencia.getDuracionActual());
-        statement.setDouble(13, tendencia.getProbabilidadPositivos());
-        statement.setDouble(14, tendencia.getProbabilidadNegativos());
-        statement.setDouble(15, tendencia.getProbabilidad());
-        statement.setTimestamp(16, new Timestamp(tendencia.getFecha().getTime()));
-        if (tendencia.getFechaCierre() == null) {
-            statement.setNull(17, java.sql.Types.DATE);
-        } else {
-            statement.setTimestamp(17, new Timestamp(tendencia.getFechaCierre().getTime()));
+            statement = connection.prepareStatement(sql);
+            statement.setTimestamp(1, new Timestamp(tendencia.getFechaBase().getTime()));
+            statement.setDouble(2, tendencia.getPrecioBase());
+            statement.setString(3, tendencia.getIndividuo().getId());
+            statement.setTimestamp(4, new Timestamp(tendencia.getFechaTendencia().getTime()));
+            statement.setDouble(5, tendencia.getPips());
+            statement.setDouble(6, tendencia.getPrecioCalculado());
+            statement.setString(7, tendencia.getTipoTendencia());
+            statement.setTimestamp(8, new Timestamp(tendencia.getFechaApertura().getTime()));
+            statement.setDouble(9, tendencia.getPrecioApertura());
+            statement.setLong(10, tendencia.getDuracion());
+            statement.setDouble(11, tendencia.getPipsActuales());
+            statement.setLong(12, tendencia.getDuracionActual());
+            statement.setDouble(13, tendencia.getProbabilidadPositivos());
+            statement.setDouble(14, tendencia.getProbabilidadNegativos());
+            statement.setDouble(15, tendencia.getProbabilidad());
+            statement.setTimestamp(16, new Timestamp(tendencia.getFecha().getTime()));
+            if (tendencia.getFechaCierre() == null) {
+                statement.setNull(17, java.sql.Types.DATE);
+            } else {
+                statement.setTimestamp(17, new Timestamp(tendencia.getFechaCierre().getTime()));
+            }
+            statement.setInt(18, tendencia.getTipoCalculo());
+            statement.setDouble(19, tendencia.getPipsReales());
+
+            statement.executeUpdate();
+            JDBCUtil.close(statement);
+        } catch (SQLException ex) {
+            LogUtil.logTime(tendencia.toString() + "\n" + ex.getMessage(), 1);
+        } finally {
+            JDBCUtil.close(statement);
         }
-        statement.executeUpdate();
-        JDBCUtil.close(statement);
     }
 
-    public void updateTendencia(Tendencia tendencia) throws SQLException {
-        String sql = "UPDATE TENDENCIA SET PRECIO_BASE=?, FECHA_TENDENCIA=?, PIPS=?, "
-                + " PRECIO_CALCULADO=?, TIPO_TENDENCIA=?, FECHA_APERTURA=?, OPEN_PRICE=?, "
-                + " DURACION=?, PIPS_ACTUALES=?, DURACION_ACTUAL=?, PROBABILIDAD_POSITIVOS=?, PROBABILIDAD_NEGATIVOS=?,"
-                + " PROBABILIDAD=?, FECHA=?, FECHA_CIERRE=? "
-                + " WHERE ID_INDIVIDUO=? AND FECHA_BASE=?";
+    public void updateTendencia(Tendencia tendencia) {
+        PreparedStatement statement = null;
+        try {
+            String sql = "UPDATE TENDENCIA SET PRECIO_BASE=?, FECHA_TENDENCIA=?, PIPS=?, "
+                    + " PRECIO_CALCULADO=?, TIPO_TENDENCIA=?, FECHA_APERTURA=?, OPEN_PRICE=?, "
+                    + " DURACION=?, PIPS_ACTUALES=?, DURACION_ACTUAL=?, PROBABILIDAD_POSITIVOS=?, PROBABILIDAD_NEGATIVOS=?,"
+                    + " PROBABILIDAD=?, FECHA=?, FECHA_CIERRE=?, PIPS_REALES=? "
+                    + " WHERE ID_INDIVIDUO=? AND FECHA_BASE=? AND TIPO_CALCULO=? ";
 
-        PreparedStatement statement = connection.prepareStatement(sql);
+            statement = connection.prepareStatement(sql);
 
-        int index = 1;
-        statement.setDouble(index++, tendencia.getPrecioBase());
-        statement.setTimestamp(index++, new Timestamp(tendencia.getFechaTendencia().getTime()));
-        statement.setDouble(index++, tendencia.getPips());
-        statement.setDouble(index++, tendencia.getPrecioCalculado());
-        statement.setString(index++, tendencia.getTipoTendencia());
-        statement.setTimestamp(index++, new Timestamp(tendencia.getFechaApertura().getTime()));
-        statement.setDouble(index++, tendencia.getPrecioApertura());
-        statement.setLong(index++, tendencia.getDuracion());
-        statement.setDouble(index++, tendencia.getPipsActuales());
-        statement.setLong(index++, tendencia.getDuracionActual());
-        statement.setDouble(index++, tendencia.getProbabilidadPositivos());
-        statement.setDouble(index++, tendencia.getProbabilidadNegativos());
-        statement.setDouble(index++, tendencia.getProbabilidad());
-        statement.setTimestamp(index++, new Timestamp(tendencia.getFecha().getTime()));
-        if (tendencia.getFechaCierre() == null) {
-            statement.setNull(index++, java.sql.Types.DATE);
-        } else {
-            statement.setTimestamp(index++, new Timestamp(tendencia.getFechaCierre().getTime()));
+            int index = 1;
+            statement.setDouble(index++, tendencia.getPrecioBase());
+            statement.setTimestamp(index++, new Timestamp(tendencia.getFechaTendencia().getTime()));
+            statement.setDouble(index++, tendencia.getPips());
+            statement.setDouble(index++, tendencia.getPrecioCalculado());
+            statement.setString(index++, tendencia.getTipoTendencia());
+            statement.setTimestamp(index++, new Timestamp(tendencia.getFechaApertura().getTime()));
+            statement.setDouble(index++, tendencia.getPrecioApertura());
+            statement.setLong(index++, tendencia.getDuracion());
+            statement.setDouble(index++, tendencia.getPipsActuales());
+            statement.setLong(index++, tendencia.getDuracionActual());
+            statement.setDouble(index++, tendencia.getProbabilidadPositivos());
+            statement.setDouble(index++, tendencia.getProbabilidadNegativos());
+            statement.setDouble(index++, tendencia.getProbabilidad());
+            statement.setTimestamp(index++, new Timestamp(tendencia.getFecha().getTime()));
+            if (tendencia.getFechaCierre() == null) {
+                statement.setNull(index++, java.sql.Types.DATE);
+            } else {
+                statement.setTimestamp(index++, new Timestamp(tendencia.getFechaCierre().getTime()));
+            }
+            statement.setDouble(index++, tendencia.getPipsReales());
+
+            statement.setString(index++, tendencia.getIndividuo().getId());
+            statement.setTimestamp(index++, new Timestamp(tendencia.getFechaBase().getTime()));
+            statement.setInt(index++, tendencia.getTipoCalculo());
+
+            statement.executeUpdate();
+            JDBCUtil.close(statement);
+        } catch (SQLException ex) {
+            LogUtil.logTime(tendencia.toString() + "\n" + ex.getMessage(), 1);
+        } finally {
+            JDBCUtil.close(statement);
         }
-
-        statement.setString(index++, tendencia.getIndividuo().getId());
-        statement.setTimestamp(index++, new Timestamp(tendencia.getFechaBase().getTime()));
-
-        statement.executeUpdate();
-        JDBCUtil.close(statement);
     }
 
     public void deleteTendencia(String idIndividuo) throws SQLException {
@@ -174,7 +197,7 @@ public class TendenciaDAO {
     public boolean exists(Tendencia ten) throws SQLException {
         boolean exists = false;
         String sql = "SELECT COUNT(*) FROM TENDENCIA "
-                + " WHERE ID_INDIVIDUO=? AND FECHA_BASE=? ";
+                + " WHERE ID_INDIVIDUO=? AND FECHA_BASE=? AND TIPO_CALCULO=?";
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
 
@@ -182,6 +205,7 @@ public class TendenciaDAO {
             stmtConsulta = this.connection.prepareStatement(sql);
             stmtConsulta.setString(1, ten.getIndividuo().getId());
             stmtConsulta.setTimestamp(2, new Timestamp(ten.getFechaBase().getTime()));
+            stmtConsulta.setInt(3, ten.getTipoCalculo());
             resultado = stmtConsulta.executeQuery();
 
             if (resultado.next()) {
@@ -203,7 +227,7 @@ public class TendenciaDAO {
         String sql = null;
         if ("VALOR_PROBABLE".equalsIgnoreCase(tipo)) {
             sql = PropertiesManager.getQueryProcesarTendenciasValorProbable();
-        }else if ("VALOR_PROBABLE_BASE".equalsIgnoreCase(tipo)) {
+        } else if ("VALOR_PROBABLE_BASE".equalsIgnoreCase(tipo)) {
             sql = PropertiesManager.getQueryProcesarTendenciasValorProbableBase();
         } else {
             sql = PropertiesManager.getQueryProcesarTendencias();
@@ -214,6 +238,7 @@ public class TendenciaDAO {
 
         try {
             stmtConsulta = this.connection.prepareStatement(sql);
+            //stmtConsulta.setString(count++, DateUtil.getDateString(fecha));
             stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
 //            stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
 //            stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
@@ -228,5 +253,30 @@ public class TendenciaDAO {
         }
 
         return procesoTendencia;
+    }
+
+    public List<ProcesoTendencia> consultarProcesarTendenciaDetalle(java.util.Date fecha, java.util.Date fecha2, int groupByMinutes) throws SQLException {
+        List<ProcesoTendencia> procesoTendenciaList = null;
+        String sql = null;
+        sql = PropertiesManager.getQueryProcesarTendenciasValorProbableDetalle();
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+        int count = 1;
+
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
+            stmtConsulta.setTimestamp(count++, new Timestamp(fecha2.getTime()));
+            //stmtConsulta.setInt(count, groupByMinutes);
+
+            resultado = stmtConsulta.executeQuery();
+
+            procesoTendenciaList = TendenciaHelper.createProcesoTendenciaDetail(resultado);
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+
+        return procesoTendenciaList;
     }
 }
