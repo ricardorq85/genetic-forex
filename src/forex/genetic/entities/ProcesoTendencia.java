@@ -12,10 +12,55 @@ import java.util.Date;
  */
 public class ProcesoTendencia {
 
-    private Interval<Date> intervaloFecha = null;
+    private Date fechaBase = null;
+    private String tipo = null;
+    private Date fechaBaseFin = null;
     private Interval<Double> intervaloPrecio = null;
     private double valorMasProbable = 0.0D;
+    private double pipsMasProbable = 0.0D;
     private int cantidad = 0;
+    private Interval<Date> intervaloFecha = null;
+    private double precioBasePromedio = 0.0D;
+
+    public Date getFechaBase() {
+        return fechaBase;
+    }
+
+    public void setFechaBase(Date fechaBase) {
+        this.fechaBase = fechaBase;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public Date getFechaBaseFin() {
+        return fechaBaseFin;
+    }
+
+    public void setFechaBaseFin(Date fechaBaseFin) {
+        this.fechaBaseFin = fechaBaseFin;
+    }
+
+    public double getPrecioBasePromedio() {
+        return precioBasePromedio;
+    }
+
+    public void setPrecioBasePromedio(double precioBasePromedio) {
+        this.precioBasePromedio = precioBasePromedio;
+    }
+
+    public double getPipsMasProbable() {
+        return pipsMasProbable;
+    }
+
+    public void setPipsMasProbable(double pipsMasProbable) {
+        this.pipsMasProbable = pipsMasProbable;
+    }
 
     public Interval<Date> getIntervaloFecha() {
         return intervaloFecha;
@@ -51,6 +96,6 @@ public class ProcesoTendencia {
 
     @Override
     public String toString() {
-        return "ProcesoTendencia{" + "intervaloFecha=" + intervaloFecha + ", intervaloPrecio=" + intervaloPrecio + ", valorMasProbable=" + valorMasProbable + ", cantidad=" + cantidad + '}';
+        return "ProcesoTendencia{" + "intervaloPrecio=" + intervaloPrecio + ", valorMasProbable=" + valorMasProbable + ", pipsMasProbable=" + pipsMasProbable + ", cantidad=" + cantidad + ", intervaloFecha=" + intervaloFecha + ", precioBasePromedio=" + precioBasePromedio + '}';
     }
 }

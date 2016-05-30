@@ -11,6 +11,7 @@ import forex.genetic.util.Constants;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -132,6 +133,41 @@ public class OperacionHelper {
             }
 
             list.add(order);
+        }
+        return list;
+    }
+
+    public static List<Individuo> operaciones(ResultSet resultado) throws SQLException {
+        List<Individuo> list = new ArrayList<Individuo>();
+        while (resultado.next()) {
+            Individuo ind = new Individuo();
+            ind.setId(resultado.getString("ID_INDIVIDUO"));
+            Order order = new Order();
+            order.setLot(resultado.getDouble("LOTE"));
+            order.setOpenDate(new Date(resultado.getTimestamp("FECHA_APERTURA").getTime()));
+            if (resultado.getObject("FECHA_CIERRE") != null) {
+                order.setCloseDate(new Date(resultado.getTimestamp("FECHA_CIERRE").getTime()));
+            }
+            order.setOpenOperationValue(resultado.getDouble("OPEN_PRICE"));
+            order.setOpenSpread(resultado.getDouble("SPREAD"));
+            order.setPips(resultado.getDouble("PIPS"));
+            order.setTipo("SELL".equalsIgnoreCase(resultado.getString("TIPO"))
+                    ? Constants.OperationType.SELL : Constants.OperationType.BUY);
+            order.setTakeProfit(resultado.getDouble("TAKE_PROFIT"));
+            order.setStopLoss(resultado.getDouble("STOP_LOSS"));
+
+            if (resultado.getObject("MAX_PIPS_RETROCESO") != null) {
+                order.setMaxPipsRetroceso(resultado.getDouble("MAX_PIPS_RETROCESO"));
+            }
+            if (resultado.getObject("MAX_VALUE_RETROCESO") != null) {
+                order.setMaxPipsRetroceso(resultado.getDouble("MAX_VALUE_RETROCESO"));
+            }
+            if (resultado.getObject("MAX_FECHA_RETROCESO") != null) {
+                order.setCloseDate(new Date(resultado.getTimestamp("MAX_FECHA_RETROCESO").getTime()));
+            }
+
+            ind.setOrdenes(Collections.singletonList(order));
+            list.add(ind);
         }
         return list;
     }

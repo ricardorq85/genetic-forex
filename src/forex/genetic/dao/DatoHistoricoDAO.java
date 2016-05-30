@@ -299,18 +299,23 @@ public class DatoHistoricoDAO {
         List<Point> points = null;
         String sql = "SELECT * FROM DATOHISTORICO "
                 + " WHERE FECHA BETWEEN ? AND ? "
-                //+ " AND LOW BETWEEN ? AND ?"
-                + " AND LOW <= ? "
+                + " AND LOW > ? "
+                + " AND FECHA > (SELECT MIN(DH2.FECHA) FROM DATOHISTORICO DH2 "
+                + " WHERE DH2.FECHA BETWEEN ? AND ? "
+                + " AND DH2.LOW < ?)"
                 + " ORDER BY FECHA ASC";
 
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
         try {
+            int index = 1;
             stmtConsulta = this.connection.prepareStatement(sql);
-            stmtConsulta.setTimestamp(1, new Timestamp(fechaBase1.getTime()));
-            stmtConsulta.setTimestamp(2, new Timestamp(fechaBase2.getTime()));
-            stmtConsulta.setDouble(3, base + (Constants.MIN_PIPS_MOVEMENT / PropertiesManager.getPairFactor()));
-            //stmtConsulta.setDouble(4, base);
+            stmtConsulta.setTimestamp(index++, new Timestamp(fechaBase1.getTime()));
+            stmtConsulta.setTimestamp(index++, new Timestamp(fechaBase2.getTime()));
+            stmtConsulta.setDouble(index++, base + (Constants.MIN_PIPS_MOVEMENT / PropertiesManager.getPairFactor()));
+            stmtConsulta.setTimestamp(index++, new Timestamp(fechaBase1.getTime()));
+            stmtConsulta.setTimestamp(index++, new Timestamp(fechaBase2.getTime()));
+            stmtConsulta.setDouble(index++, base);
 
             resultado = stmtConsulta.executeQuery();
             points = BasePointHelper.createPoints(resultado);
@@ -326,18 +331,24 @@ public class DatoHistoricoDAO {
         List<Point> points = null;
         String sql = "SELECT * FROM DATOHISTORICO "
                 + " WHERE FECHA BETWEEN ? AND ? "
-                //+ " AND HIGH BETWEEN ? AND ?"
-                + " AND HIGH >= ?"
+                + " AND HIGH < ? "
+                + " AND FECHA > (SELECT MIN(DH2.FECHA) FROM DATOHISTORICO DH2 "
+                + " WHERE DH2.FECHA BETWEEN ? AND ? "
+                + " AND DH2.HIGH > ?)"
                 + " ORDER BY FECHA ASC";
 
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
         try {
+            int index = 1;
+            //double valorHigh = base + (Constants.MIN_PIPS_MOVEMENT / PropertiesManager.getPairFactor());
             stmtConsulta = this.connection.prepareStatement(sql);
-            stmtConsulta.setTimestamp(1, new Timestamp(fechaBase1.getTime()));
-            stmtConsulta.setTimestamp(2, new Timestamp(fechaBase2.getTime()));
-            //stmtConsulta.setDouble(3, base);
-            stmtConsulta.setDouble(3, base - (Constants.MIN_PIPS_MOVEMENT / PropertiesManager.getPairFactor()));
+            stmtConsulta.setTimestamp(index++, new Timestamp(fechaBase1.getTime()));
+            stmtConsulta.setTimestamp(index++, new Timestamp(fechaBase2.getTime()));
+            stmtConsulta.setDouble(index++, base - (Constants.MIN_PIPS_MOVEMENT / PropertiesManager.getPairFactor()));
+            stmtConsulta.setTimestamp(index++, new Timestamp(fechaBase1.getTime()));
+            stmtConsulta.setTimestamp(index++, new Timestamp(fechaBase2.getTime()));
+            stmtConsulta.setDouble(index++, base);
 
             resultado = stmtConsulta.executeQuery();
             points = BasePointHelper.createPoints(resultado);
@@ -385,7 +396,7 @@ public class DatoHistoricoDAO {
         } else {
             sql = "SELECT * FROM DATOHISTORICO DH WHERE LOW=(SELECT MIN(LOW) MINIMO FROM DATOHISTORICO "
                     + " WHERE FECHA>? AND FECHA<? AND LOW<?) "
-                    + " AND FECHA>? AND FECHA<? AND LOW<? AND ROWNUM<2";            
+                    + " AND FECHA>? AND FECHA<? AND LOW<? AND ROWNUM<2";
         }
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;

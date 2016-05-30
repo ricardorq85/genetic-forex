@@ -23,7 +23,7 @@ public class LogUtil {
             buffer.append("<log> ");
             buffer.append(name);
             buffer.append(" <-- ");
-            buffer.append(new Date());
+            buffer.append(DateUtil.getDateString(new Date()));
             for (int i = 0; i < tabLevel; i++) {
                 buffer.append("\t");
             }

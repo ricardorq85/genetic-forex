@@ -61,7 +61,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
         
         List<Point> points = daoHistorico.consultarHistorico(individuo.getFechaHistorico());
         daoIndividuo.consultarDetalleIndividuoProceso(individuo);
-        OperacionesManager operacionesManager = new OperacionesManager();
+        OperacionesManager operacionesManager = new OperacionesManager(conn);
         while ((points != null) && (!points.isEmpty())) {
             Date lastDate = points.get(points.size() - 1).getDate();
             LogUtil.logTime("Procesar Individuo;" + this.getName() + ";" + individuo.getId() + ";lastDate=" + lastDate, 1);
@@ -84,7 +84,8 @@ public class ProcesarIndividuoThreadBD extends Thread {
             if (updateOrder != null) {
                 ordenes.add(updateOrder);
             }
-            operacionesManager.procesarMaximosReproceso(individuo, ordenes);
+            individuo.setOrdenes(ordenes);
+            operacionesManager.procesarMaximosReproceso(individuo);
             points = daoHistorico.consultarHistorico(lastDate);
             if (individuo.getCurrentOrder() != null) {
                 individuo.setFechaApertura(individuo.getCurrentOrder().getOpenDate());

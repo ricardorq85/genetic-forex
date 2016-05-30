@@ -34,20 +34,48 @@ public class TendenciasManager {
 
     private Connection conn = null;
 
+    public TendenciasManager() {
+    }
+
+    public TendenciasManager(Connection conn) {
+        this.conn = conn;
+    }
+
+    public void setConn(Connection conn) {
+        this.conn = conn;
+    }
+
     public void calcularTendencias() throws ClassNotFoundException, SQLException, GeneticException {
-        conn = JDBCUtil.getConnection();
+        if (conn == null) {
+            conn = JDBCUtil.getConnection();
+        }
         ParametroDAO parametroDAO = new ParametroDAO(conn);
         Date fechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_TENDENCIA");
         int stepTendencia = Integer.parseInt(parametroDAO.getValorParametro("STEP_TENDENCIA"));
-        this.calcularTendenciasFacade(fechaInicio, stepTendencia);
+        this.calcularTendenciasFacade(fechaInicio, null, stepTendencia, -1);
     }
 
-    public void calcularTendencias(Date fechaInicio, int stepTendencia) throws ClassNotFoundException, SQLException, GeneticException {
-        conn = JDBCUtil.getConnection();
-        this.calcularTendenciasFacade(fechaInicio, stepTendencia);
+    public void calcularTendencias(Date fechaInicio, int stepTendencia, int filasTendencia) throws ClassNotFoundException, SQLException, GeneticException {
+        this.calcularTendencias(fechaInicio, null, stepTendencia, filasTendencia);
     }
 
-    private void calcularTendenciasFacade(Date fechaInicio, int stepTendencia) throws ClassNotFoundException, SQLException, GeneticException {
+    public void calcularTendencias(Date fechaInicio, Date fechaFin, int filasTendencia) throws ClassNotFoundException, SQLException, GeneticException {
+        if (conn == null) {
+            conn = JDBCUtil.getConnection();
+        }
+        ParametroDAO parametroDAO = new ParametroDAO(conn);
+        int stepTendencia = Integer.parseInt(parametroDAO.getValorParametro("STEP_TENDENCIA"));
+        this.calcularTendenciasFacade(fechaInicio, fechaFin, stepTendencia, filasTendencia);
+    }
+
+    public void calcularTendencias(Date fechaInicio, Date fechaFin, int stepTendencia, int filasTendencia) throws ClassNotFoundException, SQLException, GeneticException {
+        if (conn == null) {
+            conn = JDBCUtil.getConnection();
+        }
+        this.calcularTendenciasFacade(fechaInicio, fechaFin, stepTendencia, filasTendencia);
+    }
+
+    private void calcularTendenciasFacade(Date fechaInicio, Date fechaFin, int stepTendencia, int filasTendencia) throws ClassNotFoundException, SQLException, GeneticException {
         OperacionesManager operacionManager = new OperacionesManager(conn);
         OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
         DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
@@ -55,16 +83,19 @@ public class TendenciasManager {
         TendenciaDAO tendenciaDAO = new TendenciaDAO(conn);
         List<Point> points = datoHistoricoDAO.consultarHistorico(fechaInicio);
 
-        int filasTendencia = Integer.parseInt(parametroDAO.getValorParametro("INDIVIDUOS_X_TENDENCIA"));
-        while ((points != null) && (!points.isEmpty())) {
-            for (int j = 0; j < points.size(); j += stepTendencia) {
+        if (filasTendencia <= 0) {
+            filasTendencia = Integer.parseInt(parametroDAO.getValorParametro("INDIVIDUOS_X_TENDENCIA"));
+        }
+        Date fechaProceso = fechaInicio;
+        while ((points != null) && (!points.isEmpty()) && ((fechaFin == null) || fechaFin.after(fechaProceso))) {
+            for (int j = 0; (j < points.size() && ((fechaFin == null) || fechaFin.after(fechaProceso))); j += stepTendencia) {
                 Point pointProceso = points.get(j);
-                Date fechaProceso = pointProceso.getDate();
+                fechaProceso = pointProceso.getDate();
                 parametroDAO.updateDateValorParametro("FECHA_ESTADISTICAS", fechaProceso);
                 conn.commit();
-                List<Individuo> individuos = operacionesDAO.consultarIndividuoOperacionActiva(fechaProceso, filasTendencia);
+                List<Individuo> individuos = operacionesDAO.consultarIndividuoOperacionActiva(fechaProceso, fechaFin, filasTendencia);
                 double precioBase = operacionManager.calculateOpenPrice(pointProceso);
-                LogUtil.logTime("Calcular Tendencias... Fecha inicio=" + fechaInicio + " Fecha Proceso=" + fechaProceso + " Precio base=" + precioBase, 1);
+                LogUtil.logTime("Calcular Tendencias... Fecha inicio=" + DateUtil.getDateString(fechaInicio) + " Fecha Proceso=" + DateUtil.getDateString(fechaProceso) + " Precio base=" + precioBase, 1);
                 for (int i = 0; i < individuos.size(); i++) {
                     double pipsActuales = 0.0D;
                     long duracionActual = 0L;
@@ -74,9 +105,10 @@ public class TendenciasManager {
                     //LogUtil.logTime("Procesando retrocesos...", 1);
                     operacionManager.procesarMaximosRetroceso(individuo, individuo.getFechaApertura());
 
-                    LogUtil.logTime("Fecha Proceso=" + DateUtil.getDateString(fechaProceso) + ";Individuo=" + individuo.getId(), 1);
+                    LogUtil.logTime(i + " de " + individuos.size() + ";Fecha Proceso=" + DateUtil.getDateString(fechaProceso) + ";Individuo=" + individuo.getId() + ";Fecha apertura=" + DateUtil.getDateString(individuo.getFechaApertura()), 1);
                     Estadistica estadistica = operacionesDAO.consultarEstadisticasIndividuo(individuo);
-                    if ((estadistica.getCantidadPositivos() > 0) && (estadistica.getCantidadNegativos() > 0)) {
+                    //if ((estadistica.getCantidadPositivos() > 0) && (estadistica.getCantidadNegativos() > 0)) {
+                    if (estadistica.getCantidadTotal() > 0) {
                         List<Point> historico = null;
                         Point tempPoint = new Point();
                         tempPoint.setDate(fechaProceso);
@@ -296,7 +328,7 @@ public class TendenciasManager {
             duracionPromedioNeg = estadistica.getDuracionPromedio();
             duracionDesvEstandarNeg = estadistica.getDuracionDesvEstandar();
             duracionMinimaNeg = estadistica.getDuracionMinima();
-            duracionPromedio = estadistica.getDuracionPromedio();        
+            duracionPromedio = estadistica.getDuracionPromedio();
             duracionDesvEstandar = estadistica.getDuracionDesvEstandar();
             duracionMinima = estadistica.getDuracionMinima();
         }

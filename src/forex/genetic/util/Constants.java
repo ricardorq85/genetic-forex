@@ -84,7 +84,10 @@ public class Constants {
     public static final String NOMBRE_ESTRATEGIA = "NOMBRE_ESTRATEGIA";
     public static final String QUERY_PROCESAR_TENDENCIAS = "QUERY_PROCESAR_TENDENCIAS";
     public static final String QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE = "QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE";
+    public static final String QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE_BASE = "QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE_BASE";
     public static final int MIN_PIPS_MOVEMENT = 100;
+    public static final int MIN_CANTIDAD_TENDENCIA = 5000;
+    public static final int MIN_CANTIDAD_TENDENCIA_BASE = 1000;
 
     public enum IndividuoType {
 

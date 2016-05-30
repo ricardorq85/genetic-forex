@@ -10,6 +10,7 @@ import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.manager.controller.IndicatorController;
 import forex.genetic.util.Constants;
+import forex.genetic.util.LogUtil;
 import forex.genetic.util.NumberUtil;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -211,9 +212,29 @@ public class OperacionesManager {
         return price;
     }
 
+    public void procesarMaximosRetroceso(Date fechaMaximo) throws ClassNotFoundException, SQLException {
+        OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
+        List<Individuo> individuos = operacionesDAO.consultarOperacionesIndividuoRetroceso(fechaMaximo);
+        while ((individuos != null) && (!individuos.isEmpty())) {
+            for (int i = 0; i < individuos.size(); i++) {
+                Individuo individuo = individuos.get(i);
+
+                if (individuo.getOpenIndicators() == null) {
+                    individuo.setOpenIndicators(new ArrayList<Indicator>());
+                }
+                if (individuo.getCloseIndicators() == null) {
+                    individuo.setCloseIndicators(new ArrayList<Indicator>());
+                }
+                LogUtil.logTime("Individuo="+individuo.getId()+";Orden="+individuo.getOrdenes().toString(), 1);
+                this.procesarMaximosReproceso(individuo);
+            }
+            individuos = operacionesDAO.consultarOperacionesIndividuoRetroceso(fechaMaximo);
+        }
+    }
+
     public void procesarMaximosRetroceso(Individuo individuo, Date fechaMaximo) throws ClassNotFoundException, SQLException {
         OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
-        List<Order> list = operacionesDAO.consultarOperacionesIndividuoRetroceso(individuo, fechaMaximo);
+        individuo = operacionesDAO.consultarOperacionesIndividuoRetroceso(individuo, fechaMaximo);
 
         if (individuo.getOpenIndicators() == null) {
             individuo.setOpenIndicators(new ArrayList<Indicator>());
@@ -221,16 +242,13 @@ public class OperacionesManager {
         if (individuo.getCloseIndicators() == null) {
             individuo.setCloseIndicators(new ArrayList<Indicator>());
         }
-        this.procesarMaximosReproceso(individuo, list);
+        this.procesarMaximosReproceso(individuo);
     }
 
-    public void procesarMaximosReproceso(Individuo individuo, Order orden) throws ClassNotFoundException, SQLException {
-        this.procesarMaximosReproceso(individuo, Collections.singletonList(orden));
-    }
-
-    public void procesarMaximosReproceso(Individuo individuo, List<Order> ordenes) throws ClassNotFoundException, SQLException {
+    public void procesarMaximosReproceso(Individuo individuo) throws ClassNotFoundException, SQLException {
         DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
         OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
+        List<Order> ordenes = individuo.getOrdenes();
         for (int i = 0; i < ordenes.size(); i++) {
             Order currentOrder = ordenes.get(i);
             if ((currentOrder != null) && (currentOrder.getOpenDate() != null) && (currentOrder.getCloseDate() != null)) {

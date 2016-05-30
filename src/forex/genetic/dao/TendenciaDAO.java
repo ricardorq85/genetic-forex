@@ -203,6 +203,8 @@ public class TendenciaDAO {
         String sql = null;
         if ("VALOR_PROBABLE".equalsIgnoreCase(tipo)) {
             sql = PropertiesManager.getQueryProcesarTendenciasValorProbable();
+        }else if ("VALOR_PROBABLE_BASE".equalsIgnoreCase(tipo)) {
+            sql = PropertiesManager.getQueryProcesarTendenciasValorProbableBase();
         } else {
             sql = PropertiesManager.getQueryProcesarTendencias();
         }
@@ -213,7 +215,8 @@ public class TendenciaDAO {
         try {
             stmtConsulta = this.connection.prepareStatement(sql);
             stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
-            stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
+//            stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
+//            stmtConsulta.setTimestamp(count++, new Timestamp(fecha.getTime()));
             stmtConsulta.setTimestamp(count++, new Timestamp(fecha2.getTime()));
 
             resultado = stmtConsulta.executeQuery();
