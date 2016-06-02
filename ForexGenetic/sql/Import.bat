@@ -1,4 +1,0 @@
-SET ORACLE_SID='FOREX'
-CD C:\APP\RICARDORQ85\PRODUCT\11.2.0\dbhome_1\BIN
-IMP FOREX/forex@FOREX FILE=c:\Users\ricardorq85\Documents\ricardorq85\Informacion\FOREX\DATABASE\EXPDAT_20130314.DMP full=yes
-PAUSE
