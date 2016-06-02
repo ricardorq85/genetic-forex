@@ -32,19 +32,6 @@
             </bookmark>
         </file>
         <file>
-            <url>src/forex/genetic/manager/OperacionesManager.java</url>
-            <bookmark id="2">
-                <name/>
-                <line>42</line>
-                <key/>
-            </bookmark>
-            <bookmark id="1">
-                <name/>
-                <line>97</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>src/forex/genetic/manager/TendenciasManager.java</url>
             <bookmark id="4">
                 <name/>
@@ -54,6 +41,19 @@
             <bookmark id="3">
                 <name/>
                 <line>300</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/forex/genetic/manager/OperacionesManager.java</url>
+            <bookmark id="2">
+                <name/>
+                <line>42</line>
+                <key/>
+            </bookmark>
+            <bookmark id="1">
+                <name/>
+                <line>97</line>
                 <key/>
             </bookmark>
         </file>

@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="0" failures="0" hostname="ASUS" name="borradoindividuos.BorradoIndividuosStopLossInconsistentesTest" skipped="0" tests="1" time="1.815" timestamp="2015-11-07T23:36:08">
+  <properties>
+    <property name="netbeans.autoupdate.country" value="CO" />
+    <property name="nb.wait.for.caches" value="true" />
+    <property name="javac.test.classpath" value="D:\ricardorq85\NetBeansProjects\ForexGenetic/dist/ForexGenetic.jar:D:\ricardorq85\NetBeansProjects\ForexServices/dist/ForexServices.jar:D:\ricardorq85\NetBeansProjects\drivers\ojdbc6.jar:build/classes:C:\Program Files\NetBeans 8.0\platform\modules\ext\junit-4.10.jar" />
+    <property name="libs.junit.javadoc" value="C:\Program Files\NetBeans 8.0\java\docs\junit-3.8.2-api.zip" />
+    <property name="ant.core.lib" value="C:\Program Files\NetBeans 8.0\extide\ant\lib\ant.jar" />
+    <property name="javadoc.windowtitle" value="" />
+    <property name="user.dir" value="d:\ricardorq85\NetBeansProjects\ForexGeneticRunning\Estrategia_Tester" />
+    <property name="java.vm.version" value="25.11-b03" />
+    <property name="libs.MySQLDriver.classpath" value="C:\Program Files\NetBeans 8.0\ide\modules\ext\mysql-connector-java-5.1.23-bin.jar" />
+    <property name="libs.eclipselinkmodelgen.src" value="" />
+    <property name="ant.file.type.TDDForex-impl" value="file" />
+    <property name="javadoc.notree" value="false" />
+    <property name="netbeans.autoupdate.version" value="1.23" />
+    <property name="javac.profile.cmd.line.arg" value="" />
+    <property name="jdk.home" value="C:\Program Files\Java\jdk1.8.0_11" />
+    <property name="libs.javac-api.src" value="" />
+    <property name="javadoc.noindex" value="false" />
+    <property name="libs.jpa2-persistence.classpath" value="C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\hibernate-jpa-2.1-api-1.0.0.Final.jar" />
+    <property name="sun.os.patch.level" value="" />
+    <property name="do.archive+manifest.available" value="true" />
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification" />
+    <property name="nb.show.statistics.ui" value="usageStatisticsEnabled" />
+    <property name="netbeans.autoupdate.variant" value="" />
+    <property name="have.tests" value="true" />
+    <property name="org.xml.sax.driver" value="com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser" />
+    <property name="libs.javac-api.javadoc" value="" />
+    <property name="os.name" value="Windows 8.1" />
+    <property name="libs.beans-binding.classpath" value="C:\Program Files\NetBeans 8.0\java\modules\ext\beansbinding-1.2.1.jar" />
+    <property name="ap.proc.none.internal" value="" />
+    <property name="libs.JWSAntTasks.maven-pom" value="" />
+    <property name="libs.testng.src" value="" />
+    <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/" />
+    <property name="libs.jaxb.maven-pom" value="" />
+    <property name="os.arch" value="amd64" />
+    <property name="libs.eclipselink.src" value="" />
+    <property name="user.name" value="USER" />
+    <property name="copylibs.rebase" value="true" />
+    <property name="libs.swing-layout.maven-pom" value="" />
+    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner borradoindividuos.BorradoIndividuosStopLossInconsistentesTest skipNonTests=false filtertrace=true haltOnError=false haltOnFailure=false showoutput=true outputtoformatters=true logfailedtests=true threadid=0 logtestlistenerevents=true formatter=org.apache.tools.ant.taskdefs.optional.junit.BriefJUnitResultFormatter formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,D:\ricardorq85\NetBeansProjects\TDDForex\build\test\results\TEST-borradoindividuos.BorradoIndividuosStopLossInconsistentesTest.xml crashfile=D:\ricardorq85\NetBeansProjects\TDDForex\build\junitvmwatcher7507657337954050007.properties propsfile=D:\ricardorq85\NetBeansProjects\TDDForex\build\junit5624059684672719222.properties" />
+    <property name="build.classes.dir" value="build/classes" />
+    <property name="netbeans.accept_license_class" value="org.netbeans.license.AcceptLicense" />
+    <property name="build.sysclasspath" value="ignore" />
+    <property name="ap.supported.internal" value="true" />
+    <property name="libs.jaxws21.javadoc" value="C:\Program Files\NetBeans 8.0\java\docs\jaxws-api-doc.zip" />
+    <property name="includes" value="**" />
+    <property name="user.country" value="CO" />
+    <property name="manifest.file" value="manifest.mf" />
+    <property name="javadoc.encoding" value="UTF-8" />
+    <property name="javac.classpath" value="D:\ricardorq85\NetBeansProjects\ForexGenetic/dist/ForexGenetic.jar:D:\ricardorq85\NetBeansProjects\ForexServices/dist/ForexServices.jar:D:\ricardorq85\NetBeansProjects\drivers\ojdbc6.jar" />
+    <property name="libs.spring-framework400.classpath" value="C:\Program Files\NetBeans 8.0\ide\modules\org-apache-commons-logging.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\cglib-2.2.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-aop-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-aspects-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-beans-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-build-src-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-context-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-context-support-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-core-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-expression-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-framework-bom-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-instrument-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-instrument-tomcat-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-jdbc-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-jms-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-messaging-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-orm-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-oxm-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-test-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-tx-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-web-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-webmvc-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-webmvc-portlet-4.0.1.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-4\spring-websocket-4.0.1.RELEASE.jar" />
+    <property name="debug-transport" value="dt_shmem" />
+    <property name="netbeans.home" value="C:\Program Files\NetBeans 8.0\platform" />
+    <property name="build.compiler.emacs" value="true" />
+    <property name="java.endorsed.dirs" value="C:\Program Files\Java\jdk1.8.0_11\jre\lib\endorsed" />
+    <property name="netbeans.dynamic.classpath" value="C:\Users\USER\AppData\Roaming\NetBeans\8.0\core\core.jar;C:\Users\USER\AppData\Roaming\NetBeans\8.0\core\org-netbeans-upgrader.jar;C:\Users\USER\AppData\Roaming\NetBeans\8.0\core\locale\core_ja.jar;C:\Users\USER\AppData\Roaming\NetBeans\8.0\core\locale\core_nb.jar;C:\Users\USER\AppData\Roaming\NetBeans\8.0\core\locale\core_nb_ja.jar;C:\Users\USER\AppData\Roaming\NetBeans\8.0\core\locale\core_nb_pt_BR.jar;C:\Users\USER\AppData\Roaming\NetBeans\8.0\core\locale\core_nb_ru.jar;C:\Users\USER\AppData\Roaming\NetBeans\8.0\core\locale\core_nb_zh_CN.jar;C:\Users\USER\AppData\Roaming\NetBeans\8.0\core\locale\core_pt_BR.jar;C:\Users\USER\AppData\Roaming\NetBeans\8.0\core\locale\core_ru.jar;C:\Users\USER\AppData\Roaming\NetBeans\8.0\core\locale\core_zh_CN.jar;C:\Users\USER\AppData\Roaming\NetBeans\8.0\core\locale\org-netbeans-upgrader_ja.jar;C:\Users\USER\AppData\Roaming\NetBeans\8.0\core\locale\org-netbeans-upgrader_pt_BR.jar;C:\Users\USER\AppData\Roaming\NetBeans\8.0\core\locale\org-netbeans-upgrader_ru.jar;C:\Users\USER\AppData\Roaming\NetBeans\8.0\core\locale\org-netbeans-upgrader_zh_CN.jar;C:\Program Files\NetBeans 8.0\platform\core\org-openide-filesystems.jar;C:\Program Files\NetBeans 8.0\platform\core\locale\org-openide-filesystems_ja.jar;C:\Program Files\NetBeans 8.0\platform\core\locale\org-openide-filesystems_pt_BR.jar;C:\Program Files\NetBeans 8.0\platform\core\locale\org-openide-filesystems_ru.jar;C:\Program Files\NetBeans 8.0\platform\core\locale\org-openide-filesystems_zh_CN.jar" />
+    <property name="java.vm.specification.version" value="1.8" />
+    <property name="libs.hibernate4-support.src" value="" />
+    <property name="netbeans.productversion" value="NetBeans IDE 8.0.2 (Build 201411181905)" />
+    <property name="libs.jaxws21.src" value="" />
+    <property name="application.title" value="TDDForex" />
+    <property name="do.archive" value="true" />
+    <property name="netbeans.autoupdate.language" value="es" />
+    <property name="java.vendor" value="Oracle Corporation" />
+    <property name="jar.index.metainf" value="false" />
+    <property name="javac.debug" value="true" />
+    <property name="javadoc.splitindex" value="true" />
+    <property name="file.separator" value="\" />
+    <property name="libs.junit_4.maven-pom" value="" />
+    <property name="mkdist.disabled" value="false" />
+    <property name="javac.test.processorpath" value="D:\ricardorq85\NetBeansProjects\ForexGenetic/dist/ForexGenetic.jar:D:\ricardorq85\NetBeansProjects\ForexServices/dist/ForexServices.jar:D:\ricardorq85\NetBeansProjects\drivers\ojdbc6.jar:build/classes:C:\Program Files\NetBeans 8.0\platform\modules\ext\junit-4.10.jar" />
+    <property name="netbeans.buildnumber" value="201411181905" />
+    <property name="libs.JWSAntTasks.javadoc" value="" />
+    <property name="build.generated.sources.dir" value="build/generated-sources" />
+    <property name="user.variant" value="" />
+    <property name="libs.eclipselinkmodelgen.classpath" value="C:\Program Files\NetBeans 8.0\java\modules\ext\eclipselink\org.eclipse.persistence.jpa.modelgen_2.5.2.v20140319-9ad6abd.jar" />
+    <property name="sun.java.launcher" value="SUN_STANDARD" />
+    <property name="libs.junit.classpath" value="C:\Program Files\NetBeans 8.0\java\modules\ext\junit-3.8.2.jar" />
+    <property name="libs.hibernate4-persistencemodelgen.javadoc" value="" />
+    <property name="libs.jaxb.javadoc" value="C:\Program Files\NetBeans 8.0\ide\docs\jaxb-api-doc.zip" />
+    <property name="org.openide.awt.SwingBrowserImpl.do-not-block-awt" value="false" />
+    <property name="ant.home" value="C:\Program Files\NetBeans 8.0\extide\ant" />
+    <property name="libs.junit_4.src" value="C:\Program Files\NetBeans 8.0\java\docs\junit-4.10-sources.jar" />
+    <property name="libs.testng.classpath" value="C:\Program Files\NetBeans 8.0\platform\modules\ext\testng-6.8.1-dist.jar" />
+    <property name="libs.absolutelayout.maven-pom" value="" />
+    <property name="ant.java.version" value="1.8" />
+    <property name="java.library.path" value="C:\Program Files\Java\jdk1.8.0_11\jre\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\app\USER\product\11.2.0\dbhome_1\bin;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\QuickTime\QTSystem\;." />
+    <property name="javadoc.author" value="false" />
+    <property name="java.util.logging.config.class" value="org.netbeans.core.startup.TopLogging" />
+    <property name="file.reference.ojdbc6.jar" value="D:\ricardorq85\NetBeansProjects\drivers\ojdbc6.jar" />
+    <property name="libs.spring-framework400.src" value="" />
+    <property name="libs.PostgreSQLDriver.src" value="" />
+    <property name="sun.arch.data.model" value="64" />
+    <property name="basedir" value="D:\ricardorq85\NetBeansProjects\TDDForex" />
+    <property name="libs.jpa20-persistence.maven-pom" value="" />
+    <property name="jar.compress" value="false" />
+    <property name="path.separator" value=";" />
+    <property name="ant.junit.enabletestlistenerevents" value="true" />
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle" />
+    <property name="project.ForexServices" value="D:\ricardorq85\NetBeansProjects\ForexServices" />
+    <property name="libs.jaxws21.classpath" value="C:\Program Files\NetBeans 8.0\ide\modules\ext\jaxb\jaxb-impl.jar;C:\Program Files\NetBeans 8.0\ide\modules\ext\jaxb\jaxb-xjc.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\FastInfoset.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\gmbal-api-only.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\ha-api.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\javax.mail_1.4.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\jaxws-rt.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\jaxws-tools.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\management-api.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\mimepull.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\policy.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\saaj-impl.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\stax-ex.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\stax2-api.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\streambuffer.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\woodstox-core-asl.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\api\jaxws-api.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\api\jsr181-api.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\api\javax.annotation.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\jaxws22\api\saaj-api.jar;C:\Program Files\NetBeans 8.0\ide\modules\ext\jaxb\activation.jar;C:\Program Files\NetBeans 8.0\ide\modules\ext\jaxb\api\jaxb-api.jar;C:\Program Files\NetBeans 8.0\ide\modules\ext\jaxb\api\jsr173_1.0_api.jar" />
+    <property name="compile.on.save" value="true" />
+    <property name="apple.awt.graphics.UseQuartz" value="true" />
+    <property name="user.language" value="es" />
+    <property name="testng.mode" value="testng" />
+    <property name="libs.JAXB-ENDORSED.maven-pom" value="" />
+    <property name="libs.eclipselink.maven-pom" value="" />
+    <property name="application.vendor" value="USER" />
+    <property name="test.binaryincludes" value="&lt;nothing&gt;" />
+    <property name="manifest.available" value="true" />
+    <property name="libs.spring-framework300.maven-pom" value="" />
+    <property name="run.test.classpath" value="D:\ricardorq85\NetBeansProjects\ForexGenetic/dist/ForexGenetic.jar:D:\ricardorq85\NetBeansProjects\ForexServices/dist/ForexServices.jar:D:\ricardorq85\NetBeansProjects\drivers\ojdbc6.jar:build/classes:C:\Program Files\NetBeans 8.0\platform\modules\ext\junit-4.10.jar:build/test/classes" />
+    <property name="ant.project.invoked-targets" value="test" />
+    <property name="test.binaryexcludes" value="" />
+    <property name="libs.swing-layout.javadoc" value="C:\Program Files\NetBeans 8.0\platform\docs\swing-layout-1.0.4-doc.zip" />
+    <property name="sun.java2d.dpiaware" value="true" />
+    <property name="libs.hibernate4-persistence.maven-pom" value="" />
+    <property name="https.nonProxyHosts" value="localhost|127.0.0.1|ASUS" />
+    <property name="libs.PostgreSQLDriver.maven-pom" value="" />
+    <property name="java.class.version" value="52.0" />
+    <property name="libs.hibernate4-persistencemodelgen.maven-pom" value="" />
+    <property name="libs.eclipselink.javadoc" value="C:\Program Files\NetBeans 8.0\java\modules\ext\docs\javax.persistence-2.1.0-doc.zip" />
+    <property name="user.properties.file" value="C:\Users\USER\AppData\Roaming\NetBeans\8.0\build.properties" />
+    <property name="runtime.encoding" value="UTF-8" />
+    <property name="libs.javac-api.maven-pom" value="" />
+    <property name="file.encoding.pkg" value="sun.io" />
+    <property name="sun.cpu.endian" value="little" />
+    <property name="libs.JAXB-ENDORSED.javadoc" value="" />
+    <property name="libs.JWSAntTasks.classpath" value="C:\Program Files\NetBeans 8.0\java\ant\extra\org-netbeans-modules-javawebstart-anttasks.jar" />
+    <property name="libs.spring-framework300.src" value="" />
+    <property name="empty.dir" value="D:\ricardorq85\NetBeansProjects\TDDForex\build\empty" />
+    <property name="version-output" value="java version &quot;1.8" />
+    <property name="test.binarytestincludes" value="" />
+    <property name="libs.hibernate4-persistencemodelgen.src" value="" />
+    <property name="javadoc.preview" value="true" />
+    <property name="libs.jpa20-persistence.javadoc" value="C:\Program Files\NetBeans 8.0\java\modules\ext\docs\javax.persistence-2.1.0-doc.zip" />
+    <property name="java.home" value="C:\Program Files\Java\jdk1.8.0_11\jre" />
+    <property name="debug.test.classpath" value="D:\ricardorq85\NetBeansProjects\ForexGenetic/dist/ForexGenetic.jar:D:\ricardorq85\NetBeansProjects\ForexServices/dist/ForexServices.jar:D:\ricardorq85\NetBeansProjects\drivers\ojdbc6.jar:build/classes:C:\Program Files\NetBeans 8.0\platform\modules\ext\junit-4.10.jar:build/test/classes" />
+    <property name="netbeans.importclass" value="org.netbeans.upgrade.AutoUpgrade" />
+    <property name="ant.project.default-target" value="default" />
+    <property name="annotation.processing.run.all.processors" value="true" />
+    <property name="libs.PostgreSQLDriver.javadoc" value="" />
+    <property name="libs.MySQLDriver.maven-pom" value="" />
+    <property name="libs.hibernate4-persistence.javadoc" value="C:\Program Files\NetBeans 8.0\java\modules\ext\docs\javax.persistence-2.1.0-doc.zip" />
+    <property name="project.ForexGenetic" value="D:\ricardorq85\NetBeansProjects\ForexGenetic" />
+    <property name="http.nonProxyHosts" value="localhost|127.0.0.1|ASUS" />
+    <property name="libs.junit_4.javadoc" value="C:\Program Files\NetBeans 8.0\java\docs\junit-4.10-javadoc.jar" />
+    <property name="run.classpath" value="D:\ricardorq85\NetBeansProjects\ForexGenetic/dist/ForexGenetic.jar:D:\ricardorq85\NetBeansProjects\ForexServices/dist/ForexServices.jar:D:\ricardorq85\NetBeansProjects\drivers\ojdbc6.jar:build/classes" />
+    <property name="jna.boot.library.name" value="jnidispatch-410" />
+    <property name="sun.awt.datatransfer.timeout" value="1000" />
+    <property name="libs.jpa2-persistence.maven-pom" value="" />
+    <property name="annotation.processing.enabled.in.editor" value="false" />
+    <property name="libs.hibernate4-support.classpath" value="C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\antlr-2.7.7.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\c3p0-0.9.2.1.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\hibernate-c3p0-4.3.1.Final.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\mchange-commons-java-0.2.3.4.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\dom4j-1.6.1.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\ehcache-core-2.4.3.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\hibernate-ehcache-4.3.1.Final.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\hibernate-core-4.3.1.Final.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\jboss-logging-3.1.3.GA.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\hibernate-commons-annotations-4.0.4.Final.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\hibernate-entitymanager-4.3.1.Final.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\javassist-3.18.1-GA.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\jboss-transaction-api_1.2_spec-1.0.0.Final.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\slf4j-api-1.6.1.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\slf4j-simple-1.6.1.jar" />
+    <property name="nb.native.filechooser" value="false" />
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers" />
+    <property name="javac.deprecation" value="false" />
+    <property name="javadoc.use" value="true" />
+    <property name="sun.java2d.noddraw" value="true" />
+    <property name="javac.processorpath" value="D:\ricardorq85\NetBeansProjects\ForexGenetic/dist/ForexGenetic.jar:D:\ricardorq85\NetBeansProjects\ForexServices/dist/ForexServices.jar:D:\ricardorq85\NetBeansProjects\drivers\ojdbc6.jar" />
+    <property name="javac.compilerargs" value="" />
+    <property name="ant.file" value="D:\ricardorq85\NetBeansProjects\TDDForex\build.xml" />
+    <property name="libs.beans-binding.maven-pom" value="" />
+    <property name="libs.hibernate4-support.javadoc" value="C:\Program Files\NetBeans 8.0\java\modules\ext\docs\javax.persistence-2.1.0-doc.zip" />
+    <property name="libs.beans-binding.src" value="" />
+    <property name="java.vm.specification.vendor" value="Oracle Corporation" />
+    <property name="libs.swing-layout.src" value="C:\Program Files\NetBeans 8.0\platform\docs\swing-layout-1.0.4-src.zip" />
+    <property name="org.openide.major.version" value="IDE/1" />
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM" />
+    <property name="netbeans.user" value="C:\Users\USER\AppData\Roaming\NetBeans\8.0" />
+    <property name="javadoc.additionalparam" value="" />
+    <property name="java.io.tmpdir" value="C:\Users\USER\AppData\Local\Temp\" />
+    <property name="java.vendor.url" value="http://java.oracle.com/" />
+    <property name="endorsed.classpath.cmd.line.arg" value="" />
+    <property name="junit.available" value="true" />
+    <property name="org.openide.awt.ActionReference.completion" value="org.netbeans.modules.apisupport.project.layers.PathCompletions" />
+    <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_11\jre\bin" />
+    <property name="have.sources" value="true" />
+    <property name="debug.classpath" value="D:\ricardorq85\NetBeansProjects\ForexGenetic/dist/ForexGenetic.jar:D:\ricardorq85\NetBeansProjects\ForexServices/dist/ForexServices.jar:D:\ricardorq85\NetBeansProjects\drivers\ojdbc6.jar:build/classes" />
+    <property name="javadoc.private" value="false" />
+    <property name="test.src.dir" value="test" />
+    <property name="ap.processors.internal" value="" />
+    <property name="meta.inf.dir" value="src/META-INF" />
+    <property name="javadoc.encoding.used" value="UTF-8" />
+    <property name="dist.jar" value="dist/TDDForex.jar" />
+    <property name="libs.spring-framework400.maven-pom" value="" />
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment" />
+    <property name="ant.project.name" value="TDDForex" />
+    <property name="netbeans.hash.code" value="unique=NB_EXTIDE_JAVA0cd6f9883-21d8-4a32-a300-6e14cbf4e538_27d123d4-bee7-453c-b627-89b5ab9fc928" />
+    <property name="netbeans.default_userdir_root" value="C:\Users\USER\AppData\Roaming\NetBeans" />
+    <property name="sun.cpu.isalist" value="amd64" />
+    <property name="libs.spring-framework400.javadoc" value="" />
+    <property name="libs.CopyLibs.javadoc" value="" />
+    <property name="org.openide.specification.version" value="6.2" />
+    <property name="user.home" value="C:\Users\USER" />
+    <property name="annotation.processing.processors.list" value="" />
+    <property name="debug-args-line" value="-Xdebug" />
+    <property name="libs.JWSAntTasks.src" value="" />
+    <property name="jar.index" value="false" />
+    <property name="libs.CopyLibs.maven-pom" value="" />
+    <property name="libs.spring-framework300.javadoc" value="" />
+    <property name="libs.absolutelayout.javadoc" value="" />
+    <property name="java.specification.name" value="Java Platform API Specification" />
+    <property name="do.archive+main.class.available" value="true" />
+    <property name="java.specification.vendor" value="Oracle Corporation" />
+    <property name="libs.javac-api.classpath" value="C:\Program Files\NetBeans 8.0\java\modules\ext\nb-javac-api.jar" />
+    <property name="java.version" value="1.8.0_11" />
+    <property name="run.jvmargs.ide" value="" />
+    <property name="javadoc.version" value="false" />
+    <property name="libs.MySQLDriver.javadoc" value="" />
+    <property name="org.openide.version" value="deprecated" />
+    <property name="platform.java" value="C:\Program Files\Java\jdk1.8.0_11\jre/bin/java" />
+    <property name="source.encoding" value="UTF-8" />
+    <property name="ap.cmd.line.internal" value="" />
+    <property name="libs.eclipselinkmodelgen.maven-pom" value="" />
+    <property name="libs.junit.maven-pom" value="" />
+    <property name="libs.eclipselinkmodelgen.javadoc" value="" />
+    <property name="netbeans.home+have.tests" value="true" />
+    <property name="annotation.processing.processor.options" value="" />
+    <property name="libs.testng.maven-pom" value="" />
+    <property name="libs.jaxb.src" value="" />
+    <property name="work.dir" value="d:\ricardorq85\NetBeansProjects\ForexGeneticRunning\Estrategia_Tester\" />
+    <property name="libs.jaxb.classpath" value="C:\Program Files\NetBeans 8.0\ide\modules\ext\jaxb\jaxb-impl.jar;C:\Program Files\NetBeans 8.0\ide\modules\ext\jaxb\jaxb-xjc.jar;C:\Program Files\NetBeans 8.0\ide\modules\ext\jaxb\jaxb1-impl.jar;C:\Program Files\NetBeans 8.0\ide\modules\ext\jaxb\activation.jar;C:\Program Files\NetBeans 8.0\ide\modules\ext\jaxb\api\jaxb-api.jar;C:\Program Files\NetBeans 8.0\ide\modules\ext\jaxb\api\jsr173_1.0_api.jar" />
+    <property name="do.depend" value="false" />
+    <property name="dist.javadoc.dir" value="dist/javadoc" />
+    <property name="libs.swing-layout.classpath" value="C:\Program Files\NetBeans 8.0\platform\modules\ext\swing-layout-1.0.4.jar" />
+    <property name="build.generated.dir" value="build/generated" />
+    <property name="javac.source" value="1.8" />
+    <property name="line.separator" value="&#xd;&#xa;" />
+    <property name="java.specification.version" value="1.8" />
+    <property name="libs.jaxws21.maven-pom" value="" />
+    <property name="java.vm.info" value="mixed mode" />
+    <property name="nb.junit.batch" value="true" />
+    <property name="junit.forkmode" value="perTest" />
+    <property name="sun.boot.class.path" value="C:\Program Files\Java\jdk1.8.0_11\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_11\jre\lib\rt.jar;C:\Program Files\Java\jdk1.8.0_11\jre\lib\sunrsasign.jar;C:\Program Files\Java\jdk1.8.0_11\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_11\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_11\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_11\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_11\jre\classes" />
+    <property name="javac.target" value="1.8" />
+    <property name="built-jar.properties" value="D:\ricardorq85\NetBeansProjects\TDDForex\build\built-jar.properties" />
+    <property name="build.test.classes.dir" value="build/test/classes" />
+    <property name="src.dir" value="src" />
+    <property name="annotation.processing.enabled" value="true" />
+    <property name="libs.jpa2-persistence.src" value="" />
+    <property name="sun.awt.keepWorkingSetOnMinimize" value="true" />
+    <property name="reference.ForexGenetic.jar" value="D:\ricardorq85\NetBeansProjects\ForexGenetic/dist/ForexGenetic.jar" />
+    <property name="libs.jpa20-persistence.src" value="" />
+    <property name="ignore.failing.tests" value="true" />
+    <property name="dist.dir" value="dist" />
+    <property name="testng.debug.mode" value="" />
+    <property name="javac.fork" value="false" />
+    <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob" />
+    <property name="default.javac.source" value="1.8" />
+    <property name="debug-transport-by-os" value="dt_shmem" />
+    <property name="libs.MySQLDriver.src" value="" />
+    <property name="sun.jnu.encoding" value="Cp1252" />
+    <property name="java.runtime.version" value="1.8.0_11-b12" />
+    <property name="build.test.results.dir" value="build/test/results" />
+    <property name="ant.file.TDDForex-impl" value="D:\ricardorq85\NetBeansProjects\TDDForex\nbproject\build-impl.xml" />
+    <property name="default.javac.target" value="1.8" />
+    <property name="libs.junit_4.classpath" value="C:\Program Files\NetBeans 8.0\platform\modules\ext\junit-4.10.jar" />
+    <property name="user.timezone" value="America/Bogota" />
+    <property name="nb.junit.single" value="false" />
+    <property name="do.jar" value="true" />
+    <property name="netbeans.dirs" value="C:\Program Files\NetBeans 8.0\nb;C:\Program Files\NetBeans 8.0\ergonomics;C:\Program Files\NetBeans 8.0\ide;C:\Program Files\NetBeans 8.0\extide;C:\Program Files\NetBeans 8.0\java;C:\Program Files\NetBeans 8.0\apisupport;C:\Program Files\NetBeans 8.0\webcommon;C:\Program Files\NetBeans 8.0\websvccommon;C:\Program Files\NetBeans 8.0\enterprise;C:\Program Files\NetBeans 8.0\mobility;C:\Program Files\NetBeans 8.0\profiler;C:\Program Files\NetBeans 8.0\python;C:\Program Files\NetBeans 8.0\php;C:\Program Files\NetBeans 8.0\identity;C:\Program Files\NetBeans 8.0\harness;C:\Program Files\NetBeans 8.0\cnd;C:\Program Files\NetBeans 8.0\dlight;C:\Program Files\NetBeans 8.0\groovy;C:\Program Files\NetBeans 8.0\extra;C:\Program Files\NetBeans 8.0\javacard;C:\Program Files\NetBeans 8.0\javafx" />
+    <property name="java.ext.dirs" value="C:\Program Files\Java\jdk1.8.0_11\jre\lib\ext;C:\WINDOWS\Sun\Java\lib\ext" />
+    <property name="endorsed.classpath" value="" />
+    <property name="libs.absolutelayout.classpath" value="C:\Program Files\NetBeans 8.0\java\modules\ext\AbsoluteLayout.jar" />
+    <property name="excludes" value="" />
+    <property name="libs.jpa2-persistence.javadoc" value="C:\Program Files\NetBeans 8.0\java\modules\ext\docs\javax.persistence-2.1.0-doc.zip" />
+    <property name="java.class.path" value="D:\ricardorq85\NetBeansProjects\ForexGenetic\dist\ForexGenetic.jar;D:\ricardorq85\NetBeansProjects\ForexServices\dist\ForexServices.jar;D:\ricardorq85\NetBeansProjects\drivers\ojdbc6.jar;D:\ricardorq85\NetBeansProjects\TDDForex\build\classes;C:\Program Files\NetBeans 8.0\platform\modules\ext\junit-4.10.jar;D:\ricardorq85\NetBeansProjects\TDDForex\build\test\classes;C:\Program Files\NetBeans 8.0\extide\ant\lib\ant-launcher.jar;C:\Program Files\NetBeans 8.0\extide\ant\lib\ant.jar;C:\Program Files\NetBeans 8.0\extide\ant\lib\ant-junit.jar;C:\Program Files\NetBeans 8.0\extide\ant\lib\ant-junit4.jar" />
+    <property name="apple.laf.useScreenMenuBar" value="true" />
+    <property name="do.mkdist" value="true" />
+    <property name="libs.absolutelayout.src" value="" />
+    <property name="libs.jpa20-persistence.classpath" value="C:\Program Files\NetBeans 8.0\java\modules\ext\eclipselink\javax.persistence_2.1.0.v201304241213.jar" />
+    <property name="os.version" value="6.3" />
+    <property name="application.args" value="" />
+    <property name="sun.awt.enableExtraMouseButtons" value="true" />
+    <property name="main.class.available" value="true" />
+    <property name="sun.desktop" value="windows" />
+    <property name="reference.ForexServices.jar" value="D:\ricardorq85\NetBeansProjects\ForexServices/dist/ForexServices.jar" />
+    <property name="libs.hibernate4-persistence.src" value="" />
+    <property name="libs.hibernate4-support.maven-pom" value="" />
+    <property name="nb.internal.action.name" value="test" />
+    <property name="libs.JAXB-ENDORSED.classpath" value="C:\Program Files\NetBeans 8.0\ide\modules\ext\jaxb\api\jaxb-api.jar" />
+    <property name="libs.eclipselink.classpath" value="C:\Program Files\NetBeans 8.0\java\modules\ext\eclipselink\eclipselink.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\eclipselink\javax.persistence_2.1.0.v201304241213.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\eclipselink\org.eclipse.persistence.jpa.jpql_2.5.2.v20140319-9ad6abd.jar" />
+    <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment" />
+    <property name="libs.beans-binding.javadoc" value="C:\Program Files\NetBeans 8.0\java\docs\beansbinding-1.2.1-doc.zip" />
+    <property name="java.vm.vendor" value="Oracle Corporation" />
+    <property name="libs.CopyLibs.classpath" value="C:\Users\USER\AppData\Roaming\NetBeans\8.0\ant\extra\org-netbeans-modules-java-j2seproject-copylibstask.jar" />
+    <property name="libs.spring-framework300.classpath" value="C:\Program Files\NetBeans 8.0\ide\modules\org-apache-commons-logging.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\cglib-2.2.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-aop-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-aspects-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-beans-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-build-src-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-context-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-context-support-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-core-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-expression-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-framework-bom-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-instrument-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-instrument-tomcat-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-jdbc-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-jms-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-orm-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-oxm-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-struts-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-test-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-tx-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-web-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-webmvc-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\spring-3.0\spring-webmvc-portlet-3.2.7.RELEASE.jar" />
+    <property name="run.jvmargs" value="" />
+    <property name="libs.hibernate4-persistence.classpath" value="C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\antlr-2.7.7.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\c3p0-0.9.2.1.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\hibernate-c3p0-4.3.1.Final.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\mchange-commons-java-0.2.3.4.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\dom4j-1.6.1.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\ehcache-core-2.4.3.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\hibernate-ehcache-4.3.1.Final.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\hibernate-core-4.3.1.Final.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\jboss-logging-3.1.3.GA.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\hibernate-commons-annotations-4.0.4.Final.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\hibernate-entitymanager-4.3.1.Final.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\javassist-3.18.1-GA.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\jboss-transaction-api_1.2_spec-1.0.0.Final.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\slf4j-api-1.6.1.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\slf4j-simple-1.6.1.jar;C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\hibernate-jpa-2.1-api-1.0.0.Final.jar" />
+    <property name="libs.JAXB-ENDORSED.src" value="" />
+    <property name="dist.archive.excludes" value="" />
+    <property name="libs.testng.javadoc" value="C:\Program Files\NetBeans 8.0\platform\docs\testng-6.8.1-javadoc.zip" />
+    <property name="user.script" value="" />
+    <property name="libs.PostgreSQLDriver.classpath" value="C:\Program Files\NetBeans 8.0\ide\modules\ext\postgresql-9.2-1002.jdbc4.jar" />
+    <property name="libs.hibernate4-persistencemodelgen.classpath" value="C:\Program Files\NetBeans 8.0\java\modules\ext\hibernate4\hibernate-jpamodelgen-4.3.1.Final.jar" />
+    <property name="libs.junit.src" value="" />
+    <property name="annotation.processing.source.output" value="build/generated-sources/ap-source-output" />
+    <property name="ant.file.type.TDDForex" value="file" />
+    <property name="main.class" value="tddforex.TDDForex" />
+    <property name="libs.CopyLibs.src" value="" />
+    <property name="build.dir" value="build" />
+    <property name="ant.file.TDDForex" value="D:\ricardorq85\NetBeansProjects\TDDForex\build.xml" />
+    <property name="ant.version" value="Apache Ant(TM) version 1.9.4 compiled on April 29 2014" />
+    <property name="file.encoding" value="Cp1252" />
+    <property name="build.classes.excludes" value="**/*.java,**/*.form" />
+    <property name="jdkBug6558476" value="false" />
+    <property name="javadoc.nonavbar" value="false" />
+    <property name="platform.active" value="default_platform" />
+    <property name="awt.toolkit" value="sun.awt.windows.WToolkit" />
+  </properties>
+  <testcase classname="borradoindividuos.BorradoIndividuosStopLossInconsistentesTest" name="elIndividuoConsultadoTieneStopLossMenorOIgualA10" time="1.475" />
+  <system-out><![CDATA[<log> {OPERATION_TYPE=OperationType.Sell, USDCAD-201207190403=, READ_HARDEST=3, PAIR_FACTOR=100000.0, SHOW_WEAKEST=5, USDJPY-201205080412=, VALIDATION_NUMBER=1, QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE_DETALLE=SELECT /*RES.FECHA_BASE FECHA_BASE, */ MIN(RES.MIN_FECHA) MIN_FECHA, ROUND(SUM(RES.PRECIO_BASE_PROM)/COUNT(RES.PRECIO_BASE_PROM),5) PRECIO_BASE_PROM, MIN(RES.VALOR_MAS_PROBABLE) MIN_PRECIO, MAX(RES.VALOR_MAS_PROBABLE) MAX_PRECIO, (MAX(RES.VALOR_MAS_PROBABLE)-MIN(RES.VALOR_MAS_PROBABLE))*100000 DIFF_MM, ROUND(SUM(RES.VALOR_MAS_PROBABLE*RES.PROBABILIDAD)/SUM(RES.PROBABILIDAD),5) VALOR_MAS_PROBABLE, ROUND(SUM(RES.PIPS_MAS_PROBABLE*RES.PROBABILIDAD)/SUM(RES.PROBABILIDAD),5) PIPS_MAS_PROBABLE, ROUND(AVG(RES.PROBABILIDAD),5) PROBABILIDAD, SUM(CANTIDAD) CANTIDAD, COUNT(*) REG, MAX(RES.MAX_FECHA) MAX_FECHA FROM ( SELECT /*TEN.FECHA_BASE, */ MIN(TEN.FECHA_TENDENCIA) MIN_FECHA, MAX(TEN.FECHA_TENDENCIA) MAX_FECHA, ROUND(SUM(TEN.PRECIO_BASE_PROM)/COUNT(TEN.PRECIO_BASE_PROM),5) PRECIO_BASE_PROM, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)-STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) MIN_PRECIO, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)+STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) MAX_PRECIO, (ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)-STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) - ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)+STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5))*100000 DIFF_MM, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD),5) VALOR_MAS_PROBABLE, ROUND(SUM(TEN.PIPS*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD),5) PIPS_MAS_PROBABLE, ROUND(AVG(TEN.PROBABILIDAD),5) PROBABILIDAD, SUM(CANTIDAD) CANTIDAD, COUNT(*) REGISTROS FROM ( SELECT /*TEN4.FECHA_BASE FECHA_BASE, */ MIN(TEN4.FECHA_TENDENCIA) FECHA_TENDENCIA, SUM(TEN4.PRECIO_CALCULADO*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PRECIO_CALCULADO, SUM(TEN4.PRECIO_BASE*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PRECIO_BASE_PROM, AVG(TEN4.PROBABILIDAD) PROBABILIDAD, COUNT(*) CANTIDAD, SUM(TEN4.PIPS*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PIPS FROM TENDENCIA TEN4 INNER JOIN (SELECT ? FECHA_PROCESO FROM DUAL) FP ON TEN4.FECHA_BASE=FP.FECHA_PROCESO AND (TEN4.FECHA_CIERRE IS NULL OR TEN4.FECHA_CIERRE>FP.FECHA_PROCESO) AND TEN4.FECHA_TENDENCIA>=FP.FECHA_PROCESO AND TEN4.FECHA_TENDENCIA<=? AND TEN4.FECHA_APERTURA>FP.FECHA_PROCESO-60 GROUP BY TO_CHAR(TEN4.FECHA_TENDENCIA, 'YYYY/MM/DD')||' '||FLOOR(TO_CHAR(TEN4.FECHA_TENDENCIA, 'HH24')/7)||':'||FLOOR(TO_CHAR(TEN4.FECHA_TENDENCIA, 'MI')/4), TO_CHAR(TEN4.FECHA_APERTURA, 'YYYY/MM/DD')||' '||FLOOR(TO_CHAR(TEN4.FECHA_APERTURA, 'HH24')/9)||':'||FLOOR(TO_CHAR(TEN4.FECHA_APERTURA, 'MI')/34) ) TEN GROUP BY TO_CHAR(TEN.FECHA_TENDENCIA, 'YYYY/MM/DD HH24:MI') ) RES GROUP BY TO_CHAR(RES.MIN_FECHA, 'YYYY/MM/DD')||' '||FLOOR(TO_CHAR(RES.MIN_FECHA, 'HH24')/6)||':'||FLOOR(TO_CHAR(RES.MIN_FECHA, 'MI')/3) HAVING ABS((SUM(RES.PIPS_MAS_PROBABLE*RES.PROBABILIDAD)/SUM(RES.PROBABILIDAD))*AVG(RES.PROBABILIDAD))>0 AND SUM(CANTIDAD)>0, PRESENT_NUMBER_POBLACION=1, 1334286483382.128=, NUMBER_LEARNING=10, EQUIPO=ANGIE, 1327698225613.318=, 1330600388130.9730=, SHOW_OPERATIONS=TRUE, EURUSD-201207260215=, FILTRO_ADICIONAL_1end=AND IND.CREATION_DATE IS NOT NULL AND IND.CREATION_DATE BETWEEN TO_DATE('2012/06/07', 'YYYY/MM/DD') AND TO_DATE('2012/08/06', 'YYYY/MM/DD'), SHOW_ESTADISTICAS=TRUE, POBLACION_BASE=, FILTRO_ADICIONAL_X1=AND IND.ID = '1446768000000.1', MAX_SL=1000, FILTRO_ADICIONAL_2end=AND IND.CREATION_DATE IS NOT NULL AND IND.CREATION_DATE > TO_DATE('2014/03/14', 'YYYY/MM/DD'), QUERY_PROCESAR_TENDENCIAS=SELECT MIN(TEN.FECHA_TENDENCIA) MIN_FECHA, MAX(TEN.FECHA_TENDENCIA) MAX_FECHA, ROUND(SUM(TEN.PRECIO_BASE_PROM)/COUNT(TEN.PRECIO_BASE_PROM),5) PRECIO_BASE_PROM, MIN(TEN.PRECIO_CALCULADO) MIN_PRECIO2, MAX(TEN.PRECIO_CALCULADO) MAX_PRECIO2, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)-STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) MIN_PRECIO, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)+STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) MAX_PRECIO, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD),5) VALOR_MAS_PROBABLE, ROUND(SUM(TEN.PIPS*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD),5) PIPS_MAS_PROBABLE, ROUND(SUM(TEN.PROBABILIDAD)/COUNT(TEN.PROBABILIDAD),5) PROMEDIO_PROB, COUNT(*) CANTIDAD FROM ( SELECT MIN(TEN4.FECHA_TENDENCIA) FECHA_TENDENCIA, SUM(TEN4.PRECIO_CALCULADO*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PRECIO_CALCULADO, SUM(TEN4.PRECIO_BASE*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PRECIO_BASE_PROM, AVG(TEN4.PROBABILIDAD) PROBABILIDAD, SUM(TEN4.PIPS*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PIPS FROM TENDENCIA TEN4 INNER JOIN (SELECT ? FECHA_PROCESO FROM DUAL) FP ON TEN4.FECHA_BASE<=FP.FECHA_PROCESO AND (TEN4.FECHA_CIERRE IS NULL OR TEN4.FECHA_CIERRE>FP.FECHA_PROCESO) AND TEN4.FECHA_TENDENCIA>=FP.FECHA_PROCESO AND TEN4.FECHA_TENDENCIA<=? GROUP BY TEN4.FECHA_APERTURA ) TEN, HAS_MINIMUM_CRITERION_LEVEL=5, 1327975135464.38002=, FILTRO_ADICIONAL_3end=AND IND.CREATION_DATE IS NOT NULL AND IND.CREATION_DATE > TO_DATE('2013/09/26', 'YYYY/MM/DD'), QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE_BASE=SELECT /*RES.FECHA_BASE FECHA_BASE, */ MIN(RES.MIN_FECHA) MIN_FECHA, ROUND(SUM(RES.PRECIO_BASE_PROM)/COUNT(RES.PRECIO_BASE_PROM),5) PRECIO_BASE_PROM, MIN(RES.VALOR_MAS_PROBABLE) MIN_PRECIO, MAX(RES.VALOR_MAS_PROBABLE) MAX_PRECIO, (MAX(RES.VALOR_MAS_PROBABLE)-MIN(RES.VALOR_MAS_PROBABLE))*100000 DIFF_MM, ROUND(SUM(RES.VALOR_MAS_PROBABLE*RES.PROM_PROB)/SUM(RES.PROM_PROB),5) VALOR_MAS_PROBABLE, ROUND(SUM(RES.PIPS_MAS_PROBABLE*RES.PROM_PROB)/SUM(RES.PROM_PROB),5) PIPS_MAS_PROBABLE, ROUND(AVG(RES.PROM_PROB),5) PROM_PROB, SUM(CANTIDAD) CANTIDAD, COUNT(*) REG, MAX(RES.MAX_FECHA) MAX_FECHA FROM ( SELECT /*TEN.FECHA_BASE, */ MIN(TEN.FECHA_TENDENCIA) MIN_FECHA, MAX(TEN.FECHA_TENDENCIA) MAX_FECHA, ROUND(SUM(TEN.PRECIO_BASE_PROM)/COUNT(TEN.PRECIO_BASE_PROM),5) PRECIO_BASE_PROM, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)-STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) MIN_PRECIO, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)+STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) MAX_PRECIO, (ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)-STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) - ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)+STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5))*100000 DIFF_MM, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD),5) VALOR_MAS_PROBABLE, ROUND(SUM(TEN.PIPS*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD),5) PIPS_MAS_PROBABLE, ROUND(AVG(TEN.PROBABILIDAD),5) PROM_PROB, SUM(CANTIDAD) CANTIDAD, COUNT(*) REGISTROS FROM ( SELECT /*TEN4.FECHA_BASE FECHA_BASE, */ MIN(TEN4.FECHA_TENDENCIA) FECHA_TENDENCIA, SUM(TEN4.PRECIO_CALCULADO*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PRECIO_CALCULADO, SUM(TEN4.PRECIO_BASE*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PRECIO_BASE_PROM, AVG(TEN4.PROBABILIDAD) PROBABILIDAD, COUNT(*) CANTIDAD, SUM(TEN4.PIPS*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PIPS FROM TENDENCIA TEN4 INNER JOIN (SELECT DISTINCT T.FECHA_BASE FECHA_PROCESO FROM TENDENCIA T WHERE T.FECHA_BASE=?) FP ON TEN4.FECHA_BASE=FP.FECHA_PROCESO AND (TEN4.FECHA_CIERRE IS NULL OR TEN4.FECHA_CIERRE>FP.FECHA_PROCESO) AND TEN4.FECHA_TENDENCIA>=FP.FECHA_PROCESO AND TEN4.FECHA_TENDENCIA<=? AND TEN4.FECHA_APERTURA>FP.FECHA_PROCESO-60 AND TEN4.TIPO_TENDENCIA='ESTADISTICAS_MAXMIN_23' GROUP BY /*TEN4.FECHA_BASE, */ TO_CHAR(TEN4.FECHA_TENDENCIA, 'YYYY/MM/DD HH24:MI'), TO_CHAR(TEN4.FECHA_APERTURA, 'YYYY/MM/DD HH24:MI') ) TEN GROUP BY /*TEN.FECHA_BASE,*/ TO_CHAR(TEN.FECHA_TENDENCIA, 'YYYY/MM/DD HH24:MI') HAVING AVG(TEN.PROBABILIDAD)>0.50 /*HAVING SUM(CANTIDAD)>2 */ /*AND COUNT(*)>1 */ ) RES /*GROUP BY RES.FECHA_BASE*/, MIN_TP=36, PIPS_FIXER=0.0, FILTRO_ADICIONAL_4end=AND IND.CREATION_DATE IS NOT NULL AND IND.CREATION_DATE BETWEEN TO_DATE('2011/12/01', 'YYYY/MM/DD') AND TO_DATE('2012/02/07', 'YYYY/MM/DD'), FILE_PATH=files/, FILE_ID=201502020308, QUERY_TENDENCIA_GENETICA=SELECT MIN(RES.MIN_FECHA) MIN_FECHA, ROUND(SUM(RES.PRECIO_BASE_PROM)/COUNT(RES.PRECIO_BASE_PROM),5) PRECIO_BASE_PROM, MIN(RES.VALOR_MAS_PROBABLE) MIN_PRECIO, MAX(RES.VALOR_MAS_PROBABLE) MAX_PRECIO, (MAX(RES.VALOR_MAS_PROBABLE)-MIN(RES.VALOR_MAS_PROBABLE))*100000 DIFF_MM, ROUND(SUM(RES.VALOR_MAS_PROBABLE*RES.PROBABILIDAD)/SUM(RES.PROBABILIDAD),5) VALOR_MAS_PROBABLE, ROUND(SUM(RES.PIPS_MAS_PROBABLE*RES.PROBABILIDAD)/SUM(RES.PROBABILIDAD),5) PIPS_MAS_PROBABLE, ROUND(AVG(RES.PROBABILIDAD),5) PROBABILIDAD, SUM(CANTIDAD) CANTIDAD, COUNT(*) REG, MAX(RES.MAX_FECHA) MAX_FECHA FROM ( SELECT MIN(TEN.FECHA_TENDENCIA) MIN_FECHA, MAX(TEN.FECHA_TENDENCIA) MAX_FECHA, ROUND(SUM(TEN.PRECIO_BASE_PROM)/COUNT(TEN.PRECIO_BASE_PROM),5) PRECIO_BASE_PROM, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)-STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) MIN_PRECIO, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)+STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) MAX_PRECIO, (ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)-STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) - ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)+STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5))*100000 DIFF_MM, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD),5) VALOR_MAS_PROBABLE, ROUND(SUM(TEN.PIPS*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD),5) PIPS_MAS_PROBABLE, ROUND(AVG(TEN.PROBABILIDAD),5) PROBABILIDAD, SUM(CANTIDAD) CANTIDAD, COUNT(*) REGISTROS FROM ( SELECT MIN(TEN4.FECHA_TENDENCIA) FECHA_TENDENCIA, SUM(TEN4.PRECIO_CALCULADO*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PRECIO_CALCULADO, SUM(TEN4.PRECIO_BASE*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PRECIO_BASE_PROM, AVG(TEN4.PROBABILIDAD) PROBABILIDAD, COUNT(*) CANTIDAD, SUM(TEN4.PIPS*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PIPS FROM TENDENCIA TEN4 INNER JOIN (SELECT ? FECHA_PROCESO FROM DUAL) FP ON TEN4.FECHA_BASE=FP.FECHA_PROCESO AND (TEN4.FECHA_CIERRE IS NULL OR TEN4.FECHA_CIERRE>FP.FECHA_PROCESO) AND TEN4.FECHA_TENDENCIA>=FP.FECHA_PROCESO AND TEN4.FECHA_TENDENCIA<=? AND TEN4.FECHA_APERTURA>FP.FECHA_PROCESO-60 GROUP BY TO_CHAR(TEN4.FECHA_TENDENCIA, 'YYYY/MM/DD')||' '||FLOOR(TO_CHAR(TEN4.FECHA_TENDENCIA, 'HH24')/?)||':'||FLOOR(TO_CHAR(TEN4.FECHA_TENDENCIA, 'MI')/?), TO_CHAR(TEN4.FECHA_APERTURA, 'YYYY/MM/DD')||' '||FLOOR(TO_CHAR(TEN4.FECHA_APERTURA, 'HH24')/?)||':'||FLOOR(TO_CHAR(TEN4.FECHA_APERTURA, 'MI')/?) ) TEN GROUP BY TO_CHAR(TEN.FECHA_TENDENCIA, 'YYYY/MM/DD HH24:MI') ) RES GROUP BY TO_CHAR(RES.MIN_FECHA, 'YYYY/MM/DD')||' '||FLOOR(TO_CHAR(RES.MIN_FECHA, 'HH24')/?)||':'||FLOOR(TO_CHAR(RES.MIN_FECHA, 'MI')/?) HAVING ABS((SUM(RES.PIPS_MAS_PROBABLE*RES.PROBABILIDAD)/SUM(RES.PROBABILIDAD))*AVG(RES.PROBABILIDAD))>? AND SUM(CANTIDAD)>? , FORCE_INDIVIDUOS=FALSE, VALIDATION_ID=1343008856673, FILTRO_ADICIONAL_5x2=AND IND.ID LIKE '1446768000000.%', FINALIZADOS=, GENERATIONS=3, QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE=SELECT MIN(TEN.FECHA_TENDENCIA) MIN_FECHA, MAX(TEN.FECHA_TENDENCIA) MAX_FECHA, ROUND(SUM(TEN.PRECIO_BASE_PROM)/COUNT(TEN.PRECIO_BASE_PROM),5) PRECIO_BASE_PROM, ROUND(MIN(TEN.PRECIO_CALCULADO),5) MIN_PRECIO_IND, ROUND(MAX(TEN.PRECIO_CALCULADO),5) MAX_PRECIO_IND, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)-STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) MIN_PRECIO, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)+STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) MAX_PRECIO, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD),5) VALOR_MAS_PROBABLE, ROUND(SUM(TEN.PIPS*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD),5) PIPS_MAS_PROBABLE, ROUND(SUM(TEN.PROBABILIDAD)/COUNT(TEN.PROBABILIDAD),5) PROMEDIO_PROB, SUM(CANTIDAD) CANTIDAD FROM ( SELECT MIN(TEN4.FECHA_TENDENCIA) FECHA_TENDENCIA, SUM(TEN4.PRECIO_CALCULADO*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PRECIO_CALCULADO, SUM(TEN4.PRECIO_BASE*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PRECIO_BASE_PROM, AVG(TEN4.PROBABILIDAD) PROBABILIDAD, SUM(TEN4.PIPS*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PIPS, COUNT(*) CANTIDAD FROM TENDENCIA TEN4 INNER JOIN (SELECT ? FECHA_PROCESO FROM DUAL) FP ON TEN4.FECHA_BASE<FP.FECHA_PROCESO AND (TEN4.FECHA_CIERRE IS NULL OR TEN4.FECHA_CIERRE>FP.FECHA_PROCESO) AND TEN4.FECHA_TENDENCIA>=FP.FECHA_PROCESO AND TEN4.FECHA_TENDENCIA<=? GROUP BY TO_CHAR(TEN4.FECHA_TENDENCIA, 'YYYY/MM/DD HH24'),TO_CHAR(TEN4.FECHA_APERTURA, 'YYYY/MM/DD HH24') ) TEN, TEST_STRATEGY=1343862270390.14, USDCHF-201205170151=, MUTATION=50, SERIALICE_PATH=../serialice/, INDIVIDUOS=100, URL_DB=jdbc:oracle:thin:@localhost:1522/FOREX3, MIN_SL=36, REINICIADOS=PARA PROCESAR HASTA 2013/01/03 17:41, PAIR_COMPARE=EURUSD, MIN_OPER_NUM_BY_PERIOD=0.1, PWD_DB=forex, MAX_BALANCE=10000, INITIAL_POBLACION=1, MOD_POINTS=7200, QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE_BASE_20141113=SELECT RES.FECHA_BASE FECHA_BASE, MIN(RES.MIN_FECHA) MIN_FECHA, ROUND(SUM(RES.PRECIO_BASE_PROM)/COUNT(RES.PRECIO_BASE_PROM),5) PRECIO_BASE_PROM,  MIN(RES.MIN_PRECIO) MIN_PRECIO,  MAX(RES.MAX_PRECIO) MAX_PRECIO, (MAX(RES.MAX_PRECIO)-MIN(RES.MIN_PRECIO))*100000 DIFF_MM,  ROUND(SUM(RES.VALOR_MAS_PROBABLE*RES.PROM_PROB)/SUM(RES.PROM_PROB),5) VALOR_MAS_PROBABLE,          ROUND(SUM(RES.PIPS_MAS_PROBABLE*RES.PROM_PROB)/SUM(RES.PROM_PROB),5) PIPS_MAS_PROBABLE,          ROUND(AVG(RES.PROM_PROB),5) PROM_PROB, SUM(CANTIDAD) CANTIDAD, COUNT(*) REG, MAX(RES.MAX_FECHA) MAX_FECHA FROM ( SELECT TEN.FECHA_BASE, MIN(TEN.FECHA_TENDENCIA) MIN_FECHA, MAX(TEN.FECHA_TENDENCIA) MAX_FECHA,  ROUND(SUM(TEN.PRECIO_BASE_PROM)/COUNT(TEN.PRECIO_BASE_PROM),5) PRECIO_BASE_PROM,  ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)-STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) MIN_PRECIO,  ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)+STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) MAX_PRECIO,  (ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)-STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) - ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)+STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5))*100000 DIFF_MM,  ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD),5) VALOR_MAS_PROBABLE,  ROUND(SUM(TEN.PIPS*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD),5) PIPS_MAS_PROBABLE,  ROUND(AVG(TEN.PROBABILIDAD),5) PROM_PROB, SUM(CANTIDAD) CANTIDAD, COUNT(*) REGISTROS FROM ( SELECT TEN4.FECHA_BASE FECHA_BASE, TEN4.TIPO_CALCULO, MIN(TEN4.FECHA_TENDENCIA) FECHA_TENDENCIA, SUM(TEN4.PRECIO_CALCULADO*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PRECIO_CALCULADO,  SUM(TEN4.PRECIO_BASE*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PRECIO_BASE_PROM,  AVG(TEN4.PROBABILIDAD) PROBABILIDAD,  COUNT(*) CANTIDAD,  SUM(TEN4.PIPS*TEN4.PROBABILIDAD)/SUM(TEN4.PROBABILIDAD) PIPS FROM TENDENCIA TEN4  INNER JOIN (SELECT ? FECHA_PROCESO FROM DUAL) FP  ON TEN4.FECHA_BASE=FP.FECHA_PROCESO  AND (TEN4.FECHA_CIERRE IS NULL OR TEN4.FECHA_CIERRE>FP.FECHA_PROCESO)  AND TEN4.FECHA_TENDENCIA>=FP.FECHA_PROCESO  AND TEN4.FECHA_TENDENCIA<=? AND TEN4.FECHA_APERTURA>FP.FECHA_PROCESO-60 AND TEN4.TIPO_TENDENCIA='ESTADISTICAS_MAXMIN_23' GROUP BY  TEN4.FECHA_BASE, TO_CHAR(TEN4.FECHA_TENDENCIA, 'YYYY/MM/DD HH24'), TIPO_CALCULO, TO_CHAR(TEN4.FECHA_APERTURA, 'YYYY/MM/DD HH24:MI') ) TEN GROUP BY TEN.FECHA_BASE, TO_CHAR(TEN.FECHA_TENDENCIA, 'YYYY/MM/DD HH24') HAVING SUM(CANTIDAD)>2 AND COUNT(*)>1 ) RES GROUP BY RES.FECHA_BASE, OPTIMIZATION=1, FORTALEZA_TYPE=FortalezaType.Pips, 1331601592515.39178=, FILTRO_ADICIONAL_1END=AND IND.CREATION_DATE IS NULL AND IND.PARENT_ID_1 IS NULL AND IND.PARENT_ID_2 IS NULL AND IND.TAKE_PROFIT<=200, MINIMUM_INDIVIDUOS=10, USER_DB=FOREX, LISTING_ID=1338955827148, POINTS_CONTROL=Integer.MAX_VALUE, @NEW=, LISTING_NUMBER=100, LOG_PATH=log/, THREAD=TRUE, FILTRO_ADICIONAL_4END=AND IND.CREATION_DATE IS NULL AND IND.PARENT_ID_1 IS NOT NULL AND IND.PARENT_ID_2 IS NULL, QUERY_INDIVIDUOS_OPTIMOS=SELECT IND.ID ID_INDIVIDUO, (OPER_POS.CANTIDAD+OPER_NEG.CANTIDAD) CANTIDAD_TOTAL, ROUND(ABS(OPER_POS.SUMA/OPER_NEG.SUMA),5) FACTOR_PIPS, ROUND((OPER_POS.CANTIDAD/OPER_NEG.CANTIDAD),5) FACTOR_CANTIDAD FROM INDIVIDUO IND INNER JOIN (SELECT OPER1.ID_INDIVIDUO FROM OPERACION OPER1 WHERE OPER1.FECHA_APERTURA<(SELECT TO_DATE(VALOR, 'YYYY/MM/DD HH24:MI') FROM PARAMETRO WHERE NOMBRE='FECHA_INDIVIDUO_OPTIMO') AND OPER1.FECHA_APERTURA>ADD_MONTHS((SELECT TO_DATE(VALOR, 'YYYY/MM/DD HH24:MI') FROM PARAMETRO WHERE NOMBRE='FECHA_INDIVIDUO_OPTIMO'),-3) HAVING COUNT(*)>20 GROUP BY OPER1.ID_INDIVIDUO) CONTADOR_OPER ON CONTADOR_OPER.ID_INDIVIDUO=IND.ID LEFT JOIN (SELECT P.ID_INDIVIDUO, SUM(P.PIPS) SUMA, COUNT(*) CANTIDAD FROM OPERACION P WHERE P.PIPS>0  AND P.FECHA_APERTURA<(SELECT TO_DATE(VALOR, 'YYYY/MM/DD HH24:MI') FROM PARAMETRO WHERE NOMBRE='FECHA_INDIVIDUO_OPTIMO') GROUP BY P.ID_INDIVIDUO) OPER_POS ON OPER_POS.ID_INDIVIDUO=IND.ID LEFT JOIN (SELECT P.ID_INDIVIDUO, SUM(P.PIPS) SUMA, COUNT(*) CANTIDAD FROM OPERACION P WHERE P.PIPS<0  AND P.FECHA_APERTURA<(SELECT TO_DATE(VALOR, 'YYYY/MM/DD HH24:MI') FROM PARAMETRO WHERE NOMBRE='FECHA_INDIVIDUO_OPTIMO') GROUP BY P.ID_INDIVIDUO) OPER_NEG ON OPER_NEG.ID_INDIVIDUO=IND.ID WHERE ABS(OPER_POS.SUMA/OPER_NEG.SUMA)>=1.8 AND (OPER_POS.CANTIDAD/(OPER_POS.CANTIDAD+OPER_NEG.CANTIDAD))>=0.7 ORDER BY ABS(OPER_POS.SUMA/OPER_NEG.SUMA) DESC, MAX_FILE_PER_READ=3, LOT_SCALE_ROUNDING=2, VALIDATION_ACTIVE=FALSE, SHOW_HARDEST=5, CROSSOVER=10, OPTIMIZE_TEST=FALSE, MAX_LOT=0.1, TERMINAR=FALSE, MARGIN_REQUIRED=280.0, INITIAL_INDIVIDUOS=2, READ_SPECIFIC=FALSE, AUDUSD-201205090516=, MINIMUN_FORTALEZA=1000.0, END_POBLACION=50, QUERY_INDIVIDUOS=SELECT * FROM (SELECT IND.ID ID_INDIVIDUO, MAX(PROC.FECHA_HISTORICO) /*TO_DATE('2009/02/10 18:30', 'YYYY/MM/DD HH24:MI')*/ FECHA_HISTORICO, MAX(OPER.FECHA_APERTURA) FECHA_APERTURA FROM INDIVIDUO IND INNER JOIN INDICADOR_INDIVIDUO II ON II.ID_INDIVIDUO=IND.ID LEFT JOIN PROCESO PROC ON IND.ID=PROC.ID_INDIVIDUO LEFT JOIN OPERACION OPER ON IND.ID=OPER.ID_INDIVIDUO AND OPER.FECHA_CIERRE IS NULL WHERE IND.ID NOT IN (SELECT DISTINCT PRO.ID_INDIVIDUO FROM PROCESO PRO WHERE PRO.FECHA_HISTORICO=(SELECT MAX(FECHA) FROM DATOHISTORICO)) <FILTRO_ADICIONAL> GROUP BY IND.ID ORDER BY IND.ID DESC) WHERE ROWNUM<1000, PAIR=USDCAD, FILTRO_ADICIONAL_5=AND IND.CREATION_DATE IS NOT NULL AND IND.CREATION_DATE > TO_DATE('2015/11/06', 'YYYY/MM/DD'), FILTRO_ADICIONAL_4=AND IND.CREATION_DATE IS NOT NULL AND IND.CREATION_DATE BETWEEN TO_DATE('2012/02/07', 'YYYY/MM/DD') AND TO_DATE('2012/04/07', 'YYYY/MM/DD'), FILTRO_ADICIONAL_3=AND IND.CREATION_DATE IS NOT NULL AND IND.CREATION_DATE BETWEEN TO_DATE('2012/04/07', 'YYYY/MM/DD') AND TO_DATE('2012/06/07', 'YYYY/MM/DD'), FILTRO_ADICIONAL_2=AND IND.CREATION_DATE IS NULL AND IND.PARENT_ID_1 IS NULL AND IND.PARENT_ID_2 IS NULL AND IND.TAKE_PROFIT>500, DEFAULT_SCALE_ROUNDING=5, FILTRO_ADICIONAL_1=AND IND.CREATION_DATE IS NULL AND IND.PARENT_ID_1 IS NULL AND IND.PARENT_ID_2 IS NULL AND IND.TAKE_PROFIT>200 AND IND.TAKE_PROFIT<=500, SellUSDCAD201207190403_1343873268595-1-13.gfx=, SellUSDCAD201207190403_1343182595655-1-20.gfx=, PERIOD_LOAD=1, END=EQUIPO ANGIE, SellEURUSD201207260215_1344092068979-1-1.gfx=, MIN_LOT=0.1, SellEURUSD201207260215_1343592074749-1-20.gfx=, TEST_FILE=, QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE_SOLOMAXIMAFECHA=SELECT MIN(TEN.FECHA_TENDENCIA) MIN_FECHA, MAX(TEN.FECHA_TENDENCIA) MAX_FECHA, ROUND(SUM(TEN.PRECIO_BASE_PROM)/COUNT(TEN.PRECIO_BASE_PROM),5) PRECIO_BASE_PROM, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)-STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) MIN_PRECIO, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD)+STDDEV(TEN.PIPS*TEN.PROBABILIDAD)/100000,5) MAX_PRECIO, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD),5) VALOR_MAS_PROBABLE, ROUND(SUM(TEN.PIPS*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD),5) PIPS_MAS_PROBABLE, ROUND(SUM(TEN.PROBABILIDAD)/COUNT(TEN.PROBABILIDAD),5) PROMEDIO_PROB, COUNT(TEN.ID_INDIVIDUO) CANTIDAD FROM ( SELECT TEN4.FECHA_BASE, TEN4.PRECIO_BASE PRECIO_BASE_PROM, TEN4.FECHA_TENDENCIA, TEN4.PRECIO_CALCULADO, TEN4.PROBABILIDAD, TEN4.PIPS, TEN4.ID_INDIVIDUO FROM TENDENCIA TEN4 INNER JOIN (SELECT TEN2.ID_INDIVIDUO, TEN2.FECHA_APERTURA, MAX(TEN2.FECHA_BASE) FECHA_BASE FROM TENDENCIA TEN2 WHERE (TEN2.FECHA_CIERRE IS NULL OR TEN2.FECHA_CIERRE>?) AND TEN2.FECHA_BASE<=? GROUP BY TEN2.ID_INDIVIDUO, TEN2.FECHA_APERTURA ) TEN3 ON TEN4.ID_INDIVIDUO=TEN3.ID_INDIVIDUO AND TEN4.FECHA_APERTURA=TEN3.FECHA_APERTURA AND TEN4.FECHA_BASE=TEN3.FECHA_BASE AND TEN4.FECHA_TENDENCIA>=? AND TEN4.FECHA_TENDENCIA<=? ) TEN, GBPUSD-201205160432=, LOG_LEVEL=1, NOMBRE_ESTRATEGIA=ESTABLE_3MESES, SellUSDCAD201207062300_1341687718670-688-867.gfx=, RECALCULATE_ALL=FALSE, LEARNING_PATH=../learning/, ROOT_POBLACION=1, NUMBER_BACK_ROOT_POBLACION=-1, BuyAUDCAD201201251239_1327698225613-1-8.gfx=, QUERY_PROCESAR_TENDENCIAS_OLD=SELECT MIN(FECHA) MIN_FECHA, MAX(FECHA) MAX_FECHA, MIN(PIPS_PROB) MIN_PRECIO, MAX(PIPS_PROB) MAX_PRECIO, ROUND(SUM(PIPS_PROB*PROB)/SUM(PROB),5) VALOR_MAS_PROBABLE, SUM(CINDIVIDUOS) CANTIDAD  FROM ( SELECT TEN.FECHA_TENDENCIA FECHA, ROUND(SUM(TEN.PRECIO_CALCULADO*TEN.PROBABILIDAD)/SUM(TEN.PROBABILIDAD),5) PIPS_PROB, ROUND(SUM(TEN.PROBABILIDAD)/COUNT(TEN.PROBABILIDAD),5) PROB, COUNT(DISTINCT TEN.ID_INDIVIDUO) CINDIVIDUOS FROM ( SELECT TEN4.FECHA_BASE, TEN4.FECHA_TENDENCIA, TEN4.PRECIO_CALCULADO, TEN4.PROBABILIDAD, TEN4.ID_INDIVIDUO FROM TENDENCIA TEN4 INNER JOIN (SELECT TEN2.ID_INDIVIDUO, TEN2.FECHA_APERTURA, MAX(TEN2.FECHA_BASE) FECHA_BASE FROM TENDENCIA TEN2 WHERE /*(TEN2.FECHA_CIERRE IS NULL OR TEN2.FECHA_TENDENCIA<TEN2.FECHA_CIERRE) ELIMINADO PORQUE EN FECHA BASE NO SABRIA SI LA ORDEN SE VA A CERRAR ANTES QUE LA FECHA ESTIMADA*/  /*          AND */ TEN2.FECHA_BASE<? GROUP BY TEN2.ID_INDIVIDUO, TEN2.FECHA_APERTURA ) TEN3 ON TEN4.ID_INDIVIDUO=TEN3.ID_INDIVIDUO AND TEN4.FECHA_APERTURA=TEN3.FECHA_APERTURA AND TEN4.FECHA_BASE=TEN3.FECHA_BASE AND TEN4.FECHA_TENDENCIA>=? AND TEN4.FECHA_TENDENCIA<=? /*AND TEN4.PROBABILIDAD>0.6*/ ) TEN GROUP BY TEN.FECHA_TENDENCIA ) --WHERE PROB>0.7, RISK_LEVEL=8, MIN_BALANCE=2000, 1329420847661.3064=, MAX_TP=1000, VIGENCIA=25} <-- 2015/11/07 18:36.08										
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
