@@ -15,15 +15,30 @@ import forex.genetic.entities.indicator.Indicator;
  */
 public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
 
+    /**
+     *
+     */
     public IchimokuTrendIndicatorManager() {
         super(true, false, "IchiTrend");
         this.id = "ICHIMOKU_TREND";
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
     public Ichimoku getIndicatorInstance() {
         return new Ichimoku("IchiTrend");
     }
 
+    /**
+     *
+     * @param indicator
+     * @param point
+     * @return
+     */
+    @Override
     public Indicator generate(Ichimoku indicator, Point point) {
         Interval interval = null;
         Ichimoku ichimoku = getIndicatorInstance();
@@ -42,6 +57,14 @@ public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
         return ichimoku;
     }
 
+    /**
+     *
+     * @param ichimokuIndividuo
+     * @param iIchimoku
+     * @param currentPoint
+     * @param previousPoint
+     * @return
+     */
     @Override
     public boolean operate(Ichimoku ichimokuIndividuo, Ichimoku iIchimoku, Point currentPoint, Point previousPoint) {
         boolean operate = intervalManager.operate(ichimokuIndividuo.getInterval(),
@@ -49,12 +72,26 @@ public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
         return operate;
     }
 
+    /**
+     *
+     * @param ichimokuIndividuo
+     * @param iIchimoku
+     * @param point
+     * @return
+     */
     @Override
     public Interval calculateInterval(Ichimoku ichimokuIndividuo, Ichimoku iIchimoku, Point point) {
         return intervalManager.calculateInterval(ichimokuIndividuo.getInterval(),
                 getValue(iIchimoku, point, point), point);
     }
 
+    /**
+     *
+     * @param indicator
+     * @param prevPoint
+     * @param point
+     * @return
+     */
     @Override
     public double getValue(Ichimoku indicator, Point prevPoint, Point point) {
         double value = (indicator.getSenkouSpanA() - indicator.getSenkouSpanB());

@@ -4,21 +4,21 @@
  */
 package forex.genetic.manager;
 
-import forex.genetic.util.Constants;
 import forex.genetic.entities.DateInterval;
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
+import forex.genetic.util.Constants;
 import forex.genetic.util.NumberUtil;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 
 /**
@@ -32,13 +32,25 @@ public class PoblacionManager {
     private DateInterval dateInterval = new DateInterval();
     private final IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 
+    /**
+     *
+     */
     public PoblacionManager() {
     }
 
+    /**
+     *
+     * @param poblacionId
+     */
     public void load(String poblacionId) {
         this.load(poblacionId, false);
     }
 
+    /**
+     *
+     * @param poblacionId
+     * @param poblar
+     */
     public void load(String poblacionId, boolean poblar) {
         this.generatePoints(poblacionId);
         if ((poblar) && (!this.points.isEmpty())) {
@@ -64,7 +76,7 @@ public class PoblacionManager {
 
         Random random = new Random();
         int counter = 0;
-        Learning learning = LearningManager.learning;
+        Learning learning = LearningManager.getLearning();
         int minTP = PropertiesManager.getMinTP();
         int maxTP = PropertiesManager.getMaxTP();
         int minSL = PropertiesManager.getMinSL();
@@ -141,32 +153,52 @@ public class PoblacionManager {
         poblacion.setIndividuos(individuos);
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getPoblacion() {
         return poblacion;
     }
 
+    /**
+     *
+     * @param poblacion
+     */
     public void setPoblacion(Poblacion poblacion) {
         this.poblacion = poblacion;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Point> getPoints() {
         return points;
     }
 
+    /**
+     *
+     * @param points
+     */
     public void setPoints(List<Point> points) {
         this.points = points;
     }
 
+    /**
+     *
+     * @return
+     */
     public DateInterval getDateInterval() {
         return dateInterval;
     }
 
+    /**
+     *
+     * @param dateInterval
+     */
     public void setDateInterval(DateInterval dateInterval) {
         this.dateInterval = dateInterval;
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-    }
 }

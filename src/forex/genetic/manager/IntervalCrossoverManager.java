@@ -10,6 +10,13 @@ package forex.genetic.manager;
  */
 public class IntervalCrossoverManager {
 
+    /**
+     *
+     * @param lowInterval1
+     * @param highInterval1
+     * @param lowInterval2
+     * @param highInterval2
+     */
     public void crossover(double lowInterval1, double highInterval1, double lowInterval2, double highInterval2) {
 
     }

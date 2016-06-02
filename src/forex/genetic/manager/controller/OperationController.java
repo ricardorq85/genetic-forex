@@ -5,10 +5,10 @@
 package forex.genetic.manager.controller;
 
 import forex.genetic.entities.DoubleInterval;
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.IntervalManager;
 import forex.genetic.manager.PropertiesManager;
@@ -27,9 +27,19 @@ public class OperationController {
 
     private final IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
     
+    /**
+     *
+     */
     public OperationController() {
     }
 
+    /**
+     *
+     * @param individuoEstrategia
+     * @param points
+     * @param index
+     * @return
+     */
     public boolean operateOpen(IndividuoEstrategia individuoEstrategia, List<Point> points, int index) {
         boolean operate = true;
         Point currentPoint = points.get(index);
@@ -49,6 +59,13 @@ public class OperationController {
         return operate;
     }
 
+    /**
+     *
+     * @param individuoEstrategia
+     * @param points
+     * @param index
+     * @return
+     */
     public boolean operateClose(IndividuoEstrategia individuoEstrategia, List<Point> points, int index) {
         boolean operate = false;
         boolean operateIndicator = true;
@@ -70,6 +87,13 @@ public class OperationController {
         return operate;
     }
 
+    /**
+     *
+     * @param individuoEstrategia
+     * @param points
+     * @param index
+     * @return
+     */
     public double calculateOpenPrice(IndividuoEstrategia individuoEstrategia, List<Point> points, int index) {
         double price = Double.NaN;
         Point currentPoint = points.get(index);
@@ -108,6 +132,13 @@ public class OperationController {
         return price;
     }
 
+    /**
+     *
+     * @param individuoEstrategia
+     * @param points
+     * @param index
+     * @return
+     */
     public double calculateClosePrice(IndividuoEstrategia individuoEstrategia, List<Point> points, int index) {
         double price = Double.NaN;
         Point currentPoint = points.get(index);
@@ -151,6 +182,13 @@ public class OperationController {
         return price;
     }
 
+    /**
+     *
+     * @param points
+     * @param index
+     * @param operationType
+     * @return
+     */
     public double calculateStopLossPrice(List<Point> points, int index, Constants.OperationType operationType) {
         Point currentPoint = points.get(index);
         double value = 0.0D;
@@ -162,6 +200,13 @@ public class OperationController {
         return value;
     }
 
+    /**
+     *
+     * @param points
+     * @param index
+     * @param operationType
+     * @return
+     */
     public double calculateTakePrice(List<Point> points, int index, Constants.OperationType operationType) {
         Point currentPoint = points.get(index);
         double value = 0.0D;
@@ -173,6 +218,14 @@ public class OperationController {
         return value;
     }
 
+    /**
+     *
+     * @param individuoEstrategia
+     * @param prevOpenPoint
+     * @param openPoint
+     * @param closePoint
+     * @param pips
+     */
     public void optimize(IndividuoEstrategia individuoEstrategia, Point prevOpenPoint, Point openPoint, Point closePoint, double pips) {
         List<Indicator> openOptimized = Collections.synchronizedList(new ArrayList<>(indicadorController.getIndicatorNumber()));
         List<Indicator> closeOptimized = Collections.synchronizedList(new ArrayList<>(indicadorController.getIndicatorNumber()));

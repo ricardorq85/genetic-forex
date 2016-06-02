@@ -4,16 +4,25 @@
  */
 package forex.genetic;
 
-import forex.genetic.delegate.GeneticTesterDelegate;
+import static forex.genetic.delegate.GeneticDelegate.setId;
 import forex.genetic.delegate.PoblacionDelegate;
 import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
-import forex.genetic.manager.PropertiesManager;
+import static forex.genetic.manager.PropertiesManager.getOperationType;
+import static forex.genetic.manager.PropertiesManager.getPair;
+import static forex.genetic.manager.PropertiesManager.getPropertyString;
+import static forex.genetic.manager.PropertiesManager.getSerialicePath;
+import static forex.genetic.manager.PropertiesManager.load;
 import forex.genetic.manager.io.SerializationPoblacionManager;
-import forex.genetic.util.Constants;
-import forex.genetic.util.LogUtil;
+import static forex.genetic.util.Constants.LOG_PATH;
+import static forex.genetic.util.LogUtil.logTime;
 import java.io.IOException;
 import java.io.PrintStream;
+import static java.lang.System.currentTimeMillis;
+import static java.lang.System.setErr;
+import static java.lang.System.setOut;
+import java.nio.charset.Charset;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,23 +30,34 @@ import java.io.PrintStream;
  */
 public class ForexInsertIndividuos {
 
+    /**
+     *
+     * @param args
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     */
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-        long id = System.currentTimeMillis();
-        PropertiesManager.load().join();
-        LogUtil.logTime("ForexInsertIndividuos: " + id, 1);
-        GeneticTesterDelegate.id = "" + id;
-        PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + "InsertIndividuos_" + PropertiesManager.getOperationType() + PropertiesManager.getPair() + id + ".log");
-        System.setOut(out);
-        System.setErr(out);
+        long id = currentTimeMillis();
+        load().join();
+        logTime("ForexInsertIndividuos: " + id, 1);
+        setId("" + id);
+        StringBuilder name = new StringBuilder();
+        name.append(getPropertyString(LOG_PATH)).append("InsertIndividuos_");
+        name.append(getOperationType()).append(getPair()).append(id).append(".log");
+        PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
+        setOut(out);
+        setErr(out);
         SerializationPoblacionManager serializationManager = new SerializationPoblacionManager();
-        String serPath = PropertiesManager.getSerialicePath();
+        String serPath = getSerialicePath();
         Poblacion poblacion = null;
         PoblacionDelegate delegate = new PoblacionDelegate();
-        for (int i = 0; i < 100000; i++) {
-            LogUtil.logTime("Init Insert Poblacion i=" + i, 1);
-            poblacion = serializationManager.readAll(serPath, 1000, -1, -1, new Learning());
+        for (int i = 0; i < 100_000; i++) {
+            logTime("Init Insert Poblacion i=" + i, 1);
+            poblacion = serializationManager.readAll(serPath, 1_000, -1, -1, new Learning());
             delegate.cargarPoblacion(poblacion);
-            LogUtil.logTime("End Insert Poblacion i=" + i, 1);
+            logTime("End Insert Poblacion i=" + i, 1);
         }
     }
+    private static final Logger LOG = Logger.getLogger(ForexInsertIndividuos.class.getName());
 }

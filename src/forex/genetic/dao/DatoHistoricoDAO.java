@@ -4,6 +4,9 @@
  */
 package forex.genetic.dao;
 
+import forex.genetic.dao.helper.BasePointHelper;
+import forex.genetic.entities.DoubleInterval;
+import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Adx;
 import forex.genetic.entities.indicator.Average;
@@ -13,9 +16,6 @@ import forex.genetic.entities.indicator.Macd;
 import forex.genetic.entities.indicator.Momentum;
 import forex.genetic.entities.indicator.Rsi;
 import forex.genetic.entities.indicator.Sar;
-import forex.genetic.dao.helper.BasePointHelper;
-import forex.genetic.entities.DoubleInterval;
-import forex.genetic.entities.Order;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -34,12 +34,24 @@ import java.util.List;
  */
 public class DatoHistoricoDAO {
 
+    /**
+     *
+     */
     protected Connection connection = null;
 
+    /**
+     *
+     * @param connection
+     */
     public DatoHistoricoDAO(Connection connection) {
         this.connection = connection;
     }
 
+    /**
+     *
+     * @return
+     * @throws SQLException
+     */
     public Date getFechaHistoricaMinima() throws SQLException {
         Date fechaHistorica = null;
         String sql = "SELECT MIN(FECHA) FECHA_MINIMA_HISTORIA FROM DATOHISTORICO";
@@ -58,6 +70,12 @@ public class DatoHistoricoDAO {
         return fechaHistorica;
     }
 
+    /**
+     *
+     * @param fechaMayorQue
+     * @return
+     * @throws SQLException
+     */
     public Date getFechaHistoricaMinima(Date fechaMayorQue) throws SQLException {
         Date fechaHistorica = null;
         String sql = "SELECT MIN(FECHA) FECHA_MINIMA_HISTORIA FROM DATOHISTORICO "
@@ -80,6 +98,11 @@ public class DatoHistoricoDAO {
         return fechaHistorica;
     }
 
+    /**
+     *
+     * @return
+     * @throws SQLException
+     */
     public Date getFechaHistoricaMaxima() throws SQLException {
         Date fechaHistorica = null;
         String sql = "SELECT MAX(FECHA) FECHA_MAXIMA_HISTORIA FROM DATOHISTORICO";
@@ -99,6 +122,13 @@ public class DatoHistoricoDAO {
         return fechaHistorica;
     }
 
+    /**
+     *
+     * @param fechaBase1
+     * @param fechaBase2
+     * @return
+     * @throws SQLException
+     */
     public List<Point> consultarHistorico(Date fechaBase1, Date fechaBase2) throws SQLException {
         List<Point> points = null;
         String sql = "SELECT PAR, MINUTOS, PAR_COMPARE, FECHA, "
@@ -126,6 +156,12 @@ public class DatoHistoricoDAO {
         return points;
     }
 
+    /**
+     *
+     * @param fechaBase
+     * @return
+     * @throws SQLException
+     */
     public List<Point> consultarHistorico(Date fechaBase) throws SQLException {
         List<Point> points = null;
         String sql = "SELECT * FROM (SELECT PAR, MINUTOS, PAR_COMPARE, FECHA, "
@@ -156,6 +192,11 @@ public class DatoHistoricoDAO {
         return points;
     }
 
+    /**
+     *
+     * @param point
+     * @throws SQLException
+     */
     public void insertDatoHistorico(Point point) throws SQLException {
         String sql = "INSERT INTO DATOHISTORICO ( PAR, MINUTOS, PAR_COMPARE, FECHA, "
                 + "OPEN, LOW, HIGH, CLOSE, VOLUME, SPREAD, AVERAGE, MACD_VALUE, MACD_SIGNAL, "
@@ -295,6 +336,14 @@ public class DatoHistoricoDAO {
         }
     }
 
+    /**
+     *
+     * @param fechaBase1
+     * @param fechaBase2
+     * @param base
+     * @return
+     * @throws SQLException
+     */
     public List<Point> consultarPuntoByLow(Date fechaBase1, Date fechaBase2, double base) throws SQLException {
         List<Point> points = null;
         String sql = "SELECT * FROM DATOHISTORICO "
@@ -327,6 +376,14 @@ public class DatoHistoricoDAO {
         return points;
     }
 
+    /**
+     *
+     * @param fechaBase1
+     * @param fechaBase2
+     * @param base
+     * @return
+     * @throws SQLException
+     */
     public List<Point> consultarPuntoByHigh(Date fechaBase1, Date fechaBase2, double base) throws SQLException {
         List<Point> points = null;
         String sql = "SELECT * FROM DATOHISTORICO "
@@ -360,6 +417,13 @@ public class DatoHistoricoDAO {
         return points;
     }
 
+    /**
+     *
+     * @param fecha1
+     * @param fecha2
+     * @return
+     * @throws SQLException
+     */
     public DoubleInterval consultarMaximoMinimo(Date fecha1, Date fecha2) throws SQLException {
         String sql = "SELECT MIN(LOW) MINIMO, MAX(HIGH) MAXIMO FROM DATOHISTORICO "
                 + " WHERE FECHA>=? AND FECHA<=?";
@@ -387,23 +451,29 @@ public class DatoHistoricoDAO {
         return maximoMinimo;
     }
 
+    /**
+     *
+     * @param orden
+     * @return
+     * @throws SQLException
+     */
     public Point consultarRetroceso(Order orden) throws SQLException {
-        String sql = null;
+        StringBuilder sql = new StringBuilder();
         if (orden.getPips() > 0) {
-            sql = "SELECT * FROM DATOHISTORICO DH WHERE HIGH=(SELECT MAX(HIGH) MAXIMO FROM DATOHISTORICO "
-                    + " WHERE FECHA>? AND FECHA<? AND HIGH>?) "
-                    + " AND FECHA>? AND FECHA<? AND HIGH>? AND ROWNUM<2";
+            sql.append("SELECT * FROM DATOHISTORICO DH WHERE HIGH=(SELECT MAX(HIGH) MAXIMO FROM DATOHISTORICO ");
+            sql.append(" WHERE FECHA>? AND FECHA<? AND HIGH>?) ");
+            sql.append(" AND FECHA>? AND FECHA<? AND HIGH>? AND ROWNUM<2");
         } else {
-            sql = "SELECT * FROM DATOHISTORICO DH WHERE LOW=(SELECT MIN(LOW) MINIMO FROM DATOHISTORICO "
-                    + " WHERE FECHA>? AND FECHA<? AND LOW<?) "
-                    + " AND FECHA>? AND FECHA<? AND LOW<? AND ROWNUM<2";
+            sql.append("SELECT * FROM DATOHISTORICO DH WHERE LOW=(SELECT MIN(LOW) MINIMO FROM DATOHISTORICO ");
+            sql.append(" WHERE FECHA>? AND FECHA<? AND LOW<?) ");
+            sql.append(" AND FECHA>? AND FECHA<? AND LOW<? AND ROWNUM<2");
         }
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
         List<Point> points = null;
         Point point = null;
         try {
-            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta = this.connection.prepareStatement(sql.toString());
             stmtConsulta.setTimestamp(1, new Timestamp(orden.getOpenDate().getTime()));
             stmtConsulta.setTimestamp(2, new Timestamp(orden.getCloseDate().getTime()));
             stmtConsulta.setDouble(3, orden.getOpenOperationValue());
@@ -423,6 +493,13 @@ public class DatoHistoricoDAO {
         return point;
     }
 
+    /**
+     *
+     * @param fecha
+     * @param formatoAgrupador
+     * @return
+     * @throws SQLException
+     */
     public double consultarMaximaDiferencia(Date fecha, String formatoAgrupador) throws SQLException {
         String sql = "SELECT AVG(MAX_DIFF) AVG_MAX_DIFF FROM ("
                 + "  SELECT (MAX(DH.HIGH)-MIN(DH.LOW)) MAX_DIFF "

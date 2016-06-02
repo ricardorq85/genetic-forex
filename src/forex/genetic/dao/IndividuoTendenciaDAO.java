@@ -19,10 +19,20 @@ import java.util.List;
  */
 public class IndividuoTendenciaDAO extends IndividuoDAO {
 
+    /**
+     *
+     * @param connection
+     */
     public IndividuoTendenciaDAO(Connection connection) {
         super(connection);
     }
 
+    /**
+     *
+     * @param cantidad
+     * @return
+     * @throws SQLException
+     */
     public List<Individuo> consultarIndividuosTendencia(int cantidad) throws SQLException {
         List<Individuo> list = null;
         String sql = "SELECT * FROM ( "

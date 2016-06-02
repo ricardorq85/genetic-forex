@@ -4,21 +4,20 @@
  */
 package forex.genetic.manager;
 
-import forex.genetic.entities.RelacionGeneraciones;
-import forex.genetic.entities.Learning;
-import forex.genetic.util.LogUtil;
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
+import forex.genetic.entities.RelacionGeneraciones;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.factory.ControllerFactory;
-import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
+import forex.genetic.util.Constants.IndividuoType;
+import forex.genetic.util.LogUtil;
 import forex.genetic.util.NumberUtil;
-import java.util.List;
-import java.util.Random;
-import static forex.genetic.util.Constants.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -28,10 +27,20 @@ public class MutationIndividuoManager extends MutationManager {
 
     private final EspecificMutationManager especificMutationManager = EspecificMutationManager.getInstance();
 
+    /**
+     *
+     */
     public MutationIndividuoManager() {
         super(ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo));
     }
 
+    /**
+     *
+     * @param generacion
+     * @param poblacion
+     * @param percentValue
+     * @return
+     */
     @Override
     public Poblacion[] mutate(int generacion, Poblacion poblacion, int percentValue) {
         Poblacion[] poblacionArray = new Poblacion[2];
@@ -43,9 +52,9 @@ public class MutationIndividuoManager extends MutationManager {
         Random random = new Random();
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
         int counter = 0;
-        Learning learning = LearningManager.learning;
+        Learning learning = LearningManager.getLearning();
         RelacionGeneraciones relacionMutation = null;
-        if ((learning.getRelacionMutation() != null) && (learning.getRelacionMutation().size() > 0)) {
+        if ((learning != null) && (learning.getRelacionMutation() != null) && (learning.getRelacionMutation().size() > 0)) {
             relacionMutation = learning.getRelacionMutation().get(0);
         }
         int minTP = PropertiesManager.getMinTP();

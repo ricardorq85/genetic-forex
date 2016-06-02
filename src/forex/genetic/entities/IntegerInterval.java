@@ -10,18 +10,36 @@ import java.io.Serializable;
  *
  * @author ricardorq85
  */
-public class IntegerInterval extends Interval<Integer> implements Serializable, Comparable<IntegerInterval> {
+public class IntegerInterval extends Interval<Integer> implements Comparable<IntegerInterval> {
 
+    /**
+     *
+     */
     public static final long serialVersionUID = 201206011720L;
 
+    /**
+     *
+     * @param name
+     */
     public IntegerInterval(String name) {
         super(name);
     }
 
+    /**
+     *
+     * @param lowInterval
+     * @param highInterval
+     */
     public IntegerInterval(Integer lowInterval, Integer highInterval) {
         this(null, lowInterval, highInterval);
     }
 
+    /**
+     *
+     * @param name
+     * @param lowInterval
+     * @param highInterval
+     */
     public IntegerInterval(String name, Integer lowInterval, Integer highInterval) {
         super(name);
         this.setLowInterval(lowInterval);
@@ -55,6 +73,7 @@ public class IntegerInterval extends Interval<Integer> implements Serializable, 
         return buffer.toString();
     }
 
+    @Override
     public int compareTo(IntegerInterval o) {
         return new Integer(this.lowInterval + this.highInterval).compareTo(new Integer(o.lowInterval + o.highInterval));
     }

@@ -16,45 +16,88 @@ public class DiferenciaMaximaHistorico {
     private double movHistxSemana = 0.0D;
     private double movHistxMes = 0.0D;
 
+    /**
+     *
+     */
     public DiferenciaMaximaHistorico() {
     }    
     
+    /**
+     *
+     * @return
+     */
     public double getMovHistxMinuto() {
         return movHistxMinuto;
     }
 
+    /**
+     *
+     * @param movHistxMinuto
+     */
     public void setMovHistxMinuto(double movHistxMinuto) {
         this.movHistxMinuto = movHistxMinuto;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getMovHistxHora() {
         return movHistxHora;
     }
 
+    /**
+     *
+     * @param movHistxHora
+     */
     public void setMovHistxHora(double movHistxHora) {
         this.movHistxHora = movHistxHora;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getMovHistxDia() {
         return movHistxDia;
     }
 
+    /**
+     *
+     * @param movHistxDia
+     */
     public void setMovHistxDia(double movHistxDia) {
         this.movHistxDia = movHistxDia;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getMovHistxSemana() {
         return movHistxSemana;
     }
 
+    /**
+     *
+     * @param movHistxSemana
+     */
     public void setMovHistxSemana(double movHistxSemana) {
         this.movHistxSemana = movHistxSemana;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getMovHistxMes() {
         return movHistxMes;
     }
 
+    /**
+     *
+     * @param movHistxMes
+     */
     public void setMovHistxMes(double movHistxMes) {
         this.movHistxMes = movHistxMes;
     }

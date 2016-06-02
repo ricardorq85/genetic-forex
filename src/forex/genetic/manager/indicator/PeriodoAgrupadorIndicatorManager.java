@@ -22,6 +22,12 @@ public class PeriodoAgrupadorIndicatorManager extends IntervalIndicatorManager<P
     private final int maximo;
     private final Random random = new Random();
 
+    /**
+     *
+     * @param minimo
+     * @param maximo
+     * @param name
+     */
     public PeriodoAgrupadorIndicatorManager(int minimo, int maximo, String name) {
         super();
         EqualIntervalManager intervManager = new EqualIntervalManager(name);
@@ -32,11 +38,21 @@ public class PeriodoAgrupadorIndicatorManager extends IntervalIndicatorManager<P
         this.maximo = maximo;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public PeriodoAgrupador getIndicatorInstance() {
         return new PeriodoAgrupador(this.id);
     }
 
+    /**
+     *
+     * @param indicator
+     * @param point
+     * @return
+     */
     @Override
     public Indicator generate(PeriodoAgrupador indicator, Point point) {
         Interval interval;
@@ -47,11 +63,23 @@ public class PeriodoAgrupadorIndicatorManager extends IntervalIndicatorManager<P
         return periodoAgrupador;
     }
 
+    /**
+     *
+     * @param indicator
+     * @param prevPoint
+     * @param point
+     * @return
+     */
     @Override
     public double getValue(PeriodoAgrupador indicator, Point prevPoint, Point point) {
         return maximo;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Indicator mutate(PeriodoAgrupador obj) {
         IntervalIndicator intervalIndicator = (IntervalIndicator) super.mutate(obj);
@@ -63,6 +91,12 @@ public class PeriodoAgrupadorIndicatorManager extends IntervalIndicatorManager<P
         return intervalIndicator;
     }
 
+    /**
+     *
+     * @param obj1
+     * @param obj2
+     * @return
+     */
     @Override
     public Indicator crossover(PeriodoAgrupador obj1, PeriodoAgrupador obj2) {
         IntervalIndicator intervalIndicator = (IntervalIndicator) super.crossover(obj1, obj2);

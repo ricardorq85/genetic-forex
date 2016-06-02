@@ -4,8 +4,6 @@
  */
 package forex.genetic.delegate;
 
-import forex.genetic.util.Constants;
-import forex.genetic.manager.PropertiesManager;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
@@ -14,14 +12,16 @@ import forex.genetic.manager.FuncionFortalezaManager;
 import forex.genetic.manager.LearningManager;
 import forex.genetic.manager.PatternManager;
 import forex.genetic.manager.PoblacionManager;
+import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.io.FileOutManager;
 import forex.genetic.manager.io.SerializationLearningManager;
 import forex.genetic.manager.io.SerializationPoblacionManager;
 import forex.genetic.manager.statistic.EstadisticaManager;
-import forex.genetic.thread.ProcessPoblacionThread;
 import forex.genetic.thread.PoblacionLoadThread;
 import forex.genetic.thread.ProcessGeneracion;
+import forex.genetic.thread.ProcessPoblacionThread;
 import forex.genetic.thread.SerializationReadAllThread;
+import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.ThreadUtil;
 import java.io.FileNotFoundException;
@@ -39,8 +39,13 @@ import java.util.ListIterator;
 public class GeneticDelegate {
 
     //IndividuoEstrategia ie = new IndividuoEstrategia();
-    public static String id = "0";
+    private static String id = "0";
+
     private SerializationPoblacionManager serializationPoblacionManager = new SerializationPoblacionManager();
+
+    /**
+     *
+     */
     protected FileOutManager fileOutManager = null;
     private FuncionFortalezaManager funcionFortalezaManager = new FuncionFortalezaManager();
     private SerializationLearningManager serializationLearningManager = new SerializationLearningManager();
@@ -51,30 +56,63 @@ public class GeneticDelegate {
     private int initialPoblacion = -1;
     private int generations = -1;
     private Learning learning = null;
+    
 
+    /**
+     * @return the id
+     */
+    public static String getId() {
+        return id;
+    }
+
+    /**
+     * @param aId the id to set
+     */
+    public static void setId(String aId) {
+        id = aId;
+    }
+
+    /**
+     *
+     * @throws FileNotFoundException
+     */
     public GeneticDelegate() throws FileNotFoundException {
         this(true);
     }
 
+    /**
+     *
+     * @param createFile
+     * @throws FileNotFoundException
+     */
     public GeneticDelegate(boolean createFile) throws FileNotFoundException {
         rootPoblacion = PropertiesManager.getPropertyInt(Constants.ROOT_POBLACION);
         backPoblacion = PropertiesManager.getPropertyInt(Constants.NUMBER_BACK_ROOT_POBLACION);
         initialPoblacion = PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION);
         generations = PropertiesManager.getPropertyInt(Constants.GENERATIONS);
         learning = serializationLearningManager.readLearning();
-        LearningManager.learning = learning;
+        LearningManager.setLearning(learning);
         fileOutManager = new FileOutManager(createFile);
     }
 
+    /**
+     *
+     * @return
+     */
     public FileOutManager getFileOutManager() {
         return fileOutManager;
     }
 
+    /**
+     *
+     * @return
+     * @throws IOException
+     */
     public Poblacion process() throws IOException {
         Poblacion poblacion = new Poblacion();
         Poblacion newPoblacion = null;
         Poblacion poblacionHija;
-        Poblacion poblacionPadre = new Poblacion();
+        Poblacion poblacionPadre;
         Poblacion cachePoblacionPadre = new Poblacion();
         ProcessPoblacionThread threadProcessPoblacionAcumulada = null;
         ProcessPoblacionThread threadProcessPoblacionNueva = null;
@@ -281,7 +319,7 @@ public class GeneticDelegate {
                 fileOutManager.write(poblacion.getFirst(PropertiesManager.getPropertyInt(Constants.SHOW_HARDEST)),
                         (nextPoblacionManager != null) ? nextPoblacionManager.getDateInterval() : null, true);
                 //if ((currentPoblacionManager.getPoblacion() != null) && (!currentPoblacionManager.getPoblacion().getIndividuos().isEmpty())) {
-                serializationPoblacionManager.writeObject(id, poblacion,
+                serializationPoblacionManager.writeObject(getId(), poblacion,
                         null,
                         poblacionIndex, poblacionFromIndex);
                 //}
@@ -360,6 +398,11 @@ public class GeneticDelegate {
                 && (generacionIndex == 1));
     }
 
+    /**
+     *
+     * @param p
+     * @throws IOException
+     */
     public void outPoblacion(Poblacion p) throws IOException {
         Poblacion poblacion = p.getFirst(PropertiesManager.getPropertyInt(Constants.SHOW_HARDEST));
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
@@ -371,6 +414,11 @@ public class GeneticDelegate {
         }
     }
 
+    /**
+     *
+     * @param individuo
+     * @throws IOException
+     */
     public void outIndividuo(IndividuoEstrategia individuo) throws IOException {
         //System.out.println(individuo.toString());
         fileOutManager.write("\n");

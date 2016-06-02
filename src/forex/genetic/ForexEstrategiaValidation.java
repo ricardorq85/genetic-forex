@@ -4,21 +4,39 @@
  */
 package forex.genetic;
 
-import forex.genetic.entities.IndividuoEstrategia;
+import static forex.genetic.delegate.GeneticDelegate.setId;
 import forex.genetic.delegate.GeneticTesterDelegate;
 import forex.genetic.entities.Fortaleza;
+import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.manager.PatternManager;
-import forex.genetic.manager.PropertiesManager;
+import static forex.genetic.manager.PropertiesManager.getFileId;
+import static forex.genetic.manager.PropertiesManager.getOperationType;
+import static forex.genetic.manager.PropertiesManager.getPair;
+import static forex.genetic.manager.PropertiesManager.getPropertyBoolean;
+import static forex.genetic.manager.PropertiesManager.getPropertyInt;
+import static forex.genetic.manager.PropertiesManager.getPropertyString;
+import static forex.genetic.manager.PropertiesManager.getSerialicePath;
+import static forex.genetic.manager.PropertiesManager.load;
 import forex.genetic.manager.io.SerializationPoblacionManager;
-import forex.genetic.util.Constants;
-import forex.genetic.util.LogUtil;
+import static forex.genetic.util.Constants.END_POBLACION;
+import static forex.genetic.util.Constants.INITIAL_POBLACION;
+import static forex.genetic.util.Constants.LOG_PATH;
+import static forex.genetic.util.Constants.NUMBER_BACK_ROOT_POBLACION;
+import static forex.genetic.util.Constants.VALIDATION_ACTIVE;
+import static forex.genetic.util.Constants.VALIDATION_ID;
+import static forex.genetic.util.LogUtil.logTime;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import static java.lang.Math.max;
+import static java.lang.System.setErr;
+import static java.lang.System.setOut;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  *
@@ -26,28 +44,36 @@ import java.util.List;
  */
 public class ForexEstrategiaValidation {
 
+    /**
+     *
+     * @param args
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     */
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-        PropertiesManager.load().join();
+        load().join();
         SerializationPoblacionManager serializationManager = new SerializationPoblacionManager();
-        String validationId = PropertiesManager.getPropertyString(Constants.VALIDATION_ID);
-        int initialPoblacion = PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION);
-        int endPoblacion = PropertiesManager.getPropertyInt(Constants.END_POBLACION);
-        int backPoblacion = PropertiesManager.getPropertyInt(Constants.NUMBER_BACK_ROOT_POBLACION);
+        String validationId = getPropertyString(VALIDATION_ID);
+        int initialPoblacion = getPropertyInt(INITIAL_POBLACION);
+        int endPoblacion = getPropertyInt(END_POBLACION);
+        int backPoblacion = getPropertyInt(NUMBER_BACK_ROOT_POBLACION);
         int indivNum = 1;//PropertiesManager.getPropertyInt(Constants.VALIDATION_NUMBER);
-        boolean validationActive = PropertiesManager.getPropertyBoolean(Constants.VALIDATION_ACTIVE);
+        boolean validationActive = getPropertyBoolean(VALIDATION_ACTIVE);
 
         String id = validationId;
-        GeneticTesterDelegate.id = id;
-        PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + "Validation_"
-                + PropertiesManager.getOperationType() + PropertiesManager.getPair() + id + "_"
-                + validationActive + "_" + indivNum + ".log");
-        System.setOut(out);
-        System.setErr(out);
+        setId(id);
+        StringBuilder name = new StringBuilder(getPropertyString(LOG_PATH));
+        name.append("Validation_").append(getOperationType()).append(getPair());
+        name.append(id).append("_").append(validationActive + "_" + indivNum + ".log");
+        PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
+        setOut(out);
+        setErr(out);
 
-        String serPath = PropertiesManager.getSerialicePath();
+        String serPath = getSerialicePath();
         Poblacion p = null;
-        List<Poblacion> listPoblacion = new ArrayList<Poblacion>();
-        List<Poblacion> listPoblacionBeforeProcess = new ArrayList<Poblacion>();
+        List<Poblacion> listPoblacion = new ArrayList<>();
+        List<Poblacion> listPoblacionBeforeProcess = new ArrayList<>();
 
         GeneticTesterDelegate delegate = new GeneticTesterDelegate();
         int closePoblacionIndex = -1;
@@ -65,12 +91,12 @@ public class ForexEstrategiaValidation {
             }
             if ((individuo == null) || (closePoblacionIndex <= (i + 1))) {
                 String filename = serPath
-                        + PropertiesManager.getOperationType() + PropertiesManager.getPair()
-                        + PropertiesManager.getFileId() + "_"
-                        + id + "-" + ((backPoblacion < 0) ? 1 : Math.max(1, (i - backPoblacion + 1))) + "-" + (i) + ".gfx";
+                        + getOperationType() + getPair()
+                        + getFileId() + "_"
+                        + id + "-" + ((backPoblacion < 0) ? 1 : max(1, (i - backPoblacion + 1))) + "-" + (i) + ".gfx";
                 try {
                     p = serializationManager.readObject(new File(filename));
-                } catch (Exception exc) {
+                } catch (IOException | ClassNotFoundException exc) {
                     exc.printStackTrace();
                     p = new Poblacion();
                 }
@@ -153,32 +179,33 @@ public class ForexEstrategiaValidation {
                 Fortaleza fIndividuoBeforeProcess = individuoBeforeProcess.getFortaleza();
                 double fortalezaValue = (fIndividuoBeforeProcess == null) ? 0 : fIndividuoBeforeProcess.getValue();
                 patternManager.addPatternFortalezaValue(fortalezaValue, pipsPattern);
-                double numOperations = (double) fIndividuoBeforeProcess.getOperationsNumber();
-                double numOperationPercent = 1000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getWonOperationsNumber() / numOperations));
+                double numOperations = fIndividuoBeforeProcess.getOperationsNumber();
+                double numOperationPercent = 1_000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getWonOperationsNumber() / numOperations));
                 patternManager.addPatternNumberOperation(numOperationPercent, pipsPattern);
-                double maxWonNumOperationPercent = 1000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getMaxConsecutiveWonOperationsNumber() / numOperations));
+                double maxWonNumOperationPercent = 1_000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getMaxConsecutiveWonOperationsNumber() / numOperations));
                 patternManager.addPatternMaxWonNumberOperation(maxWonNumOperationPercent, pipsPattern);
-                double maxLostNumOperationPercent = 1000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getMaxConsecutiveLostOperationsNumber() / numOperations));
+                double maxLostNumOperationPercent = 1_000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getMaxConsecutiveLostOperationsNumber() / numOperations));
                 patternManager.addPatternMaxLostNumberOperation(maxLostNumOperationPercent, pipsPattern);
 
-                double promWonNumOperationPercent = 1000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getAverageConsecutiveWonOperationsNumber() / numOperations));
+                double promWonNumOperationPercent = 1_000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getAverageConsecutiveWonOperationsNumber() / numOperations));
                 patternManager.addPatternMaxPromWonNumberOperation(promWonNumOperationPercent, pipsPattern);
-                double promLostNumOperationPercent = 1000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getAverageConsecutiveLostOperationsNumber() / numOperations));
+                double promLostNumOperationPercent = 1_000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getAverageConsecutiveLostOperationsNumber() / numOperations));
                 patternManager.addPatternMaxPromLostNumberOperation(promLostNumOperationPercent, pipsPattern);
 
-                double modaWonPercent = 1000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getModaGanadora() / numOperations));
+                double modaWonPercent = 1_000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getModaGanadora() / numOperations));
                 patternManager.addPatternModaWonNumberOperation(modaWonPercent, pipsPattern);
 
-                double modaLostPercent = 1000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getModaPerdedora() / numOperations));
+                double modaLostPercent = 1_000 * ((fIndividuoBeforeProcess == null) ? 0 : (numOperations == 0) ? 0 : (fIndividuoBeforeProcess.getModaPerdedora() / numOperations));
                 patternManager.addPatternModaLostNumberOperation(modaLostPercent, pipsPattern);
             }
-            System.out.println();
-            LogUtil.logTime("Población " + (initialPoblacion + i + 1) + " = " + pips, 1);
+            out.println();
+            logTime("Población " + (initialPoblacion + i + 1) + " = " + pips, 1);
         }
-        LogUtil.logTime("Total " + pipsDetail[0], 1);
-        LogUtil.logTime("12 periodos " + pipsDetail[1], 1);
-        LogUtil.logTime("6 periodos " + pipsDetail[2], 1);
-        LogUtil.logTime("3 periodos " + pipsDetail[3], 1);
+        logTime("Total " + pipsDetail[0], 1);
+        logTime("12 periodos " + pipsDetail[1], 1);
+        logTime("6 periodos " + pipsDetail[2], 1);
+        logTime("3 periodos " + pipsDetail[3], 1);
         patternManager.printModas();
     }
+    private static final Logger LOG = Logger.getLogger(ForexEstrategiaValidation.class.getName());
 }

@@ -33,6 +33,13 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
     private MutationThread mutationThread;
     private OptimizationThread optimizationThread;
 
+    /**
+     *
+     * @param name
+     * @param poblacion
+     * @param generacion
+     * @param controllerType
+     */
     public ProcessGeneracion(String name, Poblacion poblacion, int generacion,
             ControllerFactory.ControllerType controllerType) {
         super(name);
@@ -119,6 +126,9 @@ public class ProcessGeneracion extends ProcessPoblacionThread {
         }
     }
 
+    /**
+     *
+     */
     @Override
     public synchronized void endProcess() {
         if (crossoverThread != null) {

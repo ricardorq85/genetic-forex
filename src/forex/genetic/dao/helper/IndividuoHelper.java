@@ -29,6 +29,12 @@ public class IndividuoHelper {
 
     private static final IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 
+    /**
+     *
+     * @param resultado
+     * @return
+     * @throws SQLException
+     */
     public static List<Individuo> createIndividuosById(ResultSet resultado) throws SQLException {
         List<Individuo> list = new ArrayList<>();
         while (resultado.next()) {
@@ -39,6 +45,12 @@ public class IndividuoHelper {
         return list;
     }
 
+    /**
+     *
+     * @param resultado
+     * @return
+     * @throws SQLException
+     */
     public static List<IndividuoOptimo> createIndividuosOptimos(ResultSet resultado) throws SQLException {
         List<IndividuoOptimo> list;
         list = new ArrayList<>();
@@ -53,6 +65,12 @@ public class IndividuoHelper {
         return list;
     }
 
+    /**
+     *
+     * @param resultado
+     * @return
+     * @throws SQLException
+     */
     public static List<Individuo> createIndividuos(ResultSet resultado) throws SQLException {
         List<Individuo> list = new ArrayList<>();
         while (resultado.next()) {
@@ -74,10 +92,23 @@ public class IndividuoHelper {
         return list;
     }
     
+    /**
+     *
+     * @param ind
+     * @param resultado
+     * @throws SQLException
+     */
     public static void detalleIndividuo(Individuo ind, ResultSet resultado) throws SQLException {
         detalleIndividuo(ind, resultado, indicadorController);        
     }
 
+    /**
+     *
+     * @param ind
+     * @param resultado
+     * @param indController
+     * @throws SQLException
+     */
     public static void detalleIndividuo(Individuo ind, ResultSet resultado, IndicadorController indController) throws SQLException {
         boolean first = true;
         List<Indicator> openIndicator = new ArrayList<>(indController.getIndicatorNumber());

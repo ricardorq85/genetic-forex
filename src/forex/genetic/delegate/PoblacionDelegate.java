@@ -22,12 +22,21 @@ import java.io.IOException;
  */
 public class PoblacionDelegate {
     
+    /**
+     *
+     * @param poblacion
+     */
     public void cargarPoblacion(Poblacion poblacion) {
         IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
         PoblacionFacade facade = new PoblacionFacade();
         facade.cargarPoblacion(indicadorController, poblacion);
     }
     
+    /**
+     *
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public void cargarDatosHistoricos() throws FileNotFoundException, IOException {
         int endPoblacion = PropertiesManager.getPropertyInt(Constants.END_POBLACION);
         DatoHistoricoFacade facade = new DatoHistoricoFacade();

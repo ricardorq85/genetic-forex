@@ -13,10 +13,21 @@ import java.util.Date;
  */
 public class LogUtil {
 
+    /**
+     *
+     * @param name
+     * @param logLevel
+     */
     public static void logTime(String name, int logLevel) {
         LogUtil.logTime(name, logLevel, 10);
     }
 
+    /**
+     *
+     * @param name
+     * @param logLevel
+     * @param tabLevel
+     */
     public static void logTime(String name, int logLevel, int tabLevel) {
         if (logLevel <= PropertiesManager.getPropertyInt(Constants.LOG_LEVEL)) {
             StringBuilder buffer = new StringBuilder();

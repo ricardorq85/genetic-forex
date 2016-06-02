@@ -21,6 +21,12 @@ import java.util.List;
  */
 public class OperacionHelper {
 
+    /**
+     *
+     * @param resultado
+     * @return
+     * @throws SQLException
+     */
     public static Estadistica createEstadistica(ResultSet resultado) throws SQLException {
         Estadistica estadistica = new Estadistica();
 
@@ -78,6 +84,12 @@ public class OperacionHelper {
         return estadistica;
     }
 
+    /**
+     *
+     * @param resultado
+     * @return
+     * @throws SQLException
+     */
     public static List<Individuo> individuosOperacionActiva(ResultSet resultado) throws SQLException {
         List<Individuo> list = new ArrayList<Individuo>();
         while (resultado.next()) {
@@ -105,6 +117,12 @@ public class OperacionHelper {
         return list;
     }
 
+    /**
+     *
+     * @param resultado
+     * @return
+     * @throws SQLException
+     */
     public static List<Order> operacionesIndividuo(ResultSet resultado) throws SQLException {
         List<Order> list = new ArrayList<Order>();
         while (resultado.next()) {
@@ -137,6 +155,12 @@ public class OperacionHelper {
         return list;
     }
 
+    /**
+     *
+     * @param resultado
+     * @return
+     * @throws SQLException
+     */
     public static List<Individuo> operaciones(ResultSet resultado) throws SQLException {
         List<Individuo> list = new ArrayList<Individuo>();
         while (resultado.next()) {

@@ -10,8 +10,8 @@ import forex.genetic.util.Constants;
 import forex.genetic.util.Constants.OperationType;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Vector;
 
@@ -21,6 +21,9 @@ import java.util.Vector;
  */
 public class Poblacion implements Serializable, Cloneable {
 
+    /**
+     *
+     */
     public static final long serialVersionUID = 201101251800L;
     private List<IndividuoEstrategia> individuos = null;
     private OperationType operationType = null;
@@ -29,6 +32,9 @@ public class Poblacion implements Serializable, Cloneable {
     private double dRiskLevel = Constants.MAX_RISK_LEVEL;
     private Tendencia tendencia = new Tendencia();
 
+    /**
+     *
+     */
     public Poblacion() {
         this.individuos = new Vector<IndividuoEstrategia>();
         this.operationType = PropertiesManager.getOperationType();
@@ -39,42 +45,85 @@ public class Poblacion implements Serializable, Cloneable {
         }
     }
 
+    /**
+     *
+     * @param tendencia
+     */
     public void setTendencia(Tendencia tendencia) {
         this.tendencia = tendencia;
     }
 
+    /**
+     *
+     * @return
+     */
     public Tendencia getTendencia() {
         return tendencia;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getRiskLevel() {
         return dRiskLevel;
     }
 
+    /**
+     *
+     * @param riskLevel
+     */
     public void setRiskLevel(double riskLevel) {
         this.dRiskLevel = riskLevel;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPair() {
         return pair;
     }
 
+    /**
+     *
+     * @param pair
+     */
     public void setPair(String pair) {
         this.pair = pair;
     }
 
+    /**
+     *
+     * @return
+     */
     public OperationType getOperationType() {
         return operationType;
     }
 
+    /**
+     *
+     * @param operationType
+     */
     public void setOperationType(OperationType operationType) {
         this.operationType = operationType;
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getFirst() {
         return getFirst(1);
     }
 
+    /**
+     *
+     * @param processedUntil
+     * @param processedFrom
+     * @param individuoReadData
+     * @return
+     */
     public Poblacion getByProcessedUntil(int processedUntil, int processedFrom, IndividuoReadData individuoReadData) {
         Poblacion p = new Poblacion();
         for (int i = 0; i < this.getIndividuos().size(); i++) {
@@ -85,10 +134,21 @@ public class Poblacion implements Serializable, Cloneable {
         return p;
     }
 
+    /**
+     *
+     * @param cantidad
+     * @return
+     */
     public Poblacion getFirst(int cantidad) {
         return this.getFirst(cantidad, 0);
     }
 
+    /**
+     *
+     * @param cantidad
+     * @param fromIndex
+     * @return
+     */
     public Poblacion getFirst(int cantidad, int fromIndex) {
         Poblacion p = new Poblacion();
         p.setIndividuos(CollectionUtil.subList(this.getIndividuos(), fromIndex,
@@ -97,10 +157,19 @@ public class Poblacion implements Serializable, Cloneable {
         return p;
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getLast() {
         return getLast(1);
     }
 
+    /**
+     *
+     * @param cantidad
+     * @return
+     */
     public Poblacion getLast(int cantidad) {
         Poblacion p = new Poblacion();
         //p.setIndividuos(this.getIndividuos().subList((cantidad < this.getIndividuos().size())
@@ -111,20 +180,32 @@ public class Poblacion implements Serializable, Cloneable {
         return p;
     }
 
+    /**
+     *
+     * @param individuos
+     */
     public void removeAll(List<IndividuoEstrategia> individuos) {
         this.individuos.removeAll(individuos);
     }
 
+    /**
+     *
+     * @param poblacion
+     */
     public void addAll(Poblacion poblacion) {
         Set set = new HashSet<IndividuoEstrategia>(this.individuos);
         set.addAll(poblacion.getIndividuos());
         /*        for (IndividuoEstrategia individuoEstrategia : poblacion.getIndividuos()) {
-        this.add(individuoEstrategia);
-        }*/
+         this.add(individuoEstrategia);
+         }*/
         this.individuos.clear();
         this.individuos.addAll(set);
     }
 
+    /**
+     *
+     * @param ie
+     */
     public void add(IndividuoEstrategia ie) {
         if (!this.individuos.contains(ie)) {
             //if (this.individuos.size() < PropertiesManager.getPropertyInt(Constants.INDIVIDUOS)) {
@@ -133,31 +214,75 @@ public class Poblacion implements Serializable, Cloneable {
         }
     }
 
+    /**
+     *
+     * @param poblacion
+     * @param compare
+     */
     public void addAll(Poblacion poblacion, Poblacion compare) {
         for (IndividuoEstrategia individuoEstrategia : poblacion.getIndividuos()) {
             this.add(individuoEstrategia, compare);
         }
     }
 
+    /**
+     *
+     * @param ie
+     * @param compare
+     */
     public void add(IndividuoEstrategia ie, Poblacion compare) {
         if ((!this.individuos.contains(ie)) && (!compare.individuos.contains(ie))) {
             this.individuos.add(ie);
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public List<IndividuoEstrategia> getIndividuos() {
         return this.individuos;
     }
 
+    /**
+     *
+     * @param individuos
+     */
     public void setIndividuos(List<IndividuoEstrategia> individuos) {
         this.individuos = individuos;
         //this.addAllHistoricos(individuos);
     }
 
-    public boolean equals(Poblacion p) {
+    /**
+     *
+     * @param p
+     * @return
+     */
+    public boolean equals2(Poblacion p) {
         return (this.operationType.equals(p.operationType)
                 && this.pair.equals(p.pair)
                 && this.individuos.equals(p.individuos));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Poblacion other = (Poblacion) obj;
+        if (this.operationType != other.operationType) {
+            return false;
+        }
+        if (!Objects.equals(this.pair, other.pair)) {
+            return false;
+        }
+        if (!Objects.equals(this.individuos, other.individuos)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -172,10 +297,14 @@ public class Poblacion implements Serializable, Cloneable {
 
     @Override
     public Poblacion clone() {
-        Poblacion cloned = new Poblacion();
-        cloned.individuos = new Vector<IndividuoEstrategia>(this.individuos.size());
-        for (Iterator<IndividuoEstrategia> it = this.individuos.iterator(); it.hasNext();) {
-            IndividuoEstrategia individuoEstrategia = it.next();
+        Poblacion cloned;
+        try {
+            cloned = (Poblacion) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            cloned = new Poblacion();
+        }
+        cloned.individuos = new Vector<>(this.individuos.size());
+        for (IndividuoEstrategia individuoEstrategia : this.individuos) {
             cloned.add(individuoEstrategia.clone());
         }
         cloned.operationType = this.operationType;

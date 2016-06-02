@@ -20,19 +20,32 @@ import java.io.ObjectOutputStream;
  */
 public class SerializationLearningManager {
 
+    /**
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public Learning readObject(File file)
             throws IOException, ClassNotFoundException {
-        ObjectInputStream reader = new ObjectInputStream(new FileInputStream(file));
-        Learning l = (Learning) reader.readObject();
-        reader.close();
+        Learning l;
+        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(file))) {
+            l = (Learning) reader.readObject();
+        }
         return l;
     }
 
+    /**
+     *
+     * @return
+     */
     public Learning readLearning() {
         Learning learning = new Learning();
         File root = new File(PropertiesManager.getLearningPath());
         FilenameFilter nameFilter = new FilenameFilter() {
 
+            @Override
             public boolean accept(File dir, String name) {
                 boolean accept = false;
                 if ((name.contains(".gfl"))
@@ -59,13 +72,17 @@ public class SerializationLearningManager {
         return learning;
     }
 
+    /**
+     *
+     * @param learning
+     * @throws IOException
+     */
     public void writeObject(Learning learning)
             throws IOException {
-        ObjectOutputStream writer = new ObjectOutputStream(
-                new FileOutputStream(
-                        PropertiesManager.getLearningPath()
-                        + PropertiesManager.getOperationType() + PropertiesManager.getPair() + ".gfl"));
-        writer.writeObject(learning);
-        writer.close();
+        try (ObjectOutputStream writer = new ObjectOutputStream(
+                new FileOutputStream(PropertiesManager.getLearningPath()
+                        + PropertiesManager.getOperationType() + PropertiesManager.getPair() + ".gfl"))) {
+            writer.writeObject(learning);
+        }
     }
 }

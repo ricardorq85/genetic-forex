@@ -15,16 +15,28 @@ import forex.genetic.manager.OptimizationIndividuoManager;
  */
 public class IndividuoGeneticController extends GeneticController {
 
+    /**
+     *
+     * @return
+     */
     @Override
     public CrossoverIndividuoManager getCrossoverManager() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public MutationIndividuoManager getMutationManager() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public OptimizationIndividuoManager getOptimizationManager() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

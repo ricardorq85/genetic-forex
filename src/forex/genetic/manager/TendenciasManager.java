@@ -41,19 +41,36 @@ public class TendenciasManager {
     private final double probExterna = 0.4D;
     private final IndicadorController indicadorControllerCalculo;
 
+    /**
+     *
+     */
     public TendenciasManager() {
         this(null);
     }
 
+    /**
+     *
+     * @param conn
+     */
     public TendenciasManager(Connection conn) {
         this.conn = conn;
         this.indicadorControllerCalculo = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
     }
 
+    /**
+     *
+     * @param conn
+     */
     public void setConn(Connection conn) {
         this.conn = conn;
     }
 
+    /**
+     *
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws GeneticException
+     */
     public void calcularTendencias() throws ClassNotFoundException, SQLException, GeneticException {
         if (conn == null) {
             conn = JDBCUtil.getConnection();
@@ -64,10 +81,28 @@ public class TendenciasManager {
         this.calcularTendenciasFacade(fechaInicio, null, stepTendencia, -1);
     }
 
+    /**
+     *
+     * @param fechaInicio
+     * @param stepTendencia
+     * @param filasTendencia
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws GeneticException
+     */
     public void calcularTendencias(Date fechaInicio, int stepTendencia, int filasTendencia) throws ClassNotFoundException, SQLException, GeneticException {
         this.calcularTendencias(fechaInicio, null, stepTendencia, filasTendencia);
     }
 
+    /**
+     *
+     * @param fechaInicio
+     * @param fechaFin
+     * @param filasTendencia
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws GeneticException
+     */
     public void calcularTendencias(Date fechaInicio, Date fechaFin, int filasTendencia) throws ClassNotFoundException, SQLException, GeneticException {
         if (conn == null) {
             conn = JDBCUtil.getConnection();
@@ -77,6 +112,16 @@ public class TendenciasManager {
         this.calcularTendenciasFacade(fechaInicio, fechaFin, stepTendencia, filasTendencia);
     }
 
+    /**
+     *
+     * @param fechaInicio
+     * @param fechaFin
+     * @param stepTendencia
+     * @param filasTendencia
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws GeneticException
+     */
     public void calcularTendencias(Date fechaInicio, Date fechaFin, int stepTendencia, int filasTendencia) throws ClassNotFoundException, SQLException, GeneticException {
         if (conn == null) {
             conn = JDBCUtil.getConnection();

@@ -26,28 +26,57 @@ public class FuncionFortalezaManager {
     private boolean test = false;
     private boolean onlyClose = false;
     private final double pairMarginRequired = PropertiesManager.getPropertyDouble(Constants.MARGIN_REQUIRED);
-    private OperationController indicatorController = new OperationController();    
+    private OperationController indicatorController = new OperationController();
 
+    /**
+     *
+     * @return
+     */
     public boolean isTest() {
         return test;
     }
 
+    /**
+     *
+     * @param test
+     */
     public void setTest(boolean test) {
         this.test = test;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isOnlyClose() {
         return onlyClose;
     }
 
+    /**
+     *
+     * @param onlyClose
+     */
     public void setOnlyClose(boolean onlyClose) {
         this.onlyClose = onlyClose;
     }
 
+    /**
+     *
+     * @param poblacionBase
+     * @param percentValue
+     * @return
+     */
     public static int processWeakestPoblacion(Poblacion poblacionBase, int percentValue) {
         return processWeakestPoblacion(poblacionBase, percentValue, 0);
     }
 
+    /**
+     *
+     * @param poblacionBase
+     * @param percentValue
+     * @param fromIndex
+     * @return
+     */
     public static int processWeakestPoblacion(Poblacion poblacionBase, int percentValue, int fromIndex) {
         int zeroPosition = -1;
         if (percentValue > 0) {
@@ -92,6 +121,10 @@ public class FuncionFortalezaManager {
         return zeroPosition;
     }
 
+    /**
+     *
+     * @param poblacion
+     */
     public void processInvalids(Poblacion poblacion) {
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
         for (Iterator<IndividuoEstrategia> it = individuos.iterator(); it.hasNext();) {
@@ -105,6 +138,11 @@ public class FuncionFortalezaManager {
         }
     }
 
+    /**
+     *
+     * @param poblacionBase
+     * @param percentValue
+     */
     public void processHardestPoblacion(Poblacion poblacionBase, int percentValue) {
         if (percentValue > 0) {
             Collections.sort(poblacionBase.getIndividuos());
@@ -112,6 +150,11 @@ public class FuncionFortalezaManager {
         }
     }
 
+    /**
+     *
+     * @param individuo
+     * @return
+     */
     public boolean hasMinimumCriterion(IndividuoEstrategia individuo) {
         boolean has = true;
         Fortaleza f = individuo.getFortaleza();
@@ -127,8 +170,8 @@ public class FuncionFortalezaManager {
                 if ((percentFortaleza * 0.2) > (level / 10)) {
                     has = false;
                 } else {
-                    double byOperNumber =
-                            ((f.getOperationsNumber() / (double) (individuo.getListaFortaleza().size())) / minByPeriod);
+                    double byOperNumber
+                            = ((f.getOperationsNumber() / (double) (individuo.getListaFortaleza().size())) / minByPeriod);
                     if ((byOperNumber * 3) < (level / 10)) {
                         has = false;
                     }
@@ -138,11 +181,30 @@ public class FuncionFortalezaManager {
         return has;
     }
 
+    /**
+     *
+     * @param points
+     * @param poblacion
+     * @param recalculate
+     * @param poblacionIndex
+     * @param poblacionFromIndex
+     * @return
+     */
     public List<IndividuoEstrategia> calculateFortaleza(List<Point> points, Poblacion poblacion,
             boolean recalculate, int poblacionIndex, int poblacionFromIndex) {
         return this.calculateFortaleza(points, poblacion, recalculate, poblacionIndex, poblacionFromIndex, 0);
     }
 
+    /**
+     *
+     * @param points
+     * @param poblacion
+     * @param recalculate
+     * @param poblacionIndex
+     * @param poblacionFromIndex
+     * @param indexPoint
+     * @return
+     */
     public List<IndividuoEstrategia> calculateFortaleza(List<Point> points, Poblacion poblacion,
             boolean recalculate, int poblacionIndex, int poblacionFromIndex, int indexPoint) {
         List<IndividuoEstrategia> individuos = new Vector<IndividuoEstrategia>();
@@ -183,12 +245,31 @@ public class FuncionFortalezaManager {
         return rec;
     }
 
+    /**
+     *
+     * @param points
+     * @param individuoEstrategia
+     * @param recalculate
+     * @param continueCalculate
+     * @param poblacionIndex
+     * @param poblacionFromIndex
+     */
     public void calculateFortaleza(List<Point> points,
             IndividuoEstrategia individuoEstrategia, boolean recalculate,
             boolean continueCalculate, int poblacionIndex, int poblacionFromIndex) {
         this.calculateFortaleza(points, individuoEstrategia, recalculate, continueCalculate, poblacionIndex, poblacionFromIndex, poblacionIndex);
     }
 
+    /**
+     *
+     * @param points
+     * @param individuoEstrategia
+     * @param recalculate
+     * @param continueCalculate
+     * @param poblacionIndex
+     * @param poblacionFromIndex
+     * @param indexPoint
+     */
     public void calculateFortaleza(List<Point> points,
             IndividuoEstrategia individuoEstrategia, boolean recalculate,
             boolean continueCalculate, int poblacionIndex, int poblacionFromIndex, int indexPoint) {
@@ -382,7 +463,7 @@ public class FuncionFortalezaManager {
                             acumulativeWonPips += pips;
                             consecutiveWonPips += pips;
                             consecutiveWonOperations++;
-                            if (consecutiveWonPips == pips) {
+                            if (Math.abs(consecutiveWonPips - pips) < 0.0000001) {
                                 /*
                                  * Aqui en ganancia, se busca el maximo de
                                  * perdida
@@ -535,8 +616,6 @@ public class FuncionFortalezaManager {
             individuoEstrategia.setCurrentOrder(currentOrder);
             individuoEstrategia.setOrdenes(ordenes);
             individuoEstrategia.getListaFortaleza().add(fortaleza.clone());
-        } else {
-            System.gc();
         }
     }
 

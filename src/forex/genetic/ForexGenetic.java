@@ -4,13 +4,22 @@
  */
 package forex.genetic;
 
-import forex.genetic.entities.Poblacion;
 import forex.genetic.delegate.GeneticDelegate;
-import forex.genetic.manager.PropertiesManager;
-import forex.genetic.util.Constants;
-import forex.genetic.util.LogUtil;
+import static forex.genetic.delegate.GeneticDelegate.setId;
+import forex.genetic.entities.Poblacion;
+import static forex.genetic.manager.PropertiesManager.getOperationType;
+import static forex.genetic.manager.PropertiesManager.getPair;
+import static forex.genetic.manager.PropertiesManager.getPropertyString;
+import static forex.genetic.manager.PropertiesManager.load;
+import static forex.genetic.util.Constants.LOG_PATH;
+import static forex.genetic.util.LogUtil.logTime;
 import java.io.IOException;
 import java.io.PrintStream;
+import static java.lang.System.currentTimeMillis;
+import static java.lang.System.setErr;
+import static java.lang.System.setOut;
+import java.nio.charset.Charset;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,22 +29,23 @@ public class ForexGenetic {
 
     /**
      * @param args the command line arguments
+     * @throws java.lang.InterruptedException
      */
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-        long id = System.currentTimeMillis();
-        PropertiesManager.load().join();
-        LogUtil.logTime("ForexGenetic: " + id, 1);
-        String name = PropertiesManager.getPropertyString(Constants.LOG_PATH)
-                + PropertiesManager.getOperationType()
-                + PropertiesManager.getPair() + id + "_log.log";
-        PrintStream out = new PrintStream(name);
-        System.setOut(out);
-        System.setErr(out);
-        LogUtil.logTime("Inicio: " + id, 1);
-        GeneticDelegate.id = Long.toString(id);
+        long id = currentTimeMillis();
+        load().join();
+        logTime("ForexGenetic: " + id, 1);
+        StringBuilder name = new StringBuilder(getPropertyString(LOG_PATH));
+        name.append(getOperationType()).append(getPair()).append(id).append("_log.log");
+        PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
+        setOut(out);
+        setErr(out);
+        logTime("Inicio: " + id, 1);
+        setId(Long.toString(id));
         GeneticDelegate delegate = new GeneticDelegate();
         Poblacion poblacion = delegate.process();
         delegate.getFileOutManager().close();
-        LogUtil.logTime("Fin: " + id, 1);
+        logTime("Fin: " + id, 1);
     }
+    private static final Logger LOG = Logger.getLogger(ForexGenetic.class.getName());
 }

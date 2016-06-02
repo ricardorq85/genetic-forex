@@ -38,6 +38,13 @@ public class ProcesarTendenciasGraficaManager {
 
     private Connection conn = null;
 
+    /**
+     *
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws ParseException
+     * @throws GeneticException
+     */
     public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, GeneticException {
         conn = JDBCUtil.getConnection();
         OperacionesManager operacionManager = new OperacionesManager();

@@ -11,18 +11,36 @@ import java.io.Serializable;
  *
  * @author ricardorq85
  */
-public class DoubleInterval extends Interval<Double> implements Serializable {
+public class DoubleInterval extends Interval<Double> {
 
+    /**
+     *
+     */
     public static final long serialVersionUID = 201101251800L;
 
+    /**
+     *
+     * @param name
+     */
     public DoubleInterval(String name) {
         super(name);
     }
 
+    /**
+     *
+     * @param lowInterval
+     * @param highInterval
+     */
     public DoubleInterval(Double lowInterval, Double highInterval) {
         this(null, lowInterval, highInterval);
     }
 
+    /**
+     *
+     * @param name
+     * @param lowInterval
+     * @param highInterval
+     */
     public DoubleInterval(String name, Double lowInterval, Double highInterval) {
         super(name);
         this.setLowInterval(lowInterval);

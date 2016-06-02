@@ -5,7 +5,6 @@
 package forex.genetic.thread;
 
 import forex.genetic.entities.Poblacion;
-import forex.genetic.manager.CrossoverIndividuoManager;
 import forex.genetic.manager.CrossoverManager;
 
 /**
@@ -20,6 +19,14 @@ public class CrossoverThread extends Thread {
     private final int percentValue;
     private final CrossoverManager crossoverManager;
 
+    /**
+     *
+     * @param name
+     * @param generacion
+     * @param poblacion
+     * @param percentValue
+     * @param crossoverManager
+     */
     public CrossoverThread(String name, int generacion, Poblacion poblacion, int percentValue, CrossoverManager crossoverManager) {
         super(name);
         this.newPoblacion = new Poblacion();
@@ -35,10 +42,17 @@ public class CrossoverThread extends Thread {
         newPoblacion.addAll(crossoverPoblacion[1]);
     }
 
+    /**
+     *
+     */
     public void endProcess() {
         crossoverManager.endProcess();
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getNewPoblacion() {
         return newPoblacion;
     }

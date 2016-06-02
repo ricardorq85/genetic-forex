@@ -13,9 +13,20 @@ import forex.genetic.manager.controller.IndicadorController;
  */
 public abstract class OptimizationManager extends GeneticManager {
 
+    /**
+     *
+     * @param indicadorController
+     */
     public OptimizationManager(IndicadorController indicadorController) {
         super(indicadorController);
     }
 
+    /**
+     *
+     * @param generacion
+     * @param poblacion
+     * @param percentValue
+     * @return
+     */
     public abstract Poblacion[] optimize(int generacion, Poblacion poblacion, int percentValue);
 }

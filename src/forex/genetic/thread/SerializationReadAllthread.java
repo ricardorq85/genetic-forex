@@ -4,7 +4,6 @@
  */
 package forex.genetic.thread;
 
-import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.manager.PropertiesManager;
@@ -12,6 +11,7 @@ import forex.genetic.manager.io.SerializationPoblacionManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
 import java.io.File;
+import java.io.IOException;
 
 /**
  *
@@ -27,6 +27,15 @@ public class SerializationReadAllThread extends Thread {
     private Poblacion poblacion = null;
     private Learning learning = null;
 
+    /**
+     *
+     * @param name
+     * @param path
+     * @param counter
+     * @param processedUntil
+     * @param processedFrom
+     * @param learning
+     */
     public SerializationReadAllThread(String name, String path, int counter,
             int processedUntil, int processedFrom, Learning learning) {
         super(name);
@@ -37,10 +46,14 @@ public class SerializationReadAllThread extends Thread {
         this.learning = learning;
     }
 
+    /**
+     *
+     */
     public void endProcess() {
         sm.endProcess();
     }
 
+    @Override
     public void run() {
         try {
             poblacion = new Poblacion();
@@ -66,23 +79,39 @@ public class SerializationReadAllThread extends Thread {
                 poblacion.addAll(sm.readAll(path, counter, processedUntil, processedFrom, learning));
                 LogUtil.logTime("End Cargar poblacion serializada " + this.getName() + " Individuos=" + poblacion.getIndividuos().size(), 2);
             }
-        } catch (Exception ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getPoblacion() {
         return poblacion;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getProcessedUntil() {
         return processedUntil;
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getPoblacionHija() {
         return sm.getPoblacionHija();
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getPoblacionPadre() {
         return sm.getPoblacionPadre();
     }

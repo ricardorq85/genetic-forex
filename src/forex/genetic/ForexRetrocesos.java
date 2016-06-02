@@ -4,14 +4,20 @@
  */
 package forex.genetic;
 
-import forex.genetic.delegate.GeneticDelegate;
-import forex.genetic.manager.PropertiesManager;
+import static forex.genetic.delegate.GeneticDelegate.setId;
+import static forex.genetic.manager.PropertiesManager.getPropertyString;
+import static forex.genetic.manager.PropertiesManager.load;
 import forex.genetic.manager.RetrocesosManager;
-import forex.genetic.util.Constants;
-import forex.genetic.util.LogUtil;
+import static forex.genetic.util.Constants.LOG_PATH;
+import static forex.genetic.util.LogUtil.logTime;
 import java.io.IOException;
 import java.io.PrintStream;
+import static java.lang.System.currentTimeMillis;
+import static java.lang.System.setErr;
+import static java.lang.System.setOut;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,20 +27,22 @@ public class ForexRetrocesos {
 
     /**
      * @param args the command line arguments
+     * @throws java.sql.SQLException
      */
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, SQLException {
-        long id = System.currentTimeMillis();
-        PropertiesManager.load().join();
-        LogUtil.logTime("ForexRetrocesos: " + id, 1);
-        String name = PropertiesManager.getPropertyString(Constants.LOG_PATH)
+        long id = currentTimeMillis();
+        load().join();
+        logTime("ForexRetrocesos: " + id, 1);
+        String name = getPropertyString(LOG_PATH)
                 + "Retrocesos_" + id + "_log.log";
-        PrintStream out = new PrintStream(name);
-        System.setOut(out);
-        System.setErr(out);
-        LogUtil.logTime("Inicio: " + id, 1);
-        GeneticDelegate.id = Long.toString(id);
+        PrintStream out = new PrintStream(name, Charset.defaultCharset().name());
+        setOut(out);
+        setErr(out);
+        logTime("Inicio: " + id, 1);
+        setId(Long.toString(id));
         RetrocesosManager manager = new RetrocesosManager();
         manager.procesarMaximosRetroceso();
-        LogUtil.logTime("Fin: " + id, 1);
+        logTime("Fin: " + id, 1);
     }
+    private static final Logger LOG = Logger.getLogger(ForexRetrocesos.class.getName());
 }

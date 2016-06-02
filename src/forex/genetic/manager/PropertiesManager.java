@@ -59,11 +59,19 @@ public class PropertiesManager {
     private static String userDB = null;
     private static String pwdDB = null;
 
+    /**
+     *
+     */
     public PropertiesManager() {
     }
 
+    /**
+     *
+     * @return
+     */
     public static Thread load() {
         t = new Thread() {
+            @Override
             public void run() {
                 FileProperties.load();
                 LogUtil.logTime(FileProperties.propertiesString(), 1);
@@ -115,166 +123,330 @@ public class PropertiesManager {
         return t;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getUrlDB() {
         return urlDB;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getUserDB() {
         return userDB;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getPwdDB() {
         return pwdDB;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getQueryProcesarTendenciasValorProbableBase() {
         return queryProcesarTendenciasValorProbableBase;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getQueryProcesarTendenciasValorProbable() {
         return queryProcesarTendenciasValorProbable;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getQueryProcesarTendenciasValorProbableDetalle() {
         return queryProcesarTendenciasValorProbableDetalle;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getQueryTendenciaGenetica() {
         return queryTendenciaGenetica;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getQueryProcesarTendencias() {
         return queryProcesarTendencias;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getNombreEstrategia() {
         return nombreEstrategia;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getQueryIndividuos() {
         return queryIndividuos;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getQueryIndividuosOptimos() {
         return queryIndividuosOptimos;
     }
 
+    /**
+     *
+     * @return
+     */
     public static boolean isReadSpecific() {
         return readSpecific;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getPoblacionBase() {
         return poblacionBase;
     }
 
+    /**
+     *
+     * @return
+     */
     public static int getNumberLearning() {
         return numberLearning;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getLearningPath() {
         return learningPath;
     }
 
+    /**
+     *
+     * @return
+     */
     public static int getMaxFilePerRead() {
         return maxFilePerRead;
     }
 
+    /**
+     *
+     * @return
+     */
     public static boolean isForce() {
         return force;
     }
 
+    /**
+     *
+     * @return
+     */
     public static double getMinOperNumByPeriod() {
         return minOperNumByPeriod;
     }
 
+    /**
+     *
+     * @return
+     */
     public static double getRiskLevel() {
         return riskLevel;
     }
 
+    /**
+     *
+     * @return
+     */
     public static boolean isBuy() {
         return isBuy;
     }
 
+    /**
+     *
+     * @return
+     */
     public static boolean isThread() {
         return isThread;
     }
 
+    /**
+     *
+     * @return
+     */
     public static double getPipsFixer() {
         return pipsFixer;
     }
 
+    /**
+     *
+     * @return
+     */
     public static double getPairFactor() {
         return pairFactor;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getFileId() {
         return fileId;
     }
 
+    /**
+     *
+     * @return
+     */
     public static OperationType getOperationType() {
         return operationType;
     }
 
+    /**
+     *
+     * @return
+     */
     public static FortalezaType getFortalezaType() {
         return fortalezaType;
     }
 
+    /**
+     *
+     * @return
+     */
     public static int getDefaultScaleRounding() {
         return defaultScaleRounding;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getPair() {
         return pair;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getPairCompare() {
         return pairCompare;
     }
 
+    /**
+     *
+     * @return
+     */
     public static int getPeriodLoad() {
         return periodLoad;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getSerialicePath() {
         return serialicePath;
     }
 
+    /**
+     *
+     * @return
+     */
     public static int getLotScaleRounding() {
         return lotScaleRounding;
     }
 
+    /**
+     *
+     * @return
+     */
     public static int getMaxBalance() {
         return maxBalance;
     }
 
+    /**
+     *
+     * @return
+     */
     public static double getMaxLot() {
         return maxLot;
     }
 
+    /**
+     *
+     * @return
+     */
     public static int getMaxSL() {
         return maxSL;
     }
 
+    /**
+     *
+     * @return
+     */
     public static int getMaxTP() {
         return maxTP;
     }
 
+    /**
+     *
+     * @return
+     */
     public static int getMinBalance() {
         return minBalance;
     }
 
+    /**
+     *
+     * @return
+     */
     public static double getMinLot() {
         return minLot;
     }
 
+    /**
+     *
+     * @return
+     */
     public static int getMinSL() {
         return minSL;
     }
 
+    /**
+     *
+     * @return
+     */
     public static int getMinTP() {
         return minTP;
     }
 
+    /**
+     *
+     * @return
+     */
     public static int getPresentNumberPoblacion() {
         return presentNumberPoblacion;
     }
@@ -290,6 +462,10 @@ public class PropertiesManager {
         return ot;
     }
 
+    /**
+     *
+     * @return
+     */
     public static FortalezaType getOwnFortalezaType() {
         FortalezaType t = null;
         String s = getPropertyString(Constants.FORTALEZA_TYPE);
@@ -307,6 +483,10 @@ public class PropertiesManager {
         return t;
     }
 
+    /**
+     *
+     * @return
+     */
     public static int getPointsControl() {
         try {
             if (FileProperties.getProperties().isEmpty()) {
@@ -327,6 +507,11 @@ public class PropertiesManager {
         return points;
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public static String getPropertyString(String key) {
         try {
             if (FileProperties.getProperties().isEmpty()) {
@@ -338,6 +523,11 @@ public class PropertiesManager {
         return FileProperties.getPropertyString(key);
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public static int getPropertyInt(String key) {
         try {
             if (FileProperties.getProperties().isEmpty()) {
@@ -349,6 +539,11 @@ public class PropertiesManager {
         return Integer.parseInt(FileProperties.getPropertyString(key));
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public static long getPropertyLong(String key) {
         try {
             if (FileProperties.getProperties().isEmpty()) {
@@ -360,6 +555,11 @@ public class PropertiesManager {
         return Long.parseLong(FileProperties.getPropertyString(key));
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public static boolean getPropertyBoolean(String key) {
         try {
             if (FileProperties.getProperties().isEmpty()) {
@@ -371,6 +571,11 @@ public class PropertiesManager {
         return Boolean.parseBoolean(FileProperties.getPropertyString(key));
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public static double getPropertyDouble(String key) {
         try {
             if (FileProperties.getProperties().isEmpty()) {

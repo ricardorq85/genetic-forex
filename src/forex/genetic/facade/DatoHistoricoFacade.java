@@ -18,6 +18,10 @@ import java.util.List;
  */
 public class DatoHistoricoFacade {
 
+    /**
+     *
+     * @param points
+     */
     public void cargarDatoHistorico(List<Point> points) {
         Connection conn = null;
         try {

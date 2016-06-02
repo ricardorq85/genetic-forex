@@ -1,19 +1,27 @@
 package forex.genetic.util.jdbc;
 
 import forex.genetic.manager.PropertiesManager;
-import forex.genetic.util.LogUtil;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-
+/**
+ *
+ * @author RROJASQ
+ */
 public class JDBCUtil {
 
+    /**
+     *
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public synchronized static Connection getConnection() throws ClassNotFoundException, SQLException {
-        Connection conn = null;
+        Connection conn;
         String driver = "oracle.jdbc.OracleDriver";
         String url = PropertiesManager.getUrlDB();
                 //"jdbc:oracle:thin:@localhost:1521/FOREX2";
@@ -27,6 +35,10 @@ public class JDBCUtil {
         return conn;
     }
 
+    /**
+     *
+     * @param rs
+     */
     public synchronized static void close(ResultSet rs) {
         if (rs != null) {
             try {
@@ -36,6 +48,10 @@ public class JDBCUtil {
         }
     }
 
+    /**
+     *
+     * @param stmt
+     */
     public synchronized static void close(Statement stmt) {
         if (stmt != null) {
             try {
@@ -45,6 +61,10 @@ public class JDBCUtil {
         }
     }
 
+    /**
+     *
+     * @param stmt
+     */
     public synchronized static void close(PreparedStatement stmt) {
         if (stmt != null) {
             try {
@@ -54,6 +74,10 @@ public class JDBCUtil {
         }
     }
 
+    /**
+     *
+     * @param conn
+     */
     public synchronized static void close(Connection conn) {
         if (conn != null) {
             try {
@@ -65,6 +89,10 @@ public class JDBCUtil {
         }
     }
 
+    /**
+     *
+     * @param conn
+     */
     public synchronized static void rollback(Connection conn) {
         if (conn != null) {
             try {

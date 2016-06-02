@@ -13,31 +13,67 @@ import java.io.Serializable;
  */
 public abstract class IntervalIndicator extends Indicator implements Serializable {
 
+    /**
+     *
+     */
     public static final long serialVersionUID = -1166339844322682100L;
+
+    /**
+     *
+     */
     protected Interval<Double> interval = null;
+
+    /**
+     *
+     */
     protected String name = null;
 
+    /**
+     *
+     * @param name
+     */
     public IntervalIndicator(String name) {
         this.name = name;
         //interval = new DoubleInterval(name);
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @return
+     */
     public Interval<Double> getInterval() {
         return interval;
     }
 
+    /**
+     *
+     * @param interval
+     */
     public void setInterval(Interval<Double> interval) {
         this.interval = interval;
     }
 
+    /**
+     *
+     * @param prefix
+     * @return
+     */
     @Override
     public String toFileString(String prefix) {
         StringBuilder buffer = new StringBuilder();

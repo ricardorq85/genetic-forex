@@ -15,9 +15,21 @@ import forex.genetic.manager.OptimizationManager;
  */
 public abstract class GeneticController {
 
+    /**
+     *
+     * @return
+     */
     public abstract CrossoverManager getCrossoverManager();
 
+    /**
+     *
+     * @return
+     */
     public abstract MutationManager getMutationManager();
 
+    /**
+     *
+     * @return
+     */
     public abstract OptimizationManager getOptimizationManager();
 }

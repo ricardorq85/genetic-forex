@@ -6,7 +6,6 @@ package forex.genetic.entities;
 
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
-import forex.genetic.manager.indicator.IndicadorIndividuoManager;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +16,9 @@ import java.util.List;
  */
 public class LearningParametrosIndividuo implements Serializable {
 
+    /**
+     *
+     */
     public static final long serialVersionUID = 201205270933L;
     private boolean takeProfit = false;
     private boolean stopLoss = false;
@@ -24,57 +26,108 @@ public class LearningParametrosIndividuo implements Serializable {
     private boolean initialBalance = false;
     private List<Boolean> openIndicators = null;
     private List<Boolean> closeIndicators = null;
-    private final IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+    private transient final IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 
+    /**
+     *
+     */
     public LearningParametrosIndividuo() {
         this.openIndicators = new ArrayList<>(indicadorController.getIndicatorNumber());
         this.closeIndicators = new ArrayList<>(indicadorController.getIndicatorNumber());
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Boolean> getCloseIndicators() {
         return closeIndicators;
     }
 
+    /**
+     *
+     * @param closeIndicators
+     */
     public void setCloseIndicators(List<Boolean> closeIndicators) {
         this.closeIndicators = closeIndicators;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isInitialBalance() {
         return initialBalance;
     }
 
+    /**
+     *
+     * @param initialBalance
+     */
     public void setInitialBalance(boolean initialBalance) {
         this.initialBalance = initialBalance;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isLot() {
         return lot;
     }
 
+    /**
+     *
+     * @param lot
+     */
     public void setLot(boolean lot) {
         this.lot = lot;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Boolean> getOpenIndicators() {
         return openIndicators;
     }
 
+    /**
+     *
+     * @param openIndicators
+     */
     public void setOpenIndicators(List<Boolean> openIndicators) {
         this.openIndicators = openIndicators;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isStopLoss() {
         return stopLoss;
     }
 
+    /**
+     *
+     * @param stopLoss
+     */
     public void setStopLoss(boolean stopLoss) {
         this.stopLoss = stopLoss;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isTakeProfit() {
         return takeProfit;
     }
 
+    /**
+     *
+     * @param takeProfit
+     */
     public void setTakeProfit(boolean takeProfit) {
         this.takeProfit = takeProfit;
     }

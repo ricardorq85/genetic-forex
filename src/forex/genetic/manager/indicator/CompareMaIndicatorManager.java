@@ -4,10 +4,10 @@
  */
 package forex.genetic.manager.indicator;
 
-import forex.genetic.entities.indicator.Average;
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.Average;
+import forex.genetic.entities.indicator.Indicator;
 
 /**
  *
@@ -15,16 +15,29 @@ import forex.genetic.entities.Point;
  */
 public class CompareMaIndicatorManager extends IntervalIndicatorManager<Average> {
 
+    /**
+     *
+     */
     public CompareMaIndicatorManager() {
         super(false, false, "MaCompare");
         this.id = "COMPARE_MA";
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Average getIndicatorInstance() {
         return new Average("MaCompare");
     }
 
+    /**
+     *
+     * @param indicator
+     * @param point
+     * @return
+     */
     @Override
     public Indicator generate(Average indicator, Point point) {
         Interval interval = null;
@@ -41,11 +54,26 @@ public class CompareMaIndicatorManager extends IntervalIndicatorManager<Average>
         return average;
     }
 
+    /**
+     *
+     * @param averageIndividuo
+     * @param iAverage
+     * @param currentPoint
+     * @param previousPoint
+     * @return
+     */
     @Override
     public boolean operate(Average averageIndividuo, Average iAverage, Point currentPoint, Point previousPoint) {
         return intervalManager.operate(averageIndividuo.getInterval(), iAverage.getAverage() - previousPoint.getCloseCompare(), 0.0);
     }
 
+    /**
+     *
+     * @param indicator
+     * @param prevPoint
+     * @param point
+     * @return
+     */
     @Override
     public double getValue(Average indicator, Point prevPoint, Point point) {
         double value;

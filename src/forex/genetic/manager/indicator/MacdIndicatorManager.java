@@ -15,15 +15,30 @@ import forex.genetic.entities.indicator.Macd;
  */
 public class MacdIndicatorManager extends IntervalIndicatorManager<Macd> {
 
+    /**
+     *
+     */
     public MacdIndicatorManager() {
         super(false, "Macd");
         this.id = "MACD";
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
     public Macd getIndicatorInstance() {
         return new Macd("Macd");
     }
 
+    /**
+     *
+     * @param indicator
+     * @param point
+     * @return
+     */
+    @Override
     public Indicator generate(Macd indicator, Point point) {
         Interval interval = null;
         Macd macd = new Macd("Macd");
@@ -39,6 +54,13 @@ public class MacdIndicatorManager extends IntervalIndicatorManager<Macd> {
         return macd;
     }
 
+    /**
+     *
+     * @param macdIndividuo
+     * @param iMacd
+     * @param point
+     * @return
+     */
     @Override
     public boolean operate(Macd macdIndividuo, Macd iMacd, Point point) {
         return intervalManager.operate(macdIndividuo.getInterval(), iMacd.getMacdValue() - iMacd.getMacdSignal(), 0.0);
@@ -59,6 +81,13 @@ public class MacdIndicatorManager extends IntervalIndicatorManager<Macd> {
     }
      */
 
+    /**
+     *
+     * @param indicator
+     * @param prevPoint
+     * @param point
+     * @return
+     */
     @Override
     public double getValue(Macd indicator, Point prevPoint, Point point) {
         double value = indicator.getMacdValue() - indicator.getMacdSignal();

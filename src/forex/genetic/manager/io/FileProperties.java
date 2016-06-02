@@ -17,25 +17,41 @@ public class FileProperties {
 
     private static Properties properties = new Properties();
 
+    /**
+     *
+     */
     public synchronized static void load() {
         try {
             properties.clear();
-            InputStream is = new FileInputStream("Forex.properties");
-            properties.load(is);
-            is.close();
+            try (InputStream is = new FileInputStream("Forex.properties")) {
+                properties.load(is);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public static synchronized Properties getProperties() {
         return properties;
     }
 
+    /**
+     *
+     * @param properties
+     */
     public static synchronized void setProperties(Properties properties) {
         FileProperties.properties = properties;
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public static synchronized String getPropertyString(String key) {
         String value = properties.getProperty(key);
         if (value == null) {
@@ -44,14 +60,28 @@ public class FileProperties {
         return value;
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public static synchronized int getPropertyInt(String key) {
         return Integer.parseInt(getPropertyString(key));
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public static synchronized double getPropertyDouble(String key) {
         return Double.parseDouble(getPropertyString(key));
     }
 
+    /**
+     *
+     * @return
+     */
     public static String propertiesString() {
         return properties.toString();
     }

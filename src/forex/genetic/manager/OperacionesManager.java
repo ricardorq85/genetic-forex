@@ -26,18 +26,37 @@ public class OperacionesManager {
     private Connection conn = null;
     private final OperationController indicatorController = new OperationController();
 
+    /**
+     *
+     */
     public OperacionesManager() {
     }
 
+    /**
+     *
+     * @param conn
+     */
     public OperacionesManager(Connection conn) {
         this.conn = conn;
     }
 
+    /**
+     *
+     * @param individuo
+     * @return
+     */
     public boolean hasMinimumCriterion(Individuo individuo) {
         boolean has = true;
         return has;
     }
 
+    /**
+     *
+     * @param points
+     * @param index
+     * @param operacion
+     * @return
+     */
     public double calcularPips(List<Point> points, int index, Order operacion) {
         double pips = 0.0D;
         double stopLossPips = (operacion.getTipo().equals(Constants.OperationType.BUY))
@@ -60,6 +79,12 @@ public class OperacionesManager {
         return pips;
     }
 
+    /**
+     *
+     * @param points
+     * @param individuo
+     * @return
+     */
     public List<Order> calcularOperaciones(List<Point> points, Individuo individuo) {
         List<Order> ordenes = new ArrayList<>();
         double takeProfit = individuo.getTakeProfit();
@@ -141,6 +166,11 @@ public class OperacionesManager {
         return ordenes;
     }
 
+    /**
+     *
+     * @param points
+     * @param individuo
+     */
     public void calcularCierreOperacion(List<Point> points, Individuo individuo) {
         double takeProfit = individuo.getTakeProfit();
         double stopLoss = individuo.getStopLoss();
@@ -187,6 +217,11 @@ public class OperacionesManager {
         }
     }
 
+    /**
+     *
+     * @param currentPoint
+     * @return
+     */
     public double calculateOpenPrice(Point currentPoint) {
         double price = Double.NaN;
         Interval currentInterval = new DoubleInterval(currentPoint.getLow(), currentPoint.getHigh());
@@ -210,6 +245,12 @@ public class OperacionesManager {
         return price;
     }
 
+    /**
+     *
+     * @param fechaMaximo
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public void procesarMaximosRetroceso(Date fechaMaximo) throws ClassNotFoundException, SQLException {
         OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
         List<Individuo> individuos = operacionesDAO.consultarOperacionesIndividuoRetroceso(fechaMaximo);
@@ -228,6 +269,13 @@ public class OperacionesManager {
         }
     }
 
+    /**
+     *
+     * @param individuo
+     * @param fechaMaximo
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public void procesarMaximosRetroceso(Individuo individuo, Date fechaMaximo) throws ClassNotFoundException, SQLException {
         OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
         individuo = operacionesDAO.consultarOperacionesIndividuoRetroceso(individuo, fechaMaximo);
@@ -241,6 +289,12 @@ public class OperacionesManager {
         this.procesarMaximosReproceso(individuo);
     }
 
+    /**
+     *
+     * @param individuo
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public void procesarMaximosReproceso(Individuo individuo) throws ClassNotFoundException, SQLException {
         DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
         OperacionesDAO operacionesDAO = new OperacionesDAO(conn);

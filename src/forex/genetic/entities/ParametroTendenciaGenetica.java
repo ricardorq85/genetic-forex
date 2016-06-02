@@ -22,6 +22,9 @@ public class ParametroTendenciaGenetica {
     private int horasFechaApertura = 1;
     private int minutosFechaApertura = 1;
 
+    /**
+     *
+     */
     public ParametroTendenciaGenetica() {
     }
 

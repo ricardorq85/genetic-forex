@@ -14,6 +14,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,9 +23,16 @@ import java.util.TreeMap;
  */
 public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable {
 
+    /**
+     *
+     */
     public static final long serialVersionUID = 201101251800L;
     //public static final String currentVersion = "v6.1.1.07";  
-    public static final Long currentVersionNumber = 71044L;
+
+    /**
+     *
+     */
+        public static final Long currentVersionNumber = 71044L;
     //private String version = "0.0";
     private Long versionNumber = 0L;
     private double pips = 0.0;
@@ -60,6 +69,9 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
     private Map<Integer, Integer> modaGanadoras = null;
     private Map<Integer, Integer> modaPerdedoras = null;
 
+    /**
+     *
+     */
     public Fortaleza() {
         //setVersion(currentVersion);
         setVersionNumber(currentVersionNumber);
@@ -69,258 +81,514 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
         modaPerdedoras = new TreeMap<Integer, Integer>();
     }
 
+    /**
+     *
+     * @return
+     */
     public Map<Integer, Integer> getModaGanadoras() {
         return modaGanadoras;
     }
 
+    /**
+     *
+     * @param modaGanadoras
+     */
     public void setModaGanadoras(Map<Integer, Integer> modaGanadoras) {
         this.modaGanadoras = modaGanadoras;
     }
 
+    /**
+     *
+     * @return
+     */
     public Map<Integer, Integer> getModaPerdedoras() {
         return modaPerdedoras;
     }
 
+    /**
+     *
+     * @param modaPerdedoras
+     */
     public void setModaPerdedoras(Map<Integer, Integer> modaPerdedoras) {
         this.modaPerdedoras = modaPerdedoras;
     }
 
+    /**
+     *
+     * @return
+     */
     public Long getVersionNumber() {
         return versionNumber;
     }
 
+    /**
+     *
+     * @param versionNumber
+     */
     public void setVersionNumber(Long versionNumber) {
         this.versionNumber = versionNumber;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMinConsecutiveLostOperationsNumber() {
         return minConsecutiveLostOperationsNumber;
     }
 
+    /**
+     *
+     * @param minConsecutiveLostOperationsNumber
+     */
     public void setMinConsecutiveLostOperationsNumber(int minConsecutiveLostOperationsNumber) {
         this.minConsecutiveLostOperationsNumber = minConsecutiveLostOperationsNumber;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMinConsecutiveWonOperationsNumber() {
         return minConsecutiveWonOperationsNumber;
     }
 
+    /**
+     *
+     * @param minConsecutiveWonOperationsNumber
+     */
     public void setMinConsecutiveWonOperationsNumber(int minConsecutiveWonOperationsNumber) {
         this.minConsecutiveWonOperationsNumber = minConsecutiveWonOperationsNumber;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getAverageConsecutiveLostPips() {
         return averageConsecutiveLostPips;
     }
 
+    /**
+     *
+     * @param averageConsecutiveLostPips
+     */
     public void setAverageConsecutiveLostPips(double averageConsecutiveLostPips) {
         this.averageConsecutiveLostPips = averageConsecutiveLostPips;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getAverageConsecutiveWonPips() {
         return averageConsecutiveWonPips;
     }
 
+    /**
+     *
+     * @param averageConsecutiveWonPips
+     */
     public void setAverageConsecutiveWonPips(double averageConsecutiveWonPips) {
         this.averageConsecutiveWonPips = averageConsecutiveWonPips;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNumConsecutiveWon() {
         return numConsecutiveWon;
     }
 
+    /**
+     *
+     * @param numConsecutiveWon
+     */
     public void setNumConsecutiveWon(int numConsecutiveWon) {
         this.numConsecutiveWon = numConsecutiveWon;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNumConsecutiveLost() {
         return numConsecutiveLost;
     }
 
+    /**
+     *
+     * @param numConsecutiveLost
+     */
     public void setNumConsecutiveLost(int numConsecutiveLost) {
         this.numConsecutiveLost = numConsecutiveLost;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCurrentConsecutiveLostOperationsNumber() {
         return currentConsecutiveLostOperationsNumber;
     }
 
+    /**
+     *
+     * @param currentConsecutiveLostOperationsNumber
+     */
     public void setCurrentConsecutiveLostOperationsNumber(int currentConsecutiveLostOperationsNumber) {
         this.currentConsecutiveLostOperationsNumber = currentConsecutiveLostOperationsNumber;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getCurrentConsecutiveLostPips() {
         return currentConsecutiveLostPips;
     }
 
+    /**
+     *
+     * @param currentConsecutiveLostPips
+     */
     public void setCurrentConsecutiveLostPips(double currentConsecutiveLostPips) {
         this.currentConsecutiveLostPips = currentConsecutiveLostPips;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCurrentConsecutiveWonOperationsNumber() {
         return currentConsecutiveWonOperationsNumber;
     }
 
+    /**
+     *
+     * @param currentConsecutiveWonOperationsNumber
+     */
     public void setCurrentConsecutiveWonOperationsNumber(int currentConsecutiveWonOperationsNumber) {
         this.currentConsecutiveWonOperationsNumber = currentConsecutiveWonOperationsNumber;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getCurrentConsecutiveWonPips() {
         return currentConsecutiveWonPips;
     }
 
+    /**
+     *
+     * @param currentConsecutiveWonPips
+     */
     public void setCurrentConsecutiveWonPips(double currentConsecutiveWonPips) {
         this.currentConsecutiveWonPips = currentConsecutiveWonPips;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getPresentNumberPoblacion() {
         return presentNumberPoblacion;
     }
 
+    /**
+     *
+     * @param presentNumberPoblacion
+     */
     public void setPresentNumberPoblacion(int presentNumberPoblacion) {
         this.presentNumberPoblacion = presentNumberPoblacion;
     }
 
+    /**
+     *
+     * @return
+     */
     public FortalezaType getType() {
         return type;
     }
 
+    /**
+     *
+     * @param type
+     */
     public void setType(FortalezaType type) {
         this.type = type;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getCalculatedValue() {
         return calculatedValue;
     }
 
+    /**
+     *
+     * @param calculatedValue
+     */
     public void setCalculatedValue(double calculatedValue) {
         this.calculatedValue = calculatedValue;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getRiskLevel() {
         return riskLevel;
     }
 
+    /**
+     *
+     * @param riskLevel
+     */
     public void setRiskLevel(double riskLevel) {
         this.riskLevel = riskLevel;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getDiffValue() {
         return diffValue;
     }
 
+    /**
+     *
+     * @param diffValue
+     */
     public void setDiffValue(double diffValue) {
         this.diffValue = diffValue;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getLostOperationsNumber() {
         return lostOperationsNumber;
     }
 
+    /**
+     *
+     * @param lostOperationsNumber
+     */
     public void setLostOperationsNumber(int lostOperationsNumber) {
         this.lostOperationsNumber = lostOperationsNumber;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMaxConsecutiveLostOperationsNumber() {
         return maxConsecutiveLostOperationsNumber;
     }
 
+    /**
+     *
+     * @param maxConsecutiveLostOperationsNumber
+     */
     public void setMaxConsecutiveLostOperationsNumber(int maxConsecutiveLostOperationsNumber) {
         this.maxConsecutiveLostOperationsNumber = maxConsecutiveLostOperationsNumber;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getMaxConsecutiveLostPips() {
         return maxConsecutiveLostPips;
     }
 
+    /**
+     *
+     * @param maxConsecutiveLostPips
+     */
     public void setMaxConsecutiveLostPips(double maxConsecutiveLostPips) {
         this.maxConsecutiveLostPips = maxConsecutiveLostPips;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMaxConsecutiveWonOperationsNumber() {
         return maxConsecutiveWonOperationsNumber;
     }
 
+    /**
+     *
+     * @param maxConsecutiveWonOperationsNumber
+     */
     public void setMaxConsecutiveWonOperationsNumber(int maxConsecutiveWonOperationsNumber) {
         this.maxConsecutiveWonOperationsNumber = maxConsecutiveWonOperationsNumber;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getMaxConsecutiveWonPips() {
         return maxConsecutiveWonPips;
     }
 
+    /**
+     *
+     * @param maxConsecutiveWonPips
+     */
     public void setMaxConsecutiveWonPips(double maxConsecutiveWonPips) {
         this.maxConsecutiveWonPips = maxConsecutiveWonPips;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getWonOperationsNumber() {
         return wonOperationsNumber;
     }
 
+    /**
+     *
+     * @param wonOperationsNumber
+     */
     public void setWonOperationsNumber(int wonOperationsNumber) {
         this.wonOperationsNumber = wonOperationsNumber;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getOperationsNumber() {
         return operationsNumber;
     }
 
+    /**
+     *
+     * @param operationsNumber
+     */
     public void setOperationsNumber(int operationsNumber) {
         this.operationsNumber = operationsNumber;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getPips() {
         return pips;
     }
 
+    /**
+     *
+     * @param pips
+     */
     public void setPips(double pips) {
         this.pips = pips;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getLostPips() {
         return lostPips;
     }
 
+    /**
+     *
+     * @param lostPips
+     */
     public void setLostPips(double lostPips) {
         this.lostPips = lostPips;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getWonPips() {
         return wonPips;
     }
 
+    /**
+     *
+     * @param wonPips
+     */
     public void setWonPips(double wonPips) {
         this.wonPips = wonPips;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getValue() {
         return value;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setValue(double value) {
         this.value = value;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getProfit() {
         return profit;
     }
 
+    /**
+     *
+     * @param profit
+     */
     public void setProfit(double profit) {
         this.profit = profit;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getAverageConsecutiveLostOperationsNumber() {
         return averageConsecutiveLostOperationsNumber;
     }
 
+    /**
+     *
+     * @param averageConsecutiveLostOperationsNumber
+     */
     public void setAverageConsecutiveLostOperationsNumber(double averageConsecutiveLostOperationsNumber) {
         this.averageConsecutiveLostOperationsNumber = averageConsecutiveLostOperationsNumber;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getAverageConsecutiveWonOperationsNumber() {
         return averageConsecutiveWonOperationsNumber;
     }
 
+    /**
+     *
+     * @param averageConsecutiveWonOperationsNumber
+     */
     public void setAverageConsecutiveWonOperationsNumber(double averageConsecutiveWonOperationsNumber) {
         this.averageConsecutiveWonOperationsNumber = averageConsecutiveWonOperationsNumber;
     }
@@ -387,7 +655,12 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
 
     @Override
     public Fortaleza clone() {
-        Fortaleza f = new Fortaleza();
+        Fortaleza f;
+        try {
+            f = (Fortaleza)super.clone();
+        } catch (CloneNotSupportedException ex) {
+            f = new Fortaleza();
+        }
         f.setDiffValue(diffValue);
         f.setCurrentConsecutiveLostOperationsNumber(currentConsecutiveLostOperationsNumber);
         f.setCurrentConsecutiveLostPips(currentConsecutiveLostPips);
@@ -421,29 +694,50 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
         return f;
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getModaPerdedora() {
         return this.getModa(modaPerdedoras);
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getModaGanadora() {
         return this.getModa(modaGanadoras);
     }
 
+    /**
+     *
+     * @param mapModa
+     * @return
+     */
     public Integer getModa(Map<Integer, Integer> mapModa) {
         Integer moda = -1;
         if (!mapModa.isEmpty()) {
             Integer max = Collections.max(mapModa.values());
-            Set modaSet = mapModa.keySet();
-            for (Iterator<Integer> it = modaSet.iterator(); it.hasNext() && moda < 0;) {
-                Integer value = it.next();
-                if (mapModa.get(value) == max) {
-                    moda = value;
+            if (max != null) {
+                Set modaSet = mapModa.keySet();
+                for (Iterator<Integer> it = modaSet.iterator(); it.hasNext() && moda < 0;) {
+                    Integer valueTemp = it.next();
+                    Integer currentValue = mapModa.get(valueTemp);
+                    if (max.equals(currentValue)) {
+                        moda = valueTemp;
+                    }
                 }
             }
         }
         return moda;
     }
 
+    /**
+     *
+     * @param f2
+     * @return
+     */
     public Fortaleza calculateDifference(Fortaleza f2) {
         Fortaleza f = new Fortaleza();
         f.setDiffValue(f2.diffValue - diffValue);
@@ -513,6 +807,7 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
         return true;
     }
 
+    @Override
     public int compareTo(Fortaleza o) {
         int compare = (Double.compare((this.operationsNumber == 0.0D) ? -100000.0D : this.value, (o.operationsNumber == 0.0D) ? -100000.0D : o.getValue())) * 50;
         if (this.getType().equals(Constants.FortalezaType.Stable)) {
@@ -551,10 +846,19 @@ public class Fortaleza implements Comparable<Fortaleza>, Serializable, Cloneable
         return compare;
     }
 
+    /**
+     *
+     * @return
+     */
     public double calculate() {
         return this.calculate(0.0D);
     }
 
+    /**
+     *
+     * @param otherValue
+     * @return
+     */
     public double calculate(double otherValue) {
         double fortalezaValue = 0.0;
         if (this.getVersionNumber() == null) {

@@ -5,7 +5,10 @@
 package forex.genetic.manager.io;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,16 +18,23 @@ import java.util.List;
  */
 public class FileLineReader {
 
+    /**
+     *
+     * @param filePath
+     * @return
+     * @throws IOException
+     */
     public static List<String[]> readFileAsString(String filePath)
             throws java.io.IOException {
         List<String[]> list = new ArrayList<String[]>();
-        BufferedReader reader = new BufferedReader(
-                new FileReader(filePath));
-        String lineRead = null;
-        while ((lineRead = reader.readLine()) != null) {
-            list.add(lineRead.split(","));
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream(filePath), Charset.defaultCharset()))) {
+            String lineRead = null;
+            while ((lineRead = reader.readLine()) != null) {
+                list.add(lineRead.split(","));
+            }
         }
-        reader.close();
         return list;
     }
 }

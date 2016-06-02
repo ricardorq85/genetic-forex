@@ -26,6 +26,12 @@ public class MaxMinTendenciasManager {
 
     private Connection conn = null;
 
+    /**
+     *
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws ParseException
+     */
     public void procesarMaxMinTendencias() throws ClassNotFoundException, SQLException, ParseException {
         conn = JDBCUtil.getConnection();
         DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);

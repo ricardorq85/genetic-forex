@@ -4,10 +4,10 @@
  */
 package forex.genetic.manager.indicator;
 
-import forex.genetic.entities.indicator.Average;
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.Average;
+import forex.genetic.entities.indicator.Indicator;
 
 /**
  *
@@ -15,15 +15,30 @@ import forex.genetic.entities.Point;
  */
 public class MaIndicatorManager extends IntervalIndicatorManager<Average> {
 
+    /**
+     *
+     */
     public MaIndicatorManager() {
         super(true, false, "Ma");
         this.id = "MA";
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
     public Average getIndicatorInstance() {
         return new Average("Ma");
     }
 
+    /**
+     *
+     * @param indicator
+     * @param point
+     * @return
+     */
+    @Override
     public Indicator generate(Average indicator, Point point) {
         Interval interval = null;
         Average average = getIndicatorInstance();
@@ -38,16 +53,38 @@ public class MaIndicatorManager extends IntervalIndicatorManager<Average> {
         return average;
     }
 
+    /**
+     *
+     * @param averageIndividuo
+     * @param iAverage
+     * @param currentPoint
+     * @param previousPoint
+     * @return
+     */
     @Override
     public boolean operate(Average averageIndividuo, Average iAverage, Point currentPoint, Point previousPoint) {
         return intervalManager.operate(averageIndividuo.getInterval(), iAverage.getAverage(), currentPoint);
     }
 
+    /**
+     *
+     * @param averageIndividuo
+     * @param iAverage
+     * @param point
+     * @return
+     */
     @Override
     public Interval calculateInterval(Average averageIndividuo, Average iAverage, Point point) {
         return intervalManager.calculateInterval(averageIndividuo.getInterval(), iAverage.getAverage(), point);
     }
 
+    /**
+     *
+     * @param indicator
+     * @param prevPoint
+     * @param point
+     * @return
+     */
     @Override
     public double getValue(Average indicator, Point prevPoint, Point point) {
         double value;

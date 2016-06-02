@@ -12,26 +12,53 @@ import java.io.Serializable;
  */
 public class RelacionGeneraciones implements Comparable<RelacionGeneraciones>, Serializable {
 
+    /**
+     *
+     */
     public static final long serialVersionUID = 201205232209L;
+
+    /**
+     *
+     */
     protected LearningParametrosIndividuo learningParametrosIndividuo = null;
     private float value = 0.0F;
 
+    /**
+     *
+     * @param learningParametrosIndividuo
+     */
     public RelacionGeneraciones(LearningParametrosIndividuo learningParametrosIndividuo) {
         this.learningParametrosIndividuo = learningParametrosIndividuo;
     }
 
+    /**
+     *
+     * @return
+     */
     public LearningParametrosIndividuo getLearningParametrosIndividuo() {
         return learningParametrosIndividuo;
     }
 
+    /**
+     *
+     * @param learningParametrosIndividuo
+     */
     public void setLearningParametrosIndividuo(LearningParametrosIndividuo learningParametrosIndividuo) {
         this.learningParametrosIndividuo = learningParametrosIndividuo;
     }
 
+    /**
+     *
+     * @return
+     */
     public float getValue() {
         return value;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setValue(float value) {
         this.value = value;
     }
@@ -63,6 +90,7 @@ public class RelacionGeneraciones implements Comparable<RelacionGeneraciones>, S
         return "RelacionGeneraciones{" + "learningParametrosIndividuo=" + learningParametrosIndividuo + ", value=" + value + '}';
     }
 
+    @Override
     public int compareTo(RelacionGeneraciones o) {
         return Float.compare(this.getValue(), o.getValue());
     }

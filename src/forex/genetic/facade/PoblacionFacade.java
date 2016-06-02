@@ -27,11 +27,17 @@ import java.util.logging.Logger;
  */
 public class PoblacionFacade {
 
+    /**
+     *
+     */
     public void process() {
         PoblacionManagerBD manager = new PoblacionManagerBD();
         manager.process();
     }
 
+    /**
+     *
+     */
     public void process2() {
         List<Thread> threads = new ArrayList<Thread>();
         try {
@@ -63,6 +69,11 @@ public class PoblacionFacade {
         }
     }
 
+    /**
+     *
+     * @param indicadorController
+     * @param poblacion
+     */
     public void cargarPoblacion(IndicadorController indicadorController, Poblacion poblacion) {
         Connection conn = null;
         try {

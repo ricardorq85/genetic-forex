@@ -57,6 +57,11 @@ public class TendenciaGeneticaManager {
     private String individuosTendencia;
     private final IndicadorController indicadorController;
 
+    /**
+     *
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public TendenciaGeneticaManager() throws ClassNotFoundException, SQLException {
         this.indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.IndividuoTendencia);
         conn = JDBCUtil.getConnection();
@@ -72,6 +77,13 @@ public class TendenciaGeneticaManager {
         individuosTendencia = parametroDAO.getValorParametro("INDIVIDUOS_TENDENCIA");
     }
 
+    /**
+     *
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws ParseException
+     * @throws GeneticException
+     */
     public void procesarGenetica() throws ClassNotFoundException, SQLException, ParseException, GeneticException {
         //this.crearIndividuos();
         if (individuosTendencia != null) {
@@ -134,6 +146,7 @@ public class TendenciaGeneticaManager {
             Individuo indConsulta = new Individuo(individuoStr);
             individuoDAO.consultarDetalleIndividuo(indicadorController, indConsulta);
             Individuo ind = new Individuo();
+            ind.setIdParent1(individuoStr);
             ind.setOpenIndicators(indConsulta.getOpenIndicators());
             ind.setCloseIndicators(indConsulta.getCloseIndicators());
             this.procesarTendencias(ind, true);
@@ -294,7 +307,7 @@ public class TendenciaGeneticaManager {
                             individuoDAO.insertIndividuo(individuo);
                             individuoDAO.insertIndicadorIndividuo(indicadorController, individuo);
                             first = false;
-                        }
+                        }                        
                         operacionesDAO.insertOperaciones(individuo, Collections.singletonList(order));
                         lastDateForClose = null;
                         LogUtil.logTime("Orden Cerrada: " + order.toString(), 1);

@@ -4,25 +4,24 @@
  */
 package forex.genetic.entities;
 
-import forex.genetic.manager.indicator.IndicadorIndividuoManager;
-import forex.genetic.manager.PropertiesManager;
-import java.util.Collections;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.IndividuoManager;
+import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.util.Constants;
+import forex.genetic.util.Constants.IndividuoType;
 import forex.genetic.util.LogUtil;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import static forex.genetic.util.Constants.*;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -30,373 +29,842 @@ import java.util.Iterator;
  */
 public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Serializable, Cloneable {
 
+    /**
+     *
+     */
     public static final long serialVersionUID = 201101251800L;
-    protected static final DateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-    protected String id = "0";
-    protected String fileId = null;
-    protected int processedUntil = 0;
-    protected int processedFrom = 0;
-    protected int generacion = -1;
-    protected IndividuoEstrategia parent1 = null;
-    protected IndividuoEstrategia parent2 = null;
-    protected String idParent1 = null;
-    protected String idParent2 = null;
-    protected IndividuoType individuoType = IndividuoType.INITIAL;
-    protected int takeProfit = 0;
-    protected int stopLoss = 0;
-    protected double lot = 0;
-    protected int initialBalance = 0;
-    protected List<? extends Indicator> openIndicators = null;
-    protected List<? extends Indicator> closeIndicators = null;
-    protected List<? extends Indicator> optimizedOpenIndicators = null;
-    protected List<? extends Indicator> optimizedCloseIndicators = null;
-    protected Fortaleza fortaleza = null;
-    protected List<Fortaleza> listaFortaleza = null;
-    protected Order currentOrder = null;
-    protected transient List<Order> ordenes = new ArrayList<>();
-    protected double openOperationValue = 0.0D;
-    protected double openSpread = 0.0D;
-    protected int openPoblacionIndex = 1;
-    protected int openOperationIndex = 0;
-    protected Point prevOpenPoint = null;
-    protected Point openPoint = null;
-    protected boolean activeOperation = false;
-    protected int closePoblacionIndex = -1;
-    protected int closeOperationIndex = 0;
-    protected Date creationDate = null;
-    protected IndividuoReadData individuoReadData = null;
-    protected transient List<PatternAdvanced> patterns = null;
-    protected transient List<PatternAdvancedSpecific> currentPatterns = null;
-    protected transient int lastOrderPatternIndex = 0;
-    IndicadorController indicadorController;
 
+    /**
+     *
+     */
+    protected static final String DATE_PATTERN = "yyyy.MM.dd HH:mm";
+
+    /**
+     *
+     */
+    protected String id = "0";
+
+    /**
+     *
+     */
+    protected String fileId = null;
+
+    /**
+     *
+     */
+    protected int processedUntil = 0;
+
+    /**
+     *
+     */
+    protected int processedFrom = 0;
+
+    /**
+     *
+     */
+    protected int generacion = -1;
+
+    /**
+     *
+     */
+    protected IndividuoEstrategia parent1 = null;
+
+    /**
+     *
+     */
+    protected IndividuoEstrategia parent2 = null;
+
+    /**
+     *
+     */
+    protected String idParent1 = null;
+
+    /**
+     *
+     */
+    protected String idParent2 = null;
+
+    /**
+     *
+     */
+    protected IndividuoType individuoType = IndividuoType.INITIAL;
+
+    /**
+     *
+     */
+    protected int takeProfit = 0;
+
+    /**
+     *
+     */
+    protected int stopLoss = 0;
+
+    /**
+     *
+     */
+    protected double lot = 0;
+
+    /**
+     *
+     */
+    protected int initialBalance = 0;
+
+    /**
+     *
+     */
+    protected List<? extends Indicator> openIndicators = null;
+
+    /**
+     *
+     */
+    protected List<? extends Indicator> closeIndicators = null;
+
+    /**
+     *
+     */
+    protected List<? extends Indicator> optimizedOpenIndicators = null;
+
+    /**
+     *
+     */
+    protected List<? extends Indicator> optimizedCloseIndicators = null;
+
+    /**
+     *
+     */
+    protected Fortaleza fortaleza = null;
+
+    /**
+     *
+     */
+    protected List<Fortaleza> listaFortaleza = null;
+
+    /**
+     *
+     */
+    protected Order currentOrder = null;
+
+    /**
+     *
+     */
+    protected transient List<Order> ordenes;
+
+    /**
+     *
+     */
+    protected double openOperationValue = 0.0D;
+
+    /**
+     *
+     */
+    protected double openSpread = 0.0D;
+
+    /**
+     *
+     */
+    protected int openPoblacionIndex = 1;
+
+    /**
+     *
+     */
+    protected int openOperationIndex = 0;
+
+    /**
+     *
+     */
+    protected Point prevOpenPoint = null;
+
+    /**
+     *
+     */
+    protected Point openPoint = null;
+
+    /**
+     *
+     */
+    protected boolean activeOperation = false;
+
+    /**
+     *
+     */
+    protected int closePoblacionIndex = -1;
+
+    /**
+     *
+     */
+    protected int closeOperationIndex = 0;
+
+    /**
+     *
+     */
+    protected Date creationDate = null;
+
+    /**
+     *
+     */
+    protected IndividuoReadData individuoReadData = null;
+
+    /**
+     *
+     */
+    protected transient List<PatternAdvanced> patterns = null;
+
+    /**
+     *
+     */
+    protected transient List<PatternAdvancedSpecific> currentPatterns = null;
+
+    /**
+     *
+     */
+    protected transient int lastOrderPatternIndex = 0;
+    private final transient IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+
+    /**
+     *
+     */
     public IndividuoEstrategia() {
         this(0, null, null, IndividuoType.INITIAL);
     }
 
+    /**
+     *
+     * @param parent1
+     */
     public IndividuoEstrategia(IndividuoEstrategia parent1) {
         this(0, parent1, null, IndividuoType.INITIAL);
     }
 
+    /**
+     *
+     * @param id
+     */
     public IndividuoEstrategia(String id) {
         this(0, null, null, null, id);
     }
 
+    /**
+     *
+     * @param generacion
+     * @param parent1
+     * @param parent2
+     * @param individuoType
+     */
     public IndividuoEstrategia(int generacion, IndividuoEstrategia parent1,
             IndividuoEstrategia parent2, IndividuoType individuoType) {
         this(generacion, parent1, parent2, individuoType, IndividuoManager.nextId());
     }
 
+    /**
+     *
+     * @param generacion
+     * @param parent1
+     * @param parent2
+     * @param individuoType
+     * @param id
+     */
     public IndividuoEstrategia(int generacion, IndividuoEstrategia parent1,
             IndividuoEstrategia parent2, IndividuoType individuoType,
             String id) {
-        setFileId(PropertiesManager.getFileId());
-        setId(id);
-        setGeneracion(generacion);
-        setParent1(parent1);
-        setParent2(parent2);
-        setIndividuoType(individuoType);
-        setCreationDate(new Date());
-        indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+        this.fileId = PropertiesManager.getFileId();
+        this.id = id;
+        this.generacion = generacion;
+        this.parent1 = parent1;
+        this.parent2 = parent2;
+        this.individuoType = individuoType;
+        this.creationDate = new Date();
         this.optimizedCloseIndicators = Collections.synchronizedList(new ArrayList(indicadorController.getIndicatorNumber()));
         this.optimizedOpenIndicators = Collections.synchronizedList(new ArrayList(indicadorController.getIndicatorNumber()));
         this.individuoReadData = new IndividuoReadData();
         this.individuoReadData.setOperationType(PropertiesManager.getOperationType());
         this.individuoReadData.setPair(PropertiesManager.getPair());
+        this.ordenes = new ArrayList<>();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getLastOrderPatternIndex() {
         return lastOrderPatternIndex;
     }
 
+    /**
+     *
+     * @param lastOrderPatternIndex
+     */
     public void setLastOrderPatternIndex(int lastOrderPatternIndex) {
         this.lastOrderPatternIndex = lastOrderPatternIndex;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<PatternAdvancedSpecific> getCurrentPatterns() {
         return currentPatterns;
     }
 
+    /**
+     *
+     * @param currentPatterns
+     */
     public void setCurrentPatterns(List<PatternAdvancedSpecific> currentPatterns) {
         this.currentPatterns = currentPatterns;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<PatternAdvanced> getPatterns() {
         return patterns;
     }
 
+    /**
+     *
+     * @param patterns
+     */
     public void setPatterns(List<PatternAdvanced> patterns) {
         this.patterns = patterns;
     }
 
+    /**
+     *
+     * @return
+     */
     public Order getCurrentOrder() {
         return currentOrder;
     }
 
+    /**
+     *
+     * @param currentOrder
+     */
     public void setCurrentOrder(Order currentOrder) {
         this.currentOrder = currentOrder;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Order> getOrdenes() {
         return ordenes;
     }
 
+    /**
+     *
+     * @param ordenes
+     */
     public void setOrdenes(List<Order> ordenes) {
         this.ordenes = ordenes;
     }
 
+    /**
+     *
+     * @return
+     */
     public IndividuoReadData getIndividuoReadData() {
         return individuoReadData;
     }
 
+    /**
+     *
+     * @param individuoReadData
+     */
     public void setIndividuoReadData(IndividuoReadData individuoReadData) {
         this.individuoReadData = individuoReadData;
     }
 
+    /**
+     *
+     * @return
+     */
     public Date getCreationDate() {
-        return creationDate;
+        return (this.creationDate = creationDate != null ? new Date(creationDate.getTime()) : null);
     }
 
+    /**
+     *
+     * @param creationDate
+     */
     public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+        this.creationDate = creationDate != null ? new Date(creationDate.getTime()) : null;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getOpenSpread() {
         return openSpread;
     }
 
+    /**
+     *
+     * @param openSpread
+     */
     public void setOpenSpread(double openSpread) {
         this.openSpread = openSpread;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isActiveOperation() {
         return activeOperation;
     }
 
+    /**
+     *
+     * @param activeOperation
+     */
     public void setActiveOperation(boolean activeOperation) {
         this.activeOperation = activeOperation;
     }
 
+    /**
+     *
+     * @return
+     */
     public Point getPrevOpenPoint() {
         return prevOpenPoint;
     }
 
+    /**
+     *
+     * @param prevOpenPoint
+     */
     public void setPrevOpenPoint(Point prevOpenPoint) {
         this.prevOpenPoint = prevOpenPoint;
     }
 
+    /**
+     *
+     * @return
+     */
     public Point getOpenPoint() {
         return openPoint;
     }
 
+    /**
+     *
+     * @param openPoint
+     */
     public void setOpenPoint(Point openPoint) {
         this.openPoint = openPoint;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCloseOperationIndex() {
         return closeOperationIndex;
     }
 
+    /**
+     *
+     * @param closeOperationIndex
+     */
     public void setCloseOperationIndex(int closeOperationIndex) {
         this.closeOperationIndex = closeOperationIndex;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getClosePoblacionIndex() {
         return closePoblacionIndex;
     }
 
+    /**
+     *
+     * @param closePoblacionIndex
+     */
     public void setClosePoblacionIndex(int closePoblacionIndex) {
         this.closePoblacionIndex = closePoblacionIndex;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getOpenOperationIndex() {
         return openOperationIndex;
     }
 
+    /**
+     *
+     * @param openOperationIndex
+     */
     public void setOpenOperationIndex(int openOperationIndex) {
         this.openOperationIndex = openOperationIndex;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getOpenOperationValue() {
         return openOperationValue;
     }
 
+    /**
+     *
+     * @param openOperationValue
+     */
     public void setOpenOperationValue(double openOperationValue) {
         this.openOperationValue = openOperationValue;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getOpenPoblacionIndex() {
         return openPoblacionIndex;
     }
 
+    /**
+     *
+     * @param openPoblacionIndex
+     */
     public void setOpenPoblacionIndex(int openPoblacionIndex) {
         this.openPoblacionIndex = openPoblacionIndex;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getProcessedFrom() {
         return processedFrom;
     }
 
+    /**
+     *
+     * @param processedFrom
+     */
     public void setProcessedFrom(int processedFrom) {
         this.processedFrom = processedFrom;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getProcessedUntil() {
         return processedUntil;
     }
 
+    /**
+     *
+     * @param processedUntil
+     */
     public void setProcessedUntil(int processedUntil) {
         this.processedUntil = processedUntil;
     }
 
+    /**
+     *
+     * @return
+     */
     public IndividuoType getIndividuoType() {
         return individuoType;
     }
 
+    /**
+     *
+     * @param individuoType
+     */
     public void setIndividuoType(IndividuoType individuoType) {
         this.individuoType = individuoType;
     }
 
+    /**
+     *
+     * @return
+     */
     public IndividuoEstrategia getParent1() {
         return parent1;
     }
 
+    /**
+     *
+     * @param parent1
+     */
     public void setParent1(IndividuoEstrategia parent1) {
         this.idParent1 = (parent1 == null) ? null : parent1.id;
     }
 
+    /**
+     *
+     * @return
+     */
     public IndividuoEstrategia getParent2() {
         return parent2;
     }
 
+    /**
+     *
+     * @param parent2
+     */
     public void setParent2(IndividuoEstrategia parent2) {
         this.idParent2 = (parent2 == null) ? null : parent2.id;
     }
 
+    /**
+     *
+     * @return
+     */
     public Fortaleza getFortaleza() {
         return fortaleza;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     *
+     * @param id
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @param fortaleza
+     */
     public void setFortaleza(Fortaleza fortaleza) {
         this.fortaleza = fortaleza;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<? extends Indicator> getOpenIndicators() {
         return openIndicators;
     }
 
+    /**
+     *
+     * @param openIndicators
+     */
     public void setOpenIndicators(List<? extends Indicator> openIndicators) {
         this.openIndicators = openIndicators;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<? extends Indicator> getCloseIndicators() {
         return closeIndicators;
     }
 
+    /**
+     *
+     * @param closeIndicators
+     */
     public void setCloseIndicators(List<? extends Indicator> closeIndicators) {
         this.closeIndicators = closeIndicators;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<? extends Indicator> getOptimizedCloseIndicators() {
         return optimizedCloseIndicators;
     }
 
+    /**
+     *
+     * @param optimizedCloseIndicators
+     */
     public void setOptimizedCloseIndicators(List<? extends Indicator> optimizedCloseIndicators) {
         this.optimizedCloseIndicators = optimizedCloseIndicators;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<? extends Indicator> getOptimizedOpenIndicators() {
         return optimizedOpenIndicators;
     }
 
+    /**
+     *
+     * @param optimizedOpenIndicators
+     */
     public void setOptimizedOpenIndicators(List<? extends Indicator> optimizedOpenIndicators) {
         this.optimizedOpenIndicators = optimizedOpenIndicators;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getInitialBalance() {
         return initialBalance;
     }
 
+    /**
+     *
+     * @param initialBalance
+     */
     public void setInitialBalance(int initialBalance) {
         this.initialBalance = initialBalance;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getStopLoss() {
         return stopLoss;
     }
 
+    /**
+     *
+     * @param stopLoss
+     */
     public void setStopLoss(int stopLoss) {
         this.stopLoss = stopLoss;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getTakeProfit() {
         return takeProfit;
     }
 
+    /**
+     *
+     * @param takeProfit
+     */
     public void setTakeProfit(int takeProfit) {
         this.takeProfit = takeProfit;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getLot() {
         return lot;
     }
 
+    /**
+     *
+     * @param lot
+     */
     public void setLot(double lot) {
         this.lot = lot;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getGeneracion() {
         return generacion;
     }
 
+    /**
+     *
+     * @param generacion
+     */
     public void setGeneracion(int generacion) {
         this.generacion = generacion;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getFileId() {
         return fileId;
     }
 
+    /**
+     *
+     * @param fileId
+     */
     public void setFileId(String fileId) {
         this.fileId = fileId;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getIdParent1() {
         return idParent1;
     }
 
+    /**
+     *
+     * @param idParent1
+     */
     public void setIdParent1(String idParent1) {
         this.idParent1 = idParent1;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getIdParent2() {
         return idParent2;
     }
 
+    /**
+     *
+     * @param idParent2
+     */
     public void setIdParent2(String idParent2) {
         this.idParent2 = idParent2;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Fortaleza> getListaFortaleza() {
         return listaFortaleza;
     }
 
+    /**
+     *
+     * @param listaFortaleza
+     */
     public void setListaFortaleza(List<Fortaleza> listaFortaleza) {
         if (listaFortaleza == null) {
-            this.listaFortaleza = new ArrayList<Fortaleza>();
+            this.listaFortaleza = new ArrayList<>();
         } else {
             this.listaFortaleza = listaFortaleza;
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isActive() {
         if (fortaleza.getType().equals(Constants.FortalezaType.Pattern)) {
             return ((this.fortaleza.getValue() >= 800.0) && (!this.activeOperation));
@@ -450,7 +918,13 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         return buffer.toString();
     }
 
+    /**
+     *
+     * @param dateInterval
+     * @return
+     */
     public String toFileString(DateInterval dateInterval) {
+        final DateFormat format = new SimpleDateFormat(DATE_PATTERN);
         StringBuilder buffer = new StringBuilder();
         buffer.append("ProcessedFrom&Until=");
         buffer.append((this.processedFrom));
@@ -531,18 +1005,23 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         }
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     public boolean equalsReal(Object obj) {
         if (obj instanceof IndividuoEstrategia) {
             IndividuoEstrategia objIndividuo = (IndividuoEstrategia) obj;
-            boolean value = ((this.openIndicators.equals(objIndividuo.openIndicators)
-                    && Collections.frequency(this.openIndicators, null) != this.openIndicators.size())
+            boolean value = ((Collections.frequency(this.openIndicators, null) != this.openIndicators.size()
+                    && this.openIndicators.equals(objIndividuo.openIndicators))
                     //&& (this.closeIndicators.equals(objIndividuo.closeIndicators)
                     //&& Collections.frequency(this.closeIndicators, null) != this.closeIndicators.size())
-                    && ((Math.abs((objIndividuo.takeProfit - this.takeProfit) / new Double(this.takeProfit)) < 0.02)
-                    && (Math.abs((objIndividuo.stopLoss - this.stopLoss) / new Double(this.stopLoss)) < 0.02)));
+                    && ((Math.abs((objIndividuo.takeProfit - this.takeProfit) / (double) this.takeProfit) < 0.02)
+                    && (Math.abs((objIndividuo.stopLoss - this.stopLoss) / (double) this.stopLoss) < 0.02)));
             if (!value) {
-                Fortaleza f = null;
-                Fortaleza objF = null;
+                Fortaleza f;
+                Fortaleza objF;
                 int size = this.listaFortaleza.size();
                 int presentNumberPoblacion = PropertiesManager.getPresentNumberPoblacion();
                 boolean temp = (presentNumberPoblacion > 1);
@@ -551,8 +1030,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
                     objF = objIndividuo.listaFortaleza.get(i);
                     temp = (f == null) && (objF == null);
                     if (!temp) {
-                        temp = ((f != null) && (objF != null));
-                        temp = temp && (f.equals(objF));
+                        temp = ((f != null) && (objF != null)) && (f.equals(objF));
                     }
                 }
                 value = temp;
@@ -565,7 +1043,12 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 
     @Override
     public IndividuoEstrategia clone() {
-        IndividuoEstrategia cloned = new IndividuoEstrategia();
+        IndividuoEstrategia cloned;
+        try {
+            cloned = (IndividuoEstrategia) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            cloned = new IndividuoEstrategia();
+        }
         cloned.id = this.id;
         cloned.fileId = this.fileId;
         cloned.processedUntil = this.processedUntil;
@@ -602,15 +1085,21 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         return cloned;
     }
 
+    /**
+     *
+     * @param fortaleza
+     * @param index
+     * @return
+     */
     public double calculateRiskLevel(Fortaleza fortaleza, int index) {
         double riskLevel = 1.0;
         if (fortaleza == null) {
             fortaleza = this.getFortaleza();
         }
         if (fortaleza.getType().equals(Constants.FortalezaType.Stable)) {
-            double risk1 = 1.0;
-            double risk2 = 1.0;
-            double risk3 = 1.0;
+            double risk1;
+            double risk2;
+            double risk3;
             double percentLevel = PropertiesManager.getRiskLevel() / Constants.MAX_RISK_LEVEL;
             double percentFortalezaNumber = (fortaleza.getWonOperationsNumber() == 0) ? 0.0D
                     : fortaleza.getLostOperationsNumber() / (double) (fortaleza.getWonOperationsNumber());
@@ -620,7 +1109,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
             double percentFortaleza = (percentFortalezaNumber + percentFortalezaPips) / 2;
 
             risk1 = (percentFortaleza > percentLevel) ? (1.0) / (1000.0) : (10.0);
-            risk2 = ((fortaleza.getOperationsNumber() / (index + 1))
+            risk2 = ((fortaleza.getOperationsNumber() / (double) (index + 1))
                     < PropertiesManager.getMinOperNumByPeriod()) ? (2.0) / (1000.0) : (10.0);
             risk3 = (!processObligatory(this)) ? (3.0) / (100.0) : (10.0);
 
@@ -658,17 +1147,28 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         return riskLevel;
     }
 
+    /**
+     *
+     * @param fortalezas
+     * @return
+     */
     protected boolean isContinuo(List<Fortaleza> fortalezas) {
         boolean continuo = true;
         int presentNumberPoblacion = PropertiesManager.getPresentNumberPoblacion();
         for (int i = fortalezas.size() - 1; (continuo && i >= presentNumberPoblacion); i--) {
-            if (!(fortalezas.get(i).getCalculatedValue() == fortalezas.get(i - presentNumberPoblacion).getCalculatedValue())) {
+            if (Math.abs((fortalezas.get(i).getCalculatedValue()
+                    - fortalezas.get(i - presentNumberPoblacion).getCalculatedValue())) > 0.000000001D) {
                 continuo = false;
             }
         }
         return continuo;
     }
 
+    /**
+     *
+     * @param individuoEstrategia
+     * @return
+     */
     protected boolean processObligatory(IndividuoEstrategia individuoEstrategia) {
         boolean process = true;
         for (int i = 0; process && (i < indicadorController.getIndicatorNumber()); i++) {
@@ -688,6 +1188,10 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         return process;
     }
 
+    /**
+     *
+     * @param individuoReadData
+     */
     public void corregir(IndividuoReadData individuoReadData) {
         this.setFortaleza(null);
         this.setListaFortaleza(null);
@@ -702,7 +1206,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         this.setActiveOperation(false);
         this.setCloseOperationIndex(0);
         this.setClosePoblacionIndex(-1);
-        this.setOrdenes(new ArrayList<Order>());
+        this.setOrdenes(new ArrayList<>());
         this.setCurrentOrder(null);
         this.setIndividuoReadData(individuoReadData);
         if (this.getTakeProfit() < PropertiesManager.getMinTP()) {
@@ -724,6 +1228,10 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         corregirIndicadores(this.closeIndicators);
     }
 
+    /**
+     *
+     * @param indicadores
+     */
     protected void corregirIndicadores(List<? extends Indicator> indicadores) {
         for (int i = 0; i < indicadores.size(); i++) {
             if (indicadores.get(i) != null) {
@@ -739,6 +1247,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         }
     }
 
+    @Override
     public int compareTo(IndividuoEstrategia other) {
         int compare = 0;
         if (!this.equals(other)) {
@@ -794,9 +1303,14 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
                 }
             }
         }
-        return (Integer.valueOf(compare).compareTo(Integer.valueOf(0)));
+        return (Integer.valueOf(compare).compareTo(0));
     }
 
+    /**
+     *
+     * @param other
+     * @return
+     */
     protected int comparePattern(IndividuoEstrategia other) {
         int compare = 0;
         /*if ((this.currentPatterns != null) && (other.currentPatterns != null)) {
@@ -859,26 +1373,29 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
             if (compare == 0) {
                 //LogUtil.logTime(this.id + " compareTo.currentPatterns2.0 " + other.id, 1);
                 if ((this.currentPatterns != null) && (other.currentPatterns != null)) {
-                    compare = Integer.valueOf(this.currentPatterns.size()).compareTo(Integer.valueOf(other.currentPatterns.size()));
+                    compare = Integer.valueOf(this.currentPatterns.size()).compareTo(other.currentPatterns.size());
                 }
             }
             if (compare == 0) {
                 //       LogUtil.logTime(this.id + " compareTo.ordenes2.0 " + other.id, 1);
                 if ((this.ordenes != null) && (other.ordenes != null)) {
-                    compare = Integer.valueOf(this.ordenes.size()).compareTo(Integer.valueOf(other.ordenes.size()));
+                    compare = Integer.valueOf(this.ordenes.size()).compareTo(other.ordenes.size());
                 }
             }
         }
         if (compare == 0) {
             //LogUtil.logTime(this.id + " compareTo.getOperationsNumber.0 " + other.id, 1);
             if ((this.fortaleza != null) && (other.fortaleza != null)) {
-                compare = Integer.valueOf(this.fortaleza.getOperationsNumber()).compareTo(Integer.valueOf(other.fortaleza.getOperationsNumber()));
+                compare = Integer.valueOf(this.fortaleza.getOperationsNumber()).compareTo(other.fortaleza.getOperationsNumber());
             }
         }
         //LogUtil.logTime(this.id + " comparePattern " + other.id + "=" + compare, 1);
         return compare;
     }
 
+    /**
+     *
+     */
     public void calculateCurrentPatternValue() {
         double calcValue = 0.0D;
         double risk = 0.0D;
@@ -888,11 +1405,10 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
         double wonPattern = 0.0D;
         int countWon = 0;
         int countLost = 0;
-        int size = 1;
+        int size;
         if (this.currentPatterns != null) {
             size = this.currentPatterns.size();
-            for (Iterator<PatternAdvancedSpecific> it = this.currentPatterns.iterator(); it.hasNext();) {
-                PatternAdvancedSpecific patternAdvancedSpecific = it.next();
+            for (PatternAdvancedSpecific patternAdvancedSpecific : this.currentPatterns) {
                 PatternAdvanced pattern = patternAdvancedSpecific.getPatternAdvanced();
                 List<Order> patternList = pattern.getPattern();
                 int index = patternAdvancedSpecific.getIndex();

@@ -16,6 +16,9 @@ import java.util.List;
  */
 public class Learning implements Serializable {
 
+    /**
+     *
+     */
     public static final long serialVersionUID = 201205200756L;
     private String pair = null;
     private OperationType operationType = null;
@@ -25,6 +28,9 @@ public class Learning implements Serializable {
     private IntegerInterval takeProfitInterval = null;
     private IntegerInterval stopLossInterval = null;
 
+    /**
+     *
+     */
     public Learning() {
         pair = PropertiesManager.getPair();
         operationType = PropertiesManager.getOperationType();
@@ -32,6 +38,10 @@ public class Learning implements Serializable {
         this.createStopLossInterval();
     }
 
+    /**
+     *
+     * @return
+     */
     public IntegerInterval createTakeProfitInterval() {
         this.takeProfitInterval = new IntegerInterval("takeProfitInterval");
         this.takeProfitInterval.setLowInterval(Integer.MAX_VALUE);
@@ -39,6 +49,10 @@ public class Learning implements Serializable {
         return this.takeProfitInterval;
     }
 
+    /**
+     *
+     * @return
+     */
     public IntegerInterval createStopLossInterval() {
         this.stopLossInterval = new IntegerInterval("stopLossInterval");
         this.stopLossInterval.setLowInterval(Integer.MAX_VALUE);
@@ -46,58 +60,114 @@ public class Learning implements Serializable {
         return this.stopLossInterval;
     }
 
+    /**
+     *
+     * @return
+     */
     public IntegerInterval getStopLossInterval() {
         return stopLossInterval;
     }
 
+    /**
+     *
+     * @param stopLossInterval
+     */
     public void setStopLossInterval(IntegerInterval stopLossInterval) {
         this.stopLossInterval = stopLossInterval;
     }
 
+    /**
+     *
+     * @return
+     */
     public IntegerInterval getTakeProfitInterval() {
         return takeProfitInterval;
     }
 
+    /**
+     *
+     * @param takeProfitInterval
+     */
     public void setTakeProfitInterval(IntegerInterval takeProfitInterval) {
         this.takeProfitInterval = takeProfitInterval;
     }
 
+    /**
+     *
+     * @return
+     */
     public OperationType getOperationType() {
         return operationType;
     }
 
+    /**
+     *
+     * @param operationType
+     */
     public void setOperationType(OperationType operationType) {
         this.operationType = operationType;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPair() {
         return pair;
     }
 
+    /**
+     *
+     * @param pair
+     */
     public void setPair(String pair) {
         this.pair = pair;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<RelacionPair> getRelacionMonedas() {
         return relacionMonedas;
     }
 
+    /**
+     *
+     * @param relacionMonedas
+     */
     public void setRelacionMonedas(List<RelacionPair> relacionMonedas) {
         this.relacionMonedas = relacionMonedas;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<RelacionGeneraciones> getRelacionMutation() {
         return relacionMutation;
     }
 
+    /**
+     *
+     * @param relacionMutation
+     */
     public void setRelacionMutation(List<RelacionGeneraciones> relacionMutation) {
         this.relacionMutation = relacionMutation;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<RelacionGeneraciones> getRelacionOptimization() {
         return relacionOptimization;
     }
 
+    /**
+     *
+     * @param relacionOptimization
+     */
     public void setRelacionOptimization(List<RelacionGeneraciones> relacionOptimization) {
         this.relacionOptimization = relacionOptimization;
     }

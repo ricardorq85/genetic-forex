@@ -19,12 +19,19 @@ public class ProcesarIndividuoThread extends Thread {
     private ProcesoPoblacionDAO dao = null;
     private List<String> individuos = null;
 
+    /**
+     *
+     * @param name
+     * @param dao
+     * @param individuos
+     */
     public ProcesarIndividuoThread(String name, ProcesoPoblacionDAO dao, List<String> individuos) {
         super(name);
         this.dao = dao;
         this.individuos = individuos;
     }
 
+    @Override
     public void run() {
         try {
             for (int i = 0; i < individuos.size(); i++) {

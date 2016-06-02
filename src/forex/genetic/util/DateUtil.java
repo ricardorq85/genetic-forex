@@ -16,6 +16,11 @@ import java.util.GregorianCalendar;
  */
 public class DateUtil {
 
+    /**
+     *
+     * @param fecha
+     * @return
+     */
     public static Date adicionarMes(Date fecha) {
         GregorianCalendar gc = new GregorianCalendar();
         gc.setTime(fecha);
@@ -23,6 +28,12 @@ public class DateUtil {
         return gc.getTime();
     }
 
+    /**
+     *
+     * @param fecha
+     * @param minutos
+     * @return
+     */
     public static Date adicionarMinutos(Date fecha, int minutos) {
         GregorianCalendar gc = new GregorianCalendar();
         gc.setTime(fecha);
@@ -30,6 +41,12 @@ public class DateUtil {
         return gc.getTime();
     }
 
+    /**
+     *
+     * @param f1
+     * @param f2
+     * @return
+     */
     public static long diferenciaMinutos(Date f1, Date f2) {
         long t1 = f1.getTime();
         long t2 = f2.getTime();
@@ -37,6 +54,13 @@ public class DateUtil {
         return diff;
     }
 
+    /**
+     *
+     * @param f1
+     * @param f2
+     * @return
+     * @throws ParseException
+     */
     public static Date obtenerFechaMinima(Date f1, Date f2) throws ParseException {
         if ((f1 != null) && (f2 == null)) {
             return f1;
@@ -44,9 +68,19 @@ public class DateUtil {
         if ((f1 == null) && (f2 != null)) {
             return f2;
         }
+        if ((f1 == null) && (f2 == null)) {
+            return null;
+        }
         return ((f1.before(f2)) ? f1 : f2);
     }
 
+    /**
+     *
+     * @param f1
+     * @param f2
+     * @return
+     * @throws ParseException
+     */
     public static Date obtenerFechaMaxima(Date f1, Date f2) throws ParseException {
         if ((f1 != null) && (f2 == null)) {
             return f1;
@@ -54,15 +88,30 @@ public class DateUtil {
         if ((f1 == null) && (f2 != null)) {
             return f2;
         }
+        if ((f1 == null) && (f2 == null)) {
+            return null;
+        }
         return ((f1.after(f2)) ? f1 : f2);
     }
 
+    /**
+     *
+     * @param strFecha
+     * @return
+     * @throws ParseException
+     */
     public static Date obtenerFecha(String strFecha) throws ParseException {
         SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd hh:mm");
         Date fecha = f.parse(strFecha);
         return fecha;
     }
 
+    /**
+     *
+     * @param duracionMinutos
+     * @param fechaBase
+     * @return
+     */
     public static Date calcularFechaXDuracion(long duracionMinutos, Date fechaBase) {
         Date fechaCalculadaInicial = new Date(fechaBase.getTime() + ((long) (duracionMinutos) * 60 * 1000));
 
@@ -70,6 +119,12 @@ public class DateUtil {
         return fechaCalculada;
     }
 
+    /**
+     *
+     * @param fechaMenor
+     * @param fechaMayor
+     * @return
+     */
     public static Date adicionarDuracion(Date fechaMenor, Date fechaMayor) {
         long resultado = 0L;
         GregorianCalendar gcMayor = new GregorianCalendar();
@@ -106,6 +161,12 @@ public class DateUtil {
         return fecha;
     }
 
+    /**
+     *
+     * @param fechaMenor
+     * @param fechaMayor
+     * @return
+     */
     public static long calcularDuracion(Date fechaMenor, Date fechaMayor) {
         long resultado = 0L;
         GregorianCalendar gcMayor = new GregorianCalendar();
@@ -133,6 +194,11 @@ public class DateUtil {
         return resultado;
     }
 
+    /**
+     *
+     * @param fecha
+     * @return
+     */
     public static String getDateString(Date fecha) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm.ss");
         return ((fecha == null) ? null : formatter.format(fecha));

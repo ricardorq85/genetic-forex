@@ -4,19 +4,35 @@
  */
 package forex.genetic;
 
+import static forex.genetic.delegate.GeneticDelegate.setId;
 import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.delegate.GeneticTesterDelegate;
 import forex.genetic.entities.Poblacion;
-import forex.genetic.manager.PropertiesManager;
+import static forex.genetic.manager.PropertiesManager.getFileId;
+import static forex.genetic.manager.PropertiesManager.getOperationType;
+import static forex.genetic.manager.PropertiesManager.getPair;
+import static forex.genetic.manager.PropertiesManager.getPropertyInt;
+import static forex.genetic.manager.PropertiesManager.getPropertyString;
+import static forex.genetic.manager.PropertiesManager.getSerialicePath;
+import static forex.genetic.manager.PropertiesManager.load;
 import forex.genetic.manager.io.SerializationPoblacionManager;
-import forex.genetic.util.Constants;
-import forex.genetic.util.LogUtil;
+import static forex.genetic.util.Constants.END_POBLACION;
+import static forex.genetic.util.Constants.INITIAL_POBLACION;
+import static forex.genetic.util.Constants.LISTING_ID;
+import static forex.genetic.util.Constants.LISTING_NUMBER;
+import static forex.genetic.util.Constants.LOG_PATH;
+import static forex.genetic.util.Constants.NUMBER_BACK_ROOT_POBLACION;
+import static forex.genetic.util.LogUtil.logTime;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import static java.lang.System.setErr;
+import static java.lang.System.setOut;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,30 +40,37 @@ import java.util.List;
  */
 public class ForexEstrategiaListing {
 
-    public static void main(String[] args) throws ClassNotFoundException, FileNotFoundException, InterruptedException {
-        PropertiesManager.load().join();
+    /**
+     *
+     * @param args
+     * @throws ClassNotFoundException
+     * @throws FileNotFoundException
+     * @throws InterruptedException
+     */
+    public static void main(String[] args) throws ClassNotFoundException, FileNotFoundException, InterruptedException, UnsupportedEncodingException {
+        load().join();
         SerializationPoblacionManager serializationManager = new SerializationPoblacionManager();
-        String listingId = PropertiesManager.getPropertyString(Constants.LISTING_ID);
+        String listingId = getPropertyString(LISTING_ID);
         String id = listingId;
-        GeneticTesterDelegate.id = id;
-        PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + "Listing_" + PropertiesManager.getOperationType() + PropertiesManager.getPair() + id + ".log");
-        System.setOut(out);
-        System.setErr(out);
+        setId(id);
+        StringBuilder name = new StringBuilder(getPropertyString(LOG_PATH));
+        name.append("Listing_").append(getOperationType()).append(getPair()).append(id).append(".log");
+        PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
+        setOut(out);
+        setErr(out);
 
-        String serPath = PropertiesManager.getSerialicePath();
+        String serPath = getSerialicePath();
         Poblacion p = null;
-        int initialPoblacion = PropertiesManager.getPropertyInt(Constants.INITIAL_POBLACION);
-        int endPoblacion = PropertiesManager.getPropertyInt(Constants.END_POBLACION);
-        int backPoblacion = PropertiesManager.getPropertyInt(Constants.NUMBER_BACK_ROOT_POBLACION);
-        int indivNum = PropertiesManager.getPropertyInt(Constants.LISTING_NUMBER);
-        Poblacion resultPoblacion = new Poblacion();
+        int initialPoblacion = getPropertyInt(INITIAL_POBLACION);
+        int endPoblacion = getPropertyInt(END_POBLACION);
+        int backPoblacion = getPropertyInt(NUMBER_BACK_ROOT_POBLACION);
+        int indivNum = getPropertyInt(LISTING_NUMBER);
 
-        GeneticTesterDelegate delegate = new GeneticTesterDelegate();
-        List<Poblacion> listPoblacion = new ArrayList<Poblacion>();
+        List<Poblacion> listPoblacion = new ArrayList<>();
         for (int i = initialPoblacion; i <= endPoblacion; i++) {
             String filename = serPath
-                    + PropertiesManager.getOperationType() + PropertiesManager.getPair()
-                    + PropertiesManager.getFileId() + "_"
+                    + getOperationType() + getPair()
+                    + getFileId() + "_"
                     + id + "-" + ((backPoblacion < 0) || (i < backPoblacion) ? 1 : (i - backPoblacion + 1)) + "-" + (i) + ".gfx";
             try {
                 p = serializationManager.readObject(new File(filename));
@@ -59,13 +82,13 @@ public class ForexEstrategiaListing {
             listPoblacion.add(poblacion);
         }
 
-        for (int i = 0; i < listPoblacion.size(); i++) {
-            Poblacion poblacion = listPoblacion.get(i);
+        for (Poblacion poblacion : listPoblacion) {
             List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
             for (int j = 0; j < individuos.size(); j++) {
                 IndividuoEstrategia individuoEstrategia = individuos.get(j);
-                LogUtil.logTime((individuos.size() - j + 1) + "-" + individuoEstrategia.toString(), 1);
+                logTime((individuos.size() - j + 1) + "-" + individuoEstrategia.toString(), 1);
             }
         }
     }
+    private static final Logger LOG = Logger.getLogger(ForexEstrategiaListing.class.getName());
 }

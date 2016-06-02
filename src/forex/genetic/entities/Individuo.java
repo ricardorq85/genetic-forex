@@ -13,30 +13,57 @@ import java.util.Objects;
  */
 public class Individuo extends IndividuoEstrategia {
 
+    /**
+     *
+     */
+    public static final long serialVersionUID = 0x2eea76fa70L;
     private Date fechaHistorico = null;
     private Date fechaApertura = null;
 
+    /**
+     *
+     */
     public Individuo() {
     }
 
+    /**
+     *
+     * @param id
+     */
     public Individuo(String id) {
         super(id);
     }
 
+    /**
+     *
+     * @return
+     */
     public Date getFechaApertura() {
-        return fechaApertura;
+        return (fechaApertura != null ? new Date(fechaApertura.getTime()) : null);
     }
 
+    /**
+     *
+     * @param fechaApertura
+     */
     public void setFechaApertura(Date fechaApertura) {
-        this.fechaApertura = fechaApertura;
+        this.fechaApertura = fechaApertura != null ? new Date(fechaApertura.getTime()) : null;
     }
 
+    /**
+     *
+     * @return
+     */
     public Date getFechaHistorico() {
-        return fechaHistorico;
+        return (fechaHistorico != null ? new Date(fechaHistorico.getTime()) : null);
     }
 
+    /**
+     *
+     * @param fechaHistorico
+     */
     public void setFechaHistorico(Date fechaHistorico) {
-        this.fechaHistorico = fechaHistorico;
+        this.fechaHistorico = fechaHistorico != null ? new Date(fechaHistorico.getTime()) : null;
     }
 
     @Override
@@ -85,6 +112,10 @@ public class Individuo extends IndividuoEstrategia {
         return hash;
     }
 
+    /**
+     *
+     * @param individuoEstrategia
+     */
     public void copy(IndividuoEstrategia individuoEstrategia) {
         this.setId(individuoEstrategia.getId());
         this.setOpenIndicators(individuoEstrategia.getOpenIndicators());

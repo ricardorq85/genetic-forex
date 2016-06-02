@@ -27,12 +27,25 @@ import java.util.List;
  */
 public class IndividuoDAO {
 
+    /**
+     *
+     */
     protected Connection connection = null;
 
+    /**
+     *
+     * @param connection
+     */
     public IndividuoDAO(Connection connection) {
         this.connection = connection;
     }
 
+    /**
+     *
+     * @param tipoProceso
+     * @return
+     * @throws SQLException
+     */
     public List<Individuo> consultarIndividuosPadreRepetidos(String tipoProceso) throws SQLException {
         List<Individuo> list = null;
         String sql = "SELECT * FROM (SELECT IND.ID ID_INDIVIDUO FROM INDIVIDUO IND "
@@ -56,6 +69,13 @@ public class IndividuoDAO {
         return list;
     }
 
+    /**
+     *
+     * @param idIndividuo
+     * @param causaBorrado
+     * @param idPadre
+     * @throws SQLException
+     */
     public void smartDelete(String idIndividuo, String causaBorrado, String idPadre) throws SQLException {
         CallableStatement cstmt = null;
         try {
@@ -69,6 +89,12 @@ public class IndividuoDAO {
         }
     }
 
+    /**
+     *
+     * @param individuoPadre
+     * @return
+     * @throws SQLException
+     */
     public List<Individuo> consultarIndividuosRepetidos(Individuo individuoPadre) throws SQLException {
         List<Individuo> list = null;
         String sql = "SELECT ID_INDIVIDUO2 ID_INDIVIDUO FROM INDIVIDUOS_REPETIDOS_OPER"
@@ -89,6 +115,11 @@ public class IndividuoDAO {
         return list;
     }
 
+    /**
+     *
+     * @param individuo
+     * @throws SQLException
+     */
     public void consultarDetalleIndividuoProceso(Individuo individuo) throws SQLException {
         String sql = "SELECT IND2.ID ID_INDIVIDUO, IND2.PARENT_ID_1, IND2.PARENT_ID_2, IND2.TAKE_PROFIT, IND2.STOP_LOSS, "
                 + "IND2.LOTE, IND2.INITIAL_BALANCE, IND2.CREATION_DATE, IND_MAXIMOS.FECHA_HISTORICO,"
@@ -123,21 +154,29 @@ public class IndividuoDAO {
         }
     }
 
+    /**
+     *
+     * @param indicadorController
+     * @param individuo
+     * @throws SQLException
+     */
     public void consultarDetalleIndividuo(IndicadorController indicadorController, Individuo individuo)
             throws SQLException {
-        String sql = "SELECT IND2.ID ID_INDIVIDUO, IND2.PARENT_ID_1, IND2.PARENT_ID_2, IND2.TAKE_PROFIT, IND2.STOP_LOSS, "
-                + "IND2.LOTE, IND2.INITIAL_BALANCE, IND2.CREATION_DATE, "
-                + "IND3.ID_INDICADOR, IND3.INTERVALO_INFERIOR, IND3.INTERVALO_SUPERIOR, IND3.TIPO "
-                + " FROM INDIVIDUO IND2"
-                + "  INNER JOIN " + indicadorController.getNombreTabla()
-                + " IND3 ON IND2.ID=IND3.ID_INDIVIDUO"
-                + " WHERE IND2.ID=?"
-                + " ORDER BY IND2.ID DESC";
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT IND2.ID ID_INDIVIDUO, IND2.PARENT_ID_1, IND2.PARENT_ID_2, IND2.TAKE_PROFIT, IND2.STOP_LOSS, ");
+        sql.append("IND2.LOTE, IND2.INITIAL_BALANCE, IND2.CREATION_DATE, ");
+        sql.append("IND3.ID_INDICADOR, IND3.INTERVALO_INFERIOR, IND3.INTERVALO_SUPERIOR, IND3.TIPO ");
+        sql.append(" FROM INDIVIDUO IND2");
+        sql.append("  INNER JOIN ");
+        //sql.append(indicadorController.getNombreTabla());
+        sql.append(" IND3 ON IND2.ID=IND3.ID_INDIVIDUO");
+        sql.append(" WHERE IND2.ID=?");
+        sql.append(" ORDER BY IND2.ID DESC");
 
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
         try {
-            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta = this.connection.prepareStatement(sql.toString());
             stmtConsulta.setString(1, individuo.getId());
             resultado = stmtConsulta.executeQuery();
 
@@ -149,6 +188,11 @@ public class IndividuoDAO {
         }
     }
 
+    /**
+     *
+     * @param individuo
+     * @throws SQLException
+     */
     public void insertIndividuo(IndividuoEstrategia individuo) throws SQLException {
         String sql = "INSERT INTO INDIVIDUO(ID, PARENT_ID_1, PARENT_ID_2, "
                 + "TAKE_PROFIT, STOP_LOSS, LOTE, INITIAL_BALANCE, CREATION_DATE) "
@@ -178,14 +222,22 @@ public class IndividuoDAO {
 
     }
 
+    /**
+     *
+     * @param indicadorController
+     * @param individuo
+     * @throws SQLException
+     */
     public void insertIndicadorIndividuo(IndicadorController indicadorController, IndividuoEstrategia individuo) throws SQLException {
-        String sql = "INSERT INTO " + indicadorController.getNombreTabla()
-                + " (ID_INDICADOR, ID_INDIVIDUO, INTERVALO_INFERIOR, INTERVALO_SUPERIOR, TIPO) "
-                + " VALUES (?,?,?,?, ?)";
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO ");
+        sql.append(indicadorController.getNombreTabla());
+        sql.append(" (ID_INDICADOR, ID_INDIVIDUO, INTERVALO_INFERIOR, INTERVALO_SUPERIOR, TIPO) ");
+        sql.append(" VALUES (?,?,?,?, ?)");
 
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement(sql);
+            statement = connection.prepareStatement(sql.toString());
             for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
                 IndicadorManager indicatorManager = indicadorController.getManagerInstance(i);
                 IntervalIndicator indicator = null;
@@ -229,14 +281,21 @@ public class IndividuoDAO {
         }
     }
 
+    /**
+     *
+     * @return
+     * @throws SQLException
+     */
     public List<IndividuoOptimo> consultarIndividuosOptimos() throws SQLException {
         List<IndividuoOptimo> list = null;
-        String sql = PropertiesManager.getQueryIndividuosOptimos();
+        
+        StringBuilder sql = new StringBuilder();
+        sql.append(PropertiesManager.getQueryIndividuosOptimos());
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
 
         try {
-            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta = this.connection.prepareStatement(sql.toString());
             resultado = stmtConsulta.executeQuery();
 
             list = IndividuoHelper.createIndividuosOptimos(resultado);
@@ -248,6 +307,12 @@ public class IndividuoDAO {
         return list;
     }
 
+    /**
+     *
+     * @param individuo
+     * @return
+     * @throws SQLException
+     */
     public int getCountIndicadoresOpen(Individuo individuo) throws SQLException {
         int count = 0;
         String sql = "SELECT COUNT(*) FROM INDICADOR_INDIVIDUO II "

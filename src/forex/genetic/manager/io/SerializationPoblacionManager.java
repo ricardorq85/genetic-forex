@@ -38,16 +38,56 @@ public class SerializationPoblacionManager {
     private final static List<File> loadedFiles = new Vector<File>();
     private static int totalCounter = 0;
     private boolean endProcess = false;
+
+    /**
+     *
+     */
     protected Poblacion poblacionHija = null;
+
+    /**
+     *
+     */
     protected Poblacion poblacionPadre = null;
     private static Map<String, Poblacion> cachePoblacion = new Hashtable<String, Poblacion>();
     private static final long PERIOD_TIME = (1L * 30L * 24L * 60L * 60L * 1000L);
     private static final long LIMIT_TIME = (1L * 30L * 24L * 60L * 60L * 1000L);
 
+    /**
+     *
+     */
     public synchronized void endProcess() {
         this.endProcess = true;
     }
 
+    private synchronized boolean getEndProcess() {
+        return this.endProcess;
+    }
+
+    /**
+     *
+     * @param totalCounter
+     */
+    public synchronized static void setTotalCounter(int totalCounter) {
+        SerializationPoblacionManager.totalCounter = totalCounter;
+    }
+
+    /**
+     *
+     * @param totalCounter
+     */
+    public synchronized static void addTotalCounter(int totalCounter) {
+        SerializationPoblacionManager.totalCounter += totalCounter;
+    }
+
+    /**
+     *
+     * @param path
+     * @param counter
+     * @param processedUntil
+     * @param processedFrom
+     * @param learning
+     * @return
+     */
     public Poblacion readAll(final String path, int counter, final int processedUntil,
             final int processedFrom, Learning learning) {
         Poblacion poblacion = new Poblacion();
@@ -63,7 +103,7 @@ public class SerializationPoblacionManager {
             File[] files = root.listFiles(filter);
             if ((files.length == 0) && (filterProcessed > (learning.getRelacionMonedas().size()))) {
                 if (dateTime < limitDateTime) {
-                    totalCounter += counter;
+                    SerializationPoblacionManager.addTotalCounter(counter);
                     loadedFiles.clear();
                     fileCounter = maxFilePerRead;
                 } else {
@@ -77,7 +117,7 @@ public class SerializationPoblacionManager {
                     List<File> listFiles = Arrays.asList(files);
                     loadedFiles.addAll(CollectionUtil.subListReverse(listFiles, listFiles.size(), listFiles.size() - maxFilePerRead));
                     EstadisticaManager.addArchivoLeido(loadedFiles.size() - size);
-                    for (int i = files.length - 1; (!endProcess) && (i >= Math.max(0, files.length - maxFilePerRead)); i--) {
+                    for (int i = files.length - 1; (!this.getEndProcess()) && (i >= Math.max(0, files.length - maxFilePerRead)); i--) {
                         File file = null;
                         try {
                             file = files[i];
@@ -119,6 +159,13 @@ public class SerializationPoblacionManager {
         return poblacion;
     }
 
+    /**
+     *
+     * @param path
+     * @param hijos
+     * @param poblacionBase
+     * @return
+     */
     public Poblacion[] readPadres(final String path, Poblacion hijos, Poblacion poblacionBase) {
         Poblacion[] padresHijos = new Poblacion[2];
         Poblacion padresReales = new Poblacion();
@@ -171,14 +218,30 @@ public class SerializationPoblacionManager {
         return padresHijos;
     }
 
+    /**
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public Poblacion readObject(File file)
             throws IOException, ClassNotFoundException {
-        ObjectInputStream reader = new ObjectInputStream(new FileInputStream(file));
-        Poblacion p = (Poblacion) reader.readObject();
-        reader.close();
+        Poblacion p;
+        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(file))) {
+            p = (Poblacion) reader.readObject();
+        }
         return p;
     }
 
+    /**
+     *
+     * @param file
+     * @param id
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public Poblacion readStrategy(File file, String id)
             throws IOException, ClassNotFoundException {
         Poblacion p = new Poblacion();
@@ -197,10 +260,23 @@ public class SerializationPoblacionManager {
         return p;
     }
 
+    /**
+     *
+     * @param path
+     * @param id
+     * @return
+     */
     public Poblacion readByEstrategyId(String path, final String id) {
         return this.readByEstrategyId(path, id, null);
     }
 
+    /**
+     *
+     * @param path
+     * @param id
+     * @param hijo
+     * @return
+     */
     public Poblacion readByEstrategyId(String path, final String id, IndividuoEstrategia hijo) {
         Poblacion poblacion = new Poblacion();
 
@@ -231,6 +307,12 @@ public class SerializationPoblacionManager {
         return poblacion;
     }
 
+    /**
+     *
+     * @param path
+     * @param commaId
+     * @return
+     */
     public Poblacion readByPoblacionId(String path, final String commaId) {
         Poblacion poblacion = new Poblacion();
         File root = new File(path);
@@ -271,22 +353,38 @@ public class SerializationPoblacionManager {
         }
     }
 
+    /**
+     *
+     * @param id
+     * @param poblacion
+     * @param dateInterval
+     * @param poblacionIndex
+     * @param poblacionFromIndex
+     * @throws IOException
+     */
     public void writeObject(String id, Poblacion poblacion, Interval<Date> dateInterval, int poblacionIndex, int poblacionFromIndex)
             throws IOException {
-        ObjectOutputStream writer = new ObjectOutputStream(
-                new FileOutputStream(
-                PropertiesManager.getSerialicePath()
-                + PropertiesManager.getOperationType() + PropertiesManager.getPair()
-                + PropertiesManager.getFileId() + "_"
-                + id + "-" + poblacionFromIndex + "-" + poblacionIndex + ".gfx"));
-        writer.writeObject(poblacion);
-        writer.close();
+        try (ObjectOutputStream writer = new ObjectOutputStream(
+                new FileOutputStream(PropertiesManager.getSerialicePath()
+                                + PropertiesManager.getOperationType() + PropertiesManager.getPair()
+                                + PropertiesManager.getFileId() + "_"
+                                + id + "-" + poblacionFromIndex + "-" + poblacionIndex + ".gfx"))) {
+            writer.writeObject(poblacion);
+        }
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getPoblacionHija() {
         return poblacionHija;
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getPoblacionPadre() {
         return poblacionPadre;
     }

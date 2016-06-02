@@ -13,22 +13,43 @@ import java.util.Date;
  *
  * @author ricardorq85
  */
-public class DateInterval extends Interval<Date> implements Serializable {
+public class DateInterval extends Interval<Date> {
 
+    /**
+     *
+     */
     public static final long serialVersionUID = 201101251800L;
 
+    /**
+     *
+     */
     public DateInterval() {
         this(null);
     }
 
+    /**
+     *
+     * @param name
+     */
     public DateInterval(String name) {
         super(name);
     }
 
+    /**
+     *
+     * @param lowInterval
+     * @param highInterval
+     */
     public DateInterval(Date lowInterval, Date highInterval) {
         this(null);
     }
 
+    /**
+     *
+     * @param name
+     * @param lowInterval
+     * @param highInterval
+     */
     public DateInterval(String name, Date lowInterval, Date highInterval) {
         super(name);
         this.setLowInterval(lowInterval);

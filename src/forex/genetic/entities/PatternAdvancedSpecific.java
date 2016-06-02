@@ -13,23 +13,44 @@ public class PatternAdvancedSpecific implements Comparable<PatternAdvancedSpecif
     private PatternAdvanced patternAdvanced = null;
     private int index = 0;
 
+    /**
+     *
+     * @param patternAdvanced
+     * @param index
+     */
     public PatternAdvancedSpecific(PatternAdvanced patternAdvanced, int index) {
         this.patternAdvanced = patternAdvanced;
         this.index = index;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getIndex() {
         return index;
     }
 
+    /**
+     *
+     * @param index
+     */
     public void setIndex(int index) {
         this.index = index;
     }
 
+    /**
+     *
+     * @return
+     */
     public PatternAdvanced getPatternAdvanced() {
         return patternAdvanced;
     }
 
+    /**
+     *
+     * @param patternAdvanced
+     */
     public void setPatternAdvanced(PatternAdvanced patternAdvanced) {
         this.patternAdvanced = patternAdvanced;
     }
@@ -66,6 +87,7 @@ public class PatternAdvancedSpecific implements Comparable<PatternAdvancedSpecif
         return "{nextOrder=" + nextOrder.getPips() + ", value=" + patternAdvanced.getValue() + '}';
     }
 
+    @Override
     public int compareTo(PatternAdvancedSpecific o) {
         return (new Integer(this.getPatternAdvanced().getPattern().size()).compareTo(new Integer(o.getPatternAdvanced().getPattern().size())));
     }

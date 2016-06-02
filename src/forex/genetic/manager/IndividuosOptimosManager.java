@@ -29,6 +29,12 @@ public class IndividuosOptimosManager {
 
     private Connection conn = null;
 
+    /**
+     *
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws ParseException
+     */
     public void obtenerIndividuosOptimos() throws ClassNotFoundException, SQLException, ParseException {
         conn = JDBCUtil.getConnection();
         ParametroDAO parametroDAO = new ParametroDAO(conn);

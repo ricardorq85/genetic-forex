@@ -18,12 +18,27 @@ import forex.genetic.manager.controller.IndicadorIndividuoTendenciaController;
  */
 public class ControllerFactory {
 
+    /**
+     *
+     */
     public enum ControllerType {
 
+        /**
+         *
+         */
         Individuo,
+
+        /**
+         *
+         */
         IndividuoTendencia;
     }
 
+    /**
+     *
+     * @param type
+     * @return
+     */
     public static IndicadorController createIndicadorController(ControllerType type) {
         if (type == null) {
             return null;
@@ -37,6 +52,11 @@ public class ControllerFactory {
         }
     }
 
+    /**
+     *
+     * @param type
+     * @return
+     */
     public static GeneticController createGeneticController(ControllerType type) {
         if (type == null) {
             return null;

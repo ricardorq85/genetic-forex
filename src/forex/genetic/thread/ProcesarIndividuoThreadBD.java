@@ -29,6 +29,11 @@ public class ProcesarIndividuoThreadBD extends Thread {
     private List<Individuo> individuos = null;
     private Connection conn = null;
     
+    /**
+     *
+     * @param name
+     * @param individuos
+     */
     public ProcesarIndividuoThreadBD(String name, List<Individuo> individuos) {
         super(name);
         this.individuos = individuos;

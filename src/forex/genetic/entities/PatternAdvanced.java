@@ -16,10 +16,17 @@ public class PatternAdvanced {
     private List<Order> pattern = null;
     private double value = 1.0D;
 
+    /**
+     *
+     */
     public PatternAdvanced() {
         this(null);
     }
 
+    /**
+     *
+     * @param pattern
+     */
     public PatternAdvanced(List<Order> pattern) {
         this.pattern = pattern;
         if (this.pattern == null) {
@@ -27,6 +34,11 @@ public class PatternAdvanced {
         }
     }
 
+    /**
+     *
+     * @param other
+     * @return
+     */
     public boolean contains(PatternAdvanced other) {
         if ((this.pattern == null) || (other.pattern == null)) {
             return false;
@@ -43,6 +55,10 @@ public class PatternAdvanced {
         return contains;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean containsBreakOrder() {
         boolean valueBreak = false;
         if (this.pattern.size() > 0) {
@@ -55,6 +71,11 @@ public class PatternAdvanced {
         return valueBreak;
     }
 
+    /**
+     *
+     * @param currentPattern
+     * @return
+     */
     public boolean containsCurrent(List<Order> currentPattern) {
         if (this.pattern.size() > currentPattern.size()) {
             List<Order> tempPatternList = this.pattern.subList(0, currentPattern.size());
@@ -66,18 +87,34 @@ public class PatternAdvanced {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Order> getPattern() {
         return pattern;
     }
 
+    /**
+     *
+     * @param pattern
+     */
     public void setPattern(List<Order> pattern) {
         this.pattern = pattern;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getValue() {
         return value;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setValue(double value) {
         this.value = value;
     }

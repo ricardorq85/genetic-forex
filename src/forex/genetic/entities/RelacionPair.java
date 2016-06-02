@@ -13,40 +13,75 @@ import java.io.Serializable;
  */
 public class RelacionPair implements Comparable<RelacionPair>, Serializable {
 
+    /**
+     *
+     */
     public static final long serialVersionUID = 201205232209L;
     
     private String pair = null;
     private OperationType operationType = null;
     private float value = 0.0F;
 
+    /**
+     *
+     * @param pair
+     * @param operationType
+     */
     public RelacionPair(String pair, OperationType operationType) {
         this.pair = pair;
         this.operationType = operationType;
     }
 
+    /**
+     *
+     */
     public RelacionPair() {
     }
 
+    /**
+     *
+     * @return
+     */
     public OperationType getOperationType() {
         return operationType;
     }
 
+    /**
+     *
+     * @param operationType
+     */
     public void setOperationType(OperationType operationType) {
         this.operationType = operationType;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPair() {
         return pair;
     }
 
+    /**
+     *
+     * @param pair
+     */
     public void setPair(String pair) {
         this.pair = pair;
     }
 
+    /**
+     *
+     * @return
+     */
     public float getValue() {
         return value;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setValue(float value) {
         this.value = value;
     }
@@ -82,6 +117,7 @@ public class RelacionPair implements Comparable<RelacionPair>, Serializable {
         return "RelacionPair{ operationType=" + operationType + ", pair=" + pair + ", value=" + value + '}';
     }
 
+    @Override
     public int compareTo(RelacionPair o) {
         return Float.compare(this.getValue(), o.getValue());
     }

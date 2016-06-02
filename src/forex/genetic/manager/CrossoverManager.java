@@ -13,9 +13,20 @@ import forex.genetic.manager.controller.IndicadorController;
  */
 public abstract class CrossoverManager extends GeneticManager {
 
+    /**
+     *
+     * @param indicadorController
+     */
     public CrossoverManager(IndicadorController indicadorController) {
         super(indicadorController);
     }
     
+    /**
+     *
+     * @param generacion
+     * @param poblacion
+     * @param percentValue
+     * @return
+     */
     public abstract Poblacion[] crossover(int generacion, Poblacion poblacion, int percentValue);
 }

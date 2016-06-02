@@ -13,9 +13,20 @@ import forex.genetic.manager.controller.IndicadorController;
  */
 public abstract class MutationManager extends GeneticManager {
 
+    /**
+     *
+     * @param indicadorController
+     */
     public MutationManager(IndicadorController indicadorController) {
         super(indicadorController);
     }
 
+    /**
+     *
+     * @param generacion
+     * @param poblacion
+     * @param percentValue
+     * @return
+     */
     public abstract Poblacion[] mutate(int generacion, Poblacion poblacion, int percentValue);
 }

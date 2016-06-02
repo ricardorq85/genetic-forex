@@ -36,10 +36,16 @@ public class IndicadorIndividuoController extends IndicadorController {
     private static final IndicadorIndividuoManager ichimokuTrendIndicatorManager = new IchimokuTrendIndicatorManager();
     private static final IndicadorIndividuoManager ichimokuSignalIndicatorManager = new IchimokuSignalIndicatorManager();
 
+    /**
+     *
+     */
     public IndicadorIndividuoController() {
         super("INDICADOR_INDIVIDUO");
     }
 
+    /**
+     *
+     */
     @Override
     protected synchronized void load() {
         if (list == null) {

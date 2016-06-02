@@ -13,10 +13,21 @@ import java.math.BigDecimal;
  */
 public class NumberUtil {
 
+    /**
+     *
+     * @param d
+     * @return
+     */
     public static double round(double d) {
         return NumberUtil.round(d, PropertiesManager.getDefaultScaleRounding());
     }
 
+    /**
+     *
+     * @param d
+     * @param scale
+     * @return
+     */
     public static double round(double d, int scale) {
         if (Double.isInfinite(d) || Double.isNaN(d)) {
             return d;

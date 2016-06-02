@@ -7,7 +7,6 @@ package forex.genetic.manager.io;
 import forex.genetic.entities.IndividuoEstrategia;
 import java.io.File;
 import java.io.FileFilter;
-import java.util.Date;
 
 /**
  *
@@ -19,10 +18,17 @@ public class StrategyFileFilter implements FileFilter {
     private IndividuoEstrategia individuoEstrategia = null;
     private String idFilter = null;
 
+    /**
+     *
+     */
     public StrategyFileFilter() {
         this(null);
     }
 
+    /**
+     *
+     * @param individuoEstrategia
+     */
     public StrategyFileFilter(IndividuoEstrategia individuoEstrategia) {
         this.individuoEstrategia = individuoEstrategia;
         if (individuoEstrategia != null) {
@@ -41,6 +47,7 @@ public class StrategyFileFilter implements FileFilter {
         }
     }
 
+    @Override
     public boolean accept(File file) {
         boolean accept = false;
         String name = file.getName();

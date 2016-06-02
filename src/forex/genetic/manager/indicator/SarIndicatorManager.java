@@ -4,9 +4,9 @@
  */
 package forex.genetic.manager.indicator;
 
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.Sar;
 
 /**
@@ -15,15 +15,31 @@ import forex.genetic.entities.indicator.Sar;
  */
 public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
 
+    /**
+     *
+     * @param priceDependence
+     */
     public SarIndicatorManager(boolean priceDependence) {
         super(priceDependence, "Sar");
         this.id = "SAR";
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
     public Sar getIndicatorInstance() {
         return new Sar("Sar");
     }
 
+    /**
+     *
+     * @param indicator
+     * @param point
+     * @return
+     */
+    @Override
     public Indicator generate(Sar indicator, Point point) {
         Interval interval = null;
         Sar sar = new Sar("Sar");
@@ -38,11 +54,25 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
         return sar;
     }
 
+    /**
+     *
+     * @param sarIndividuo
+     * @param iSar
+     * @param point
+     * @return
+     */
     @Override
     public boolean operate(Sar sarIndividuo, Sar iSar, Point point) {
         return intervalManager.operate(sarIndividuo.getInterval(), iSar.getSar(), point);
     }
 
+    /**
+     *
+     * @param sarIndividuo
+     * @param iSar
+     * @param point
+     * @return
+     */
     @Override
     public Interval calculateInterval(Sar sarIndividuo, Sar iSar, Point point) {
         return intervalManager.calculateInterval(sarIndividuo.getInterval(), iSar.getSar(), point);
@@ -62,6 +92,15 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
         return optimized;
     }
 */
+
+    /**
+     *
+     * @param indicator
+     * @param prevPoint
+     * @param point
+     * @return
+     */
+    
     @Override
     public double getValue(Sar indicator, Point prevPoint, Point point) {
         double value = indicator.getSar();

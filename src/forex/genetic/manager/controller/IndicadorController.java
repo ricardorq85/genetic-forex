@@ -14,30 +14,65 @@ import java.util.List;
  */
 public abstract class IndicadorController {
 
+    /**
+     *
+     */
     protected List<IndicadorManager> list;
+
+    /**
+     *
+     */
     protected String nombreTabla;
 
+    /**
+     *
+     * @param nombreTabla
+     */
     public IndicadorController(String nombreTabla) {
         this.nombreTabla = nombreTabla;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getNombreTabla() {
         return nombreTabla;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getIndicatorNumber() {
-        if (list == null) {
-            load();
+        int indicatorNumber = 0;
+        synchronized (this) {
+            if (list == null) {
+                load();
+            }
+            indicatorNumber = list.size();
         }
-        return list.size();
+        return indicatorNumber;
     }
 
+    /**
+     *
+     * @param i
+     * @return
+     */
     public IndicadorManager getManagerInstance(int i) {
-        if (list == null) {
-            load();
+        IndicadorManager im = null;
+        synchronized (this) {
+            if (list == null) {
+                load();
+            }
+            im = list.get(i);
         }
-        return list.get(i);
+        return im;
     }
 
+    /**
+     *
+     */
     protected abstract void load();
 }

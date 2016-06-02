@@ -15,7 +15,6 @@ import forex.genetic.entities.RelacionPair;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
-import forex.genetic.manager.indicator.IndicadorIndividuoManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
 import java.util.ArrayList;
@@ -29,8 +28,29 @@ import java.util.List;
  */
 public class LearningManager {
 
-    public static Learning learning = null;
+    private static Learning learning = null;
 
+    /**
+     * @return the learning
+     */
+    public static Learning getLearning() {
+        return learning;
+    }
+
+    /**
+     * @param aLearning the learning to set
+     */
+    public static void setLearning(Learning aLearning) {
+        learning = aLearning;
+    }
+
+    /**
+     *
+     * @param learning
+     * @param poblacion
+     * @param poblacionHija
+     * @param poblacionPadre
+     */
     public void processLearning(Learning learning, Poblacion poblacion,
             Poblacion poblacionHija, Poblacion poblacionPadre) {
         this.processRelacionMonedas(learning, poblacion);
@@ -41,13 +61,13 @@ public class LearningManager {
     private void processTakeStop(Poblacion poblacion) {
         List<IndividuoEstrategia> individuosPoblacion = poblacion.getIndividuos();
         int numberLearning = PropertiesManager.getNumberLearning();
-        IntegerInterval tpInterval = learning.getTakeProfitInterval();
-        IntegerInterval slInterval = learning.getStopLossInterval();
+        IntegerInterval tpInterval = getLearning().getTakeProfitInterval();
+        IntegerInterval slInterval = getLearning().getStopLossInterval();
         if (tpInterval == null) {
-            tpInterval = learning.createTakeProfitInterval();
+            tpInterval = getLearning().createTakeProfitInterval();
         }
         if (slInterval == null) {
-            slInterval = learning.createStopLossInterval();
+            slInterval = getLearning().createStopLossInterval();
         }
         for (int i = 0; (i < individuosPoblacion.size()) && (i < numberLearning); i++) {
             IndividuoEstrategia individuoEstrategia = individuosPoblacion.get(i);
@@ -66,7 +86,6 @@ public class LearningManager {
             Poblacion poblacionHija, Poblacion poblacionPadre) {
         List<IndividuoEstrategia> individuosHijos = poblacionHija.getIndividuos();
         List<IndividuoEstrategia> individuosPadres = poblacionPadre.getIndividuos();
-        List<IndividuoEstrategia> individuosPoblacion = poblacion.getIndividuos();
         List<RelacionGeneraciones> relacionMutation = learning.getRelacionMutation();
         if (relacionMutation == null) {
             relacionMutation = new ArrayList<RelacionGeneraciones>();
@@ -88,7 +107,7 @@ public class LearningManager {
                 if ((hijo.getIndividuoType().equals(Constants.IndividuoType.MUTATION))
                         || (hijo.getIndividuoType().equals(Constants.IndividuoType.OPTIMIZED))) {
                     if ((hijo.getFortaleza() != null) && (padre1.getFortaleza() != null)
-                            && (hijo.getFortaleza().getPips() != padre1.getFortaleza().getPips())) {
+                            && (Math.abs(hijo.getFortaleza().getPips() - padre1.getFortaleza().getPips()) > 0.0000001)) {
                         LearningParametrosIndividuo learningParametrosIndividuo = this.compareIndividuos(hijo, padre1);
                         int compare = hijo.compareTo(padre1);
                         if (compare > 0) {

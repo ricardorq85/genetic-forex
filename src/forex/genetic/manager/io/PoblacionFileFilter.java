@@ -23,6 +23,14 @@ public class PoblacionFileFilter implements FileFilter {
     private int currentCountRead = 0;
     private long dateTime = 0L;
 
+    /**
+     *
+     * @param loadedFiles
+     * @param processCounter
+     * @param learning
+     * @param maxFilePerRead
+     * @param dateTime
+     */
     public PoblacionFileFilter(List<File> loadedFiles, int processCounter, Learning learning,
             int maxFilePerRead, long dateTime) {
         this.loadedFiles = loadedFiles;
@@ -33,6 +41,7 @@ public class PoblacionFileFilter implements FileFilter {
         this.dateTime = dateTime;
     }
 
+    @Override
     public boolean accept(File file) {
         boolean accept = false;
         if (currentCountRead < maxFilePerRead) {
@@ -41,7 +50,7 @@ public class PoblacionFileFilter implements FileFilter {
                 List<RelacionPair> relacionPairList = learning.getRelacionMonedas();
                 int processIndex = processCounter;
                 if (relacionPairList.size() > (processIndex)) {
-                    RelacionPair relacionPair = relacionPair = relacionPairList.get(processIndex);
+                    RelacionPair relacionPair = relacionPairList.get(processIndex);
                     if ((file.lastModified() > this.dateTime) && (name.contains(relacionPair.getPair()))
                             && (name.contains(relacionPair.getOperationType().name()))) {
                         accept = true;

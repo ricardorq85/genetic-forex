@@ -17,6 +17,13 @@ public class PoblacionLoadThread extends Thread {
     private int poblacionIndex;
     private boolean poblar;
 
+    /**
+     *
+     * @param name
+     * @param poblacionManager
+     * @param poblacionIndex
+     * @param poblar
+     */
     public PoblacionLoadThread(String name, PoblacionManager poblacionManager, int poblacionIndex, boolean poblar) {
         super(name);
         this.poblacionManager = poblacionManager;
@@ -24,6 +31,7 @@ public class PoblacionLoadThread extends Thread {
         this.poblar = poblar;
     }
 
+    @Override
     public void run() {
         LogUtil.logTime("Loading poblacion " + poblacionIndex, 1);
         poblacionManager.load("" + poblacionIndex, poblar);
@@ -32,6 +40,10 @@ public class PoblacionLoadThread extends Thread {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public PoblacionManager getPoblacionManager() {
         return poblacionManager;
     }

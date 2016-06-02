@@ -14,21 +14,40 @@ public class AnalyzeProcesoTendencia {
     ProcesoTendencia procesoTendencia = null;
     double stopLoss = 0.0D;
 
+    /**
+     *
+     */
     public AnalyzeProcesoTendencia() {
     }
 
+    /**
+     *
+     * @return
+     */
     public ProcesoTendencia getProcesoTendencia() {
         return procesoTendencia;
     }
 
+    /**
+     *
+     * @param procesoTendencia
+     */
     public void setProcesoTendencia(ProcesoTendencia procesoTendencia) {
         this.procesoTendencia = procesoTendencia;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getStopLoss() {
         return stopLoss;
     }
 
+    /**
+     *
+     * @param stopLoss
+     */
     public void setStopLoss(double stopLoss) {
         this.stopLoss = stopLoss;
     }

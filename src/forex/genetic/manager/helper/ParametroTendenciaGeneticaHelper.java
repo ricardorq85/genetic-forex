@@ -16,6 +16,12 @@ import java.util.List;
  */
 public class ParametroTendenciaGeneticaHelper {
 
+    /**
+     *
+     * @param indicadoresTendencia
+     * @return
+     * @throws SQLException
+     */
     public static ParametroTendenciaGenetica createParametro(List<? extends Indicator> indicadoresTendencia) throws SQLException {
         ParametroTendenciaGenetica ptg = new ParametroTendenciaGenetica();
         int index = 0;

@@ -4,19 +4,19 @@
  */
 package forex.genetic.manager;
 
-import forex.genetic.entities.Learning;
-import forex.genetic.util.LogUtil;
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.indicator.IndicadorManager;
+import forex.genetic.util.Constants.IndividuoType;
+import forex.genetic.util.LogUtil;
 import forex.genetic.util.NumberUtil;
-import java.util.List;
-import java.util.Random;
-import static forex.genetic.util.Constants.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -24,10 +24,20 @@ import java.util.Collections;
  */
 public class CrossoverIndividuoManager extends CrossoverManager {
 
+    /**
+     *
+     */
     public CrossoverIndividuoManager() {
         super(ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo));
     }
 
+    /**
+     *
+     * @param generacion
+     * @param poblacion
+     * @param percentValue
+     * @return
+     */
     @Override
     public Poblacion[] crossover(int generacion, Poblacion poblacion, int percentValue) {
         Poblacion[] poblacionArray = new Poblacion[2];
@@ -40,7 +50,7 @@ public class CrossoverIndividuoManager extends CrossoverManager {
         Random random = new Random();
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
         int counter = 0;
-        Learning learning = LearningManager.learning;
+        Learning learning = LearningManager.getLearning();
         int minTP = PropertiesManager.getMinTP();
         int maxTP = PropertiesManager.getMaxTP();
         int minSL = PropertiesManager.getMinSL();
@@ -87,8 +97,8 @@ public class CrossoverIndividuoManager extends CrossoverManager {
                          openIndicators.add(null);
                          } else {*/
                         if ((openIndicator1 == null) && (openIndicator2 == null)) {
-                            openIndicator1 = indicatorManager.mutate(openIndicator1);
-                            openIndicator2 = indicatorManager.mutate(openIndicator2);
+                            openIndicator1 = indicatorManager.mutate(null);
+                            openIndicator2 = indicatorManager.mutate(null);
                         }
                         Indicator indHijo = indicatorManager.crossover(openIndicator1, openIndicator2);
                         openIndicators.add(indHijo);
@@ -101,8 +111,8 @@ public class CrossoverIndividuoManager extends CrossoverManager {
                          closeIndicators.add(null);
                          } else {*/
                         if ((closeIndicator1 == null) && (closeIndicator2 == null)) {
-                            closeIndicator1 = indicatorManager.mutate(closeIndicator1);
-                            closeIndicator2 = indicatorManager.mutate(closeIndicator2);
+                            closeIndicator1 = indicatorManager.mutate(null);
+                            closeIndicator2 = indicatorManager.mutate(null);
                         }
                         indHijo = indicatorManager.crossover(closeIndicator1, closeIndicator2);
                         closeIndicators.add(indHijo);

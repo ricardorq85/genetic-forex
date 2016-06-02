@@ -25,11 +25,21 @@ public class GeneticTesterDelegate extends GeneticDelegate {
 
     private PatternManager patternManager = new PatternManager();
 
+    /**
+     *
+     * @throws FileNotFoundException
+     */
     public GeneticTesterDelegate() throws FileNotFoundException {
         super(false);
         patternManager.initPatternManager();
     }
 
+    /**
+     *
+     * @param individuoEstrategia
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public void process(IndividuoEstrategia individuoEstrategia) throws FileNotFoundException, IOException {
         FuncionFortalezaManager funcionFortalezaManager = new FuncionFortalezaManager();
         funcionFortalezaManager.setTest(true);
@@ -67,18 +77,46 @@ public class GeneticTesterDelegate extends GeneticDelegate {
         }
     }
 
+    /**
+     *
+     * @param poblacion
+     * @param poblacionIndex
+     * @param endPoblacionIndex
+     */
     public void process(Poblacion poblacion, int poblacionIndex, int endPoblacionIndex) {
         this.process(poblacion, poblacionIndex, endPoblacionIndex, 0);
     }
 
+    /**
+     *
+     * @param poblacion
+     * @param poblacionIndex
+     * @param endPoblacionIndex
+     * @param indexPoint
+     */
     public void process(Poblacion poblacion, int poblacionIndex, int endPoblacionIndex, int indexPoint) {
         this.process(poblacion, poblacionIndex, endPoblacionIndex, false, indexPoint);
     }
 
+    /**
+     *
+     * @param poblacion
+     * @param poblacionIndex
+     * @param endPoblacionIndex
+     * @param onlyClose
+     */
     public void process(Poblacion poblacion, int poblacionIndex, int endPoblacionIndex, boolean onlyClose) {
         this.process(poblacion, poblacionIndex, endPoblacionIndex, onlyClose, 0);
     }
 
+    /**
+     *
+     * @param poblacion
+     * @param poblacionIndex
+     * @param endPoblacionIndex
+     * @param onlyClose
+     * @param indexPoint
+     */
     public void process(Poblacion poblacion, int poblacionIndex, int endPoblacionIndex, boolean onlyClose, int indexPoint) {
         FuncionFortalezaManager funcionFortalezaManager = new FuncionFortalezaManager();
         funcionFortalezaManager.setTest(true);

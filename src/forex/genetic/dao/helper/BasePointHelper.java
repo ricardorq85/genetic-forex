@@ -28,6 +28,12 @@ import java.util.List;
  */
 public class BasePointHelper {
 
+    /**
+     *
+     * @param resultado
+     * @return
+     * @throws SQLException
+     */
     public static List<Point> createPoints(ResultSet resultado) throws SQLException {
         List<Point> points = new ArrayList<>();
         Point point;

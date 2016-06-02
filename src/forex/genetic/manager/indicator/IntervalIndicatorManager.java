@@ -4,9 +4,9 @@
  */
 package forex.genetic.manager.indicator;
 
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.manager.IntervalManager;
 
@@ -17,31 +17,66 @@ import forex.genetic.manager.IntervalManager;
  */
 public abstract class IntervalIndicatorManager<E extends IntervalIndicator> extends IndicadorIndividuoManager<E> {
 
+    /**
+     *
+     */
     protected IntervalManager intervalManager = null;
 
+    /**
+     *
+     * @param priceDependence
+     * @param name
+     */
     public IntervalIndicatorManager(boolean priceDependence, String name) {
         this(priceDependence, false, name);
     }
 
+    /**
+     *
+     * @param priceDependence
+     * @param obligatory
+     * @param name
+     */
     public IntervalIndicatorManager(boolean priceDependence, boolean obligatory, String name) {
         super(priceDependence, obligatory);
         this.intervalManager = new IntervalManager(name);
     }
 
+    /**
+     *
+     */
     public IntervalIndicatorManager() {
         super(false, false);
     }
 
+    /**
+     *
+     * @return
+     */
     public IntervalManager getIntervalManager() {
         return intervalManager;
     }
 
+    /**
+     *
+     * @param intervalManager
+     */
     public void setIntervalManager(IntervalManager intervalManager) {
         this.intervalManager = intervalManager;
     }
 
+    /**
+     *
+     * @return
+     */
     public abstract IntervalIndicator getIndicatorInstance();
 
+    /**
+     *
+     * @param obj1
+     * @param obj2
+     * @return
+     */
     @Override
     public Indicator crossover(E obj1, E obj2) {
         IntervalIndicator objHijo = this.getIndicatorInstance();
@@ -57,6 +92,11 @@ public abstract class IntervalIndicatorManager<E extends IntervalIndicator> exte
         return objHijo;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Indicator mutate(E obj) {
         IntervalIndicator objHijo = this.getIndicatorInstance();
@@ -65,11 +105,22 @@ public abstract class IntervalIndicatorManager<E extends IntervalIndicator> exte
         return objHijo;
     }
 
+    /**
+     *
+     * @param objIndividuo
+     * @param iE
+     * @param point
+     * @return
+     */
     @Override
     public Interval calculateInterval(E objIndividuo, E iE, Point point) {
         throw new UnsupportedOperationException("Not supported.");
     }
 
+    /**
+     *
+     * @param indicator
+     */
     @Override
     public void round(E indicator) {
         if (indicator != null) {
@@ -80,6 +131,16 @@ public abstract class IntervalIndicatorManager<E extends IntervalIndicator> exte
         }
     }
 
+    /**
+     *
+     * @param individuo
+     * @param optimizedIndividuo
+     * @param indicator
+     * @param prevPoint
+     * @param point
+     * @param pips
+     * @return
+     */
     @Override
     public Indicator optimize(E individuo, E optimizedIndividuo, E indicator, Point prevPoint, Point point, double pips) {
         IntervalIndicator optimized = getIndicatorInstance();

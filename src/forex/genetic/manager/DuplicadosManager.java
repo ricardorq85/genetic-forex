@@ -24,6 +24,11 @@ public class DuplicadosManager {
 
     private Connection conn = null;
 
+    /**
+     *
+     * @param tipoProceso
+     * @throws ClassNotFoundException
+     */
     public void borrarDuplicados(String tipoProceso) throws ClassNotFoundException {
         try {
             conn = JDBCUtil.getConnection();

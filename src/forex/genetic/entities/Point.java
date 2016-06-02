@@ -17,6 +17,9 @@ import java.util.List;
  */
 public class Point implements Serializable {
 
+    /**
+     *
+     */
     public static final long serialVersionUID = 201203120716L;
     private int index = 0;
     private Date date = null;
@@ -29,89 +32,176 @@ public class Point implements Serializable {
     private double spread = 0.0;
     private List<? extends Indicator> indicators = null;
 
+    /**
+     *
+     */
     public Point() {
     }
 
+    /**
+     *
+     * @return
+     */
     public double getSpread() {
         return spread;
     }
 
+    /**
+     *
+     * @param spread
+     */
     public void setSpread(double spread) {
         this.spread = spread;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getIndex() {
         return index;
     }
 
+    /**
+     *
+     * @param index
+     */
     public void setIndex(int index) {
         this.index = index;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getCloseCompare() {
         return closeCompare;
     }
 
+    /**
+     *
+     * @param closeCompare
+     */
     public void setCloseCompare(double closeCompare) {
         this.closeCompare = closeCompare;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getClose() {
         return close;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getWeihgted() {
         return ((this.getClose() + this.getOpen() + this.getHigh() + this.getLow()) / 4);
     }
 
+    /**
+     *
+     * @param close
+     */
     public void setClose(double close) {
         this.close = close;
     }
 
+    /**
+     *
+     * @return
+     */
     public Date getDate() {
-        return date;
+        return (this.date = date != null ? new Date(date.getTime()) : null);
     }
 
+    /**
+     *
+     * @param date
+     */
     public void setDate(Date date) {
-        this.date = date;
+        this.date = date != null ? new Date(date.getTime()) : null;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<? extends Indicator> getIndicators() {
         return indicators;
     }
 
+    /**
+     *
+     * @param indicators
+     */
     public void setIndicators(List<? extends Indicator> indicators) {
         this.indicators = indicators;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getOpen() {
         return open;
     }
 
+    /**
+     *
+     * @param open
+     */
     public void setOpen(double open) {
         this.open = open;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getVolume() {
         return volume;
     }
 
+    /**
+     *
+     * @param volume
+     */
     public void setVolume(int volume) {
         this.volume = volume;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getHigh() {
         return high;
     }
 
+    /**
+     *
+     * @param high
+     */
     public void setHigh(double high) {
         this.high = high;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getLow() {
         return low;
     }
 
+    /**
+     *
+     * @param low
+     */
     public void setLow(double low) {
         this.low = low;
     }
@@ -137,9 +227,9 @@ public class Point implements Serializable {
             return false;
         }
         final Point other = (Point) obj;
-/*        if (this.index != other.index) {
-            return false;
-        }*/
+        /*        if (this.index != other.index) {
+         return false;
+         }*/
         if (this.date != other.date && (this.date == null || !this.date.equals(other.date))) {
             return false;
         }

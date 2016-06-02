@@ -17,11 +17,19 @@ public class IndividuoManager {
 
     private static int individuoCounter = 0;
 
+    /**
+     *
+     * @return
+     */
     public synchronized static String nextId() {
         EstadisticaManager.addIndividuoGenerado(1);
-        return (GeneticDelegate.id + "." + (++individuoCounter));
+        return (GeneticDelegate.getId() + "." + (++individuoCounter));
     }
     
+    /**
+     *
+     * @param individuo
+     */
     public void smartDelete(Individuo individuo) {
         
     }

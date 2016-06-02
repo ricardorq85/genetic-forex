@@ -4,20 +4,34 @@
  */
 package forex.genetic;
 
-import forex.genetic.entities.IndividuoEstrategia;
+import static forex.genetic.delegate.GeneticDelegate.setId;
 import forex.genetic.delegate.GeneticTesterDelegate;
+import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
-import forex.genetic.factory.ControllerFactory;
-import forex.genetic.manager.OptimizationIndividuoManager;
-import forex.genetic.manager.PropertiesManager;
+import static forex.genetic.factory.ControllerFactory.ControllerType.Individuo;
+import static forex.genetic.factory.ControllerFactory.createGeneticController;
+import static forex.genetic.manager.PropertiesManager.getOperationType;
+import static forex.genetic.manager.PropertiesManager.getPair;
+import static forex.genetic.manager.PropertiesManager.getPropertyBoolean;
+import static forex.genetic.manager.PropertiesManager.getPropertyString;
+import static forex.genetic.manager.PropertiesManager.getSerialicePath;
+import static forex.genetic.manager.PropertiesManager.load;
 import forex.genetic.manager.controller.GeneticController;
-import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.io.SerializationPoblacionManager;
 import forex.genetic.thread.OptimizationThread;
-import forex.genetic.util.Constants;
+import static forex.genetic.util.Constants.LOG_PATH;
+import static forex.genetic.util.Constants.OPTIMIZE_TEST;
+import static forex.genetic.util.Constants.TEST_FILE;
+import static forex.genetic.util.Constants.TEST_STRATEGY;
 import java.io.File;
+import static java.io.File.separatorChar;
 import java.io.IOException;
 import java.io.PrintStream;
+import static java.lang.System.currentTimeMillis;
+import static java.lang.System.setErr;
+import static java.lang.System.setOut;
+import java.nio.charset.Charset;
+import java.util.logging.Logger;
 
 /**
  *
@@ -25,17 +39,28 @@ import java.io.PrintStream;
  */
 public class ForexEstrategiaTester {
 
+    /**
+     *
+     * @param args
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     */
+    @SuppressWarnings("CallToThreadRun")
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-        long id = System.currentTimeMillis();
-        PropertiesManager.load().join();
-        String testStrategy = PropertiesManager.getPropertyString(Constants.TEST_STRATEGY);
-        String testFile = PropertiesManager.getPropertyString(Constants.TEST_FILE);
-        GeneticTesterDelegate.id = "" + id;
-        PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + "Tester_" + PropertiesManager.getOperationType() + PropertiesManager.getPair() + testStrategy + ".log");
-        System.setOut(out);
-        System.setErr(out);
+        long id = currentTimeMillis();
+        load().join();
+        String testStrategy = getPropertyString(TEST_STRATEGY);
+        String testFile = getPropertyString(TEST_FILE);
+        setId("" + id);
+        StringBuilder name = new StringBuilder(getPropertyString(LOG_PATH));
+        name.append("Tester_").append(getOperationType()).append(getPair());
+        name.append(testStrategy).append(".log");
+        PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
+        setOut(out);
+        setErr(out);
         SerializationPoblacionManager serializationManager = new SerializationPoblacionManager();
-        String serPath = PropertiesManager.getSerialicePath();
+        String serPath = getSerialicePath();
         Poblacion poblacion = null;
 
         if ((testFile == null) || ("".equals(testFile))) {
@@ -44,12 +69,12 @@ public class ForexEstrategiaTester {
             if ((testStrategy == null) || ("".equals(testStrategy))) {
                 poblacion = serializationManager.readObject(new File(
                         serPath
-                        + File.separatorChar
+                        + separatorChar
                         + testFile));
             } else {
                 poblacion = serializationManager.readStrategy(new File(
                         serPath
-                        + File.separatorChar
+                        + separatorChar
                         + testFile), testStrategy);
             }
         }
@@ -58,18 +83,18 @@ public class ForexEstrategiaTester {
         //p.getIndividuos().get(0).compareTo(p.getIndividuos().get(1));
         IndividuoEstrategia individuoEstrategia = p.getIndividuos().get(0);
         GeneticTesterDelegate delegate = new GeneticTesterDelegate();
-        GeneticTesterDelegate.id = Long.toString(System.currentTimeMillis());
+        setId(Long.toString(currentTimeMillis()));
         delegate.process(individuoEstrategia);
-        IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
-        GeneticController geneticController = ControllerFactory.createGeneticController(ControllerFactory.ControllerType.Individuo);
+        GeneticController geneticController = createGeneticController(Individuo);
 
-        if (PropertiesManager.getPropertyBoolean(Constants.OPTIMIZE_TEST)) {
-            OptimizationThread optimizationThread =
-                    new OptimizationThread("OptimizationThread 0", 0, p, 1, geneticController.getOptimizationManager());
+        if (getPropertyBoolean(OPTIMIZE_TEST)) {
+            OptimizationThread optimizationThread
+                    = new OptimizationThread("OptimizationThread 0", 0, p, 1, geneticController.getOptimizationManager());
             optimizationThread.run();
             IndividuoEstrategia individuoEstrategiaOptimized = optimizationThread.getNewPoblacion().getIndividuos().get(0);
             delegate = new GeneticTesterDelegate();
             delegate.process(individuoEstrategiaOptimized);
         }
     }
+    private static final Logger LOG = Logger.getLogger(ForexEstrategiaTester.class.getName());
 }

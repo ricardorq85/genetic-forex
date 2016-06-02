@@ -10,19 +10,34 @@ import java.io.Serializable;
  *
  * @author ricardorq85
  */
-public class PeriodoAgrupador extends IntervalIndicator implements Serializable {
+public class PeriodoAgrupador extends IntervalIndicator {
 
+    /**
+     *
+     */
     public static final long serialVersionUID = 201101251823L;
     private int periodo;
 
+    /**
+     *
+     * @param name
+     */
     public PeriodoAgrupador(String name) {
         super(name);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getPeriodo() {
         return periodo;
     }
 
+    /**
+     *
+     * @param periodo
+     */
     public void setPeriodo(int periodo) {
         this.periodo = periodo;
     }

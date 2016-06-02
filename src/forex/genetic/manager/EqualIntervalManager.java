@@ -14,10 +14,20 @@ import forex.genetic.util.NumberUtil;
  */
 public class EqualIntervalManager extends IntervalManager {
 
+    /**
+     *
+     * @param name
+     */
     public EqualIntervalManager(String name) {
         super(name);
     }
 
+    /**
+     *
+     * @param interval1
+     * @param interval2
+     * @return
+     */
     @Override
     public Interval crossover(Interval<Double> interval1, Interval<Double> interval2) {
         Interval interval = new DoubleInterval(this.name);
@@ -53,6 +63,11 @@ public class EqualIntervalManager extends IntervalManager {
         return interval;
     }
 
+    /**
+     *
+     * @param interval
+     * @return
+     */
     @Override
     public Interval mutate(Interval<Double> interval) {
         Interval<Double> intervalHijo = new DoubleInterval(this.name);

@@ -10,5 +10,10 @@ package forex.genetic.entities.indicator;
  */
 public abstract class Indicator {
 
+    /**
+     *
+     * @param prefix
+     * @return
+     */
     public abstract String toFileString(String prefix);
 }

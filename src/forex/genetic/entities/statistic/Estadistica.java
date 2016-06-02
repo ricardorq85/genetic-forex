@@ -23,50 +23,98 @@ public class Estadistica {
     private int individuosPositivos = 0;
     private int individuosNegativos = 0;
 
+    /**
+     *
+     * @param count
+     */
     public void addIndividuoGenerado(int count) {
         individuosGenerados += count;
     }
 
+    /**
+     *
+     * @param count
+     */
     public void addGeneracion(int count) {
         generaciones += count;
     }
 
+    /**
+     *
+     * @param count
+     */
     public void addIndividuoLeido(int count) {
         individuosLeidos += count;
     }
 
+    /**
+     *
+     * @param count
+     */
     public void addArchivoLeido(int count) {
         archivosLeidos += count;
     }
 
+    /**
+     *
+     * @param count
+     */
     public void addIndividuoCruzado(int count) {
         individuosCruzados += count;
     }
 
+    /**
+     *
+     * @param count
+     */
     public void addIndividuoMutado(int count) {
         individuosMutados += count;
     }
 
+    /**
+     *
+     * @param count
+     */
     public void addIndividuoOptimizado(int count) {
         individuosOptimizados += count;
     }
 
+    /**
+     *
+     * @param count
+     */
     public void addIndividuoInvalido(int count) {
         individuosInvalidos += count;
     }
 
+    /**
+     *
+     * @param count
+     */
     public void addIndividuoRemovedEqualsReal(int count) {
         individuosRemovedEqualsReal += count;
     }
 
+    /**
+     *
+     * @param individuosNegativos
+     */
     public void setIndividuosNegativos(int individuosNegativos) {
         this.individuosNegativos = individuosNegativos;
     }
 
+    /**
+     *
+     * @param individuosPositivos
+     */
     public void setIndividuosPositivos(int individuosPositivos) {
         this.individuosPositivos = individuosPositivos;
     }
 
+    /**
+     *
+     * @param individuos
+     */
     public void setIndividuos(int individuos) {
         this.individuos = individuos;
     }

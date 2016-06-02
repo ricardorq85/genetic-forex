@@ -15,16 +15,29 @@ import forex.genetic.entities.indicator.Indicator;
  */
 public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 
+    /**
+     *
+     */
     public AdxIndicatorManager() {
         super(false, true, "Adx");
         this.id = "ADX";
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Adx getIndicatorInstance() {
         return new Adx("Adx");
     }
 
+    /**
+     *
+     * @param indicator
+     * @param point
+     * @return
+     */
     @Override
     public Indicator generate(Adx indicator, Point point) {
         Interval interval = null;
@@ -43,11 +56,25 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
         return adx;
     }
 
+    /**
+     *
+     * @param adxIndividuo
+     * @param iAdx
+     * @param point
+     * @return
+     */
     @Override
     public boolean operate(Adx adxIndividuo, Adx iAdx, Point point) {
         return intervalManager.operate(adxIndividuo.getInterval(), iAdx.getAdxValue() * (iAdx.getAdxPlus() - iAdx.getAdxMinus()), 0.0);
     }
     
+    /**
+     *
+     * @param indicator
+     * @param prevPoint
+     * @param point
+     * @return
+     */
     @Override
     public double getValue(Adx indicator, Point prevPoint, Point point) {
         double value = indicator.getAdxValue() * (indicator.getAdxPlus() - indicator.getAdxMinus());

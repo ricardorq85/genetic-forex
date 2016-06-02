@@ -37,6 +37,13 @@ public class ProcesarTendenciasMaxMinManager {
 
     private Connection conn = null;
 
+    /**
+     *
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws ParseException
+     * @throws GeneticException
+     */
     public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, GeneticException {
         conn = JDBCUtil.getConnection();
         OperacionesManager operacionManager = new OperacionesManager();
@@ -73,7 +80,7 @@ public class ProcesarTendenciasMaxMinManager {
             Date fechaProcesoStep = DateUtil.adicionarMinutos(fechaProceso, step);
             Date fechaProcesoFinal = DateUtil.calcularFechaXDuracion((long) rangoMaxMin, fechaProceso);
             //if (individuo.getCurrentOrder() != null) {
-                tendenciasManager.calcularTendencias(DateUtil.adicionarMinutos(fechaProceso, -1), 0, -1);
+            tendenciasManager.calcularTendencias(DateUtil.adicionarMinutos(fechaProceso, -1), 0, -1);
             //}
             if ((actualizarTendencia) || (individuo.getCurrentOrder() == null)) {
                 boolean recalculated = false;
@@ -148,7 +155,7 @@ public class ProcesarTendenciasMaxMinManager {
                     } else if ((pointLow == null) && (pointHigh != null)) {
                         point = pointHigh;
                         byLow = false;
-                    } else {
+                    } else if ((pointLow != null) && (pointHigh != null)) {
                         point = ((pointLow.getDate().before(pointHigh.getDate())) ? pointLow : pointHigh);
                         byLow = (pointLow.getDate().before(pointHigh.getDate()));
                     }
@@ -244,7 +251,7 @@ public class ProcesarTendenciasMaxMinManager {
                         individuo.setStopLoss((int) sl);
                     }
                 }
-                if (order.getTakeProfit() >= Constants.MIN_PIPS_MOVEMENT) {
+                if ((order != null) && (order.getTakeProfit() >= Constants.MIN_PIPS_MOVEMENT)) {
                     LogUtil.logTime("Orden pendiente por actualizar: " + order.toString(), 1);
                 }
                 if ((order != null) && ((order.isCloseImmediate()) || (order.getTakeProfit() >= Constants.MIN_PIPS_MOVEMENT))) {

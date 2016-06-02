@@ -4,10 +4,8 @@
  */
 package forex.genetic.manager.io;
 
-import forex.genetic.entities.IndividuoEstrategia;
 import java.io.File;
 import java.io.FileFilter;
-import java.util.Date;
 
 /**
  *
@@ -17,6 +15,10 @@ public class PoblacionIdFileFilter implements FileFilter {
 
     private String id = null;
 
+    /**
+     *
+     * @param id
+     */
     public PoblacionIdFileFilter(String id) {
         this.id = id;
         if (id == null) {
@@ -24,6 +26,7 @@ public class PoblacionIdFileFilter implements FileFilter {
         }
     }
 
+    @Override
     public boolean accept(File file) {
         boolean accept = false;
         String name = file.getName();

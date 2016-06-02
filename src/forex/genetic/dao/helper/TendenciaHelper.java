@@ -16,7 +16,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Vector;
 
 /**
  *
@@ -24,6 +23,12 @@ import java.util.Vector;
  */
 public class TendenciaHelper {
 
+    /**
+     *
+     * @param resultado
+     * @return
+     * @throws SQLException
+     */
     public static List<Tendencia> createTendencia(ResultSet resultado) throws SQLException {
         List<Tendencia> list = new ArrayList<Tendencia>();
         while (resultado.next()) {
@@ -70,6 +75,12 @@ public class TendenciaHelper {
         return list;
     }
 
+    /**
+     *
+     * @param resultado
+     * @return
+     * @throws SQLException
+     */
     public static ProcesoTendencia createProcesoTendencia(ResultSet resultado) throws SQLException {
         ProcesoTendencia obj = null;
         if (resultado.next()) {
@@ -78,6 +89,12 @@ public class TendenciaHelper {
         return obj;
     }
 
+    /**
+     *
+     * @param resultado
+     * @return
+     * @throws SQLException
+     */
     public static List<ProcesoTendencia> createProcesoTendenciaDetail(ResultSet resultado) throws SQLException {
         List<ProcesoTendencia> obj = new ArrayList<ProcesoTendencia>();
         while (resultado.next()) {

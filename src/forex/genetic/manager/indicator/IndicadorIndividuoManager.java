@@ -11,10 +11,19 @@ package forex.genetic.manager.indicator;
  */
 public abstract class IndicadorIndividuoManager<E> extends IndicadorManager<E> {
 
+    /**
+     *
+     * @param priceDependence
+     */
     protected IndicadorIndividuoManager(boolean priceDependence) {
         this(priceDependence, false);
     }
 
+    /**
+     *
+     * @param priceDependence
+     * @param obligatory
+     */
     protected IndicadorIndividuoManager(boolean priceDependence, boolean obligatory) {
         super(priceDependence, obligatory);
     }

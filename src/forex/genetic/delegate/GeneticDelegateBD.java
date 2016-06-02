@@ -14,10 +14,19 @@ import java.io.FileNotFoundException;
  */
 public class GeneticDelegateBD extends GeneticDelegate
 {
+
+    /**
+     *
+     * @throws FileNotFoundException
+     */
     public GeneticDelegateBD() throws FileNotFoundException {
     }
 
-
+    /**
+     *
+     * @return
+     */
+    @Override
     public Poblacion process() {
         PoblacionFacade facade = new PoblacionFacade();
         facade.process();

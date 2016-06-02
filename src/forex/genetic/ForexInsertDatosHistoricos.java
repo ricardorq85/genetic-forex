@@ -4,13 +4,21 @@
  */
 package forex.genetic;
 
-import forex.genetic.delegate.GeneticTesterDelegate;
+import static forex.genetic.delegate.GeneticDelegate.setId;
 import forex.genetic.delegate.PoblacionDelegate;
-import forex.genetic.manager.PropertiesManager;
-import forex.genetic.util.Constants;
-import forex.genetic.util.LogUtil;
+import static forex.genetic.manager.PropertiesManager.getOperationType;
+import static forex.genetic.manager.PropertiesManager.getPair;
+import static forex.genetic.manager.PropertiesManager.getPropertyString;
+import static forex.genetic.manager.PropertiesManager.load;
+import static forex.genetic.util.Constants.LOG_PATH;
+import static forex.genetic.util.LogUtil.logTime;
 import java.io.IOException;
 import java.io.PrintStream;
+import static java.lang.System.currentTimeMillis;
+import static java.lang.System.setErr;
+import static java.lang.System.setOut;
+import java.nio.charset.Charset;
+import java.util.logging.Logger;
 
 /**
  *
@@ -18,17 +26,28 @@ import java.io.PrintStream;
  */
 public class ForexInsertDatosHistoricos {
 
+    /**
+     *
+     * @param args
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     */
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-        long id = System.currentTimeMillis();
-        PropertiesManager.load().join();
-        LogUtil.logTime("ForexInsertDatosHistoricos: " + id, 1);
-        GeneticTesterDelegate.id = "" + id;
-        PrintStream out = new PrintStream(PropertiesManager.getPropertyString(Constants.LOG_PATH) + "InsertDatosHistoricos_" + PropertiesManager.getOperationType() + PropertiesManager.getPair() + id + ".log");
-        System.setOut(out);
-        System.setErr(out);
+        long id = currentTimeMillis();
+        load().join();
+        logTime("ForexInsertDatosHistoricos: " + id, 1);
+        setId("" + id);
+        StringBuilder name = new StringBuilder();
+        name.append(getPropertyString(LOG_PATH)).append("InsertDatosHistoricos_");
+        name.append(getOperationType()).append(getPair()).append(id).append(".log");
+        PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
+        setOut(out);
+        setErr(out);
         PoblacionDelegate delegate = new PoblacionDelegate();
-        LogUtil.logTime("Init Insert Datos Historicos", 1);
+        logTime("Init Insert Datos Historicos", 1);
         delegate.cargarDatosHistoricos();
-        LogUtil.logTime("End Insert Datos Historicos", 1);
+        logTime("End Insert Datos Historicos", 1);
     }
+    private static final Logger LOG = Logger.getLogger(ForexInsertDatosHistoricos.class.getName());
 }

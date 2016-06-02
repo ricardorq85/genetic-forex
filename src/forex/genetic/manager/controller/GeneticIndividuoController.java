@@ -18,16 +18,28 @@ import forex.genetic.manager.OptimizationManager;
  */
 public class GeneticIndividuoController extends GeneticController {
 
+    /**
+     *
+     * @return
+     */
     @Override
     public CrossoverManager getCrossoverManager() {
         return new CrossoverIndividuoManager();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public MutationManager getMutationManager() {
         return new MutationIndividuoManager();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public OptimizationManager getOptimizationManager() {
         return new OptimizationIndividuoManager();

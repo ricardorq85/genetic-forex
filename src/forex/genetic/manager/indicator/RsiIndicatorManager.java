@@ -4,9 +4,9 @@
  */
 package forex.genetic.manager.indicator;
 
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.Rsi;
 
 /**
@@ -15,15 +15,30 @@ import forex.genetic.entities.indicator.Rsi;
  */
 public class RsiIndicatorManager extends IntervalIndicatorManager<Rsi> {
 
+    /**
+     *
+     */
     public RsiIndicatorManager() {
         super(false, "Rsi");
         this.id = "RSI";
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
     public Rsi getIndicatorInstance() {
         return new Rsi("Rsi");
     }
 
+    /**
+     *
+     * @param indicator
+     * @param point
+     * @return
+     */
+    @Override
     public Indicator generate(Rsi indicator, Point point) {
         Interval interval = null;
         Rsi rsi = new Rsi("Rsi");
@@ -39,6 +54,13 @@ public class RsiIndicatorManager extends IntervalIndicatorManager<Rsi> {
         return rsi;
     }
 
+    /**
+     *
+     * @param rsiIndividuo
+     * @param iRsi
+     * @param point
+     * @return
+     */
     @Override
     public boolean operate(Rsi rsiIndividuo, Rsi iRsi, Point point) {
         return intervalManager.operate(rsiIndividuo.getInterval(), iRsi.getRsi(), 0.0);
@@ -58,6 +80,15 @@ public class RsiIndicatorManager extends IntervalIndicatorManager<Rsi> {
         return optimized;
     }
 */
+
+    /**
+     *
+     * @param indicator
+     * @param prevPoint
+     * @param point
+     * @return
+     */
+    
     @Override
     public double getValue(Rsi indicator, Point prevPoint, Point point) {
         double value = indicator.getRsi();

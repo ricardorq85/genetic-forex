@@ -21,6 +21,14 @@ public class MutationThread extends Thread {
     private final Poblacion poblacionHija;
     private final Poblacion poblacionPadre;
 
+    /**
+     *
+     * @param name
+     * @param generacion
+     * @param poblacion
+     * @param percentValue
+     * @param mutationManager
+     */
     public MutationThread(String name, int generacion, Poblacion poblacion, int percentValue, MutationManager mutationManager) {
         super(name);
         this.poblacionPadre = new Poblacion();
@@ -32,6 +40,7 @@ public class MutationThread extends Thread {
         this.mutationManager = mutationManager;
     }
 
+    @Override
     public void run() {
         Poblacion[] mutationPoblacion = mutationManager.mutate(generacion, poblacion, percentValue);
         newPoblacion.addAll(mutationPoblacion[1]);
@@ -39,18 +48,33 @@ public class MutationThread extends Thread {
         poblacionHija.addAll(mutationPoblacion[1]);
     }
 
+    /**
+     *
+     */
     public void endProcess() {
         mutationManager.endProcess();
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getNewPoblacion() {
         return newPoblacion;
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getPoblacionHija() {
         return poblacionHija;
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getPoblacionPadre() {
         return poblacionPadre;
     }

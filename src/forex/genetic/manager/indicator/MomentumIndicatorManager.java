@@ -15,15 +15,30 @@ import forex.genetic.entities.indicator.Momentum;
  */
 public class MomentumIndicatorManager extends IntervalIndicatorManager<Momentum> {
 
+    /**
+     *
+     */
     public MomentumIndicatorManager() {
         super(false, "Momentum");
         this.id = "MOMENTUM";
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
     public Momentum getIndicatorInstance() {
         return new Momentum("Momentum");
     }
 
+    /**
+     *
+     * @param indicator
+     * @param point
+     * @return
+     */
+    @Override
     public Indicator generate(Momentum indicator, Point point) {
         Interval interval = null;
         Momentum momentum = new Momentum("Momentum");
@@ -39,6 +54,13 @@ public class MomentumIndicatorManager extends IntervalIndicatorManager<Momentum>
         return momentum;
     }
 
+    /**
+     *
+     * @param momentumIndividuo
+     * @param iMomentum
+     * @param point
+     * @return
+     */
     @Override
     public boolean operate(Momentum momentumIndividuo, Momentum iMomentum, Point point) {
         return intervalManager.operate(momentumIndividuo.getInterval(), iMomentum.getMomentum(), 0.0);
@@ -58,6 +80,15 @@ public class MomentumIndicatorManager extends IntervalIndicatorManager<Momentum>
     return optimized;
     }
      */
+
+    /**
+     *
+     * @param indicator
+     * @param prevPoint
+     * @param point
+     * @return
+     */
+    
     @Override
     public double getValue(Momentum indicator, Point prevPoint, Point point) {
         double value = indicator.getMomentum();

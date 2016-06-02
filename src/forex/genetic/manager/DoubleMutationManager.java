@@ -14,10 +14,22 @@ import java.util.Random;
  */
 public class DoubleMutationManager {
 
+    /**
+     *
+     * @param d1
+     * @return
+     */
     public double mutate(double d1) {
         return this.mutate(d1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
     }
 
+    /**
+     *
+     * @param d1
+     * @param min
+     * @param max
+     * @return
+     */
     public double mutate(double d1, double min, double max) {
         Random random = new Random();
         double hijo = d1;
@@ -27,7 +39,8 @@ public class DoubleMutationManager {
             hijo = 1.0D;
         } else {
             String binary1 = Long.toBinaryString(Double.doubleToRawLongBits(d1));
-            while ((counter < 11) && ((hijo == d1) || (hijo < min) || (hijo > max))) {
+            while ((counter < 11) && ((Math.abs(hijo - d1) < 0.00000001D)
+                    || (hijo < min) || (hijo > max))) {
                 int corte = random.nextInt(binary1.length() / (counter + 1));
                 //binary1.length() / 2 + random.nextInt(binary1.length() / 2);
                 Character charMutate = binary1.charAt(corte);

@@ -16,32 +16,75 @@ import java.util.Random;
  */
 public class IntervalManager {
 
+    /**
+     *
+     */
     protected double min = Double.POSITIVE_INFINITY;
+
+    /**
+     *
+     */
     protected double max = Double.NEGATIVE_INFINITY;
+
+    /**
+     *
+     */
     protected static final Random random = new Random();
+
+    /**
+     *
+     */
     protected static final EspecificMutationManager especificMutationManager = EspecificMutationManager.getInstance();
+
+    /**
+     *
+     */
     protected String name = null;
 
+    /**
+     *
+     * @param name
+     */
     public IntervalManager(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getMin() {
         return min;
     }
 
+    /**
+     *
+     * @param min
+     */
     public void setMin(double min) {
         this.min = min;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getMax() {
         return max;
     }
 
+    /**
+     *
+     * @param max
+     */
     public void setMax(double max) {
         this.max = max;
     }
 
+    /**
+     *
+     * @return
+     */
     protected double generateDefault() {
         if (Double.isInfinite(min) || Double.isInfinite(max)
                 || Double.isNaN(min) || Double.isNaN(max)) {
@@ -51,6 +94,13 @@ public class IntervalManager {
         }
     }
 
+    /**
+     *
+     * @param value
+     * @param i1
+     * @param i2
+     * @return
+     */
     public Interval generate(double value, double i1, double i2) {
         Interval<Double> interval = new DoubleInterval(this.name);
         double interval1;
@@ -81,6 +131,13 @@ public class IntervalManager {
         return interval;
     }
 
+    /**
+     *
+     * @param interval
+     * @param value
+     * @param price
+     * @return
+     */
     public boolean operate(Interval<Double> interval, double value, double price) {
         double lowInterval = interval.getLowInterval();
         double highInterval = interval.getHighInterval();
@@ -88,10 +145,24 @@ public class IntervalManager {
         return (evaluate(NumberUtil.round(value - price), lowInterval, highInterval));
     }
 
+    /**
+     *
+     * @param interval
+     * @param value
+     * @param point
+     * @return
+     */
     public boolean operate(Interval interval, double value, Point point) {
         return (this.calculateInterval(interval, value, point) != null);
     }
 
+    /**
+     *
+     * @param interval
+     * @param value
+     * @param point
+     * @return
+     */
     public Interval calculateInterval(Interval<Double> interval, double value, Point point) {
         Interval<Double> result = new DoubleInterval(this.name);
         double lowInterval = interval.getLowInterval();
@@ -121,6 +192,12 @@ public class IntervalManager {
         return (value >= low) && (value <= high);
     }
 
+    /**
+     *
+     * @param interval1
+     * @param interval2
+     * @return
+     */
     public Interval crossover(Interval<Double> interval1, Interval<Double> interval2) {
         Interval interval = intersect(interval1, interval2);
         if (interval == null) {
@@ -169,6 +246,11 @@ public class IntervalManager {
         return interval;
     }
 
+    /**
+     *
+     * @param interval
+     * @return
+     */
     public Interval mutate(Interval<Double> interval) {
         Interval<Double> intervalHijo = new DoubleInterval(this.name);
         double interval1 = 0.0;
@@ -189,6 +271,12 @@ public class IntervalManager {
         return intervalHijo;
     }
 
+    /**
+     *
+     * @param optimized
+     * @param generated
+     * @return
+     */
     public Interval optimize(Interval<Double> optimized, Interval<Double> generated) {
         Interval<Double> optimizedResult = new DoubleInterval(this.name);
 
@@ -221,6 +309,12 @@ public class IntervalManager {
         return optimizedResult;
     }
 
+    /**
+     *
+     * @param i1
+     * @param i2
+     * @return
+     */
     public static Interval<Double> intersect(Interval<Double> i1, Interval<Double> i2) {
         Interval<Double> intersect = null;
         if ((i1 == null) || (i2 == null)) {
@@ -236,6 +330,12 @@ public class IntervalManager {
         return intersect;
     }
 
+    /**
+     *
+     * @param i1
+     * @param i2
+     * @return
+     */
     public static Interval<Double> difference(Interval<Double> i1, Interval<Double> i2) {
         Interval<Double> difference = null;
         if ((i1 == null) || (i1.getLowInterval() == null) || (i1.getHighInterval() == null)) {
@@ -277,6 +377,10 @@ public class IntervalManager {
         return difference;
     }
 
+    /**
+     *
+     * @param interval
+     */
     public void round(Interval<Double> interval) {
         /*        double val1 = interval.getLowInterval();
          double val2 = interval.getHighInterval();

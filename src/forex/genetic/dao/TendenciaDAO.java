@@ -25,12 +25,23 @@ import java.util.List;
  */
 public class TendenciaDAO {
 
+    /**
+     *
+     */
     protected Connection connection = null;
 
+    /**
+     *
+     * @param connection
+     */
     public TendenciaDAO(Connection connection) {
         this.connection = connection;
     }
 
+    /**
+     *
+     * @param tendencia
+     */
     public void insertTendencia(Tendencia tendencia) {
         PreparedStatement statement = null;
         try {
@@ -75,6 +86,10 @@ public class TendenciaDAO {
         }
     }
 
+    /**
+     *
+     * @param tendencia
+     */
     public void updateTendencia(Tendencia tendencia) {
         PreparedStatement statement = null;
         try {
@@ -121,6 +136,11 @@ public class TendenciaDAO {
         }
     }
 
+    /**
+     *
+     * @param idIndividuo
+     * @throws SQLException
+     */
     public void deleteTendencia(String idIndividuo) throws SQLException {
         String sql = "DELETE FROM TENDENCIA WHERE ID_INDIVIDUO=?";
         PreparedStatement stmtConsulta = null;
@@ -133,6 +153,12 @@ public class TendenciaDAO {
         }
     }
 
+    /**
+     *
+     * @param idIndividuo
+     * @param fechaBase
+     * @throws SQLException
+     */
     public void deleteTendencia(String idIndividuo, Date fechaBase) throws SQLException {
         String sql = "DELETE FROM TENDENCIA WHERE ID_INDIVIDUO=? AND FECHA_BASE=?";
         PreparedStatement stmtConsulta = null;
@@ -146,6 +172,11 @@ public class TendenciaDAO {
         }
     }
 
+    /**
+     *
+     * @return
+     * @throws SQLException
+     */
     public List<Tendencia> consultarTendenciasActualizar() throws SQLException {
         List<Tendencia> list = null;
         String sql = "SELECT * FROM (SELECT * FROM TENDENCIA "
@@ -169,6 +200,12 @@ public class TendenciaDAO {
         return list;
     }
 
+    /**
+     *
+     * @param fecha
+     * @return
+     * @throws SQLException
+     */
     public Date nextFechaBase(Date fecha) throws SQLException {
         Date obj = null;
         String sql = "SELECT MIN(FECHA_BASE) FROM TENDENCIA "
@@ -194,6 +231,12 @@ public class TendenciaDAO {
         return obj;
     }
 
+    /**
+     *
+     * @param ten
+     * @return
+     * @throws SQLException
+     */
     public boolean exists(Tendencia ten) throws SQLException {
         boolean exists = false;
         String sql = "SELECT COUNT(*) FROM TENDENCIA "
@@ -218,6 +261,12 @@ public class TendenciaDAO {
         return exists;
     }
 
+    /**
+     *
+     * @param fecha
+     * @return
+     * @throws SQLException
+     */
     public int count(java.util.Date fecha) throws SQLException {
         int cantidad = 0;
         String sql = "SELECT COUNT(*) FROM TENDENCIA "
@@ -240,10 +289,25 @@ public class TendenciaDAO {
         return cantidad;
     }
 
+    /**
+     *
+     * @param fecha
+     * @param fecha2
+     * @return
+     * @throws SQLException
+     */
     public ProcesoTendencia consultarProcesarTendencia(java.util.Date fecha, java.util.Date fecha2) throws SQLException {
         return this.consultarProcesarTendencia(fecha, fecha2, null);
     }
 
+    /**
+     *
+     * @param fecha
+     * @param fecha2
+     * @param tipo
+     * @return
+     * @throws SQLException
+     */
     public ProcesoTendencia consultarProcesarTendencia(java.util.Date fecha, java.util.Date fecha2, String tipo) throws SQLException {
         ProcesoTendencia procesoTendencia = null;
         String sql = null;
@@ -277,6 +341,14 @@ public class TendenciaDAO {
         return procesoTendencia;
     }
 
+    /**
+     *
+     * @param fecha
+     * @param fecha2
+     * @param groupByMinutes
+     * @return
+     * @throws SQLException
+     */
     public List<ProcesoTendencia> consultarProcesarTendenciaDetalle(java.util.Date fecha, java.util.Date fecha2, int groupByMinutes) throws SQLException {
         List<ProcesoTendencia> procesoTendenciaList = null;
         String sql = null;
@@ -302,6 +374,14 @@ public class TendenciaDAO {
         return procesoTendenciaList;
     }
 
+    /**
+     *
+     * @param fecha
+     * @param fecha2
+     * @param parametroTendenciaGenetica
+     * @return
+     * @throws SQLException
+     */
     public List<ProcesoTendencia> consultarTendenciaGenetica(
             java.util.Date fecha,
             java.util.Date fecha2,

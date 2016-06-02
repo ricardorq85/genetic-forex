@@ -10,6 +10,10 @@ package forex.genetic.exception;
  */
 public class GeneticException extends Exception {
 
+    /**
+     *
+     * @param message
+     */
     public GeneticException(String message) {
         super(message);
     }

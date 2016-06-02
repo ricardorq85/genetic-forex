@@ -16,9 +16,25 @@ import java.util.List;
 public class ProcessPoblacionThread extends Thread {
 
     private List<Point> points;
+
+    /**
+     *
+     */
     protected Poblacion poblacion;
+
+    /**
+     *
+     */
     protected Poblacion newPoblacion = new Poblacion();
+
+    /**
+     *
+     */
     protected Poblacion poblacionHija = new Poblacion();
+
+    /**
+     *
+     */
     protected Poblacion poblacionPadre = new Poblacion();
     private boolean recalculate;
     private boolean processPattern;
@@ -27,10 +43,24 @@ public class ProcessPoblacionThread extends Thread {
     private FuncionFortalezaManager ffm;
     private static PatternManager patternManager = new PatternManager();
 
+    /**
+     *
+     * @param name
+     */
     public ProcessPoblacionThread(String name) {
         super(name);
     }
 
+    /**
+     *
+     * @param name
+     * @param points
+     * @param poblacion
+     * @param recalculate
+     * @param poblacionIndex
+     * @param poblacionFromIndex
+     * @param ffm
+     */
     public ProcessPoblacionThread(String name, List<Point> points,
             Poblacion poblacion, boolean recalculate, int poblacionIndex, int poblacionFromIndex,
             FuncionFortalezaManager ffm) {
@@ -63,34 +93,65 @@ public class ProcessPoblacionThread extends Thread {
         LogUtil.logTime(this.getName() + " Individuos=" + poblacion.getIndividuos().size() + " Points=" + this.points.size(), 5);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isProcessPattern() {
         return processPattern;
     }
 
+    /**
+     *
+     * @param processPattern
+     */
     public void setProcessPattern(boolean processPattern) {
         this.processPattern = processPattern;
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getPoblacion() {
         return poblacion;
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getNewPoblacion() {
         return newPoblacion;
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getPoblacionHija() {
         return poblacionHija;
     }
 
+    /**
+     *
+     * @return
+     */
     public Poblacion getPoblacionPadre() {
         return poblacionPadre;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getPoblacionIndex() {
         return poblacionIndex;
     }
 
+    /**
+     *
+     */
     public void endProcess() {
     }
 }

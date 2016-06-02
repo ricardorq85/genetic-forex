@@ -37,6 +37,13 @@ public class ProcesarTendenciasValorProbableManager {
 
     private Connection conn = null;
 
+    /**
+     *
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws ParseException
+     * @throws GeneticException
+     */
     public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, GeneticException {
         conn = JDBCUtil.getConnection();
         OperacionesManager operacionManager = new OperacionesManager();
@@ -51,7 +58,7 @@ public class ProcesarTendenciasValorProbableManager {
         int step = Integer.parseInt(parametroDAO.getValorParametro("STEP_PROCESAR_TENDENCIA"));
         int rangoMaxMin = Integer.parseInt(parametroDAO.getValorParametro("RANGO_MAX_MIN_TENDENCIA"));
         boolean actualizarTendencia = Boolean.parseBoolean(parametroDAO.getValorParametro("SN_UPDATE_TENDENCIA"));
-        actualizarTendencia = false;
+        //actualizarTendencia = false;
 
         ProcesoTendencia procesoTendencia = null;
         ProcesoTendencia procesoTendenciaBase = null;

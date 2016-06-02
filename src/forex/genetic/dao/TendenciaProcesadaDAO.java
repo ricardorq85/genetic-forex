@@ -18,12 +18,24 @@ import java.util.Date;
  */
 public class TendenciaProcesadaDAO {
 
+    /**
+     *
+     */
     protected Connection connection = null;
 
+    /**
+     *
+     * @param connection
+     */
     public TendenciaProcesadaDAO(Connection connection) {
         this.connection = connection;
     }
 
+    /**
+     *
+     * @param procesoTendencia
+     * @throws SQLException
+     */
     public void insertTendenciaProcesada(ProcesoTendencia procesoTendencia) throws SQLException {
         String sql = "INSERT INTO TENDENCIA_PROCESADA (FECHA_BASE, FECHA_BASE_FIN, "
                 + " TIPO, VALOR_PROBABLE, PRECIO_MINIMO, PRECIO_MAXIMO, CANTIDAD, FECHA_MINIMA, "
@@ -50,6 +62,11 @@ public class TendenciaProcesadaDAO {
         }
     }
 
+    /**
+     *
+     * @param procesoTendencia
+     * @throws SQLException
+     */
     public void updateTendencia(ProcesoTendencia procesoTendencia) throws SQLException {
         String sql = "UPDATE TENDENCIA_PROCESADA SET VALOR_PROBABLE=?, FECHA_BASE_FIN=?, "
                 + " PRECIO_MINIMO=?, PRECIO_MAXIMO=?, CANTIDAD=?, "
@@ -78,6 +95,11 @@ public class TendenciaProcesadaDAO {
         }
     }
 
+    /**
+     *
+     * @param procesoTendencia
+     * @throws SQLException
+     */
     public void deleteTendencia(ProcesoTendencia procesoTendencia) throws SQLException {
         String sql = "DELETE FROM TENDENCIA_PROCESADA WHERE FECHA_BASE=? AND TIPO=?";
         PreparedStatement statement = null;

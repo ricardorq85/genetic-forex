@@ -4,17 +4,17 @@
  */
 package forex.genetic.manager;
 
-import java.util.Random;
-import forex.genetic.util.LogUtil;
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.indicator.IndicadorManager;
-import java.util.List;
-import static forex.genetic.util.Constants.*;
+import forex.genetic.util.Constants.IndividuoType;
+import forex.genetic.util.LogUtil;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -22,10 +22,20 @@ import java.util.Collections;
  */
 public class OptimizationIndividuoManager extends OptimizationManager {
 
+    /**
+     *
+     */
     public OptimizationIndividuoManager() {
         super(ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo));
     }
 
+    /**
+     *
+     * @param generacion
+     * @param poblacion
+     * @param percentValue
+     * @return
+     */
     @Override
     public Poblacion[] optimize(int generacion, Poblacion poblacion, int percentValue) {
         Poblacion[] poblacionArray = new Poblacion[2];
@@ -34,7 +44,6 @@ public class OptimizationIndividuoManager extends OptimizationManager {
         List<IndividuoEstrategia> parents = Collections.synchronizedList(new ArrayList<>());
         List<IndividuoEstrategia> hijos = Collections.synchronizedList(new ArrayList<>());
 
-        Random random = new Random();
         List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
         int counter = 0;
 

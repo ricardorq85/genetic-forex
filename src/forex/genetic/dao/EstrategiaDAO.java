@@ -16,12 +16,24 @@ import java.sql.SQLException;
  */
 public class EstrategiaDAO {
 
+    /**
+     *
+     */
     protected Connection connection = null;
 
+    /**
+     *
+     * @param connection
+     */
     public EstrategiaDAO(Connection connection) {
         this.connection = connection;
     }
 
+    /**
+     *
+     * @param individuo
+     * @throws SQLException
+     */
     public void insertIndividuoEstrategia(IndividuoOptimo individuo) throws SQLException {
         String sql = "INSERT INTO INDIVIDUOS_ESTRATEGIA(ID_INDIVIDUO, FECHA_VIGENCIA, NOMBRE_ESTRATEGIA "
                 + "MINUTOS_FUTURO, CANTIDAD_TOTAL_OPERACIONES, FACTOR_PIPS, FACTOR_CANTIDAD) "
@@ -46,7 +58,12 @@ public class EstrategiaDAO {
 
     }
     
-        public void deleteIndividuoEstrategia(String idIndividuo) throws SQLException {
+    /**
+     *
+     * @param idIndividuo
+     * @throws SQLException
+     */
+    public void deleteIndividuoEstrategia(String idIndividuo) throws SQLException {
         String sql = "DELETE FROM INDIVIDUOS_ESTRATEGIA WHERE ID_INDIVIDUO=?";
         PreparedStatement stmtConsulta = null;
         try {

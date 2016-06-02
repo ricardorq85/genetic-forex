@@ -15,10 +15,16 @@ import java.util.Collections;
  */
 public class IndicadorIndividuoTendenciaController extends IndicadorController {
 
+    /**
+     *
+     */
     public IndicadorIndividuoTendenciaController() {
         super("INDICADOR_INDIVIDUO_TENDENCIAS");
     }
 
+    /**
+     *
+     */
     @Override
     protected synchronized void load() {
         if (list == null) {
