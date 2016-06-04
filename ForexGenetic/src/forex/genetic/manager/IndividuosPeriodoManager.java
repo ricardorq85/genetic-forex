@@ -34,7 +34,7 @@ public class IndividuosPeriodoManager {
 	private EstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO;
 	private static final String[] ORDERS = { "OPER_MES.PIPS", "OPER_ANYO.PIPS", "OPER.PIPS" };
 	private Random random = new Random();
-	private static final int INCREMENTO_MES = 100, INCREMENTO_ANYO = 200, INCREMENTO_TOTALES = 500;
+	private static final int INCREMENTO_MES = 200, INCREMENTO_ANYO = 500, INCREMENTO_TOTALES = 500;
 	private Date fechaInicioProceso;
 
 	public IndividuosPeriodoManager() throws ClassNotFoundException, SQLException {
@@ -79,13 +79,13 @@ public class IndividuosPeriodoManager {
 	public void procesarIndividuosXPeriodo() throws SQLException {
 		ParametroOperacionPeriodo paramBase = estrategiaOperacionPeriodoDAO
 				.consultarUltimaEjecucion(this.fechaInicioProceso);
-		int filtroPipsXMes = (paramBase == null) ? 0 : (paramBase.getFiltroPipsXMes());
-		while (filtroPipsXMes < 5000) {
-			int filtroPipsXAnyo = (paramBase == null) ? 0 : (paramBase.getFiltroPipsXAnyo());
-			while (filtroPipsXAnyo < 10000) {
-				int filtroPipsTotales = (paramBase == null) ? 0
-						: (paramBase.getFiltroPipsTotales() + INCREMENTO_TOTALES);
-				while (filtroPipsTotales < 10000) {
+		int filtroPipsXMes = (paramBase == null) ? 5000 : (paramBase.getFiltroPipsXMes());
+		while (filtroPipsXMes >= 0) {
+			int filtroPipsXAnyo = (paramBase == null) ? 10000 : (paramBase.getFiltroPipsXAnyo());
+			while (filtroPipsXAnyo >= 0) {
+				int filtroPipsTotales = (paramBase == null) ? 10000
+						: (paramBase.getFiltroPipsTotales() - INCREMENTO_TOTALES);
+				while (filtroPipsTotales >= 0) {
 					ParametroOperacionPeriodo param = new ParametroOperacionPeriodo(filtroPipsXMes, filtroPipsXAnyo,
 							filtroPipsTotales, ORDERS[random.nextInt(ORDERS.length)],
 							ORDERS[random.nextInt(ORDERS.length)]);
@@ -93,11 +93,11 @@ public class IndividuosPeriodoManager {
 					logTime(param.toString(), 1);
 					this.procesarIndividuosXPeriodo(param);
 					paramBase = null;
-					filtroPipsTotales += INCREMENTO_TOTALES;
+					filtroPipsTotales -= INCREMENTO_TOTALES;
 				}
-				filtroPipsXAnyo += INCREMENTO_ANYO;
+				filtroPipsXAnyo -= INCREMENTO_ANYO;
 			}
-			filtroPipsXMes += INCREMENTO_MES;
+			filtroPipsXMes -= INCREMENTO_MES;
 		}
 	}
 
@@ -123,6 +123,9 @@ public class IndividuosPeriodoManager {
 		int insertados = operacionesDAO.insertOperacionesPeriodo(param);
 		conn.commit();
 		logTime("Registro insertados: " + insertados, 1);
+		
+		this.setPipsXAgrupacion(param);
+		logTime("Pips por agrupacion consultados", 1);
 
 		List<Individuo> ordenesCreadas = this.ejecutarIndividuosXPeriodo(param);
 		int id = estrategiaOperacionPeriodoDAO.insert(param);
@@ -132,5 +135,15 @@ public class IndividuosPeriodoManager {
 			estrategiaOperacionPeriodoDAO.insertOperacionesPeriodo(param, ind, ind.getOrdenes());
 		}
 		conn.commit();
+	}
+	
+	private void setPipsXAgrupacion(ParametroOperacionPeriodo param) throws SQLException {
+		double pipsAgrupadoMinutos = operacionesDAO.consultarPipsXAgrupacion("YYYYMMDD HH24:MI");
+		double pipsAgrupadoHoras = operacionesDAO.consultarPipsXAgrupacion("YYYYMMDD HH24");
+		double pipsAgrupadoDias = operacionesDAO.consultarPipsXAgrupacion("YYYYMMDD");
+		
+		param.setPipsAgrupadoMinutos(pipsAgrupadoMinutos);
+		param.setPipsAgrupadoHoras(pipsAgrupadoHoras);
+		param.setPipsAgrupadoDias(pipsAgrupadoDias);		
 	}
 }

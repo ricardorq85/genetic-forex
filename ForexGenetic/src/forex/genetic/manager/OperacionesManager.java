@@ -91,7 +91,6 @@ public class OperacionesManager {
         double takeProfit = individuo.getTakeProfit();
         double stopLoss = individuo.getStopLoss();
         double lot = individuo.getLot();
-        OperationType tipoOperacionIndividuo = individuo.getTipoOperacion();
 
         boolean hasMinimumCriterion = true;
         boolean activeOperation = (individuo.getFechaApertura() != null);

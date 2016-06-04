@@ -2,30 +2,13 @@ package forex.genetic.entities;
 
 import java.util.Date;
 
-import forex.genetic.util.DateUtil;
-
 public class ParametroOperacionPeriodo {
 
-	private int id, filtroPipsXMes, filtroPipsXAnyo, filtroPipsTotales, cantidad, cantidadParalelas;
-
-	public int getCantidadParalelas() {
-		return cantidadParalelas;
-	}
-
-	public void setCantidadParalelas(int cantidadParalelas) {
-		this.cantidadParalelas = cantidadParalelas;
-	}
-
-	public double getPipsParalelas() {
-		return pipsParalelas;
-	}
-
-	public void setPipsParalelas(double pipsParalelas) {
-		this.pipsParalelas = pipsParalelas;
-	}
-
+	private int id, filtroPipsXMes, filtroPipsXAnyo, filtroPipsTotales, 
+		cantidad, cantidadParalelas;
 	private String firstOrder, secondOrder;
-	private double pipsTotales, pipsParalelas;
+	private double pipsTotales, pipsParalelas, 
+		pipsAgrupadoMinutos, pipsAgrupadoHoras, pipsAgrupadoDias;
 	private Date fechaInicial, fechaFinal, fecha;
 
 	public ParametroOperacionPeriodo(int filtroPipsXMes, int filtroPipsXAnyo, int filtroPipsTotales, String firstOrder,
@@ -132,13 +115,56 @@ public class ParametroOperacionPeriodo {
 		this.fechaFinal = fechaFinal;
 	}
 
+
+	public int getCantidadParalelas() {
+		return cantidadParalelas;
+	}
+
+	public void setCantidadParalelas(int cantidadParalelas) {
+		this.cantidadParalelas = cantidadParalelas;
+	}
+
+	public double getPipsParalelas() {
+		return pipsParalelas;
+	}
+
+	public void setPipsParalelas(double pipsParalelas) {
+		this.pipsParalelas = pipsParalelas;
+	}
+
+	public double getPipsAgrupadoMinutos() {
+		return pipsAgrupadoMinutos;
+	}
+
+	public void setPipsAgrupadoMinutos(double pipsAgrupadoMinutos) {
+		this.pipsAgrupadoMinutos = pipsAgrupadoMinutos;
+	}
+
+	public double getPipsAgrupadoHoras() {
+		return pipsAgrupadoHoras;
+	}
+
+	public void setPipsAgrupadoHoras(double pipsAgrupadoHoras) {
+		this.pipsAgrupadoHoras = pipsAgrupadoHoras;
+	}
+
+	public double getPipsAgrupadoDias() {
+		return pipsAgrupadoDias;
+	}
+
+	public void setPipsAgrupadoDias(double pipsAgrupadoDias) {
+		this.pipsAgrupadoDias = pipsAgrupadoDias;
+	}
+
 	@Override
 	public String toString() {
 		return "ParametroOperacionPeriodo [id=" + id + ", filtroPipsXMes=" + filtroPipsXMes + ", filtroPipsXAnyo="
 				+ filtroPipsXAnyo + ", filtroPipsTotales=" + filtroPipsTotales + ", cantidad=" + cantidad
 				+ ", cantidadParalelas=" + cantidadParalelas + ", firstOrder=" + firstOrder + ", secondOrder="
-				+ secondOrder + ", pipsTotales=" + pipsTotales + ", pipsParalelas=" + pipsParalelas + ", fechaInicial="
-				+ fechaInicial + ", fechaFinal=" + fechaFinal + ", fecha=" + fecha + "]";
+				+ secondOrder + ", pipsTotales=" + pipsTotales + ", pipsParalelas=" + pipsParalelas
+				+ ", pipsAgrupadoMinutos=" + pipsAgrupadoMinutos + ", pipsAgrupadoHoras=" + pipsAgrupadoHoras
+				+ ", pipsAgrupadoDias=" + pipsAgrupadoDias + ", fechaInicial=" + fechaInicial + ", fechaFinal="
+				+ fechaFinal + ", fecha=" + fecha + "]";
 	}
 
 }

@@ -62,7 +62,10 @@ public class EstrategiaOperacionPeriodoDAO {
 	public int insert(ParametroOperacionPeriodo param) throws SQLException {
 		String sql = "INSERT INTO ESTRATEGIA_OPERACION_PERIODO(ID, FILTRO_PIPS_X_MES, "
 				+ " FILTRO_PIPS_X_ANYO, FILTRO_PIPS_TOTALES, FIRST_ORDER, SECOND_ORDER, "
-				+ " PIPS_TOTALES, CANTIDAD, PIPS_TOTALES_PARALELAS, CANTIDAD_PARALELAS, FECHA, FECHA_INICIAL, FECHA_FINAL) " + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ " PIPS_TOTALES, CANTIDAD, PIPS_TOTALES_PARALELAS, CANTIDAD_PARALELAS, "
+				+ " FECHA, FECHA_INICIAL, FECHA_FINAL,"
+				+ " PIPS_AGRUPADO_MINUTOS, PIPS_AGRUPADO_HORAS, PIPS_AGRUPADO_DIAS) " 
+				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		PreparedStatement statement = null;
 		int nextId = 0;
@@ -82,7 +85,10 @@ public class EstrategiaOperacionPeriodoDAO {
 			statement.setInt(index++, param.getCantidadParalelas());
 			statement.setTimestamp(index++, new Timestamp(param.getFecha().getTime()));
 			statement.setTimestamp(index++, new Timestamp(param.getFechaInicial().getTime()));
-			statement.setTimestamp(index++, new Timestamp(param.getFechaFinal().getTime()));
+			statement.setTimestamp(index++, new Timestamp(param.getFechaFinal().getTime()));			
+			statement.setDouble(index++, param.getPipsAgrupadoMinutos());
+			statement.setDouble(index++, param.getPipsAgrupadoHoras());
+			statement.setDouble(index++, param.getPipsAgrupadoDias());
 			statement.executeUpdate();
 		} finally {
 			JDBCUtil.close(statement);

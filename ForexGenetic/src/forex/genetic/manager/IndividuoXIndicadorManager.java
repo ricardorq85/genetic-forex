@@ -62,7 +62,7 @@ public class IndividuoXIndicadorManager {
 			Date fechaHistoricaMaxima = dhDAO.getFechaHistoricaMaxima();
 			Date fechaMinima = new Date();
 			try {
-				fechaMinima = DateUtil.obtenerFecha("2013/01/01 00:00");
+				fechaMinima = DateUtil.obtenerFecha("2012/01/01 00:00");
 			} catch (ParseException ex) {
 				Logger.getLogger(IndividuoXIndicadorManager.class.getName()).log(Level.SEVERE, null, ex);
 			}

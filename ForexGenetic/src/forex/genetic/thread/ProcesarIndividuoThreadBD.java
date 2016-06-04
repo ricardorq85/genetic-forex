@@ -163,6 +163,8 @@ public class ProcesarIndividuoThreadBD extends Thread {
                 if (nextFechaHistorico != null) {
                     points = daoHistorico.consultarHistorico(fechaInicialHistorico,
                             DateUtil.adicionarMinutos(nextFechaHistorico, duracionPromedio));
+                }else {
+                	break;
                 }
             }
             duracionPromedio = Math.max(3000, daoIndividuo.duracionPromedioMinutos(individuo.getId()));

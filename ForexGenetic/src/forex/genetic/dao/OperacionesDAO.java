@@ -81,6 +81,32 @@ public class OperacionesDAO {
 
 		return ordenes;
 	}
+	
+	public double consultarPipsXAgrupacion(String agrupador) throws SQLException {
+		double pips = 0;
+		String sql = " SELECT SUM(PIPS) PIPS FROM ( " +
+			  " SELECT SUM(OPER.PIPS)/COUNT(*) PIPS FROM OPERACION OPER "+ 
+			  " INNER JOIN TMP_TOFILESTRING TFS ON TFS.ID_INDIVIDUO=OPER.ID_INDIVIDUO "+ 
+			  " AND OPER.FECHA_APERTURA BETWEEN VIGENCIA1 AND VIGENCIA2 "+
+			  " GROUP BY TO_CHAR(FECHA_APERTURA, '"+ agrupador + "'))";
+
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			resultado = stmtConsulta.executeQuery();
+
+			if (resultado.next()) {
+				pips = resultado.getDouble("PIPS");
+			}
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+
+		return pips;
+	}	
 
 	/**
 	 *
