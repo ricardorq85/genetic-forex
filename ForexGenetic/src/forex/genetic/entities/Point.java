@@ -18,230 +18,262 @@ import forex.genetic.entities.indicator.Indicator;
  */
 public class Point implements Serializable {
 
-    /**
-     *
-     */
-    public static final long serialVersionUID = 201203120716L;
-    private int index = 0;
-    private Date date = null;
-    private double open = 0.0;
-    private double low = 0.0;
-    private double high = 0.0;
-    private double close = 0.0;
-    private int volume = 0;
-    private double closeCompare = 0.0;
-    private double spread = 0.0;
-    private List<? extends Indicator> indicators = null;
+	/**
+	 *
+	 */
+	public static final long serialVersionUID = 201203120716L;
+	private String moneda = "USDCAD";
+	private int periodo = 1;
+	private String monedaComparacion = "EURUSD";
+	private int index = 0;
+	private Date date = null;
+	private double open = 0.0;
+	private double low = 0.0;
+	private double high = 0.0;
+	private double close = 0.0;
+	private int volume = 0;
+	private double closeCompare = 0.0;
+	private double spread = 0.0;
+	private List<? extends Indicator> indicators = null;
 
-    /**
-     *
-     */
-    public Point() {
-    }
+	/**
+	 *
+	 */
+	public Point() {
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getSpread() {
-        return spread;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getSpread() {
+		return spread;
+	}
 
-    /**
-     *
-     * @param spread
-     */
-    public void setSpread(double spread) {
-        this.spread = spread;
-    }
+	/**
+	 *
+	 * @param spread
+	 */
+	public void setSpread(double spread) {
+		this.spread = spread;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public int getIndex() {
-        return index;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public int getIndex() {
+		return index;
+	}
 
-    /**
-     *
-     * @param index
-     */
-    public void setIndex(int index) {
-        this.index = index;
-    }
+	/**
+	 *
+	 * @param index
+	 */
+	public void setIndex(int index) {
+		this.index = index;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getCloseCompare() {
-        return closeCompare;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getCloseCompare() {
+		return closeCompare;
+	}
 
-    /**
-     *
-     * @param closeCompare
-     */
-    public void setCloseCompare(double closeCompare) {
-        this.closeCompare = closeCompare;
-    }
+	/**
+	 *
+	 * @param closeCompare
+	 */
+	public void setCloseCompare(double closeCompare) {
+		this.closeCompare = closeCompare;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getClose() {
-        return close;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getClose() {
+		return close;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getWeihgted() {
-        return ((this.getClose() + this.getOpen() + this.getHigh() + this.getLow()) / 4);
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getWeihgted() {
+		return ((this.getClose() + this.getOpen() + this.getHigh() + this.getLow()) / 4);
+	}
 
-    /**
-     *
-     * @param close
-     */
-    public void setClose(double close) {
-        this.close = close;
-    }
+	/**
+	 *
+	 * @param close
+	 */
+	public void setClose(double close) {
+		this.close = close;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public Date getDate() {
-        return (this.date = date != null ? new Date(date.getTime()) : null);
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public Date getDate() {
+		return (this.date = date != null ? new Date(date.getTime()) : null);
+	}
 
-    /**
-     *
-     * @param date
-     */
-    public void setDate(Date date) {
-        this.date = date != null ? new Date(date.getTime()) : null;
-    }
+	/**
+	 *
+	 * @param date
+	 */
+	public void setDate(Date date) {
+		this.date = date != null ? new Date(date.getTime()) : null;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public List<? extends Indicator> getIndicators() {
-        return indicators;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public List<? extends Indicator> getIndicators() {
+		return indicators;
+	}
 
-    /**
-     *
-     * @param indicators
-     */
-    public void setIndicators(List<? extends Indicator> indicators) {
-        this.indicators = indicators;
-    }
+	/**
+	 *
+	 * @param indicators
+	 */
+	public void setIndicators(List<? extends Indicator> indicators) {
+		this.indicators = indicators;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getOpen() {
-        return open;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getOpen() {
+		return open;
+	}
 
-    /**
-     *
-     * @param open
-     */
-    public void setOpen(double open) {
-        this.open = open;
-    }
+	/**
+	 *
+	 * @param open
+	 */
+	public void setOpen(double open) {
+		this.open = open;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public int getVolume() {
-        return volume;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public int getVolume() {
+		return volume;
+	}
 
-    /**
-     *
-     * @param volume
-     */
-    public void setVolume(int volume) {
-        this.volume = volume;
-    }
+	/**
+	 *
+	 * @param volume
+	 */
+	public void setVolume(int volume) {
+		this.volume = volume;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getHigh() {
-        return high;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getHigh() {
+		return high;
+	}
 
-    /**
-     *
-     * @param high
-     */
-    public void setHigh(double high) {
-        this.high = high;
-    }
+	/**
+	 *
+	 * @param high
+	 */
+	public void setHigh(double high) {
+		this.high = high;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getLow() {
-        return low;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getLow() {
+		return low;
+	}
 
-    /**
-     *
-     * @param low
-     */
-    public void setLow(double low) {
-        this.low = low;
-    }
+	/**
+	 *
+	 * @param low
+	 */
+	public void setLow(double low) {
+		this.low = low;
+	}
 
-    @Override
-    public String toString() {
-        DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-        return ";Index=" + this.index
-                + ";Date=" + format.format(this.date)
-                + ";Open=" + this.open
-                + ";Close=" + this.close
-                + ";Low=" + this.low
-                + ";High=" + this.high
-                + ";Spread=" + this.spread;
-    }
+	@Override
+	public String toString() {
+		DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+		return "Point [moneda=" + moneda + ", periodo=" + periodo + ", monedaComparacion=" + monedaComparacion
+				+ ", index=" + index + ", date=" + format.format(this.date) + ", open=" + open + ", low=" + low + ", high=" + high
+				+ ", close=" + close + ", volume=" + volume + ", closeCompare=" + closeCompare + ", spread=" + spread;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Point other = (Point) obj;
-        /*        if (this.index != other.index) {
-         return false;
-         }*/
-        if (this.date != other.date && (this.date == null || !this.date.equals(other.date))) {
-            return false;
-        }
-        return true;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result + ((moneda == null) ? 0 : moneda.hashCode());
+		result = prime * result + periodo;
+		return result;
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + this.index;
-        hash = 97 * hash + (this.date != null ? this.date.hashCode() : 0);
-        return hash;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Point other = (Point) obj;
+		if (date == null) {
+			if (other.date != null)
+				return false;
+		} else if (!date.equals(other.date))
+			return false;
+		if (moneda == null) {
+			if (other.moneda != null)
+				return false;
+		} else if (!moneda.equals(other.moneda))
+			return false;
+		if (periodo != other.periodo)
+			return false;
+		return true;
+	}
+
+	public String getMoneda() {
+		return moneda;
+	}
+
+	public void setMoneda(String moneda) {
+		this.moneda = moneda;
+	}
+
+	public int getPeriodo() {
+		return periodo;
+	}
+
+	public void setPeriodo(int periodo) {
+		this.periodo = periodo;
+	}
+
+	public String getMonedaComparacion() {
+		return monedaComparacion;
+	}
+
+	public void setMonedaComparacion(String monedaComparacion) {
+		this.monedaComparacion = monedaComparacion;
+	}
+
 }

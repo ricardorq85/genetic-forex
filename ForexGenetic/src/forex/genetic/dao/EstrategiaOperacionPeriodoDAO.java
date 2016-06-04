@@ -34,7 +34,8 @@ public class EstrategiaOperacionPeriodoDAO {
 		String sql = "SELECT 1 FROM ESTRATEGIA_OPERACION_PERIODO E "
 				+ " WHERE E.FILTRO_PIPS_X_SEMANA=? AND E.FILTRO_PIPS_X_MES=? "
 				+ " AND E.FILTRO_PIPS_X_ANYO=? AND E.FILTRO_PIPS_TOTALES=? "
-				+ " AND E.FIRST_ORDER=? AND E.FECHA_INICIAL=? AND E.FECHA_FINAL=?  ";
+				+ " AND E.FIRST_ORDER=? AND E.FECHA_INICIAL=? AND E.FECHA_FINAL=?  "
+				+ " AND E.TIPO_OPERACION=?";
 
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
@@ -48,6 +49,7 @@ public class EstrategiaOperacionPeriodoDAO {
 			stmtConsulta.setString(5, param.getFirstOrder());
 			stmtConsulta.setTimestamp(6, new Timestamp(param.getFechaInicial().getTime()));
 			stmtConsulta.setTimestamp(7, new Timestamp(param.getFechaFinal().getTime()));
+			stmtConsulta.setString(8, param.getTipoOperacion().name());
 			resultado = stmtConsulta.executeQuery();
 
 			return (resultado.next());			
@@ -92,8 +94,8 @@ public class EstrategiaOperacionPeriodoDAO {
 				+ " FILTRO_PIPS_TOTALES, FIRST_ORDER, SECOND_ORDER, "
 				+ " PIPS_TOTALES, CANTIDAD, PIPS_TOTALES_PARALELAS, CANTIDAD_PARALELAS, "
 				+ " FECHA, FECHA_INICIAL, FECHA_FINAL,"
-				+ " PIPS_AGRUPADO_MINUTOS, PIPS_AGRUPADO_HORAS, PIPS_AGRUPADO_DIAS) "
-				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ " PIPS_AGRUPADO_MINUTOS, PIPS_AGRUPADO_HORAS, PIPS_AGRUPADO_DIAS, TIPO_OPERACION) "
+				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		PreparedStatement statement = null;
 		int nextId = 0;
@@ -118,6 +120,7 @@ public class EstrategiaOperacionPeriodoDAO {
 			statement.setDouble(index++, param.getPipsAgrupadoMinutos());
 			statement.setDouble(index++, param.getPipsAgrupadoHoras());
 			statement.setDouble(index++, param.getPipsAgrupadoDias());
+			statement.setString(index++, param.getTipoOperacion().name());
 			statement.executeUpdate();
 		} finally {
 			JDBCUtil.close(statement);

@@ -37,7 +37,7 @@ public class OperacionesDAO {
 		List<DateInterval> vigencias;
 		String sql = "SELECT DISTINCT VIGENCIA1, VIGENCIA2 FROM TMP_TOFILESTRING " + " WHERE VIGENCIA1>? "
 				+ " ORDER BY VIGENCIA1 ASC, VIGENCIA2 ASC ";
-
+		
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 
@@ -412,9 +412,9 @@ public class OperacionesDAO {
 		String sql = "INSERT INTO TMP_TOFILESTRING (ID_INDIVIDUO, CRITERIO_ORDER1, CRITERIO_ORDER2, VIGENCIA1, VIGENCIA2) "
 				+ " SELECT OPER_SEMANA.ID_INDIVIDUO, SUM(" + param.getFirstOrder() + "), " + " SUM("
 				+ param.getSecondOrder() + "), " + "  SEMANAS.FECHA_SEMANA, SEMANAS.FECHA_SEMANA+7"
-				+ " FROM OPERACION_X_SEMANA OPER_SEMANA "
-				+ " INNER JOIN SEMANAS "
-				+ " ON OPER_SEMANA.FECHA_SEMANA=(SEMANAS.FECHA_SEMANA-7)  "
+				+ " FROM SEMANAS "
+				+ " LEFT JOIN OPERACION_X_SEMANA OPER_SEMANA "
+				+ " ON OPER_SEMANA.FECHA_SEMANA=(SEMANAS.FECHA_SEMANA-7) AND OPER_SEMANA.TIPO_OPERACION=? "
 				+ " INNER JOIN OPERACIONES_ACUM_SEMANA_MES OPER_MES "
 				+ " ON OPER_MES.ID_INDIVIDUO=OPER_SEMANA.ID_INDIVIDUO "
 				+ " AND OPER_MES.FECHA_SEMANA=SEMANAS.FECHA_SEMANA-7 "
@@ -424,17 +424,18 @@ public class OperacionesDAO {
 				+ " INNER JOIN OPERACIONES_ACUM_SEMANA_CONSOL OPER "
 				+ " ON OPER_SEMANA.ID_INDIVIDUO=OPER.ID_INDIVIDUO  " 
 				+ " AND OPER.FECHA_SEMANA=SEMANAS.FECHA_SEMANA-7 "
-				+ " WHERE (( OPER_SEMANA.PIPS>? AND OPER_MES.PIPS>? AND OPER_ANYO.PIPS>? AND OPER.PIPS>?)) "
+				+ " WHERE (( NVL(OPER_SEMANA.PIPS,0)>? AND OPER_MES.PIPS>? AND OPER_ANYO.PIPS>? AND OPER.PIPS>?)) "
 				+ " AND SEMANAS.FECHA_SEMANA > ? "
 				+ " GROUP BY OPER_SEMANA.ID_INDIVIDUO, SEMANAS.FECHA_SEMANA";
 		PreparedStatement stmtConsulta = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setInt(1, param.getFiltroPipsXSemana());
-			stmtConsulta.setInt(2, param.getFiltroPipsXMes());
-			stmtConsulta.setInt(3, param.getFiltroPipsXAnyo());
-			stmtConsulta.setInt(4, param.getFiltroPipsTotales());
-			stmtConsulta.setDate(5, new java.sql.Date(param.getFechaInicial().getTime()));
+			stmtConsulta.setString(1, param.getTipoOperacion().name());
+			stmtConsulta.setInt(2, param.getFiltroPipsXSemana());
+			stmtConsulta.setInt(3, param.getFiltroPipsXMes());
+			stmtConsulta.setInt(4, param.getFiltroPipsXAnyo());
+			stmtConsulta.setInt(5, param.getFiltroPipsTotales());
+			stmtConsulta.setDate(6, new java.sql.Date(param.getFechaInicial().getTime()));
 
 			return stmtConsulta.executeUpdate();
 		} finally {

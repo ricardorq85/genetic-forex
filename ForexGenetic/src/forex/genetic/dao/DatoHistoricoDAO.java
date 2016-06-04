@@ -155,9 +155,8 @@ public class DatoHistoricoDAO {
 				+ " MA1200, MACD20X_VALUE, MACD20X_SIGNAL, AVERAGE_COMPARE1200, "
 				+ " SAR1200, ADX_VALUE168, ADX_PLUS168, ADX_MINUS168, "
 				+ " RSI84, BOLLINGER_UPPER240, BOLLINGER_LOWER240, MOMENTUM1200, ICHIMOKUTENKANSEN6, "
-				+ " ICHIMOKUKIJUNSEN6, ICHIMOKUSENKOUSPANA6, ICHIMOKUSENKOUSPANB6, ICHIMOKUCHINKOUSPAN6 " 				
-				+ " FROM DATOHISTORICO WHERE "
-				+ " FECHA >= ? AND FECHA<=? ORDER BY FECHA ASC";
+				+ " ICHIMOKUKIJUNSEN6, ICHIMOKUSENKOUSPANA6, ICHIMOKUSENKOUSPANB6, ICHIMOKUCHINKOUSPAN6 "
+				+ " FROM DATOHISTORICO WHERE " + " FECHA >= ? AND FECHA<=? ORDER BY FECHA ASC";
 
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
@@ -176,13 +175,15 @@ public class DatoHistoricoDAO {
 		return points;
 	}
 
-	public boolean existHistorico(Date fecha) throws SQLException {
-		String sql = "SELECT 1 FROM DATOHISTORICO WHERE FECHA=?";
+	public boolean existHistorico(Point point) throws SQLException {
+		String sql = "SELECT 1 FROM DATOHISTORICO WHERE FECHA=? AND PAR=? AND MINUTOS=?";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setTimestamp(1, new Timestamp(fecha.getTime()));
+			stmtConsulta.setTimestamp(1, new Timestamp(point.getDate().getTime()));
+			stmtConsulta.setString(2, point.getMoneda());
+			stmtConsulta.setInt(3, point.getPeriodo());
 			resultado = stmtConsulta.executeQuery();
 
 			return (resultado.next());
@@ -209,7 +210,7 @@ public class DatoHistoricoDAO {
 				+ " MA1200, MACD20X_VALUE, MACD20X_SIGNAL, AVERAGE_COMPARE1200, "
 				+ " SAR1200, ADX_VALUE168, ADX_PLUS168, ADX_MINUS168, "
 				+ " RSI84, BOLLINGER_UPPER240, BOLLINGER_LOWER240, MOMENTUM1200, ICHIMOKUTENKANSEN6, "
-				+ " ICHIMOKUKIJUNSEN6, ICHIMOKUSENKOUSPANA6, ICHIMOKUSENKOUSPANB6, ICHIMOKUCHINKOUSPAN6 " 								
+				+ " ICHIMOKUKIJUNSEN6, ICHIMOKUSENKOUSPANA6, ICHIMOKUSENKOUSPANB6, ICHIMOKUCHINKOUSPAN6 "
 				+ " FROM DATOHISTORICO WHERE FECHA > NVL(?,(SELECT MIN(FECHA) FROM DATOHISTORICO)) ORDER BY FECHA ASC)"
 				+ " WHERE ROWNUM<2000";
 
@@ -244,19 +245,19 @@ public class DatoHistoricoDAO {
 				+ " COMPARE_VALUE, AVERAGE_COMPARE, SAR, ADX_VALUE, ADX_PLUS, ADX_MINUS, "
 				+ " RSI, BOLLINGER_UPPER, BOLLINGER_LOWER, MOMENTUM, ICHIMOKUTENKANSEN, "
 				+ " ICHIMOKUKIJUNSEN, ICHIMOKUSENKOUSPANA, ICHIMOKUSENKOUSPANB, ICHIMOKUCHINKOUSPAN, "
-				+ " MA1200, MACD20X, AVERAGE_COMPARE1200, SAR1200, ADX_VALUE168, ADX_PLUS168, ADX_MINUS168, "
+				+ " MA1200, MACD20X_VALUE, MACD20X_SIGNAL, AVERAGE_COMPARE1200, SAR1200, ADX_VALUE168, ADX_PLUS168, ADX_MINUS168, "
 				+ " RSI84, BOLLINGER_UPPER240, BOLLINGER_LOWER240, MOMENTUM1200, ICHIMOKUTENKANSEN6, "
 				+ " ICHIMOKUKIJUNSEN6, ICHIMOKUSENKOUSPANA6, ICHIMOKUSENKOUSPANB6, ICHIMOKUCHINKOUSPAN6 ) "
-				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		int i = 1;
 		PreparedStatement statement = null;
 
 		try {
 			statement = connection.prepareStatement(sql);
-			statement.setString(i++, PropertiesManager.getPair());
-			statement.setInt(i++, PropertiesManager.getPeriodLoad());
-			statement.setString(i++, PropertiesManager.getPairCompare());
+			statement.setString(i++, point.getMoneda());
+			statement.setInt(i++, point.getPeriodo());
+			statement.setString(i++, point.getMonedaComparacion());
 			statement.setTimestamp(i++, new java.sql.Timestamp(point.getDate().getTime()));
 			statement.setDouble(i++, point.getOpen());
 			statement.setDouble(i++, point.getLow());
@@ -295,6 +296,7 @@ public class DatoHistoricoDAO {
 			} else {
 				statement.setDouble(i++, d);
 			}
+			
 			d = ((Sar) point.getIndicators().get(3)).getSar();
 			if (Double.isInfinite(d) || Double.isNaN(d)) {
 				statement.setNull(i++, java.sql.Types.DOUBLE);
@@ -574,8 +576,8 @@ public class DatoHistoricoDAO {
 				statement.setDouble(i++, d);
 			}
 
-			statement.setString(i++, PropertiesManager.getPair());
-			statement.setInt(i++, PropertiesManager.getPeriodLoad());
+			statement.setString(i++, point.getMoneda());
+			statement.setInt(i++, point.getPeriodo());
 			statement.setTimestamp(i++, new java.sql.Timestamp(point.getDate().getTime()));
 
 			statement.executeUpdate();

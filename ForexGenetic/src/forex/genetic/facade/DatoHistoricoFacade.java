@@ -32,7 +32,7 @@ public class DatoHistoricoFacade {
             for (int i = 0; i < points.size(); i++) {
                 Point point = points.get(i);
                 try {
-                    if (dao.existHistorico(point.getDate())) {
+                    if (dao.existHistorico(point))  {
                         dao.updateDatoHistorico(point);
                     } else {
                         dao.insertDatoHistorico(point);

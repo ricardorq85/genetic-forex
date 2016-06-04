@@ -2,12 +2,15 @@ package forex.genetic.entities;
 
 import java.util.Date;
 
+import forex.genetic.util.Constants.OperationType;
+
 public class ParametroOperacionPeriodo {
 
 	private int id, filtroPipsXSemana, filtroPipsXMes, filtroPipsXAnyo, filtroPipsTotales, cantidad, cantidadParalelas;
 	private String firstOrder, secondOrder;
 	private double pipsTotales, pipsParalelas, pipsAgrupadoMinutos, pipsAgrupadoHoras, pipsAgrupadoDias;
 	private Date fechaInicial, fechaFinal, fecha;
+	private OperationType tipoOperacion;
 
 	public ParametroOperacionPeriodo(int filtroPipsXSemana, int filtroPipsXMes, int filtroPipsXAnyo,
 			int filtroPipsTotales, String firstOrder, String secondOrder) {
@@ -162,12 +165,20 @@ public class ParametroOperacionPeriodo {
 		this.filtroPipsXSemana = filtroPipsXSemana;
 	}
 
+	public OperationType getTipoOperacion() {
+		return tipoOperacion;
+	}
+
+	public void setTipoOperacion(OperationType tipoOperacion) {
+		this.tipoOperacion = tipoOperacion;
+	}
+
 	public boolean isFiltroValido() {
 		int countPositivos = 0;
-		countPositivos += (filtroPipsXSemana > 0) ? 1 : 0;
-		countPositivos += (filtroPipsXMes > 0) ? 1 : 0;
-		countPositivos += (filtroPipsXAnyo > 0) ? 1 : 0;
-		countPositivos += (filtroPipsTotales > 0) ? 1 : 0;
+		countPositivos += (filtroPipsXSemana >= 0) ? 1 : 0;
+		countPositivos += (filtroPipsXMes >= 0) ? 1 : 0;
+		countPositivos += (filtroPipsXAnyo >= 0) ? 1 : 0;
+		countPositivos += (filtroPipsTotales >= 0) ? 1 : 0;
 		return (countPositivos >= 3);
 	}
 
@@ -179,7 +190,7 @@ public class ParametroOperacionPeriodo {
 				+ ", secondOrder=" + secondOrder + ", pipsTotales=" + pipsTotales + ", pipsParalelas=" + pipsParalelas
 				+ ", pipsAgrupadoMinutos=" + pipsAgrupadoMinutos + ", pipsAgrupadoHoras=" + pipsAgrupadoHoras
 				+ ", pipsAgrupadoDias=" + pipsAgrupadoDias + ", fechaInicial=" + fechaInicial + ", fechaFinal="
-				+ fechaFinal + ", fecha=" + fecha + "]";
+				+ fechaFinal + ", fecha=" + fecha + ", tipoOperacion=" + tipoOperacion + "]";
 	}
 
 }

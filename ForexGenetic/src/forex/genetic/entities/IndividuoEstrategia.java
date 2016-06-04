@@ -15,6 +15,7 @@ import java.util.List;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.factory.ControllerFactory;
+import forex.genetic.factory.MonedaFactory;
 import forex.genetic.manager.IndividuoManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.controller.IndicadorController;
@@ -36,6 +37,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 
 	protected String id = "0";
 	protected String tipoIndividuo = "INDICADORES";
+	private Moneda moneda;
 
 	protected String fileId = null;
 
@@ -165,13 +167,14 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 		this.individuoType = individuoType;
 		this.creationDate = new Date();
 		this.optimizedCloseIndicators = Collections
-				.synchronizedList(new ArrayList(indicadorController.getIndicatorNumber()));
+				.synchronizedList(new ArrayList<Indicator>(indicadorController.getIndicatorNumber()));
 		this.optimizedOpenIndicators = Collections
-				.synchronizedList(new ArrayList(indicadorController.getIndicatorNumber()));
+				.synchronizedList(new ArrayList<Indicator>(indicadorController.getIndicatorNumber()));
 		this.individuoReadData = new IndividuoReadData();
 		this.individuoReadData.setOperationType(PropertiesManager.getOperationType());
 		this.individuoReadData.setPair(PropertiesManager.getPair());
 		this.ordenes = new ArrayList<>();
+		this.moneda = MonedaFactory.getMoneda();
 	}
 
 	/**
@@ -1013,7 +1016,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 		cloned.creationDate = this.creationDate;
 		cloned.individuoReadData = this.individuoReadData;
 		cloned.currentOrder = this.currentOrder;
-		cloned.ordenes = new ArrayList(this.ordenes);
+		cloned.ordenes = new ArrayList<Order>(this.ordenes);
 		return cloned;
 	}
 
@@ -1111,7 +1114,7 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 			if (individuoEstrategia.getCloseIndicators().size() > i) {
 				closeIndicator = individuoEstrategia.getCloseIndicators().get(i);
 			}
-			IndicadorManager indicatorManager = indicadorController.getManagerInstance(i);
+			IndicadorManager<?> indicatorManager = indicadorController.getManagerInstance(i);
 			if (indicatorManager.isObligatory() && ((openIndicator == null) || (closeIndicator == null))) {
 				process = false;
 			}
@@ -1380,5 +1383,13 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 		this.fortaleza.setValue(calcValue * risk);
 		// this.fortaleza.setValue(risk);
 		this.fortaleza.setRiskLevel(risk);
+	}
+
+	public Moneda getMoneda() {
+		return moneda;
+	}
+
+	public void setMoneda(Moneda moneda) {
+		this.moneda = moneda;
 	}
 }

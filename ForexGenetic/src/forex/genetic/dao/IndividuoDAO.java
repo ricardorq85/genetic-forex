@@ -376,8 +376,8 @@ public class IndividuoDAO {
     public void insertIndividuo(IndividuoEstrategia individuo) throws SQLException {
         String sql = "INSERT INTO INDIVIDUO(ID, PARENT_ID_1, PARENT_ID_2, "
                 + " TAKE_PROFIT, STOP_LOSS, LOTE, INITIAL_BALANCE, CREATION_DATE, "
-                + " TIPO_OPERACION, TIPO_INDIVIDUO) "
-                + " VALUES (?,?,?,?,?,?,?,?,?,?)";
+                + " TIPO_OPERACION, TIPO_INDIVIDUO, MONEDA) "
+                + " VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
         PreparedStatement statement = null;
 
@@ -389,7 +389,7 @@ public class IndividuoDAO {
             statement.setDouble(4, individuo.getTakeProfit());
             statement.setDouble(5, individuo.getStopLoss());
             statement.setDouble(6, individuo.getLot());
-            statement.setDouble(7, individuo.getInitialBalance());
+            statement.setDouble(7, individuo.getInitialBalance());            
             if (individuo.getCreationDate() != null) {
                 statement.setTimestamp(8, new java.sql.Timestamp(individuo.getCreationDate().getTime()));
             } else {
@@ -401,6 +401,7 @@ public class IndividuoDAO {
                 statement.setString(9, Constants.OperationType.SELL.name());
             }
             statement.setString(10, individuo.getTipoIndividuo());
+            statement.setString(11, individuo.getMoneda().getMoneda());
 
             statement.executeUpdate();
         } finally {
