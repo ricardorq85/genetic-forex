@@ -160,13 +160,8 @@ public class IntervalManager {
         result.setHighInterval(highIntervalPosibble);
 
         Interval<Double> pointInterval = new DoubleInterval(this.name);
-        if (PropertiesManager.isBuy()) {
-            pointInterval.setLowInterval(point.getLow() + PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor());
-            pointInterval.setHighInterval(point.getHigh() + PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor());
-        } else {
-            pointInterval.setLowInterval(point.getLow());
-            pointInterval.setHighInterval(point.getHigh());
-        }
+        pointInterval.setLowInterval(point.getLow());
+        pointInterval.setHighInterval(point.getHigh());
 
         result = IntervalManager.intersect(result, pointInterval);
 

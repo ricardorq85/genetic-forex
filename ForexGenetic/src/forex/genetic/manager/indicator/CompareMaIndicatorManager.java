@@ -15,87 +15,89 @@ import forex.genetic.entities.indicator.Indicator;
  */
 public class CompareMaIndicatorManager extends IntervalIndicatorManager<Average> {
 
-    public CompareMaIndicatorManager(boolean priceDependence, boolean obligatory, String name) {
-        super(priceDependence, obligatory, name);
-    }
+	public CompareMaIndicatorManager(boolean priceDependence, boolean obligatory, String name) {
+		super(priceDependence, obligatory, name);
+	}
 
-    public CompareMaIndicatorManager() {
-        super(false, false, "MaCompare");
-        this.id = "COMPARE_MA";
-    }
+	public CompareMaIndicatorManager() {
+		super(false, false, "MaCompare");
+		this.id = "COMPARE_MA";
+	}
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public Average getIndicatorInstance() {
-        return new Average("MaCompare");
-    }
+	/**
+	 *
+	 * @return
+	 */
+	@Override
+	public Average getIndicatorInstance() {
+		return new Average("MaCompare");
+	}
 
-    /**
-     *
-     * @param indicator
-     * @param point
-     * @return
-     */
-    @Override
-    public Indicator generate(Average indicator, Point point) {
-        Interval interval = null;
-        Average average = getIndicatorInstance();
-        if (indicator != null) {
-            average.setAverage(indicator.getAverage());
-            double value = indicator.getAverage() - point.getCloseCompare();
-            interval = intervalManager.generate(value, -value * 0.1, value * 0.1);
-        } else {
-            interval = intervalManager.generate(Double.NaN, Double.NaN, Double.NaN);
-        }
-        average.setInterval(interval);
+	/**
+	 *
+	 * @param indicator
+	 * @param point
+	 * @return
+	 */
+	@Override
+	public Indicator generate(Average indicator, Point point) {
+		Interval interval = null;
+		Average average = getIndicatorInstance();
+		if (indicator != null) {
+			average.setAverage(indicator.getAverage());
+			double value = indicator.getAverage() - point.getCloseCompare();
+			interval = intervalManager.generate(value, -value * 0.1, value * 0.1);
+		} else {
+			interval = intervalManager.generate(Double.NaN, Double.NaN, Double.NaN);
+		}
+		average.setInterval(interval);
 
-        return average;
-    }
+		return average;
+	}
 
-    /**
-     *
-     * @param averageIndividuo
-     * @param iAverage
-     * @param currentPoint
-     * @param previousPoint
-     * @return
-     */
-    @Override
-    public boolean operate(Average averageIndividuo, Average iAverage, Point currentPoint, Point previousPoint) {
-        return intervalManager.operate(averageIndividuo.getInterval(), iAverage.getAverage() - previousPoint.getCloseCompare(), 0.0);
-    }
+	/**
+	 *
+	 * @param averageIndividuo
+	 * @param iAverage
+	 * @param currentPoint
+	 * @param previousPoint
+	 * @return
+	 */
+	@Override
+	public boolean operate(Average averageIndividuo, Average iAverage, Point currentPoint, Point previousPoint) {
+		return intervalManager.operate(averageIndividuo.getInterval(),
+				iAverage.getAverage() - previousPoint.getCloseCompare(), 0.0);
+	}
 
-    /**
-     *
-     * @param indicator
-     * @param prevPoint
-     * @param point
-     * @return
-     */
-    @Override
-    public double getValue(Average indicator, Point prevPoint, Point point) {
-        double value;
-        value = indicator.getAverage() - prevPoint.getCloseCompare();
-        return value;
-    }
+	/**
+	 *
+	 * @param indicator
+	 * @param prevPoint
+	 * @param point
+	 * @return
+	 */
+	@Override
+	public double getValue(Average indicator, Point prevPoint, Point point) {
+		double value;
+		value = indicator.getAverage() - prevPoint.getCloseCompare();
+		return value;
+	}
 
-    @Override
-    public String[] queryRangoOperacionIndicador() {
-        String[] s = new String[2];
-        s[0] = " MIN(DH.AVERAGE_COMPARE-DH.COMPARE_VALUE) INTERVALO_INFERIOR, MAX(DH.AVERAGE_COMPARE-DH.COMPARE_VALUE) INTERVALO_SUPERIOR, "
-                + " ROUND(AVG(DH.AVERAGE_COMPARE-DH.COMPARE_VALUE), 5) PROMEDIO, ";
-        s[1] = " DH.COMPARE_VALUE IS NOT NULL AND DH.AVERAGE_COMPARE IS NOT NULL ";
-        return s;
-    }
+	@Override
+	public String[] queryRangoOperacionIndicador() {
+		String[] s = new String[2];
+		s[0] = " MIN(DH.AVERAGE_COMPARE-DH.COMPARE_VALUE) INF_" + this.id
+				+ ",  MAX(DH.AVERAGE_COMPARE-DH.COMPARE_VALUE) SUP_" + this.id + ",  "
+				+ " ROUND(AVG(DH.AVERAGE_COMPARE-DH.COMPARE_VALUE), 5) PROM_" + this.id + ", ";
+		s[1] = " AND DH.COMPARE_VALUE IS NOT NULL AND DH.AVERAGE_COMPARE IS NOT NULL ";
+		return s;
+	}
 
-    @Override
-    public String[] queryPorcentajeCumplimientoIndicador() {
-        String[] s = new String[1];
-        s[0] = " ((DH.AVERAGE_COMPARE-DH.COMPARE_VALUE) BETWEEN ? AND ?) ";
-        return s;
-    }
+	@Override
+	public String[] queryPorcentajeCumplimientoIndicador() {
+		String[] s = new String[1];
+		s[0] = " ((DH.AVERAGE_COMPARE-DH.COMPARE_VALUE) BETWEEN ? AND ?) ";
+		return s;
+	}
 
 }

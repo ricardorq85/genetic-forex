@@ -68,7 +68,7 @@ public class DateUtil {
      * @return
      * @throws ParseException
      */
-    public static Date obtenerFechaMinima(Date f1, Date f2) throws ParseException {
+    public static Date obtenerFechaMinima(Date f1, Date f2) {
         if ((f1 != null) && (f2 == null)) {
             return f1;
         }

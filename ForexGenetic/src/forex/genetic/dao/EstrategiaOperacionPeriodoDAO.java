@@ -30,6 +30,33 @@ public class EstrategiaOperacionPeriodoDAO {
 		this.connection = connection;
 	}
 
+	public boolean existe(ParametroOperacionPeriodo param) throws SQLException {
+		String sql = "SELECT 1 FROM ESTRATEGIA_OPERACION_PERIODO E "
+				+ " WHERE E.FILTRO_PIPS_X_SEMANA=? AND E.FILTRO_PIPS_X_MES=? "
+				+ " AND E.FILTRO_PIPS_X_ANYO=? AND E.FILTRO_PIPS_TOTALES=? "
+				+ " AND E.FIRST_ORDER=? AND E.FECHA_INICIAL=? AND E.FECHA_FINAL=?  ";
+
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setInt(1, param.getFiltroPipsXSemana());
+			stmtConsulta.setInt(2, param.getFiltroPipsXMes());
+			stmtConsulta.setInt(3, param.getFiltroPipsXAnyo());
+			stmtConsulta.setInt(4, param.getFiltroPipsTotales());
+			stmtConsulta.setString(5, param.getFirstOrder());
+			stmtConsulta.setTimestamp(6, new Timestamp(param.getFechaInicial().getTime()));
+			stmtConsulta.setTimestamp(7, new Timestamp(param.getFechaFinal().getTime()));
+			resultado = stmtConsulta.executeQuery();
+
+			return (resultado.next());			
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+	}
+
 	public ParametroOperacionPeriodo consultarUltimaEjecucion(Date fechaInicial) throws SQLException {
 		ParametroOperacionPeriodo param = new ParametroOperacionPeriodo();
 		String sql = "SELECT EOP.* FROM (SELECT ROWNUM, E.* FROM ESTRATEGIA_OPERACION_PERIODO E "
@@ -60,12 +87,13 @@ public class EstrategiaOperacionPeriodoDAO {
 	 * @throws SQLException
 	 */
 	public int insert(ParametroOperacionPeriodo param) throws SQLException {
-		String sql = "INSERT INTO ESTRATEGIA_OPERACION_PERIODO(ID, FILTRO_PIPS_X_MES, "
-				+ " FILTRO_PIPS_X_ANYO, FILTRO_PIPS_TOTALES, FIRST_ORDER, SECOND_ORDER, "
+		String sql = "INSERT INTO ESTRATEGIA_OPERACION_PERIODO(ID, "
+				+ " FILTRO_PIPS_X_SEMANA, FILTRO_PIPS_X_MES, FILTRO_PIPS_X_ANYO, "
+				+ " FILTRO_PIPS_TOTALES, FIRST_ORDER, SECOND_ORDER, "
 				+ " PIPS_TOTALES, CANTIDAD, PIPS_TOTALES_PARALELAS, CANTIDAD_PARALELAS, "
 				+ " FECHA, FECHA_INICIAL, FECHA_FINAL,"
-				+ " PIPS_AGRUPADO_MINUTOS, PIPS_AGRUPADO_HORAS, PIPS_AGRUPADO_DIAS) " 
-				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ " PIPS_AGRUPADO_MINUTOS, PIPS_AGRUPADO_HORAS, PIPS_AGRUPADO_DIAS) "
+				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		PreparedStatement statement = null;
 		int nextId = 0;
@@ -74,6 +102,7 @@ public class EstrategiaOperacionPeriodoDAO {
 			int index = 1;
 			statement = connection.prepareStatement(sql);
 			statement.setInt(index++, nextId);
+			statement.setInt(index++, param.getFiltroPipsXSemana());
 			statement.setInt(index++, param.getFiltroPipsXMes());
 			statement.setInt(index++, param.getFiltroPipsXAnyo());
 			statement.setInt(index++, param.getFiltroPipsTotales());
@@ -85,7 +114,7 @@ public class EstrategiaOperacionPeriodoDAO {
 			statement.setInt(index++, param.getCantidadParalelas());
 			statement.setTimestamp(index++, new Timestamp(param.getFecha().getTime()));
 			statement.setTimestamp(index++, new Timestamp(param.getFechaInicial().getTime()));
-			statement.setTimestamp(index++, new Timestamp(param.getFechaFinal().getTime()));			
+			statement.setTimestamp(index++, new Timestamp(param.getFechaFinal().getTime()));
 			statement.setDouble(index++, param.getPipsAgrupadoMinutos());
 			statement.setDouble(index++, param.getPipsAgrupadoHoras());
 			statement.setDouble(index++, param.getPipsAgrupadoDias());

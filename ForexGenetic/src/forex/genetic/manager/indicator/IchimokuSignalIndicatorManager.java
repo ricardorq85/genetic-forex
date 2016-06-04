@@ -16,90 +16,92 @@ import forex.genetic.entities.indicator.Indicator;
 public class IchimokuSignalIndicatorManager extends IchimokuIndicatorManager {
 
 	public IchimokuSignalIndicatorManager(boolean priceDependence, boolean obligatory, String name) {
-    	super(priceDependence, obligatory, name);
+		super(priceDependence, obligatory, name);
 	}
-	
-    public IchimokuSignalIndicatorManager() {
-        super(false, false, "IchiSignal");
-        this.id = "ICHIMOKU_SIGNAL";
-    }
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public Ichimoku getIndicatorInstance() {
-        return new Ichimoku("IchiSignal");
-    }
+	public IchimokuSignalIndicatorManager() {
+		super(false, false, "IchiSignal");
+		this.id = "ICHIMOKU_SIGNAL";
+	}
 
-    /**
-     *
-     * @param indicator
-     * @param point
-     * @return
-     */
-    @Override
-    public Indicator generate(Ichimoku indicator, Point point) {
-        Interval interval = null;
-        Ichimoku ichimoku = getIndicatorInstance();
-        if (indicator != null) {
-            ichimoku.setChinkouSpan(indicator.getChinkouSpan());
-            ichimoku.setKijunSen(indicator.getKijunSen());
-            ichimoku.setSenkouSpanA(indicator.getSenkouSpanA());
-            ichimoku.setSenkouSpanB(indicator.getSenkouSpanB());
-            ichimoku.setTenkanSen(indicator.getTenkanSen());
-            double value = getValue(indicator, point, point);
-            interval = intervalManager.generate(value, -value * 0.1, value * 0.1);
-        } else {
-            interval = intervalManager.generate(Double.NaN, Double.NaN, Double.NaN);
-        }
-        ichimoku.setInterval(interval);
-        return ichimoku;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	@Override
+	public Ichimoku getIndicatorInstance() {
+		return new Ichimoku("IchiSignal");
+	}
 
-    /**
-     *
-     * @param ichiIndividuo
-     * @param iIchimoku
-     * @param point
-     * @return
-     */
-    @Override
-    public boolean operate(Ichimoku ichiIndividuo, Ichimoku iIchimoku, Point point) {
-        boolean operate = intervalManager.operate(ichiIndividuo.getInterval(), getValue(iIchimoku, point, point), 0.0);
-        return operate;
-    }
+	/**
+	 *
+	 * @param indicator
+	 * @param point
+	 * @return
+	 */
+	@Override
+	public Indicator generate(Ichimoku indicator, Point point) {
+		Interval interval = null;
+		Ichimoku ichimoku = getIndicatorInstance();
+		if (indicator != null) {
+			ichimoku.setChinkouSpan(indicator.getChinkouSpan());
+			ichimoku.setKijunSen(indicator.getKijunSen());
+			ichimoku.setSenkouSpanA(indicator.getSenkouSpanA());
+			ichimoku.setSenkouSpanB(indicator.getSenkouSpanB());
+			ichimoku.setTenkanSen(indicator.getTenkanSen());
+			double value = getValue(indicator, point, point);
+			interval = intervalManager.generate(value, -value * 0.1, value * 0.1);
+		} else {
+			interval = intervalManager.generate(Double.NaN, Double.NaN, Double.NaN);
+		}
+		ichimoku.setInterval(interval);
+		return ichimoku;
+	}
 
-    /**
-     *
-     * @param indicator
-     * @param prevPoint
-     * @param point
-     * @return
-     */
-    @Override
-    public double getValue(Ichimoku indicator, Point prevPoint, Point point) {
-        double value = indicator.getChinkouSpan() * (indicator.getTenkanSen() - indicator.getKijunSen());
-        return value;
-    }
+	/**
+	 *
+	 * @param ichiIndividuo
+	 * @param iIchimoku
+	 * @param point
+	 * @return
+	 */
+	@Override
+	public boolean operate(Ichimoku ichiIndividuo, Ichimoku iIchimoku, Point point) {
+		boolean operate = intervalManager.operate(ichiIndividuo.getInterval(), getValue(iIchimoku, point, point), 0.0);
+		return operate;
+	}
 
-    @Override
-    public String[] queryRangoOperacionIndicador() {
-        String[] s = new String[2];
-        s[0] = "  MIN((DH.ICHIMOKUCHINKOUSPAN*(DH.ICHIMOKUTENKANSEN-DH.ICHIMOKUKIJUNSEN))) INTERVALO_INFERIOR, "
-                + " MAX((DH.ICHIMOKUCHINKOUSPAN*(DH.ICHIMOKUTENKANSEN-DH.ICHIMOKUKIJUNSEN))) INTERVALO_SUPERIOR, "
-                + " ROUND(AVG((DH.ICHIMOKUCHINKOUSPAN*(DH.ICHIMOKUTENKANSEN-DH.ICHIMOKUKIJUNSEN))), 5) PROMEDIO, ";
-        s[1] = " DH.ICHIMOKUCHINKOUSPAN IS NOT NULL "
-                + " AND DH.ICHIMOKUTENKANSEN IS NOT NULL "
-                + " AND DH.ICHIMOKUKIJUNSEN IS NOT NULL ";
-        return s;
-    }
+	/**
+	 *
+	 * @param indicator
+	 * @param prevPoint
+	 * @param point
+	 * @return
+	 */
+	@Override
+	public double getValue(Ichimoku indicator, Point prevPoint, Point point) {
+		double value = indicator.getChinkouSpan() * (indicator.getTenkanSen() - indicator.getKijunSen());
+		return value;
+	}
 
-    @Override
-    public String[] queryPorcentajeCumplimientoIndicador() {
-        String[] s = new String[1];
-        s[0] = " ((DH.ICHIMOKUCHINKOUSPAN*(DH.ICHIMOKUTENKANSEN-DH.ICHIMOKUKIJUNSEN)) BETWEEN ? AND ?) ";
-        return s;
-    }
+	@Override
+	public String[] queryRangoOperacionIndicador() {
+		String[] s = new String[2];
+		s[0] = "  MIN((DH.ICHIMOKUCHINKOUSPAN*(DH.ICHIMOKUTENKANSEN-DH.ICHIMOKUKIJUNSEN))) INF_"
+				+ this.id + ",  "
+				+ " MAX((DH.ICHIMOKUCHINKOUSPAN*(DH.ICHIMOKUTENKANSEN-DH.ICHIMOKUKIJUNSEN))) SUP_"
+				+ this.id + ",  "
+				+ " ROUND(AVG((DH.ICHIMOKUCHINKOUSPAN*(DH.ICHIMOKUTENKANSEN-DH.ICHIMOKUKIJUNSEN))), 5) PROM_"
+				+ this.id + ", ";
+		s[1] = " AND DH.ICHIMOKUCHINKOUSPAN IS NOT NULL " + " AND DH.ICHIMOKUTENKANSEN IS NOT NULL "
+				+ " AND DH.ICHIMOKUKIJUNSEN IS NOT NULL ";
+		return s;
+	}
+
+	@Override
+	public String[] queryPorcentajeCumplimientoIndicador() {
+		String[] s = new String[1];
+		s[0] = " ((DH.ICHIMOKUCHINKOUSPAN*(DH.ICHIMOKUTENKANSEN-DH.ICHIMOKUKIJUNSEN)) BETWEEN ? AND ?) ";
+		return s;
+	}
 }

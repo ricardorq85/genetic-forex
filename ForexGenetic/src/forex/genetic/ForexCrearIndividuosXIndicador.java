@@ -35,9 +35,9 @@ public class ForexCrearIndividuosXIndicador {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, SQLException {
         long id = currentTimeMillis();
         load().join();
-        logTime("ForexCrearIndividuosXIndicador: " + id, 1);
+        logTime("ForexCrearIndividuosXIndicador.java: " + id, 1);
         String name = getPropertyString(LOG_PATH)
-                + "ForexCrearIndividuosXIndicador_"
+                + "CrearIndividuosXIndicador_"
                 + id + ".log";
         PrintStream out = new PrintStream(name, Charset.defaultCharset().name());
         setOut(out);
@@ -48,5 +48,4 @@ public class ForexCrearIndividuosXIndicador {
         manager.crearIndividuos();
         logTime("Fin: " + id, 1);
     }
-    private static final Logger LOG = Logger.getLogger(ForexCrearIndividuosXIndicador.class.getName());
 }

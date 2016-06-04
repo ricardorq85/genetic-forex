@@ -12,22 +12,22 @@ import forex.genetic.entities.indicator.Ichimoku;
  */
 public abstract class IchimokuIndicatorManager extends IntervalIndicatorManager<Ichimoku> {
 
-    /**
-     *
-     * @param priceDependence
-     * @param obligatory
-     * @param name
-     */
-    public IchimokuIndicatorManager(boolean priceDependence, boolean obligatory, String name) {
-        super(priceDependence, obligatory, name);
-    }
+	/**
+	 *
+	 * @param priceDependence
+	 * @param obligatory
+	 * @param name
+	 */
+	public IchimokuIndicatorManager(boolean priceDependence, boolean obligatory, String name) {
+		super(priceDependence, obligatory, name);
+	}
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public Ichimoku getIndicatorInstance() {
-        return new Ichimoku("Ichimoku");
-    }
+	/**
+	 *
+	 * @return
+	 */
+	@Override
+	public Ichimoku getIndicatorInstance() {
+		return new Ichimoku("Ichimoku");
+	}
 }

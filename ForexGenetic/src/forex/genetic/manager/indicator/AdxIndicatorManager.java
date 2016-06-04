@@ -16,7 +16,7 @@ import forex.genetic.entities.indicator.Indicator;
 public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 
 	public AdxIndicatorManager(boolean priceDependence, boolean obligatory, String name) {
-    	super(priceDependence, obligatory, name);
+		super(priceDependence, obligatory, name);
 	}
 
 	public AdxIndicatorManager() {
@@ -87,9 +87,10 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 	@Override
 	public String[] queryRangoOperacionIndicador() {
 		String[] s = new String[2];
-		s[0] = "  MIN((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_MINUS))) INTERVALO_INFERIOR, MAX((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_MINUS))) INTERVALO_SUPERIOR, "
-				+ "  ROUND(AVG((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_MINUS))), 5) PROMEDIO, ";
-		s[1] = " DH.ADX_VALUE IS NOT NULL AND DH.ADX_PLUS IS NOT NULL AND DH.ADX_MINUS IS NOT NULL ";
+		s[0] = "  MIN((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_MINUS))) INF_" + this.id
+				+ ",  MAX((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_MINUS))) SUP_" + this.id + ",  "
+				+ "  ROUND(AVG((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_MINUS))), 5) PROM_" + this.id + ", ";
+		s[1] = " AND DH.ADX_VALUE IS NOT NULL AND DH.ADX_PLUS IS NOT NULL AND DH.ADX_MINUS IS NOT NULL ";
 		return s;
 	}
 

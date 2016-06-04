@@ -21,6 +21,7 @@ public class EstrategiaOperacionPeriodoHelper {
 
 		if (resultado.next()) {
 			param = new ParametroOperacionPeriodo();
+			param.setFiltroPipsXSemana(resultado.getInt("FILTRO_PIPS_X_SEMANA"));
 			param.setFiltroPipsXMes(resultado.getInt("FILTRO_PIPS_X_MES"));
 			param.setFiltroPipsXAnyo(resultado.getInt("FILTRO_PIPS_X_ANYO"));
 			param.setFiltroPipsTotales(resultado.getInt("FILTRO_PIPS_TOTALES"));

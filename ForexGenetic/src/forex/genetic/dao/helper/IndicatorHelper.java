@@ -7,8 +7,11 @@ package forex.genetic.dao.helper;
 
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Interval;
-import forex.genetic.entities.RangoOperacionIndicador;
+import forex.genetic.entities.RangoOperacionIndividuo;
+import forex.genetic.entities.RangoOperacionIndividuoIndicador;
 import forex.genetic.entities.indicator.IntervalIndicator;
+import forex.genetic.factory.ControllerFactory;
+import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,29 +21,36 @@ import java.sql.SQLException;
  * @author ricardorq85
  */
 public class IndicatorHelper {
+	private static final IndicadorController indicadorController = ControllerFactory
+			.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 
-    public static void completeRangoOperacionIndicador(ResultSet resultado,
-            IntervalIndicatorManager indManager,
-            RangoOperacionIndicador r) throws SQLException {
-        if (resultado.next()) {
-            int cantidad = resultado.getInt("REGISTROS");
-            if (cantidad == 0) {
-                return;
-            }
+	public static void completeRangoOperacionIndicador(ResultSet resultado, RangoOperacionIndividuo rangoOperacionIndividuo)
+			throws SQLException {
+		if (resultado.next()) {
+			int cantidad = resultado.getInt("REGISTROS");
+			if (cantidad == 0) {
+				rangoOperacionIndividuo.setIndicadores(null);
+				return;
+			}
 
-            IntervalIndicator indicator = indManager.getIndicatorInstance();
-            Interval<Double> interval;
-            double inferior = resultado.getDouble("INTERVALO_INFERIOR");
-            double superior = resultado.getDouble("INTERVALO_SUPERIOR");
-            interval = new DoubleInterval(inferior, superior);
-            indicator.setInterval(interval);
-            double promedio = resultado.getDouble("PROMEDIO");
-            r.setPromedio(promedio);
-            r.setIndicador(indicator);
+			int num_indicadores = indicadorController.getIndicatorNumber();
+			for (int i = 0; i < num_indicadores; i++) {
+				IntervalIndicatorManager<?> indManager = (IntervalIndicatorManager<?>) indicadorController
+						.getManagerInstance(i);
+				RangoOperacionIndividuoIndicador rangoIndicador = rangoOperacionIndividuo.getIndicadores().get(i);
+				IntervalIndicator indicator = ((IntervalIndicator) rangoIndicador.getIndicator());
 
-            r.setTakeProfit(resultado.getInt("TP"));
-            r.setStopLoss(resultado.getInt("SL"));
-            r.setCantidad(cantidad);
-        }
-    }
+				double inferior = resultado.getDouble("INF_" + indManager.getId());
+				double superior = resultado.getDouble("SUP_" + indManager.getId());
+				double promedio = resultado.getDouble("PROM_" + indManager.getId());
+				Interval<Double> interval = new DoubleInterval(inferior, superior);				
+				indicator.setInterval(interval);
+				rangoIndicador.setPromedio(promedio);
+			}
+
+			rangoOperacionIndividuo.setTakeProfit(resultado.getInt("TP"));
+			rangoOperacionIndividuo.setStopLoss(resultado.getInt("SL"));
+			rangoOperacionIndividuo.setCantidad(cantidad);
+		}
+	}
 }

@@ -56,12 +56,13 @@ public class OperacionesDAO {
 		return vigencias;
 	}
 
-	public List<Individuo> consultarOperacionesXPeriodo(Date fechaPeriodo) throws SQLException {
+	public List<Individuo> consultarOperacionesXPeriodo(Date fechaPeriodo, Date fechaFinal) throws SQLException {
 		List<Individuo> ordenes;
 		String sql = "SELECT OPER.* FROM OPERACION OPER "
 				+ " INNER JOIN TMP_TOFILESTRING TFS ON TFS.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
 				+ " AND OPER.FECHA_APERTURA BETWEEN VIGENCIA1 AND VIGENCIA2 "
-				+ " WHERE OPER.FECHA_APERTURA>? AND OPER.FECHA_CIERRE IS NOT NULL "
+				+ " WHERE OPER.FECHA_APERTURA>? AND OPER.FECHA_APERTURA<=? "
+				+ " AND OPER.FECHA_CIERRE IS NOT NULL "
 				+ " ORDER BY OPER.FECHA_APERTURA ASC, TFS.CRITERIO_ORDER1 DESC, TFS.CRITERIO_ORDER2 DESC";
 
 		PreparedStatement stmtConsulta = null;
@@ -70,6 +71,7 @@ public class OperacionesDAO {
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
 			stmtConsulta.setTimestamp(1, new Timestamp(fechaPeriodo.getTime()));
+			stmtConsulta.setTimestamp(2, new Timestamp(fechaFinal.getTime()));
 			resultado = stmtConsulta.executeQuery();
 
 			ordenes = OperacionHelper.operaciones(resultado);
@@ -81,14 +83,13 @@ public class OperacionesDAO {
 
 		return ordenes;
 	}
-	
+
 	public double consultarPipsXAgrupacion(String agrupador) throws SQLException {
 		double pips = 0;
-		String sql = " SELECT SUM(PIPS) PIPS FROM ( " +
-			  " SELECT SUM(OPER.PIPS)/COUNT(*) PIPS FROM OPERACION OPER "+ 
-			  " INNER JOIN TMP_TOFILESTRING TFS ON TFS.ID_INDIVIDUO=OPER.ID_INDIVIDUO "+ 
-			  " AND OPER.FECHA_APERTURA BETWEEN VIGENCIA1 AND VIGENCIA2 "+
-			  " GROUP BY TO_CHAR(FECHA_APERTURA, '"+ agrupador + "'))";
+		String sql = " SELECT SUM(PIPS) PIPS FROM ( " + " SELECT SUM(OPER.PIPS)/COUNT(*) PIPS FROM OPERACION OPER "
+				+ " INNER JOIN TMP_TOFILESTRING TFS ON TFS.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
+				+ " AND OPER.FECHA_APERTURA BETWEEN VIGENCIA1 AND VIGENCIA2 " + " GROUP BY TO_CHAR(FECHA_APERTURA, '"
+				+ agrupador + "'))";
 
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
@@ -106,7 +107,7 @@ public class OperacionesDAO {
 		}
 
 		return pips;
-	}	
+	}
 
 	/**
 	 *
@@ -397,7 +398,7 @@ public class OperacionesDAO {
 	}
 
 	public int cleanOperacionesPeriodo() throws SQLException {
-		String sql = "DELETE FROM TMP_TOFILESTRING";
+		String sql = "TRUNCATE TABLE TMP_TOFILESTRING";
 		PreparedStatement stmtConsulta = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
@@ -409,26 +410,32 @@ public class OperacionesDAO {
 
 	public int insertOperacionesPeriodo(ParametroOperacionPeriodo param) throws SQLException {
 		String sql = "INSERT INTO TMP_TOFILESTRING (ID_INDIVIDUO, CRITERIO_ORDER1, CRITERIO_ORDER2, VIGENCIA1, VIGENCIA2) "
-				+ " SELECT OPER_MES.ID_INDIVIDUO, SUM(" + param.getFirstOrder()  + "), "
-						+ " SUM(" + param.getSecondOrder() + "), "
-				+ " TO_DATE(MESES.MES,'YYYYMM'), ADD_MONTHS(TO_DATE(MESES.MES,'YYYYMM'),1) "
-				+ " FROM OPERACION_X_MES OPER_MES "
-				+ " INNER JOIN (SELECT DISTINCT MESES.MES FROM OPERACION_X_MES MESES) MESES "
-				+ " ON TO_DATE(OPER_MES.MES,'YYYYMM')=ADD_MONTHS(TO_DATE(MESES.MES,'YYYYMM'),-1) "
-				+ " INNER JOIN OPERACIONES_ACUM_MES_ANYO OPER_ANYO "
-				+ " ON OPER_ANYO.ID_INDIVIDUO=OPER_MES.ID_INDIVIDUO "
-				+ " AND TO_DATE(OPER_MES.MES,'YYYYMM')=ADD_MONTHS(TO_DATE(OPER_ANYO.MES,'YYYYMM'),-1) "
-				+ " INNER JOIN OPERACIONES_ACUM_MES_CONSOL OPER " + " ON OPER_MES.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
-				+ " AND TO_DATE(OPER_MES.MES,'YYYYMM')=ADD_MONTHS(TO_DATE(OPER.MES,'YYYYMM'),-1) "
-				+ " WHERE EXISTS (SELECT 1 FROM INDICADOR_INDIVIDUO II WHERE OPER_MES.ID_INDIVIDUO=II.ID_INDIVIDUO AND II.INTERVALO_INFERIOR IS NOT NULL) "
-				+ " AND OPER.PIPS>? AND OPER_ANYO.PIPS>? AND OPER_MES.PIPS>? "
-				+ " GROUP BY OPER_MES.ID_INDIVIDUO, MESES.MES ";
+				+ " SELECT OPER_SEMANA.ID_INDIVIDUO, SUM(" + param.getFirstOrder() + "), " + " SUM("
+				+ param.getSecondOrder() + "), " + "  SEMANAS.FECHA_SEMANA, SEMANAS.FECHA_SEMANA+7"
+				+ " FROM OPERACION_X_SEMANA OPER_SEMANA "
+				+ " INNER JOIN SEMANAS "
+				+ " ON OPER_SEMANA.FECHA_SEMANA=(SEMANAS.FECHA_SEMANA-7)  "
+				+ " INNER JOIN OPERACIONES_ACUM_SEMANA_MES OPER_MES "
+				+ " ON OPER_MES.ID_INDIVIDUO=OPER_SEMANA.ID_INDIVIDUO "
+				+ " AND OPER_MES.FECHA_SEMANA=SEMANAS.FECHA_SEMANA-7 "
+				+ " INNER JOIN OPERACIONES_ACUM_SEMANA_ANYO OPER_ANYO  "
+				+ " ON OPER_ANYO.ID_INDIVIDUO=OPER_SEMANA.ID_INDIVIDUO "
+				+ " AND OPER_ANYO.FECHA_SEMANA=SEMANAS.FECHA_SEMANA-7 "
+				+ " INNER JOIN OPERACIONES_ACUM_SEMANA_CONSOL OPER "
+				+ " ON OPER_SEMANA.ID_INDIVIDUO=OPER.ID_INDIVIDUO  " 
+				+ " AND OPER.FECHA_SEMANA=SEMANAS.FECHA_SEMANA-7 "
+				+ " WHERE (( OPER_SEMANA.PIPS>? AND OPER_MES.PIPS>? AND OPER_ANYO.PIPS>? AND OPER.PIPS>?)) "
+				+ " AND SEMANAS.FECHA_SEMANA > ? "
+				+ " GROUP BY OPER_SEMANA.ID_INDIVIDUO, SEMANAS.FECHA_SEMANA";
 		PreparedStatement stmtConsulta = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setInt(1, param.getFiltroPipsTotales());
-			stmtConsulta.setInt(2, param.getFiltroPipsXAnyo());
-			stmtConsulta.setInt(3, param.getFiltroPipsXMes());
+			stmtConsulta.setInt(1, param.getFiltroPipsXSemana());
+			stmtConsulta.setInt(2, param.getFiltroPipsXMes());
+			stmtConsulta.setInt(3, param.getFiltroPipsXAnyo());
+			stmtConsulta.setInt(4, param.getFiltroPipsTotales());
+			stmtConsulta.setDate(5, new java.sql.Date(param.getFechaInicial().getTime()));
+
 			return stmtConsulta.executeUpdate();
 		} finally {
 			JDBCUtil.close(stmtConsulta);

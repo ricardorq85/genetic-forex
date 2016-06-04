@@ -4,8 +4,6 @@
  */
 package forex.genetic.entities.indicator;
 
-import java.io.Serializable;
-
 /**
  *
  * @author ricardorq85

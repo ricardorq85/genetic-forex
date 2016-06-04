@@ -4,17 +4,16 @@ import java.util.Date;
 
 public class ParametroOperacionPeriodo {
 
-	private int id, filtroPipsXMes, filtroPipsXAnyo, filtroPipsTotales, 
-		cantidad, cantidadParalelas;
+	private int id, filtroPipsXSemana, filtroPipsXMes, filtroPipsXAnyo, filtroPipsTotales, cantidad, cantidadParalelas;
 	private String firstOrder, secondOrder;
-	private double pipsTotales, pipsParalelas, 
-		pipsAgrupadoMinutos, pipsAgrupadoHoras, pipsAgrupadoDias;
+	private double pipsTotales, pipsParalelas, pipsAgrupadoMinutos, pipsAgrupadoHoras, pipsAgrupadoDias;
 	private Date fechaInicial, fechaFinal, fecha;
 
-	public ParametroOperacionPeriodo(int filtroPipsXMes, int filtroPipsXAnyo, int filtroPipsTotales, String firstOrder,
-			String secondOrder) {
+	public ParametroOperacionPeriodo(int filtroPipsXSemana, int filtroPipsXMes, int filtroPipsXAnyo,
+			int filtroPipsTotales, String firstOrder, String secondOrder) {
 		super();
 		this.fecha = new Date();
+		this.filtroPipsXSemana = filtroPipsXSemana;
 		this.filtroPipsXMes = filtroPipsXMes;
 		this.filtroPipsXAnyo = filtroPipsXAnyo;
 		this.filtroPipsTotales = filtroPipsTotales;
@@ -115,7 +114,6 @@ public class ParametroOperacionPeriodo {
 		this.fechaFinal = fechaFinal;
 	}
 
-
 	public int getCantidadParalelas() {
 		return cantidadParalelas;
 	}
@@ -156,12 +154,29 @@ public class ParametroOperacionPeriodo {
 		this.pipsAgrupadoDias = pipsAgrupadoDias;
 	}
 
+	public int getFiltroPipsXSemana() {
+		return filtroPipsXSemana;
+	}
+
+	public void setFiltroPipsXSemana(int filtroPipsXSemana) {
+		this.filtroPipsXSemana = filtroPipsXSemana;
+	}
+
+	public boolean isFiltroValido() {
+		int countPositivos = 0;
+		countPositivos += (filtroPipsXSemana > 0) ? 1 : 0;
+		countPositivos += (filtroPipsXMes > 0) ? 1 : 0;
+		countPositivos += (filtroPipsXAnyo > 0) ? 1 : 0;
+		countPositivos += (filtroPipsTotales > 0) ? 1 : 0;
+		return (countPositivos >= 3);
+	}
+
 	@Override
 	public String toString() {
-		return "ParametroOperacionPeriodo [id=" + id + ", filtroPipsXMes=" + filtroPipsXMes + ", filtroPipsXAnyo="
-				+ filtroPipsXAnyo + ", filtroPipsTotales=" + filtroPipsTotales + ", cantidad=" + cantidad
-				+ ", cantidadParalelas=" + cantidadParalelas + ", firstOrder=" + firstOrder + ", secondOrder="
-				+ secondOrder + ", pipsTotales=" + pipsTotales + ", pipsParalelas=" + pipsParalelas
+		return "ParametroOperacionPeriodo [id=" + id + ", filtroPipsXSemana=" + filtroPipsXSemana + ", filtroPipsXMes="
+				+ filtroPipsXMes + ", filtroPipsXAnyo=" + filtroPipsXAnyo + ", filtroPipsTotales=" + filtroPipsTotales
+				+ ", cantidad=" + cantidad + ", cantidadParalelas=" + cantidadParalelas + ", firstOrder=" + firstOrder
+				+ ", secondOrder=" + secondOrder + ", pipsTotales=" + pipsTotales + ", pipsParalelas=" + pipsParalelas
 				+ ", pipsAgrupadoMinutos=" + pipsAgrupadoMinutos + ", pipsAgrupadoHoras=" + pipsAgrupadoHoras
 				+ ", pipsAgrupadoDias=" + pipsAgrupadoDias + ", fechaInicial=" + fechaInicial + ", fechaFinal="
 				+ fechaFinal + ", fecha=" + fecha + "]";

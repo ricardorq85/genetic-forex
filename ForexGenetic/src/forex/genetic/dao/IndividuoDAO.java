@@ -375,8 +375,9 @@ public class IndividuoDAO {
      */
     public void insertIndividuo(IndividuoEstrategia individuo) throws SQLException {
         String sql = "INSERT INTO INDIVIDUO(ID, PARENT_ID_1, PARENT_ID_2, "
-                + "TAKE_PROFIT, STOP_LOSS, LOTE, INITIAL_BALANCE, CREATION_DATE, TIPO_OPERACION) "
-                + " VALUES (?,?,?,?,?,?,?,?,?)";
+                + " TAKE_PROFIT, STOP_LOSS, LOTE, INITIAL_BALANCE, CREATION_DATE, "
+                + " TIPO_OPERACION, TIPO_INDIVIDUO) "
+                + " VALUES (?,?,?,?,?,?,?,?,?,?)";
 
         PreparedStatement statement = null;
 
@@ -399,6 +400,7 @@ public class IndividuoDAO {
             }else {
                 statement.setString(9, Constants.OperationType.SELL.name());
             }
+            statement.setString(10, individuo.getTipoIndividuo());
 
             statement.executeUpdate();
         } finally {
@@ -424,7 +426,7 @@ public class IndividuoDAO {
         try {
             statement = connection.prepareStatement(sql.toString());
             for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
-                IndicadorManager indicatorManager = indicadorController.getManagerInstance(i);
+                IndicadorManager<?> indicatorManager = indicadorController.getManagerInstance(i);
                 IntervalIndicator indicator = null;
                 if (individuo.getOpenIndicators().size() > i) {
                     indicator = (IntervalIndicator) individuo.getOpenIndicators().get(i);

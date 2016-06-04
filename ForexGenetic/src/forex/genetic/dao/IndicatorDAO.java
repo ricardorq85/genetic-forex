@@ -5,7 +5,7 @@
 package forex.genetic.dao;
 
 import forex.genetic.dao.helper.IndicatorHelper;
-import forex.genetic.entities.RangoOperacionIndicador;
+import forex.genetic.entities.RangoOperacionIndividuo;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -31,16 +31,17 @@ public class IndicatorDAO {
         this.connection = connection;
     }
 
-    public void consultarRangoOperacionIndicador(IntervalIndicatorManager indManager, RangoOperacionIndicador r) throws SQLException {
-        String[] sqlIndicador = indManager.queryRangoOperacionIndicador();
-        String sql = "SELECT " + sqlIndicador[0]
+    public void consultarRangoOperacionIndicador(RangoOperacionIndividuo r) throws SQLException {
+        String sql = "SELECT " + r.getFields()
                 + "  ROUND(AVG(OPER.TAKE_PROFIT)) TP, ROUND(AVG(OPER.STOP_LOSS)) SL,"
                 + " COUNT(*) REGISTROS "
                 + " FROM DATOHISTORICO DH\n"
-                + " INNER JOIN OPERACION_POSITIVAS OPER ON DH.FECHA=OPER.FECHA_APERTURA\n"
-                + " WHERE " + sqlIndicador[1]
-                + "  AND OPER.PIPS >= ? \n"
-                + "  AND (MAX_PIPS_RETROCESO >= ?)\n"
+                + " INNER JOIN " + (r.isPositivas()? "OPERACION_POSITIVAS":"OPERACION_NEGATIVAS")
+                		 + " OPER ON DH.FECHA=OPER.FECHA_APERTURA\n"
+                + " WHERE " + (r.isPositivas()? 
+                		"OPER.PIPS >= ? AND (MAX_PIPS_RETROCESO >= ?) "
+                		:"OPER.PIPS <= ? AND (MAX_PIPS_RETROCESO <= ?) ")
+                + r.getFilters()
                 + "  AND OPER.FECHA_APERTURA BETWEEN ? AND ? ";
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
@@ -52,14 +53,14 @@ public class IndicatorDAO {
             stmtConsulta.setTimestamp(4, new Timestamp(r.getFechaFiltro2().getTime()));
             resultado = stmtConsulta.executeQuery();
 
-            IndicatorHelper.completeRangoOperacionIndicador(resultado, indManager, r);
+            IndicatorHelper.completeRangoOperacionIndicador(resultado, r);
         } finally {
             JDBCUtil.close(resultado);
             JDBCUtil.close(stmtConsulta);
         }
     }
-
-    public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager indManager,
+    
+    public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager<?> indManager,
             IntervalIndicator ii, int puntosHistoria) throws SQLException {
 
         String[] sqlIndicador = indManager.queryPorcentajeCumplimientoIndicador();

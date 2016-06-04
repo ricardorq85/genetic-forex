@@ -34,7 +34,7 @@ public class ForexGeneticBD {
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 		long id = currentTimeMillis();
 		load().join();
-		logTime("ForexGeneticBD ProcesarOperaciones: " + id, 1);
+		logTime("ForexGeneticBD.java ProcesarOperaciones: " + id, 1);
 		StringBuilder name = new StringBuilder(getPropertyString(LOG_PATH));
 		name.append("ProcesarOperaciones_").append(id).append("_log.log");
 		PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());

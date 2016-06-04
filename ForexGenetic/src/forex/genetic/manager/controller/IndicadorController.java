@@ -17,7 +17,7 @@ public abstract class IndicadorController {
     /**
      *
      */
-    protected List<IndicadorManager> list;
+    protected static List<IndicadorManager> list;
 
     /**
      *
