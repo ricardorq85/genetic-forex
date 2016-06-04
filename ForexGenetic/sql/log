@@ -1,0 +1,33 @@
+materialized view MV_PIPS_DIARIOS_INDIVIDUO borrado.
+materialized view MV_PIPS_SEMANALES_INDIVIDUO borrado.
+
+Error que empieza en la línea: 3 del comando :
+DROP MATERIALIZED VIEW MV_PIP_MENSUALES_INDIVIDUO
+Informe de error -
+Error SQL: ORA-12003: la vista materializada "FOREX"."MV_PIP_MENSUALES_INDIVIDUO" no existe
+12003. 00000 -  "materialized view \"%s\".\"%s\" does not exist"
+*Cause:    The materialized view with the given owner and name does not exist.
+*Action:   Verify inputs and create a materialized view.
+materialized view MV_PIPS_DIARIOS_INDIVIDUO creado.
+materialized view MV_PIPS_SEMANALES_INDIVIDUO creado.
+
+Error que empieza en la línea: 30 del comando -
+CREATE MATERIALIZED VIEW MV_PIPS_MENSUALES_INDIVIDUO AS
+  SELECT ID_INDIVIDUO, TO_CHAR(FECHA_APERTURA, 'YYYYMM') MES, 
+    TRUNC(MIN(FECHA_APERTURA)) MIN_FECHA,
+    COUNT(*) NUM_OPERACIONES, SUM(PIPS) PIPS
+   FROM FOREX.OPERACION OPER
+  WHERE FECHA_CIERRE IS NOT NULL
+    AND EXISTS (
+      SELECT 1 FROM INDICADOR_INDIVIDUO II WHERE II.ID_INDIVIDUO=OPER.ID_INDIVIDUO
+    )  
+  GROUP BY ID_INDIVIDUO, TO_CHAR(FECHA_APERTURA, 'YYYYMM')
+Error en la línea de comandos : 34 Columna : 15
+Informe de error -
+Error SQL: ORA-12006: ya existe una vista materializada con el mismo nombre de usuario (user.name)
+12006. 00000 -  "a materialized view with the same user.name already exists"
+*Cause:    
+*Action:
+materialized view PDI_MVIEW_2013 creado.
+materialized view PSI_MVIEW_2013 creado.
+materialized view PMI_MVIEW_2013 creado.

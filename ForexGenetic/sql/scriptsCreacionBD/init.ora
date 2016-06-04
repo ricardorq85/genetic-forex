@@ -1,0 +1,77 @@
+##############################################################################
+# Copyright (c) 1991, 2001, 2002 by Oracle Corporation
+##############################################################################
+ 
+###########################################
+# Cache and I/O
+###########################################
+db_block_size=8192
+ 
+###########################################
+# File Configuration
+###########################################
+control_files=("D:\app\USER\oradata\FOREX2\control01.ctl", "D:\app\USER\fast_recovery_area\FOREX2\control02.ctl")
+db_recovery_file_dest="D:\app\USER\fast_recovery_area"
+db_recovery_file_dest_size=4322230272
+ 
+###########################################
+# Cursors and Library Cache
+###########################################
+open_cursors=300
+ 
+###########################################
+# Database Identification
+###########################################
+db_domain=""
+db_name="FOREX2"
+ 
+###########################################
+# SGA Memory
+###########################################
+sga_target=2539651072
+ 
+###########################################
+# NLS
+###########################################
+nls_language="SPANISH"
+nls_territory="SPAIN"
+ 
+###########################################
+# Processes and Sessions
+###########################################
+processes=150
+ 
+###########################################
+# Network Registration
+###########################################
+#local_listener=LISTENER_FOREX2
+ 
+###########################################
+# System Managed Undo and Rollback Segments
+###########################################
+undo_tablespace=UNDOTBS1
+ 
+###########################################
+# Security and Auditing
+###########################################
+audit_file_dest="D:\app\USER\admin\FOREX2\adump"
+audit_trail=db
+remote_login_passwordfile=EXCLUSIVE
+ 
+###########################################
+# Shared Server
+###########################################
+dispatchers="(PROTOCOL=TCP) (SERVICE=FOREX2XDB)"
+ 
+###########################################
+# Miscellaneous
+###########################################
+compatible=11.2.0.0.0
+diagnostic_dest=D:\app\USER
+ 
+###########################################
+# Sort, Hash Joins, Bitmap Indexes
+###########################################
+pga_aggregate_target=846200832
+ 
+ 

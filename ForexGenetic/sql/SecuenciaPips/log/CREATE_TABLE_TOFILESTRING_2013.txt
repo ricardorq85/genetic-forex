@@ -1,0 +1,6 @@
+DROP TABLE TOFILESTRING_2D2S1M_2013
+           *
+ERROR en línea 1:
+ORA-00942: la tabla o vista no existe 
+
+

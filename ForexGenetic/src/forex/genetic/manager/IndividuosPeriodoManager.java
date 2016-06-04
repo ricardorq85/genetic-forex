@@ -66,6 +66,8 @@ public class IndividuosPeriodoManager {
 
 		Date fechaFinProceso = parametroFechaFinProceso;
 		Date fechaInicioProceso = DateUtil.adicionarMes(fechaFinProceso, -mesesProceso);
+		logTime("Fecha Inicio Proceso:" + DateUtil.getDateString(fechaInicioProceso) +
+				"; Fecha Fin Proceso:" +  DateUtil.getDateString(fechaFinProceso), 1);
 		while (fechaInicioProceso.after(this.parametroFechaInicioProceso)) {
 			int filtroPipsTotales = (paramBase == null) ? MINIMO_TOTALES : (paramBase.getFiltroPipsTotales());
 			while (filtroPipsTotales < MAXIMO_TOTALES) {
@@ -80,8 +82,8 @@ public class IndividuosPeriodoManager {
 								ParametroOperacionPeriodo param = new ParametroOperacionPeriodo(filtroPipsXSemana,
 										filtroPipsXMes, filtroPipsXAnyo, filtroPipsTotales,
 										ORDERS[random.nextInt(ORDERS.length)], ORDERS[random.nextInt(ORDERS.length)]);
-								param.setFechaInicial(this.parametroFechaInicioProceso);
-								param.setFechaFinal(this.parametroFechaFinProceso);
+								param.setFechaInicial(fechaInicioProceso);
+								param.setFechaFinal(fechaFinProceso);
 								param.setTipoOperacion(TIPO_OPERACION[i]);
 								logTime(param.toString(), 1);
 								if (param.isFiltroValido()) {
