@@ -40,10 +40,12 @@ public class DuplicadosManager {
             EstrategiaDAO estrategiaDAO = new EstrategiaDAO(conn);
 
             List<Individuo> individuosPadres = individuoDAO.consultarIndividuosPadreRepetidos(tipoProceso);
+            int count = 0;
             while ((individuosPadres != null) && (!individuosPadres.isEmpty())) {
                 for (int i = 0; i < individuosPadres.size(); i++) {
                     Individuo individuoPadre = individuosPadres.get(i);
-                    List<Individuo> individuosRepetidos = individuoDAO.consultarIndividuosRepetidos(individuoPadre);
+                    LogUtil.logTime("Individuo Padre: " + individuoPadre.getId(), 1);
+                    List<Individuo> individuosRepetidos = individuoDAO.consultarIndividuosRepetidos(individuoPadre);                    
                     for (int j = 0; j < individuosRepetidos.size(); j++) {
                         Individuo individuo = individuosRepetidos.get(j);
                         LogUtil.logTime("Individuo: " + individuo.getId(), 1);
@@ -57,6 +59,8 @@ public class DuplicadosManager {
                         procesoDAO.insertProcesoRepetidos(individuoPadre.getId(), tipoProceso);
                     }
                     conn.commit();
+                    count += individuosRepetidos.size();
+                    LogUtil.logTime("Individuos borrados: " + count, 1);
                 }
                 individuosPadres = individuoDAO.consultarIndividuosPadreRepetidos(tipoProceso);
             }

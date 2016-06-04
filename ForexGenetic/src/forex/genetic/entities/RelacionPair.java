@@ -4,8 +4,9 @@
  */
 package forex.genetic.entities;
 
-import forex.genetic.util.Constants.OperationType;
 import java.io.Serializable;
+
+import forex.genetic.util.Constants.OperationType;
 
 /**
  *

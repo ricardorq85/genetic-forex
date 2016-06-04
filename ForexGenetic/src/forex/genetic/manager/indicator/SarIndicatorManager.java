@@ -24,7 +24,11 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
         this.id = "SAR";
     }
 
-    /**
+    public SarIndicatorManager(boolean priceDependence, boolean obligatory, String name) {
+    	super(priceDependence, obligatory, name);
+	}
+
+	/**
      *
      * @return
      */
@@ -106,4 +110,23 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
         double value = indicator.getSar();
         return value;
     }
+
+    @Override
+    public String[] queryRangoOperacionIndicador() {
+        String[] s = new String[2];
+        s[0] = " MIN(DH.SAR-OPER.OPEN_PRICE) INTERVALO_INFERIOR, MAX(DH.SAR-OPER.OPEN_PRICE) INTERVALO_SUPERIOR, "
+                + " ROUND(AVG(DH.SAR-OPER.OPEN_PRICE), 5) PROMEDIO, ";
+        s[1] = " DH.SAR IS NOT NULL ";
+        return s;
+    }
+
+    @Override
+    public String[] queryPorcentajeCumplimientoIndicador() {
+        String[] s = new String[1];
+        s[0] = " ((DH.SAR-DH.LOW) BETWEEN ? AND ? "
+                + "  OR (DH.SAR-DH.HIGH) BETWEEN ? AND ? ) ";
+        return s;
+    }    
+    
 }
+

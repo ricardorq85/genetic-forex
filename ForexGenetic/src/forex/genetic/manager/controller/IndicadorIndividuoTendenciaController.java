@@ -11,7 +11,7 @@ import java.util.Collections;
 
 /**
  *
- * @author USER
+ * @author ricardorq85
  */
 public class IndicadorIndividuoTendenciaController extends IndicadorController {
 

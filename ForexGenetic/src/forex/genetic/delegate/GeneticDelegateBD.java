@@ -20,6 +20,7 @@ public class GeneticDelegateBD extends GeneticDelegate
      * @throws FileNotFoundException
      */
     public GeneticDelegateBD() throws FileNotFoundException {
+    	super(false);
     }
 
     /**

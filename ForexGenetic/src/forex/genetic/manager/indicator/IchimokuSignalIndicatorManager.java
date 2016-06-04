@@ -15,9 +15,10 @@ import forex.genetic.entities.indicator.Indicator;
  */
 public class IchimokuSignalIndicatorManager extends IchimokuIndicatorManager {
 
-    /**
-     *
-     */
+	public IchimokuSignalIndicatorManager(boolean priceDependence, boolean obligatory, String name) {
+    	super(priceDependence, obligatory, name);
+	}
+	
     public IchimokuSignalIndicatorManager() {
         super(false, false, "IchiSignal");
         this.id = "ICHIMOKU_SIGNAL";
@@ -81,5 +82,24 @@ public class IchimokuSignalIndicatorManager extends IchimokuIndicatorManager {
     public double getValue(Ichimoku indicator, Point prevPoint, Point point) {
         double value = indicator.getChinkouSpan() * (indicator.getTenkanSen() - indicator.getKijunSen());
         return value;
+    }
+
+    @Override
+    public String[] queryRangoOperacionIndicador() {
+        String[] s = new String[2];
+        s[0] = "  MIN((DH.ICHIMOKUCHINKOUSPAN*(DH.ICHIMOKUTENKANSEN-DH.ICHIMOKUKIJUNSEN))) INTERVALO_INFERIOR, "
+                + " MAX((DH.ICHIMOKUCHINKOUSPAN*(DH.ICHIMOKUTENKANSEN-DH.ICHIMOKUKIJUNSEN))) INTERVALO_SUPERIOR, "
+                + " ROUND(AVG((DH.ICHIMOKUCHINKOUSPAN*(DH.ICHIMOKUTENKANSEN-DH.ICHIMOKUKIJUNSEN))), 5) PROMEDIO, ";
+        s[1] = " DH.ICHIMOKUCHINKOUSPAN IS NOT NULL "
+                + " AND DH.ICHIMOKUTENKANSEN IS NOT NULL "
+                + " AND DH.ICHIMOKUKIJUNSEN IS NOT NULL ";
+        return s;
+    }
+
+    @Override
+    public String[] queryPorcentajeCumplimientoIndicador() {
+        String[] s = new String[1];
+        s[0] = " ((DH.ICHIMOKUCHINKOUSPAN*(DH.ICHIMOKUTENKANSEN-DH.ICHIMOKUKIJUNSEN)) BETWEEN ? AND ?) ";
+        return s;
     }
 }

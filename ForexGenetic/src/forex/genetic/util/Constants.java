@@ -410,6 +410,12 @@ public class Constants {
      */
     public static final String QUERY_TENDENCIA_GENETICA = "QUERY_TENDENCIA_GENETICA";
 
+    public static final String INITIAL_PIPS_RANGOOPERACIONINDICADOR = "INITIAL_PIPS_RANGOOPERACIONINDICADOR";
+    
+    public static final String INITIAL_RETROCESO_RANGOOPERACIONINDICADOR = "INITIAL_RETROCESO_RANGOOPERACIONINDICADOR";
+    
+    public static final String INITIAL_MESES_RANGOOPERACIONINDICADOR = "INITIAL_MESES_RANGOOPERACIONINDICADOR";
+    
     /**
      *
      */
@@ -440,97 +446,31 @@ public class Constants {
      */
     public enum IndividuoType {
 
-        /**
-         *
-         */
         INITIAL,
-
-        /**
-         *
-         */
         CROSSOVER,
-
-        /**
-         *
-         */
         MUTATION,
-
-        /**
-         *
-         */
-        OPTIMIZED
+        OPTIMIZED,
+        INDICADOR_GANADOR
     }
-
-    /**
-     *
-     */
     public enum PriceType {
 
-        /**
-         *
-         */
         CLOSE,
-
-        /**
-         *
-         */
         AVERAGE,
-
-        /**
-         *
-         */
         COMPARE_CLOSE,
-
-        /**
-         *
-         */
         COMPARE_AVERAGE
     }
 
-    /**
-     *
-     */
     public enum OperationType {
 
-        /**
-         *
-         */
         BUY,
-
-        /**
-         *
-         */
         SELL;
     }
 
-    /**
-     *
-     */
     public enum FortalezaType {
-
-        /**
-         *
-         */
         Pips,
-
-        /**
-         *
-         */
         Stable,
-
-        /**
-         *
-         */
         Embudo,
-
-        /**
-         *
-         */
         Pattern,
-
-        /**
-         *
-         */
         PatternAdvanced;
     }
 }

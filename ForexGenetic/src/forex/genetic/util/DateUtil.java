@@ -28,6 +28,13 @@ public class DateUtil {
         return gc.getTime();
     }
 
+    public static Date adicionarMes(Date fecha, int meses) {
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(fecha);
+        gc.add(Calendar.MONTH, meses);
+        return gc.getTime();
+    }
+
     /**
      *
      * @param fecha
@@ -203,4 +210,5 @@ public class DateUtil {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm.ss");
         return ((fecha == null) ? null : formatter.format(fecha));
     }
+
 }

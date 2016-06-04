@@ -5,7 +5,6 @@
 package forex.genetic.entities;
 
 import java.util.Date;
-import java.util.Objects;
 
 /**
  *

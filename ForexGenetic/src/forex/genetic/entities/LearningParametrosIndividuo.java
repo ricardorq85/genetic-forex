@@ -4,11 +4,12 @@
  */
 package forex.genetic.entities;
 
-import forex.genetic.factory.ControllerFactory;
-import forex.genetic.manager.controller.IndicadorController;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import forex.genetic.factory.ControllerFactory;
+import forex.genetic.manager.controller.IndicadorController;
 
 /**
  *

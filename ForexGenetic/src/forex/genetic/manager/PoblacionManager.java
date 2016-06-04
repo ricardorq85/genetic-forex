@@ -69,7 +69,8 @@ public class PoblacionManager {
     private void generatePoblacionInicial() {
         poblacion = new Poblacion();
         int initialIndividuos = PropertiesManager.getPropertyInt(Constants.INITIAL_INDIVIDUOS);
-        List<IndividuoEstrategia> individuos = new Vector<IndividuoEstrategia>(initialIndividuos);
+        List<IndividuoEstrategia> individuos;
+        individuos = new Vector<>(initialIndividuos);
         IndividuoEstrategia individuo = null;
         Indicator openIndicator = null;
         Indicator closeIndicator = null;

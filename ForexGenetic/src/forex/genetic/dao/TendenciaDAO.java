@@ -139,15 +139,16 @@ public class TendenciaDAO {
     /**
      *
      * @param idIndividuo
+     * @return 
      * @throws SQLException
      */
-    public void deleteTendencia(String idIndividuo) throws SQLException {
+    public int deleteTendencia(String idIndividuo) throws SQLException {
         String sql = "DELETE FROM TENDENCIA WHERE ID_INDIVIDUO=?";
         PreparedStatement stmtConsulta = null;
         try {
             stmtConsulta = this.connection.prepareStatement(sql);
             stmtConsulta.setString(1, idIndividuo);
-            stmtConsulta.executeUpdate();
+            return stmtConsulta.executeUpdate();
         } finally {
             JDBCUtil.close(stmtConsulta);
         }

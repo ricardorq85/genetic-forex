@@ -4,8 +4,6 @@
  */
 package forex.genetic.entities;
 
-import java.io.Serializable;
-
 /**
  *
  * @author ricardorq85

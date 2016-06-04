@@ -4,10 +4,11 @@
  */
 package forex.genetic.entities;
 
-import forex.genetic.util.Constants;
-import forex.genetic.util.DateUtil;
 import java.io.Serializable;
 import java.util.Date;
+
+import forex.genetic.util.Constants;
+import forex.genetic.util.DateUtil;
 
 /**
  *

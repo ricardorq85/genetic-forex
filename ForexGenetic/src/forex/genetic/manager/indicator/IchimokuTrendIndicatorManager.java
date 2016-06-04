@@ -15,9 +15,10 @@ import forex.genetic.entities.indicator.Indicator;
  */
 public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
 
-    /**
-     *
-     */
+	public IchimokuTrendIndicatorManager(boolean priceDependence, boolean obligatory, String name) {
+    	super(priceDependence, obligatory, name);
+	}
+	
     public IchimokuTrendIndicatorManager() {
         super(true, false, "IchiTrend");
         this.id = "ICHIMOKU_TREND";
@@ -97,4 +98,23 @@ public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
         double value = (indicator.getSenkouSpanA() - indicator.getSenkouSpanB());
         return value;
     }
+
+    @Override
+    public String[] queryRangoOperacionIndicador() {
+        String[] s = new String[2];
+        s[0] = " MIN(DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-OPER.OPEN_PRICE) INTERVALO_INFERIOR, "
+                + " MAX(DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-OPER.OPEN_PRICE) INTERVALO_SUPERIOR, "
+                + "  ROUND(AVG(DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-OPER.OPEN_PRICE), 5) PROMEDIO, ";
+        s[1] = " DH.ICHIMOKUSENKOUSPANA IS NOT NULL AND DH.ICHIMOKUSENKOUSPANB IS NOT NULL ";
+        return s;
+    }
+
+    @Override
+    public String[] queryPorcentajeCumplimientoIndicador() {
+        String[] s = new String[1];
+        s[0] = " ((DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-DH.LOW) BETWEEN ? AND ? "
+                + "  OR (DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-DH.HIGH) BETWEEN ? AND ?) ";
+        return s;
+    }
+
 }

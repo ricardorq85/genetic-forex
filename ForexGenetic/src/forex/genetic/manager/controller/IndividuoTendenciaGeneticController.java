@@ -7,7 +7,7 @@ package forex.genetic.manager.controller;
 
 /**
  *
- * @author USER
+ * @author ricardorq85
  */
 public class IndividuoTendenciaGeneticController {
     

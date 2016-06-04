@@ -15,9 +15,10 @@ import forex.genetic.entities.indicator.Indicator;
  */
 public class BollingerIndicatorManager extends IntervalIndicatorManager<Bollinger> {
 
-    /**
-     *
-     */
+	public BollingerIndicatorManager(boolean priceDependence, boolean obligatory, String name) {
+    	super(priceDependence, obligatory, name);
+	}
+
     public BollingerIndicatorManager() {
         super(false, "Bollinger");
         this.id = "BOLLINGER";
@@ -66,21 +67,6 @@ public class BollingerIndicatorManager extends IntervalIndicatorManager<Bollinge
         return intervalManager.operate(bollingerBandIndividuo.getInterval(), iBollinger.getUpper() - iBollinger.getLower(), 0.0);
     }
 
-/*    public Indicator optimize(Bollinger individuo, Bollinger optimizedIndividuo, Bollinger indicator, Point point) {
-        Bollinger optimized = this.getIndicatorInstance();
-        double value = indicator.getUpper() - indicator.getLower();
-        Interval generated = intervalManager.generate(value, 0.0, 0.0);
-        intervalManager.round(generated);
-        Interval intersected = IntervalManager.intersect(generated, individuo.getInterval());
-        Interval optimizedInterval = intervalManager.optimize((optimizedIndividuo == null) ? null : optimizedIndividuo.getInterval(), intersected);
-        optimized.setInterval(optimizedInterval);
-        if (optimized.getInterval() == null) {
-            optimized = optimizedIndividuo;
-        }
-        return optimized;
-    }
-*/
-
     /**
      *
      * @param indicator
@@ -88,10 +74,26 @@ public class BollingerIndicatorManager extends IntervalIndicatorManager<Bollinge
      * @param point
      * @return
      */
-    
     @Override
     public double getValue(Bollinger indicator, Point prevPoint, Point point) {
         double value = indicator.getUpper() - indicator.getLower();
         return value;
     }
+
+    @Override
+    public String[] queryRangoOperacionIndicador() {
+        String[] s = new String[2];
+        s[0] = " MIN(DH.BOLLINGER_UPPER-DH.BOLLINGER_LOWER) INTERVALO_INFERIOR, MAX(DH.BOLLINGER_UPPER-DH.BOLLINGER_LOWER) INTERVALO_SUPERIOR, "
+                + "  ROUND(AVG(DH.BOLLINGER_UPPER-DH.BOLLINGER_LOWER), 5) PROMEDIO, ";
+        s[1] = " DH.BOLLINGER_UPPER IS NOT NULL AND DH.BOLLINGER_LOWER IS NOT NULL ";
+        return s;
+    }
+
+    @Override
+    public String[] queryPorcentajeCumplimientoIndicador() {
+        String[] s = new String[1];
+        s[0] = " ((DH.BOLLINGER_UPPER-DH.BOLLINGER_LOWER) BETWEEN ? AND ?) ";
+        return s;
+    }
+
 }

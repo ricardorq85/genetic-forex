@@ -17,6 +17,7 @@ import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -25,10 +26,15 @@ import java.util.List;
  * @author ricardorq85
  */
 public class ProcesarIndividuoThreadBD extends Thread {
-    
+
     private List<Individuo> individuos = null;
     private Connection conn = null;
-    
+    private DatoHistoricoDAO daoHistorico;
+    private OperacionesDAO daoOperaciones;
+    private IndividuoDAO daoIndividuo;
+    private ProcesoPoblacionDAO daoProceso;
+    private Date maxFechaHistorico = null;
+
     /**
      *
      * @param name
@@ -38,11 +44,17 @@ public class ProcesarIndividuoThreadBD extends Thread {
         super(name);
         this.individuos = individuos;
     }
-    
+
     @Override
     public void run() {
         try {
+            LogUtil.logTime("Inicia proceso para " + super.getName(), 1);
             conn = JDBCUtil.getConnection();
+            daoHistorico = new DatoHistoricoDAO(conn);
+            daoOperaciones = new OperacionesDAO(conn);
+            daoIndividuo = new IndividuoDAO(conn);
+            daoProceso = new ProcesoPoblacionDAO(conn);
+            this.maxFechaHistorico = daoHistorico.getFechaHistoricaMaxima();
             for (Individuo individuo : individuos) {
                 try {
                     procesarIndividuo(individuo);
@@ -50,51 +62,125 @@ public class ProcesarIndividuoThreadBD extends Thread {
                     conn.rollback();
                     ex.printStackTrace();
                     System.err.println(ex.getMessage() + " " + individuo.getId());
+                } catch (ParseException ex) {
+                    conn.rollback();
+                    ex.printStackTrace();
+                    System.err.println(ex.getMessage() + " " + individuo.getId());
                 }
             }
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
-        }
+        } finally {
+        	JDBCUtil.close(conn);
+		}
     }
-    
-    private void procesarIndividuo(Individuo individuo) throws SQLException, ClassNotFoundException {
-        DatoHistoricoDAO daoHistorico = new DatoHistoricoDAO(conn);
-        OperacionesDAO daoOperaciones = new OperacionesDAO(conn);
-        IndividuoDAO daoIndividuo = new IndividuoDAO(conn);
-        ProcesoPoblacionDAO daoProceso = new ProcesoPoblacionDAO(conn);
-        
-        List<Point> points = daoHistorico.consultarHistorico(individuo.getFechaHistorico());
+
+    private int proximaFechaApertura(List<Date> fechas, Date fechaInicial, int index) {
+        int new_index = index;
+        while ((fechaInicial != null) && (new_index < fechas.size()) && (fechas.get(new_index).before(fechaInicial))) {
+            new_index++;
+        }
+        return new_index;
+    }
+
+    private void procesarIndividuo(Individuo individuo) throws SQLException, ClassNotFoundException, ParseException {
+        List<Point> points;
+        Date fechaInicialHistorico;
+        int indexFecha = 0;
+        String viewName = "IND_COL_" + super.getName();
+        int duracionPromedio = Math.max(5000, daoIndividuo.duracionPromedioMinutos(individuo.getId()));
+        daoIndividuo.crearVistaIndicadoresIndividuo(viewName, individuo.getId());
+        LogUtil.logTime("Vista creada: " + viewName + ":" + individuo.getId(), 1);
+        List<Date> fechas = daoIndividuo.consultarPuntosApertura(viewName, individuo.getFechaHistorico());
+        LogUtil.logTime(super.getName() + ": Fechas consultadas: " + fechas.size() + " :" + individuo.getId(), 1);
+        if (individuo.getFechaApertura() == null) {
+            if (fechas.isEmpty()) {
+                LogUtil.logTime(super.getName() + ": Individuo sin operaciones: " + individuo.getId(), 1);
+                this.updateProceso(maxFechaHistorico, individuo.getId());
+                conn.commit();
+                return;
+            } else {
+                indexFecha = proximaFechaApertura(fechas, individuo.getFechaHistorico(), indexFecha);
+                fechaInicialHistorico = fechas.get(indexFecha);
+                points = daoHistorico.consultarHistorico(fechaInicialHistorico, DateUtil.adicionarMinutos(fechaInicialHistorico, duracionPromedio));
+            }
+        } else {
+            fechaInicialHistorico = individuo.getFechaHistorico();
+            Date nextFechaHistorico = daoHistorico.getFechaHistoricaMinima(fechaInicialHistorico);
+            points = daoHistorico.consultarHistorico(fechaInicialHistorico,
+                    DateUtil.adicionarMinutos(nextFechaHistorico, duracionPromedio));
+        }
+
         daoIndividuo.consultarDetalleIndividuoProceso(individuo);
         OperacionesManager operacionesManager = new OperacionesManager(conn);
-        while ((points != null) && (!points.isEmpty())) {
-            Date lastDate = points.get(points.size() - 1).getDate();
-            LogUtil.logTime("Procesar Individuo;" + this.getName() + ";" + individuo.getId() + ";lastDate=" + 
-                    DateUtil.getDateString(lastDate), 1);
-            List<Order> ordenes = operacionesManager.calcularOperaciones(points, individuo);
-            Order updateOrder = null;
-            if (individuo.getFechaApertura() != null) {
-                if (ordenes.get(0).getCloseDate() != null) {
-                    daoOperaciones.updateOperacion(individuo, ordenes.get(0), individuo.getFechaApertura());
-                    updateOrder = ordenes.get(0);
+        Date lastDate = fechaInicialHistorico;
+        if ((points != null) && (!points.isEmpty())) {
+            lastDate = points.get(points.size() - 1).getDate();
+        }
+        while ((lastDate.before(maxFechaHistorico))||((lastDate.equals(maxFechaHistorico)))) {
+            if ((points != null) && (!points.isEmpty())) {
+                lastDate = points.get(points.size() - 1).getDate();
+                LogUtil.logTime("Procesar Individuo;" + this.getName() + ";" + individuo.getId() + ";lastDate="
+                        + DateUtil.getDateString(lastDate), 1);
+                List<Order> ordenes = operacionesManager.calcularOperaciones(points, individuo);
+                Order updateOrder = null;
+                if (individuo.getFechaApertura() != null) {
+                    if (ordenes.get(0).getCloseDate() != null) {
+                        daoOperaciones.updateOperacion(individuo, ordenes.get(0), individuo.getFechaApertura());
+                        updateOrder = ordenes.get(0);
+                    }
+                    ordenes.remove(0);
+                    individuo.setFechaApertura(null);
                 }
-                ordenes.remove(0);
-                individuo.setFechaApertura(null);
+                daoOperaciones.insertOperaciones(individuo, ordenes);
+                this.updateProceso(lastDate, individuo.getId());
+                conn.commit();
+                if (updateOrder != null) {
+                    ordenes.add(updateOrder);
+                }
+                individuo.setOrdenes(ordenes);
+                operacionesManager.procesarMaximosReproceso(individuo);
+                if (individuo.getCurrentOrder() != null) {
+                    individuo.setFechaApertura(individuo.getCurrentOrder().getOpenDate());
+                }
+            } else {
+                lastDate = fechaInicialHistorico;
             }
-            daoOperaciones.insertOperaciones(individuo, ordenes);
-            int processed = daoProceso.updateProceso(lastDate, individuo.getId());
-            if (processed == 0) {
-                daoProceso.insertProceso(lastDate, individuo.getId());
+            if (individuo.getFechaApertura() == null) {
+                int index = proximaFechaApertura(fechas, lastDate, indexFecha);
+                if ((index == indexFecha) || (index >= fechas.size())) {
+                    this.updateProceso(maxFechaHistorico, individuo.getId());
+                    conn.commit();
+                    break;
+                } else {
+                    indexFecha = index;
+                    fechaInicialHistorico = fechas.get(indexFecha);
+                    points = daoHistorico.consultarHistorico(fechaInicialHistorico, DateUtil.adicionarMinutos(fechaInicialHistorico, duracionPromedio));
+                }
+            } else {
+                fechaInicialHistorico = getLastDate(lastDate, fechaInicialHistorico);
+                Date nextFechaHistorico = daoHistorico.getFechaHistoricaMinima(fechaInicialHistorico);
+                if (nextFechaHistorico != null) {
+                    points = daoHistorico.consultarHistorico(fechaInicialHistorico,
+                            DateUtil.adicionarMinutos(nextFechaHistorico, duracionPromedio));
+                }
             }
-            conn.commit();
-            if (updateOrder != null) {
-                ordenes.add(updateOrder);
-            }
-            individuo.setOrdenes(ordenes);
-            operacionesManager.procesarMaximosReproceso(individuo);
-            points = daoHistorico.consultarHistorico(lastDate);
-            if (individuo.getCurrentOrder() != null) {
-                individuo.setFechaApertura(individuo.getCurrentOrder().getOpenDate());
-            }
+            duracionPromedio = Math.max(3000, daoIndividuo.duracionPromedioMinutos(individuo.getId()));
+        }
+    }
+
+    private void updateProceso(Date fechaHistorico, String idIndividuo) throws SQLException {
+        int processed = daoProceso.updateProceso(fechaHistorico, idIndividuo);
+        if (processed == 0) {
+            daoProceso.insertProceso(fechaHistorico, idIndividuo);
+        }
+    }
+
+    private Date getLastDate(Date lastDate, Date fechaInicialHistorico) {
+        if (lastDate.equals(fechaInicialHistorico)) {
+            return (DateUtil.adicionarMinutos(lastDate, 1));
+        } else {
+            return lastDate;
         }
     }
 }

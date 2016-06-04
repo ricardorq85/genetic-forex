@@ -32,11 +32,15 @@ public class DatoHistoricoFacade {
             for (int i = 0; i < points.size(); i++) {
                 Point point = points.get(i);
                 try {
-                    dao.insertDatoHistorico(point);
+                    if (dao.existHistorico(point.getDate())) {
+                        dao.updateDatoHistorico(point);
+                    } else {
+                        dao.insertDatoHistorico(point);
+                    }
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                     countError++;
-                }                
+                }
             }
             conn.commit();
             LogUtil.logTime("Datos cargados=" + (points.size() - countError) + ";Datos con error=" + countError, 1);

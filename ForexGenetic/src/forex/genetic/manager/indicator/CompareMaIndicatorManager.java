@@ -15,9 +15,10 @@ import forex.genetic.entities.indicator.Indicator;
  */
 public class CompareMaIndicatorManager extends IntervalIndicatorManager<Average> {
 
-    /**
-     *
-     */
+    public CompareMaIndicatorManager(boolean priceDependence, boolean obligatory, String name) {
+        super(priceDependence, obligatory, name);
+    }
+
     public CompareMaIndicatorManager() {
         super(false, false, "MaCompare");
         this.id = "COMPARE_MA";
@@ -80,4 +81,21 @@ public class CompareMaIndicatorManager extends IntervalIndicatorManager<Average>
         value = indicator.getAverage() - prevPoint.getCloseCompare();
         return value;
     }
+
+    @Override
+    public String[] queryRangoOperacionIndicador() {
+        String[] s = new String[2];
+        s[0] = " MIN(DH.AVERAGE_COMPARE-DH.COMPARE_VALUE) INTERVALO_INFERIOR, MAX(DH.AVERAGE_COMPARE-DH.COMPARE_VALUE) INTERVALO_SUPERIOR, "
+                + " ROUND(AVG(DH.AVERAGE_COMPARE-DH.COMPARE_VALUE), 5) PROMEDIO, ";
+        s[1] = " DH.COMPARE_VALUE IS NOT NULL AND DH.AVERAGE_COMPARE IS NOT NULL ";
+        return s;
+    }
+
+    @Override
+    public String[] queryPorcentajeCumplimientoIndicador() {
+        String[] s = new String[1];
+        s[0] = " ((DH.AVERAGE_COMPARE-DH.COMPARE_VALUE) BETWEEN ? AND ?) ";
+        return s;
+    }
+
 }

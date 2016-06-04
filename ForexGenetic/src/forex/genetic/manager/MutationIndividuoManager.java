@@ -103,7 +103,7 @@ public class MutationIndividuoManager extends MutationManager {
                                 }
                             }
                         } else {
-                            if ((random.nextDouble() < 0.5) || (openIndicator == null)) {
+                            if ((random.nextDouble() < 10.5) || (openIndicator == null)) {
                                 indHijo = indicatorManager.mutate(openIndicator);
                             }
                         }

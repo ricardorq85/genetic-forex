@@ -14,7 +14,7 @@ import forex.genetic.manager.controller.IndicadorIndividuoTendenciaController;
 
 /**
  *
- * @author USER
+ * @author ricardorq85
  */
 public class ControllerFactory {
 
@@ -43,12 +43,13 @@ public class ControllerFactory {
         if (type == null) {
             return null;
         }
-        if (ControllerType.Individuo.equals(type)) {
-            return new IndicadorIndividuoController();
-        } else if (ControllerType.IndividuoTendencia.equals(type)) {
-            return new IndicadorIndividuoTendenciaController();
-        } else {
-            return null;
+        switch (type) {
+            case Individuo:
+                return new IndicadorIndividuoController();
+            case IndividuoTendencia:
+                return new IndicadorIndividuoTendenciaController();
+            default:
+                return null;
         }
     }
 

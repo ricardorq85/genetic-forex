@@ -219,18 +219,19 @@ public class ProcesoPoblacionDAO {
     /**
      *
      * @param idIndividuo
+     * @return 
      * @throws SQLException
      */
-    public void deleteProceso(String idIndividuo) throws SQLException {
+    public int deleteProceso(String idIndividuo) throws SQLException {
         String sql = "DELETE FROM PROCESO WHERE ID_INDIVIDUO=?";
         PreparedStatement stmtConsulta = null;
         try {
             stmtConsulta = this.connection.prepareStatement(sql);
             stmtConsulta.setString(1, idIndividuo);
-            stmtConsulta.executeUpdate();
+            return stmtConsulta.executeUpdate();
         } finally {
             JDBCUtil.close(stmtConsulta);
-        }
+        }        
     }
 
     /**

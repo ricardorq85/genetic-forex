@@ -5,33 +5,35 @@
 package forex.genetic;
 
 import static forex.genetic.delegate.GeneticDelegate.setId;
-import forex.genetic.delegate.GeneticTesterDelegate;
-import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.entities.Poblacion;
-import static forex.genetic.factory.ControllerFactory.ControllerType.Individuo;
 import static forex.genetic.factory.ControllerFactory.createGeneticController;
+import static forex.genetic.factory.ControllerFactory.ControllerType.Individuo;
 import static forex.genetic.manager.PropertiesManager.getOperationType;
 import static forex.genetic.manager.PropertiesManager.getPair;
 import static forex.genetic.manager.PropertiesManager.getPropertyBoolean;
 import static forex.genetic.manager.PropertiesManager.getPropertyString;
 import static forex.genetic.manager.PropertiesManager.getSerialicePath;
 import static forex.genetic.manager.PropertiesManager.load;
-import forex.genetic.manager.controller.GeneticController;
-import forex.genetic.manager.io.SerializationPoblacionManager;
-import forex.genetic.thread.OptimizationThread;
 import static forex.genetic.util.Constants.LOG_PATH;
 import static forex.genetic.util.Constants.OPTIMIZE_TEST;
 import static forex.genetic.util.Constants.TEST_FILE;
 import static forex.genetic.util.Constants.TEST_STRATEGY;
-import java.io.File;
 import static java.io.File.separatorChar;
-import java.io.IOException;
-import java.io.PrintStream;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.setErr;
 import static java.lang.System.setOut;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.util.logging.Logger;
+
+import forex.genetic.delegate.GeneticTesterDelegate;
+import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.Poblacion;
+import forex.genetic.manager.controller.GeneticController;
+import forex.genetic.manager.io.SerializationPoblacionManager;
+import forex.genetic.thread.OptimizationThread;
 
 /**
  *

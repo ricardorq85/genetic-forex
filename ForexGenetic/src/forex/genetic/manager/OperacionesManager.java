@@ -9,6 +9,7 @@ import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.manager.controller.OperationController;
 import forex.genetic.util.Constants;
+import forex.genetic.util.Constants.OperationType;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.NumberUtil;
 import java.sql.Connection;
@@ -24,7 +25,7 @@ import java.util.List;
 public class OperacionesManager {
 
     private Connection conn = null;
-    private final OperationController indicatorController = new OperationController();
+    private final OperationController operationController = new OperationController();
 
     /**
      *
@@ -60,14 +61,14 @@ public class OperacionesManager {
     public double calcularPips(List<Point> points, int index, Order operacion) {
         double pips = 0.0D;
         double stopLossPips = (operacion.getTipo().equals(Constants.OperationType.BUY))
-                ? (indicatorController.calculateStopLossPrice(points, index, Constants.OperationType.BUY)
+                ? (operationController.calculateStopLossPrice(points, index, Constants.OperationType.BUY)
                 - operacion.getOpenOperationValue()) * PropertiesManager.getPairFactor()
-                : (-indicatorController.calculateStopLossPrice(points, index, Constants.OperationType.SELL)
+                : (-operationController.calculateStopLossPrice(points, index, Constants.OperationType.SELL)
                 + operacion.getOpenOperationValue()) * PropertiesManager.getPairFactor();
         double takeProfitPips = (operacion.getTipo().equals(Constants.OperationType.BUY))
-                ? (indicatorController.calculateTakePrice(points, index, Constants.OperationType.BUY)
+                ? (operationController.calculateTakePrice(points, index, Constants.OperationType.BUY)
                 - operacion.getOpenOperationValue()) * PropertiesManager.getPairFactor()
-                : (-indicatorController.calculateTakePrice(points, index, Constants.OperationType.SELL)
+                : (-operationController.calculateTakePrice(points, index, Constants.OperationType.SELL)
                 + operacion.getOpenOperationValue()) * PropertiesManager.getPairFactor();
 
         if (stopLossPips < 0) {
@@ -90,6 +91,7 @@ public class OperacionesManager {
         double takeProfit = individuo.getTakeProfit();
         double stopLoss = individuo.getStopLoss();
         double lot = individuo.getLot();
+        OperationType tipoOperacionIndividuo = individuo.getTipoOperacion();
 
         boolean hasMinimumCriterion = true;
         boolean activeOperation = (individuo.getFechaApertura() != null);
@@ -98,10 +100,10 @@ public class OperacionesManager {
         double openOperationValue = (activeOperation) ? currentOrder.getOpenOperationValue() : 0.0D;
         for (int i = 1; (i < points.size() && hasMinimumCriterion); i++) {
             if (!activeOperation) {
-                boolean operate = indicatorController.operateOpen(individuo, points, i);
+                boolean operate = operationController.operateOpen(individuo, points, i);
                 if (operate) {
                     //boolean operate2 = indicatorController.operateOpen(individuo, points, i);
-                    openOperationValue = indicatorController.calculateOpenPrice(individuo, points, i);
+                    openOperationValue = operationController.calculateOpenPrice(individuo, points, i);
                     individuo.setOpenOperationValue(openOperationValue);
                     operate = !Double.isNaN(openOperationValue);
                     if (operate) {
@@ -114,27 +116,28 @@ public class OperacionesManager {
                         currentOrder.setLot(lot);
                         currentOrder.setTakeProfit(takeProfit);
                         currentOrder.setStopLoss(stopLoss);
+                        currentOrder.setTipo(individuo.getTipoOperacion());
                         individuo.setCurrentOrder(currentOrder);
                     }
                 }
             } else {
                 Point closePoint = points.get(i);
                 double pips = 0.0D;
-                double stopLossPips = (PropertiesManager.isBuy())
-                        ? (indicatorController.calculateStopLossPrice(points, i, Constants.OperationType.BUY) - openOperationValue) * PropertiesManager.getPairFactor()
-                        : (-indicatorController.calculateStopLossPrice(points, i, Constants.OperationType.SELL) + openOperationValue) * PropertiesManager.getPairFactor();
-                double takeProfitPips = (PropertiesManager.isBuy())
-                        ? (indicatorController.calculateTakePrice(points, i, Constants.OperationType.BUY) - openOperationValue) * PropertiesManager.getPairFactor()
-                        : (-indicatorController.calculateTakePrice(points, i, Constants.OperationType.SELL) + openOperationValue) * PropertiesManager.getPairFactor();
+                double stopLossPips = (individuo.isTipoBuy())
+                        ? (operationController.calculateStopLossPrice(points, i, Constants.OperationType.BUY) - openOperationValue) * PropertiesManager.getPairFactor()
+                        : (-operationController.calculateStopLossPrice(points, i, Constants.OperationType.SELL) + openOperationValue) * PropertiesManager.getPairFactor();
+                double takeProfitPips = (individuo.isTipoBuy())
+                        ? (operationController.calculateTakePrice(points, i, Constants.OperationType.BUY) - openOperationValue) * PropertiesManager.getPairFactor()
+                        : (-operationController.calculateTakePrice(points, i, Constants.OperationType.SELL) + openOperationValue) * PropertiesManager.getPairFactor();
                 stopLossPips = stopLossPips - (currentOrder.getOpenSpread());
                 takeProfitPips = takeProfitPips - (currentOrder.getOpenSpread());
                 boolean operate = (((takeProfitPips >= (takeProfit)) || (stopLossPips <= -(stopLoss))));
                 if (!operate) {
-                    operate = indicatorController.operateClose(individuo, points, i);
+                    operate = operationController.operateClose(individuo, points, i);
                     if (operate) {
-                        pips = (PropertiesManager.isBuy())
-                                ? (indicatorController.calculateClosePrice(individuo, points, i) - openOperationValue) * PropertiesManager.getPairFactor()
-                                : (-indicatorController.calculateClosePrice(individuo, points, i) + openOperationValue) * PropertiesManager.getPairFactor();
+                        pips = (individuo.isTipoBuy())
+                                ? (operationController.calculateClosePrice(individuo, points, i) - openOperationValue) * PropertiesManager.getPairFactor()
+                                : (-operationController.calculateClosePrice(individuo, points, i) + openOperationValue) * PropertiesManager.getPairFactor();
                         operate = !Double.isNaN(pips);
                         if (operate) {
                             //boolean operate2 = indicatorController.operateClose(individuo, points, i);
@@ -184,17 +187,17 @@ public class OperacionesManager {
             boolean operate = currentOrder.isCloseImmediate();
             if (operate) {
                 pips = (currentOrder.getTipo().equals(Constants.OperationType.BUY))
-                        ? (indicatorController.calculateClosePrice(individuo, points, i) - openOperationValue) * PropertiesManager.getPairFactor()
-                        : (-indicatorController.calculateClosePrice(individuo, points, i) + openOperationValue) * PropertiesManager.getPairFactor();
+                        ? (operationController.calculateClosePrice(individuo, points, i) - openOperationValue) * PropertiesManager.getPairFactor()
+                        : (-operationController.calculateClosePrice(individuo, points, i) + openOperationValue) * PropertiesManager.getPairFactor();
                 currentOrder.setCloseByTakeStop(false);
                 pips = (pips - currentOrder.getOpenSpread());
             } else {
                 double stopLossPips = (currentOrder.getTipo().equals(Constants.OperationType.BUY))
-                        ? (indicatorController.calculateStopLossPrice(points, i, Constants.OperationType.BUY) - openOperationValue) * PropertiesManager.getPairFactor()
-                        : (-indicatorController.calculateStopLossPrice(points, i, Constants.OperationType.SELL) + openOperationValue) * PropertiesManager.getPairFactor();
+                        ? (operationController.calculateStopLossPrice(points, i, Constants.OperationType.BUY) - openOperationValue) * PropertiesManager.getPairFactor()
+                        : (-operationController.calculateStopLossPrice(points, i, Constants.OperationType.SELL) + openOperationValue) * PropertiesManager.getPairFactor();
                 double takeProfitPips = (currentOrder.getTipo().equals(Constants.OperationType.BUY))
-                        ? (indicatorController.calculateTakePrice(points, i, Constants.OperationType.BUY) - openOperationValue) * PropertiesManager.getPairFactor()
-                        : (-indicatorController.calculateTakePrice(points, i, Constants.OperationType.SELL) + openOperationValue) * PropertiesManager.getPairFactor();
+                        ? (operationController.calculateTakePrice(points, i, Constants.OperationType.BUY) - openOperationValue) * PropertiesManager.getPairFactor()
+                        : (-operationController.calculateTakePrice(points, i, Constants.OperationType.SELL) + openOperationValue) * PropertiesManager.getPairFactor();
                 stopLossPips = stopLossPips - (currentOrder.getOpenSpread());
                 takeProfitPips = takeProfitPips - (currentOrder.getOpenSpread());
                 operate = (((takeProfitPips >= (takeProfit)) || (stopLossPips <= -(stopLoss))));
@@ -217,12 +220,16 @@ public class OperacionesManager {
         }
     }
 
+    public double calculateOpenPrice(Point currentPoint) {
+        return this.calculateOpenPrice(currentPoint, OperationType.SELL);
+    }
+    
     /**
      *
      * @param currentPoint
      * @return
      */
-    public double calculateOpenPrice(Point currentPoint) {
+    public double calculateOpenPrice(Point currentPoint, OperationType tipoOperacion) {
         double price = Double.NaN;
         Interval currentInterval = new DoubleInterval(currentPoint.getLow(), currentPoint.getHigh());
         if (currentInterval != null) {
@@ -234,7 +241,7 @@ public class OperacionesManager {
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() <= resultInterval.getLowInterval())
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() >= resultInterval.getHighInterval())
                         ? resultInterval.getLowInterval() : (resultInterval.getLowInterval() + resultInterval.getHighInterval()) / 2;
-                if (PropertiesManager.isBuy()) {
+                if (tipoOperacion.equals(OperationType.BUY)) {
                     price += PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor();
                 } else {
                     price -= PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor();

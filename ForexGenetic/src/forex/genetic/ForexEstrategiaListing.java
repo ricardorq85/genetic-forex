@@ -5,8 +5,6 @@
 package forex.genetic;
 
 import static forex.genetic.delegate.GeneticDelegate.setId;
-import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.entities.Poblacion;
 import static forex.genetic.manager.PropertiesManager.getFileId;
 import static forex.genetic.manager.PropertiesManager.getOperationType;
 import static forex.genetic.manager.PropertiesManager.getPair;
@@ -14,7 +12,6 @@ import static forex.genetic.manager.PropertiesManager.getPropertyInt;
 import static forex.genetic.manager.PropertiesManager.getPropertyString;
 import static forex.genetic.manager.PropertiesManager.getSerialicePath;
 import static forex.genetic.manager.PropertiesManager.load;
-import forex.genetic.manager.io.SerializationPoblacionManager;
 import static forex.genetic.util.Constants.END_POBLACION;
 import static forex.genetic.util.Constants.INITIAL_POBLACION;
 import static forex.genetic.util.Constants.LISTING_ID;
@@ -22,17 +19,22 @@ import static forex.genetic.util.Constants.LISTING_NUMBER;
 import static forex.genetic.util.Constants.LOG_PATH;
 import static forex.genetic.util.Constants.NUMBER_BACK_ROOT_POBLACION;
 import static forex.genetic.util.LogUtil.logTime;
+import static java.lang.System.setErr;
+import static java.lang.System.setOut;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import static java.lang.System.setErr;
-import static java.lang.System.setOut;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.Poblacion;
+import forex.genetic.manager.io.SerializationPoblacionManager;
 
 /**
  *

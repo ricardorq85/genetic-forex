@@ -4,12 +4,13 @@
  */
 package forex.genetic.entities;
 
-import forex.genetic.entities.indicator.Indicator;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import forex.genetic.entities.indicator.Indicator;
 
 /**
  *

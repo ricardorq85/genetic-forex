@@ -61,15 +61,16 @@ public class EstrategiaDAO {
     /**
      *
      * @param idIndividuo
+     * @return 
      * @throws SQLException
      */
-    public void deleteIndividuoEstrategia(String idIndividuo) throws SQLException {
+    public int deleteIndividuoEstrategia(String idIndividuo) throws SQLException {
         String sql = "DELETE FROM INDIVIDUOS_ESTRATEGIA WHERE ID_INDIVIDUO=?";
         PreparedStatement stmtConsulta = null;
         try {
             stmtConsulta = this.connection.prepareStatement(sql);
             stmtConsulta.setString(1, idIndividuo);
-            stmtConsulta.executeUpdate();
+            return stmtConsulta.executeUpdate();
         } finally {
             JDBCUtil.close(stmtConsulta);
         }

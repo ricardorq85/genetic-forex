@@ -42,9 +42,10 @@ public abstract class IntervalIndicatorManager<E extends IntervalIndicator> exte
         this.intervalManager = new IntervalManager(name);
     }
 
-    /**
-     *
-     */
+    public abstract String[] queryRangoOperacionIndicador();
+
+    public abstract String[] queryPorcentajeCumplimientoIndicador();
+
     public IntervalIndicatorManager() {
         super(false, false);
     }
@@ -151,11 +152,9 @@ public abstract class IntervalIndicatorManager<E extends IntervalIndicator> exte
             Interval intersected = IntervalManager.intersect(generated, individuo.getInterval());
             Interval intervalOptimized = intervalManager.optimize((optimizedIndividuo == null) ? null : optimizedIndividuo.getInterval(), intersected);
             optimized.setInterval(intervalOptimized);
-        } else {
-            if (optimizedIndividuo != null) {
-                Interval difference = IntervalManager.difference(optimizedIndividuo.getInterval(), generated);
-                optimized.setInterval(difference);
-            }
+        } else if (optimizedIndividuo != null) {
+            Interval difference = IntervalManager.difference(optimizedIndividuo.getInterval(), generated);
+            optimized.setInterval(difference);
         }
         if ((optimized.getInterval() == null) || (optimized.getInterval().getLowInterval() == null) || (optimized.getInterval().getHighInterval() == null)) {
             optimized = optimizedIndividuo;

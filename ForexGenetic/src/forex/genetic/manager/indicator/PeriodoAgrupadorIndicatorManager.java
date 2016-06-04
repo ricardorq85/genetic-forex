@@ -108,4 +108,14 @@ public class PeriodoAgrupadorIndicatorManager extends IntervalIndicatorManager<P
         return intervalIndicator;
     }
 
+    @Override
+    public String[] queryRangoOperacionIndicador() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String[] queryPorcentajeCumplimientoIndicador() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
 }

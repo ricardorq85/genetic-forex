@@ -7,7 +7,7 @@ package forex.genetic.entities;
 
 /**
  *
- * @author USER
+ * @author ricardorq85
  */
 public class AnalyzeProcesoTendencia {
 

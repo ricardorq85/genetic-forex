@@ -14,6 +14,7 @@ import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
+import forex.genetic.util.Constants;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -27,7 +28,15 @@ import java.util.List;
  */
 public class IndividuoHelper {
 
-    private static final IndicadorController indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+    private static final IndicadorController INDICADOR_CONTROLLER = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+
+    public static List<Date> createFechas(ResultSet rs) throws SQLException {
+        List<Date> fechas = new ArrayList();
+        while (rs.next()) {
+            fechas.add(new Date(rs.getTimestamp("FECHA").getTime()));
+        }
+        return fechas;
+    }
 
     /**
      *
@@ -40,6 +49,25 @@ public class IndividuoHelper {
         while (resultado.next()) {
             Individuo ind = new Individuo();
             ind.setId(resultado.getString("ID_INDIVIDUO"));
+            list.add(ind);
+        }
+        return list;
+    }
+
+    public static List<Individuo> createIndividuosBase(ResultSet resultado) throws SQLException {
+        List<Individuo> list = new ArrayList<>();
+        while (resultado.next()) {
+            Individuo ind = new Individuo();
+            ind.setId(resultado.getString("ID"));
+            ind.setIdParent1(resultado.getString("PARENT_ID_1"));
+            ind.setIdParent1(resultado.getString("PARENT_ID_2"));
+            ind.setTakeProfit(resultado.getInt("TAKE_PROFIT"));
+            ind.setStopLoss(resultado.getInt("STOP_LOSS"));
+            ind.setLot(resultado.getDouble("LOTE"));
+            ind.setInitialBalance(resultado.getInt("INITIAL_BALANCE"));
+            if (resultado.getDate("CREATION_DATE") != null) {
+                ind.setCreationDate(new Date(resultado.getDate("CREATION_DATE").getTime()));
+            }
             list.add(ind);
         }
         return list;
@@ -91,7 +119,7 @@ public class IndividuoHelper {
         }
         return list;
     }
-    
+
     /**
      *
      * @param ind
@@ -99,7 +127,7 @@ public class IndividuoHelper {
      * @throws SQLException
      */
     public static void detalleIndividuo(Individuo ind, ResultSet resultado) throws SQLException {
-        detalleIndividuo(ind, resultado, indicadorController);        
+        detalleIndividuo(ind, resultado, INDICADOR_CONTROLLER);
     }
 
     /**
@@ -127,6 +155,8 @@ public class IndividuoHelper {
                 if (resultado.getDate("CREATION_DATE") != null) {
                     ind.setCreationDate(new Date(resultado.getDate("CREATION_DATE").getTime()));
                 }
+                ind.setTipoOperacion("SELL".equalsIgnoreCase(resultado.getString("TIPO_OPERACION_INDIVIDUO"))
+                    ? Constants.OperationType.SELL : Constants.OperationType.BUY);
 
                 if (ind.getFechaApertura() != null) {
                     Order order = new Order();
@@ -136,6 +166,9 @@ public class IndividuoHelper {
                     order.setOpenSpread(resultado.getDouble("SPREAD"));
                     order.setTakeProfit(ind.getTakeProfit());
                     order.setStopLoss(ind.getStopLoss());
+                    order.setTipo("SELL".equalsIgnoreCase(resultado.getString("TIPO_OPERACION"))
+                        ? Constants.OperationType.SELL : Constants.OperationType.BUY);
+                    
                     /*                    if (resultado.getObject("MAX_PIPS_RETROCESO") != null) {
                      order.setMaxPipsRetroceso(resultado.getDouble("MAX_PIPS_RETROCESO"));
                      }
@@ -150,7 +183,7 @@ public class IndividuoHelper {
             }
 
             String idIndicador = resultado.getString("ID_INDICADOR");
-            String tipoIndicador = resultado.getString("TIPO");
+            String tipoIndicador = resultado.getString("TIPO_INDICADOR");
             boolean found = false;
 
             for (int i = 0; !found && i < indController.getIndicatorNumber(); i++) {

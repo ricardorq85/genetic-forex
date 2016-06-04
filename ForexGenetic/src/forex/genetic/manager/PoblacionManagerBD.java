@@ -34,7 +34,9 @@ public class PoblacionManagerBD {
                 while (filtroAdicional != null) {
                     Connection conn = JDBCUtil.getConnection();
                     ProcesoPoblacionDAO dao = new ProcesoPoblacionDAO(conn);
+                    LogUtil.logTime("Obteniendo individuos para el filtro " + countFiltro + ": " + filtroAdicional, 1);
                     List<Individuo> individuos = dao.getIndividuos(filtroAdicional);
+                    JDBCUtil.close(conn);
                     if ((individuos != null) && (!individuos.isEmpty())) {
                         ProcesarIndividuoThreadBD procesarIndividuoThread
                                 = new ProcesarIndividuoThreadBD("FILTRO_ADICIONAL_" + countFiltro, individuos);
@@ -42,8 +44,8 @@ public class PoblacionManagerBD {
                         threads.add(procesarIndividuoThread);
                         any = true;
                     } else {
-                        LogUtil.logTime("No existen individuos para el filtro " + countFiltro, 1);
-                    }
+                        LogUtil.logTime("No existen individuos para el FILTRO_ADICIONAL_" + countFiltro + ": " + filtroAdicional, 1);
+                    }                    
 
                     countFiltro++;
                     try {

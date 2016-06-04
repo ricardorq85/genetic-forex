@@ -5,7 +5,6 @@
 package forex.genetic.entities;
 
 import forex.genetic.manager.PropertiesManager;
-import java.io.Serializable;
 
 /**
  *

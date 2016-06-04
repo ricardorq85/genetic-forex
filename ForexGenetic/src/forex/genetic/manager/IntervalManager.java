@@ -16,29 +16,14 @@ import java.util.Random;
  */
 public class IntervalManager {
 
-    /**
-     *
-     */
     protected double min = Double.POSITIVE_INFINITY;
 
-    /**
-     *
-     */
     protected double max = Double.NEGATIVE_INFINITY;
 
-    /**
-     *
-     */
-    protected static final Random random = new Random();
+    protected static final Random RANDOM = new Random();
 
-    /**
-     *
-     */
-    protected static final EspecificMutationManager especificMutationManager = EspecificMutationManager.getInstance();
+    protected static final EspecificMutationManager ESPECIFIC_MUTATION_MANAGER = EspecificMutationManager.getInstance();
 
-    /**
-     *
-     */
     protected String name = null;
 
     /**
@@ -88,9 +73,9 @@ public class IntervalManager {
     protected double generateDefault() {
         if (Double.isInfinite(min) || Double.isInfinite(max)
                 || Double.isNaN(min) || Double.isNaN(max)) {
-            return (random.nextBoolean()) ? random.nextDouble() : -random.nextDouble();
+            return (RANDOM.nextBoolean()) ? RANDOM.nextDouble() : -RANDOM.nextDouble();
         } else {
-            return min + random.nextDouble() * (max - min);
+            return min + RANDOM.nextDouble() * (max - min);
         }
     }
 
@@ -259,8 +244,8 @@ public class IntervalManager {
             interval1 = generateDefault();
             interval2 = generateDefault();
         } else {
-            interval1 = especificMutationManager.mutate(interval.getLowInterval(), min, interval.getHighInterval());
-            interval2 = especificMutationManager.mutate(interval.getHighInterval(), Math.min(interval1, interval.getLowInterval()), Math.max(interval1, interval.getHighInterval()));
+            interval1 = ESPECIFIC_MUTATION_MANAGER.mutate(interval.getLowInterval(), min, interval.getHighInterval());
+            interval2 = ESPECIFIC_MUTATION_MANAGER.mutate(interval.getHighInterval(), Math.min(interval1, interval.getLowInterval()), Math.max(interval1, interval.getHighInterval()));
         }
         intervalHijo.setLowInterval(NumberUtil.round(Math.min(interval1, interval2)));
         intervalHijo.setHighInterval(NumberUtil.round(Math.max(interval1, interval2)));
@@ -350,7 +335,7 @@ public class IntervalManager {
             } else if (intersect.equals(i1)) {
                 difference = null;
             } else if (intersect.equals(i2)) {
-                boolean rb = random.nextBoolean();
+                boolean rb = RANDOM.nextBoolean();
                 difference.setLowInterval(rb ? i1.getLowInterval() : i2.getHighInterval());
                 difference.setHighInterval(rb ? i2.getLowInterval() : i1.getHighInterval());
             } else if (intersect.getLowInterval() == intersect.getHighInterval()) {

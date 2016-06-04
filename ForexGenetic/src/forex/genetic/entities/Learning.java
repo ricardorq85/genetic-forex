@@ -4,11 +4,12 @@
  */
 package forex.genetic.entities;
 
-import forex.genetic.manager.PropertiesManager;
-import forex.genetic.util.Constants.OperationType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import forex.genetic.manager.PropertiesManager;
+import forex.genetic.util.Constants.OperationType;
 
 /**
  *

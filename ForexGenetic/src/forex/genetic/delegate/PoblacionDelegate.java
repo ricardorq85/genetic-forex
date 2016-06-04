@@ -50,7 +50,7 @@ public class PoblacionDelegate {
                 nextPoblacionManager.load("" + (poblacionIndex + 1), false);
             }
             facade.cargarDatoHistorico(poblacionManager.getPoints());
-            LogUtil.logTime("Crear poblacion " + poblacionIndex + " Fecha = " + poblacionManager.getDateInterval(), 1);
+            LogUtil.logTime("Poblacion " + poblacionIndex + " Fecha = " + poblacionManager.getDateInterval(), 1);
         }
     }    
 }

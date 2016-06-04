@@ -11,7 +11,7 @@ import forex.genetic.manager.OptimizationIndividuoManager;
 
 /**
  *
- * @author USER
+ * @author ricardorq85
  */
 public class IndividuoGeneticController extends GeneticController {
 

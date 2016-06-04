@@ -121,7 +121,7 @@ public class OperationController {
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() <= resultInterval.getLowInterval())
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() >= resultInterval.getHighInterval())
                         ? resultInterval.getLowInterval() : (resultInterval.getLowInterval() + resultInterval.getHighInterval()) / 2;
-                if (PropertiesManager.isBuy()) {
+                if (individuoEstrategia.isTipoBuy()) {
                     price += PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor();
                 } else {
                     price -= PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor();
@@ -171,7 +171,7 @@ public class OperationController {
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() <= resultInterval.getLowInterval())
                         ? resultInterval.getHighInterval() : (currentPoint.getClose() >= resultInterval.getHighInterval())
                         ? resultInterval.getLowInterval() : (resultInterval.getLowInterval() + resultInterval.getHighInterval()) / 2;
-                if (PropertiesManager.isBuy()) {
+                if (individuoEstrategia.isTipoBuy()) {
                     price -= PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor();
                 } else {
                     price += PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor();
@@ -191,7 +191,7 @@ public class OperationController {
      */
     public double calculateStopLossPrice(List<Point> points, int index, Constants.OperationType operationType) {
         Point currentPoint = points.get(index);
-        double value = 0.0D;
+        double value;
         if (operationType.equals(Constants.OperationType.BUY)) {
             value = currentPoint.getLow();
         } else {

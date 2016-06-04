@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  *
- * @author USER
+ * @author ricardorq85
  */
 public abstract class IndicadorController {
 

@@ -4,18 +4,17 @@
  */
 package forex.genetic.entities;
 
-import forex.genetic.manager.PropertiesManager;
-import forex.genetic.util.Constants;
-import forex.genetic.util.Constants.FortalezaType;
-import forex.genetic.util.NumberUtil;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import forex.genetic.manager.PropertiesManager;
+import forex.genetic.util.Constants;
+import forex.genetic.util.Constants.FortalezaType;
+import forex.genetic.util.NumberUtil;
 
 /**
  *
