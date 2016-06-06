@@ -111,7 +111,7 @@ public class IndividuosPeriodoManager {
 
 	public void procesarIndividuosXPeriodo(ParametroOperacionPeriodo param) throws SQLException {
 		if (estrategiaOperacionPeriodoDAO.existe(param)) {
-			logTime(param.toString(), 1);
+			logTime("Parametros repetidos: " + param.toString(), 1);
 		} else {
 			operacionesDAO.cleanOperacionesPeriodo();
 			logTime("Registros borrados.", 1);
