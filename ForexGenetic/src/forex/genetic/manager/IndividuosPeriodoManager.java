@@ -84,13 +84,13 @@ public class IndividuosPeriodoManager {
 										ORDERS[random.nextInt(ORDERS.length)], ORDERS[random.nextInt(ORDERS.length)]);
 								param.setFechaInicial(fechaInicioProceso);
 								param.setFechaFinal(fechaFinProceso);
-								param.setTipoOperacion(TIPO_OPERACION[i]);
-								logTime(param.toString(), 1);
+								param.setTipoOperacion(TIPO_OPERACION[i]);								
 								if (param.isFiltroValido()) {
+									logTime(param.toString(), 2);
 									this.procesarIndividuosXPeriodo(param);
 									logTime(param.toString(), 1);
 								} else {
-									logTime("Filtros no válidos", 1);
+									logTime("Filtros inválidos: " + param.toString(), 1);
 								}
 							}
 							filtroPipsXSemana += INCREMENTO_SEMANA;
@@ -111,17 +111,14 @@ public class IndividuosPeriodoManager {
 
 	public void procesarIndividuosXPeriodo(ParametroOperacionPeriodo param) throws SQLException {
 		if (estrategiaOperacionPeriodoDAO.existe(param)) {
-			logTime("Parametros repetidos: " + param.toString(), 1);
+			logTime("Parametros ya procesados previamente", 1);
 		} else {
 			operacionesDAO.cleanOperacionesPeriodo();
-			logTime("Registros borrados.", 1);
+			logTime("Registros borrados.", 2);
 
 			int insertados = operacionesDAO.insertOperacionesPeriodo(param);
 			conn.commit();
 			logTime("Registro insertados: " + insertados, 1);
-
-			// this.setPipsXAgrupacion(param);
-			// logTime("Pips por agrupacion consultados", 1);
 
 			List<Individuo> ordenesCreadas = this.ejecutarIndividuosXPeriodo(param);
 			int id = estrategiaOperacionPeriodoDAO.insert(param);
@@ -157,7 +154,7 @@ public class IndividuosPeriodoManager {
 					logTime("Individuo=" + individuo.getId() + ",Orden=" + order, 2);
 					pips += order.getPips();
 					fechaPeriodo = order.getCloseDate();
-					logTime("Fecha=" + DateUtil.getDateString(fechaPeriodo) + ",Pips=" + pips, 1);
+					logTime("Fecha=" + DateUtil.getDateString(fechaPeriodo) + ",Pips=" + pips, 2);
 					c++;
 				}
 				agrupadoMinutos.addOrder(order);
@@ -178,7 +175,7 @@ public class IndividuosPeriodoManager {
 		param.setPipsAgrupadoMinutos(agrupadoMinutos.getPips());
 		param.setPipsAgrupadoHoras(agrupadoHoras.getPips());
 		param.setPipsAgrupadoDias(agrupadoDias.getPips());
-		logTime("Cantidad operaciones=" + c + ", Pips totales=" + pips + ", Pips paralelas=" + pipsParalelas, 1);
+		logTime("Cantidad operaciones=" + c + ", Pips totales=" + pips + ", Pips paralelas=" + pipsParalelas, 2);
 		return ordenesCreadas;
 	}
 
