@@ -23,7 +23,7 @@ public class BorradoCantidadOperacionesExageradasManager extends BorradoManager 
     public List<Individuo> consultarIndividuos() throws ClassNotFoundException, SQLException {
         List<Individuo> individuos;
         IndividuoDAO individuoDAO = new IndividuoDAO(conn);
-        double cantidadLimite = 0.015;
+        double cantidadLimite = 0.010;
         individuos = individuoDAO.consultarIndividuosCantidadLimite(cantidadLimite);
         return individuos;
     }

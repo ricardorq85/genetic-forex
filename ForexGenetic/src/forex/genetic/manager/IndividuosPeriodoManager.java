@@ -61,48 +61,28 @@ public class IndividuosPeriodoManager {
 	}
 
 	public void procesarIndividuosXPeriodo() throws SQLException {
-		ParametroOperacionPeriodo paramBase = null;// estrategiaOperacionPeriodoDAO
-		// .consultarUltimaEjecucion(this.parametroFechaInicioProceso);
-
 		Date fechaFinProceso = parametroFechaFinProceso;
 		Date fechaInicioProceso = DateUtil.adicionarMes(fechaFinProceso, -mesesProceso);
-		logTime("Fecha Inicio Proceso:" + DateUtil.getDateString(fechaInicioProceso) +
-				"; Fecha Fin Proceso:" +  DateUtil.getDateString(fechaFinProceso), 1);
 		while (fechaInicioProceso.after(this.parametroFechaInicioProceso)) {
-			int filtroPipsTotales = (paramBase == null) ? MINIMO_TOTALES : (paramBase.getFiltroPipsTotales());
-			while (filtroPipsTotales < MAXIMO_TOTALES) {
-				int filtroPipsXAnyo = (paramBase == null) ? MINIMO_ANYO : (paramBase.getFiltroPipsXAnyo());
-				while (filtroPipsXAnyo < MAXIMO_ANYO) {
-					int filtroPipsXMes = (paramBase == null) ? MINIMO_MES : (paramBase.getFiltroPipsXMes());
-					while (filtroPipsXMes < MAXIMO_MES) {
-						int filtroPipsXSemana = (paramBase == null) ? MINIMO_SEMANA
-								: (paramBase.getFiltroPipsXSemana() + INCREMENTO_SEMANA);
-						while (filtroPipsXSemana < MAXIMO_SEMANA) {
-							for (int i = 0; i < TIPO_OPERACION.length; i++) {
-								ParametroOperacionPeriodo param = new ParametroOperacionPeriodo(filtroPipsXSemana,
-										filtroPipsXMes, filtroPipsXAnyo, filtroPipsTotales,
-										ORDERS[random.nextInt(ORDERS.length)], ORDERS[random.nextInt(ORDERS.length)]);
-								param.setFechaInicial(fechaInicioProceso);
-								param.setFechaFinal(fechaFinProceso);
-								param.setTipoOperacion(TIPO_OPERACION[i]);								
-								if (param.isFiltroValido()) {
-									logTime(param.toString(), 2);
-									this.procesarIndividuosXPeriodo(param);
-									logTime(param.toString(), 1);
-								} else {
-									logTime("Filtros inválidos: " + param.toString(), 1);
-								}
-							}
-							filtroPipsXSemana += INCREMENTO_SEMANA;
-						}
-						paramBase = null;
-						filtroPipsXMes += INCREMENTO_MES;
+			logTime("Fecha Inicio Proceso:" + DateUtil.getDateString(fechaInicioProceso) + "; Fecha Fin Proceso:"
+					+ DateUtil.getDateString(fechaFinProceso), 1);			
+			List<ParametroOperacionPeriodo> inclusiones = estrategiaOperacionPeriodoDAO.consultarInclusiones();
+			for (ParametroOperacionPeriodo paramBase : inclusiones) {
+				for (int i = 0; i < TIPO_OPERACION.length; i++) {
+					ParametroOperacionPeriodo param = new ParametroOperacionPeriodo(paramBase.getFiltroPipsXSemana(),
+							paramBase.getFiltroPipsXMes(), paramBase.getFiltroPipsXAnyo(),
+							paramBase.getFiltroPipsTotales(), ORDERS[random.nextInt(ORDERS.length)],
+							ORDERS[random.nextInt(ORDERS.length)]);
+					param.setFechaInicial(fechaInicioProceso);
+					param.setFechaFinal(fechaFinProceso);
+					param.setTipoOperacion(TIPO_OPERACION[i]);
+					if (param.isFiltroValido()) {
+						logTime(param.toString(), 2);
+						this.procesarIndividuosXPeriodo(param);
+					} else {
+						logTime("Filtros inválidos: " + param.toString(), 3);
 					}
-					paramBase = null;
-					filtroPipsXAnyo += INCREMENTO_ANYO;
 				}
-				paramBase = null;
-				filtroPipsTotales += INCREMENTO_TOTALES;
 			}
 			fechaFinProceso = DateUtil.adicionarMes(fechaFinProceso, -1);
 			fechaInicioProceso = DateUtil.adicionarMes(fechaFinProceso, -mesesProceso);
@@ -111,7 +91,7 @@ public class IndividuosPeriodoManager {
 
 	public void procesarIndividuosXPeriodo(ParametroOperacionPeriodo param) throws SQLException {
 		if (estrategiaOperacionPeriodoDAO.existe(param)) {
-			logTime("Parametros ya procesados previamente", 1);
+			logTime("Parametros ya procesados previamente", 2);
 		} else {
 			operacionesDAO.cleanOperacionesPeriodo();
 			logTime("Registros borrados.", 2);
@@ -128,6 +108,7 @@ public class IndividuosPeriodoManager {
 				estrategiaOperacionPeriodoDAO.insertOperacionesPeriodo(param, ind, ind.getOrdenes());
 			}
 			conn.commit();
+			logTime(param.toString(), 1);
 		}
 	}
 

@@ -1,4 +1,4 @@
-SET echo OFF;
+SET echo OFF; 
 SET feedback off;
 SET term off;
 SET pagesize 0;

@@ -205,6 +205,7 @@ public class IndividuoDAO {
         List<Individuo> list = null;
         String sql = "SELECT IND.* FROM INDIVIDUO IND "
                 + " WHERE IND.STOP_LOSS<=? "
+                + " AND IND.TAKE_PROFIT>IND.STOP_LOSS*4 "        		
                 + " AND EXISTS ( "
                 + " SELECT 1 FROM INDICADOR_INDIVIDUO II WHERE II.ID_INDIVIDUO=IND.ID AND II.TIPO='OPEN') "
                 + " AND ROWNUM<100";

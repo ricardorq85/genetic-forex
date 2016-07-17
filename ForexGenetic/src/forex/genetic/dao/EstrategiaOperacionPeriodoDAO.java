@@ -80,6 +80,33 @@ public class EstrategiaOperacionPeriodoDAO {
 
 		return param;
 	}
+	
+	public List<ParametroOperacionPeriodo> consultarInclusiones() throws SQLException {
+		List<ParametroOperacionPeriodo> inclusiones;
+		String sql = "SELECT FLOOR(FILTRO_PIPS_X_SEMANA/ 100)*100 R_SEMANA, FLOOR(FILTRO_PIPS_X_MES/ 100)*100 R_MES,"
+				+ " FLOOR(FILTRO_PIPS_X_ANYO/ 100)*100 R_ANYO, FLOOR(FILTRO_PIPS_TOTALES/ 100)*100 R_TOTALES"
+				+ " FROM ESTRATEGIA_OPERACION_PERIODO EOP "
+				+ " GROUP BY FLOOR(FILTRO_PIPS_X_SEMANA/ 100), FLOOR(FILTRO_PIPS_X_MES/ 100), "
+				+ " FLOOR(FILTRO_PIPS_X_ANYO/ 100), FLOOR(FILTRO_PIPS_TOTALES/ 100) "
+				+ " HAVING MAX(EOP.PIPS_TOTALES)>=5000"
+				+ " ORDER BY MAX(EOP.PIPS_TOTALES) DESC";
+
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			resultado = stmtConsulta.executeQuery();
+
+			inclusiones = EstrategiaOperacionPeriodoHelper.inclusiones(resultado);
+
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+
+		return inclusiones;
+	}	
 
 	/**
 	 *

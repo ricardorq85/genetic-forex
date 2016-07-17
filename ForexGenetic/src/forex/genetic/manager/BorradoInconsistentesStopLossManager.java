@@ -23,7 +23,7 @@ public class BorradoInconsistentesStopLossManager extends BorradoManager {
     public List<Individuo> consultarIndividuos() throws ClassNotFoundException, SQLException {
         List<Individuo> individuos;
         IndividuoDAO individuoDAO = new IndividuoDAO(conn);
-        individuos = individuoDAO.consultarIndividuosStopLossInconsistente(100);
+        individuos = individuoDAO.consultarIndividuosStopLossInconsistente(200);
         return individuos;
     }
     

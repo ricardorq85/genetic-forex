@@ -6,7 +6,9 @@ package forex.genetic.dao.helper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import forex.genetic.entities.ParametroOperacionPeriodo;
 
@@ -35,5 +37,19 @@ public class EstrategiaOperacionPeriodoHelper {
 		}
 		return param;
 	}
+	
+	public static List<ParametroOperacionPeriodo> inclusiones(ResultSet resultado) throws SQLException {
+		List<ParametroOperacionPeriodo> inclusiones	= new ArrayList<>();	
+
+		while (resultado.next()) {
+			ParametroOperacionPeriodo param = new ParametroOperacionPeriodo();
+			param.setFiltroPipsXSemana(resultado.getInt("R_SEMANA"));
+			param.setFiltroPipsXMes(resultado.getInt("R_MES"));
+			param.setFiltroPipsXAnyo(resultado.getInt("R_ANYO"));
+			param.setFiltroPipsTotales(resultado.getInt("R_TOTALES"));
+			inclusiones.add(param);
+		}
+		return inclusiones;
+	}	
 
 }
