@@ -30,7 +30,7 @@ public class IndividuosPeriodoManager {
 	private ParametroDAO parametroDAO;
 	private OperacionesDAO operacionesDAO;
 	private EstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO;
-	private static final String[] ORDERS = { "OPER_SEMANA.PIPS", "OPER_MES.PIPS", "OPER_ANYO.PIPS", "OPER.PIPS" };
+	private static final String[] ORDERS = { "PIPS_SEMANA", "PIPS_MES", "PIPS_ANYO", "PIPS_TOTALES" };
 	private static final Constants.OperationType[] TIPO_OPERACION = { Constants.OperationType.SELL,
 			Constants.OperationType.BUY };
 	private Random random = new Random();

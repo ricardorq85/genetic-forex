@@ -407,8 +407,33 @@ public class OperacionesDAO {
 			JDBCUtil.close(stmtConsulta);
 		}
 	}
-
+	
 	public int insertOperacionesPeriodo(ParametroOperacionPeriodo param) throws SQLException {
+		String sql = "INSERT INTO TMP_TOFILESTRING (ID_INDIVIDUO, CRITERIO_ORDER1, CRITERIO_ORDER2, VIGENCIA1, VIGENCIA2) "
+				+ " SELECT PRE.ID_INDIVIDUO, SUM(" + param.getFirstOrder() + "), " + " SUM("
+				+ param.getSecondOrder() + "), " + "  PRE.FECHA_SEMANA, PRE.FECHA_SEMANA+7"
+				+ " FROM PREVIO_TOFILESTRING PRE "
+				+ " WHERE PRE.TIPO_OPERACION=?"
+				+ " AND ( NVL(PRE.PIPS_SEMANA,0)>? AND PRE.PIPS_MES>? AND PRE.PIPS_ANYO>? AND PRE.PIPS_TOTALES>?) "
+				+ " AND PRE.FECHA_SEMANA > ? "
+				+ " GROUP BY PRE.ID_INDIVIDUO, PRE.FECHA_SEMANA";
+		PreparedStatement stmtConsulta = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setString(1, param.getTipoOperacion().name());
+			stmtConsulta.setInt(2, param.getFiltroPipsXSemana());
+			stmtConsulta.setInt(3, param.getFiltroPipsXMes());
+			stmtConsulta.setInt(4, param.getFiltroPipsXAnyo());
+			stmtConsulta.setInt(5, param.getFiltroPipsTotales());
+			stmtConsulta.setDate(6, new java.sql.Date(param.getFechaInicial().getTime()));
+
+			return stmtConsulta.executeUpdate();
+		} finally {
+			JDBCUtil.close(stmtConsulta);
+		}
+	}	
+
+	public int insertOperacionesPeriodoOld(ParametroOperacionPeriodo param) throws SQLException {
 		String sql = "INSERT INTO TMP_TOFILESTRING (ID_INDIVIDUO, CRITERIO_ORDER1, CRITERIO_ORDER2, VIGENCIA1, VIGENCIA2) "
 				+ " SELECT OPER_SEMANA.ID_INDIVIDUO, SUM(" + param.getFirstOrder() + "), " + " SUM("
 				+ param.getSecondOrder() + "), " + "  SEMANAS.FECHA_SEMANA, SEMANAS.FECHA_SEMANA+7"
