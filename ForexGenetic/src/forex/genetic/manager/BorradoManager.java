@@ -25,45 +25,48 @@ import static forex.genetic.util.LogUtil.logTime;
  */
 public abstract class BorradoManager {
 
-    protected Connection conn = null;
+	protected Connection conn = null;
 
-    protected abstract List<Individuo> consultarIndividuos() throws ClassNotFoundException, SQLException;
+	protected abstract List<Individuo> consultarIndividuos() throws ClassNotFoundException, SQLException;
 
-    public abstract void borrarIndividuos() throws ClassNotFoundException, SQLException;
+	public abstract void borrarIndividuos() throws ClassNotFoundException, SQLException;
 
-    protected void borrarIndividuos(String tipoProceso) throws ClassNotFoundException, SQLException {
-        try {
-            conn = JDBCUtil.getConnection();
+	protected void borrarIndividuos(String tipoProceso) throws ClassNotFoundException, SQLException {
+		try {
+			conn = JDBCUtil.getConnection();
 
-            IndividuoDAO individuoDAO = new IndividuoDAO(conn);
-            OperacionesDAO operacionDAO = new OperacionesDAO(conn);
-            ProcesoPoblacionDAO procesoDAO = new ProcesoPoblacionDAO(conn);
-            TendenciaDAO tendenciaDAO = new TendenciaDAO(conn);
-            EstrategiaDAO estrategiaDAO = new EstrategiaDAO(conn);
+			IndividuoDAO individuoDAO = new IndividuoDAO(conn);
+			OperacionesDAO operacionDAO = new OperacionesDAO(conn);
+			ProcesoPoblacionDAO procesoDAO = new ProcesoPoblacionDAO(conn);
+			TendenciaDAO tendenciaDAO = new TendenciaDAO(conn);
+			EstrategiaDAO estrategiaDAO = new EstrategiaDAO(conn);
 
-            List<Individuo> individuos = this.consultarIndividuos();
-            int count = 0;
-            while ((individuos != null) && (!individuos.isEmpty())) {
-                for (Individuo individuo : individuos) {
-                    LogUtil.logTime("Individuo: " + individuo.getId(), 1);
-                    int r_proceso = procesoDAO.deleteProceso(individuo.getId());
-                    logTime("Registro borrados PROCESO = " + r_proceso, 1);
-                    int r_operaciones = operacionDAO.deleteOperaciones(individuo.getId());
-                    logTime("Registro borrados OPERACIONES = " + r_operaciones, 1);
-                    int r_tendencia = tendenciaDAO.deleteTendencia(individuo.getId());
-                    logTime("Registro borrados TENDENCIA = " + r_tendencia, 1);                    
-                    int r_indEst = estrategiaDAO.deleteIndividuoEstrategia(individuo.getId());
-                    logTime("Registro borrados INDIVIDUOESTRATEGIA = " + r_indEst, 1);
-                    individuoDAO.smartDelete(individuo.getId(), tipoProceso, null);
-                }
-                conn.commit();
-                count += individuos.size();
-                logTime("Individuos borrados= " + count, 1);
-                individuos = this.consultarIndividuos();
-            }
-        } finally {
-            JDBCUtil.close(conn);
-        }
-    }
+			List<Individuo> individuos = this.consultarIndividuos();
+			int count = 0;
+			while ((individuos != null) && (!individuos.isEmpty())) {
+				for (Individuo individuo : individuos) {
+					LogUtil.logTime("Individuo: " + individuo.getId(), 1);
+					int r_proceso = procesoDAO.deleteProceso(individuo.getId());
+					logTime("Registro borrados PROCESO = " + r_proceso, 1);
+					int r_operaciones = operacionDAO.deleteOperaciones(individuo.getId());
+					logTime("Registro borrados OPERACIONES = " + r_operaciones, 1);
+					int r_tendencia = tendenciaDAO.deleteTendencia(individuo.getId());
+					logTime("Registro borrados TENDENCIA = " + r_tendencia, 1);
+					try {
+						int r_indEst = estrategiaDAO.deleteIndividuoEstrategia(individuo.getId());
+						logTime("Registro borrados INDIVIDUOESTRATEGIA = " + r_indEst, 1);
+					} catch (SQLException e) {
+					}
+					individuoDAO.smartDelete(individuo.getId(), tipoProceso, null);
+				}
+				conn.commit();
+				count += individuos.size();
+				logTime("Individuos borrados= " + count, 1);
+				individuos = this.consultarIndividuos();
+			}
+		} finally {
+			JDBCUtil.close(conn);
+		}
+	}
 
 }

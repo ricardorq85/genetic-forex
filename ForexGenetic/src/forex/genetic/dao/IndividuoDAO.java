@@ -225,7 +225,7 @@ public class IndividuoDAO {
 
         return list;
     }
-
+    
     public List<Individuo> consultarIndividuosCantidadLimite(double porcentajeLimite) throws SQLException {
         List<Individuo> list = null;
         String sql = "SELECT IND.* "
@@ -239,6 +239,28 @@ public class IndividuoDAO {
         try {
             stmtConsulta = this.connection.prepareStatement(sql);
             stmtConsulta.setDouble(1, porcentajeLimite);
+            resultado = stmtConsulta.executeQuery();
+
+            list = IndividuoHelper.createIndividuosBase(resultado);
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+
+        return list;
+    }
+
+	public List<Individuo> consultarIndividuosYaProcesadosSinOperaciones(Date fechaLimite) throws SQLException {
+        List<Individuo> list = null;
+        String sql = "SELECT IND.* FROM INDIVIDUO IND"
+        		+ " INNER JOIN PROCESO P ON P.ID_INDIVIDUO=IND.ID AND P.FECHA_HISTORICO>=?"
+        		+ " WHERE NOT EXISTS (SELECT 1 FROM OPERACION OPER WHERE OPER.ID_INDIVIDUO=IND.ID)";
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+
+        try {
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setTimestamp(1, new java.sql.Timestamp(fechaLimite.getTime()));
             resultado = stmtConsulta.executeQuery();
 
             list = IndividuoHelper.createIndividuosBase(resultado);
@@ -521,4 +543,5 @@ public class IndividuoDAO {
         }
         return count;
     }
+
 }
