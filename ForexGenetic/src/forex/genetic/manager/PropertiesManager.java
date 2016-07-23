@@ -77,7 +77,7 @@ public class PropertiesManager {
             @Override
             public void run() {
                 FileProperties.load();
-                LogUtil.logTime(FileProperties.propertiesString(), 1);
+                //LogUtil.logTime(FileProperties.propertiesString(), 1);
                 operationType = getOwnOperationType();
                 fortalezaType = getOwnFortalezaType();
                 pair = PropertiesManager.getPropertyString(Constants.PAIR);

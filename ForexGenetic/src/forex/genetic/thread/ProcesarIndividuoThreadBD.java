@@ -84,8 +84,8 @@ public class ProcesarIndividuoThreadBD extends Thread {
     	int cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACION_X_SEMANA");    	
     	int cInsert = daoOperacionSemanal.insertOperacionesSemana(individuo);    	
     	conn.commit();
-    	LogUtil.logTime(individuo.getId() + "Borrados OPERACION_X_SEMANA: " + cDelete, 1);
-    	LogUtil.logTime(individuo.getId() + "Insertados OPERACION_X_SEMANA: " + cInsert, 1);
+    	LogUtil.logTime(individuo.getId() + ". Borrados OPERACION_X_SEMANA: " + cDelete, 2);
+    	LogUtil.logTime(individuo.getId() + ". Insertados OPERACION_X_SEMANA: " + cInsert, 2);
     	cInsert = daoOperacionSemanal.insertSemanas(individuo);    	    
 		conn.commit();
 		LogUtil.logTime("Insertados SEMANAS: " + cInsert, 1);		
@@ -93,26 +93,26 @@ public class ProcesarIndividuoThreadBD extends Thread {
     	cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACIONES_ACUM_SEMANA_MES");   	
     	cInsert = daoOperacionSemanal.insertOperacionesSemanaAcumuladas(individuo, "OPERACIONES_ACUM_SEMANA_MES", -1000, -1);    	
     	conn.commit();
-    	LogUtil.logTime(individuo.getId() + "Borrados OPERACIONES_ACUM_SEMANA_MES: " + cDelete, 1);
-    	LogUtil.logTime(individuo.getId() + "Insertados OPERACIONES_ACUM_SEMANA_MES: " + cInsert, 1);
+    	LogUtil.logTime(individuo.getId() + ". Borrados OPERACIONES_ACUM_SEMANA_MES: " + cDelete, 2);
+    	LogUtil.logTime(individuo.getId() + ". Insertados OPERACIONES_ACUM_SEMANA_MES: " + cInsert, 2);
 		//Anyo
     	cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACIONES_ACUM_SEMANA_ANYO");   	
     	cInsert = daoOperacionSemanal.insertOperacionesSemanaAcumuladas(individuo, "OPERACIONES_ACUM_SEMANA_ANYO", -2000, -12);    	
     	conn.commit();
-    	LogUtil.logTime(individuo.getId() + "Borrados OPERACIONES_ACUM_SEMANA_ANYO: " + cDelete, 1);
-    	LogUtil.logTime(individuo.getId() + "Insertados OPERACIONES_ACUM_SEMANA_ANYO: " + cInsert, 1);
+    	LogUtil.logTime(individuo.getId() + ". Borrados OPERACIONES_ACUM_SEMANA_ANYO: " + cDelete, 2);
+    	LogUtil.logTime(individuo.getId() + ". Insertados OPERACIONES_ACUM_SEMANA_ANYO: " + cInsert, 2);
 		//Consolidado
     	cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACIONES_ACUM_SEMANA_CONSOL");
     	cInsert = daoOperacionSemanal.insertOperacionesSemanaAcumuladas(individuo, "OPERACIONES_ACUM_SEMANA_CONSOL", -3000, -120);    	
     	conn.commit();
-    	LogUtil.logTime(individuo.getId() + "Borrados OPERACIONES_ACUM_SEMANA_CONSOL: " + cDelete, 1);
-    	LogUtil.logTime(individuo.getId() + "Insertados OPERACIONES_ACUM_SEMANA_CONSOL: " + cInsert, 1);
+    	LogUtil.logTime(individuo.getId() + ". Borrados OPERACIONES_ACUM_SEMANA_CONSOL: " + cDelete, 2);
+    	LogUtil.logTime(individuo.getId() + ". Insertados OPERACIONES_ACUM_SEMANA_CONSOL: " + cInsert, 2);
 		//Previo
     	cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "PREVIO_TOFILESTRING");   	
     	cInsert = daoOperacionSemanal.insertOperacionesSemanaPrevio(individuo);    	
     	conn.commit();
-    	LogUtil.logTime(individuo.getId() + "Borrados PREVIO_TOFILESTRING: " + cDelete, 1);
-    	LogUtil.logTime(individuo.getId() + "Insertados PREVIO_TOFILESTRING: " + cInsert, 1);
+    	LogUtil.logTime(individuo.getId() + ". Borrados PREVIO_TOFILESTRING: " + cDelete, 2);
+    	LogUtil.logTime(individuo.getId() + ". Insertados PREVIO_TOFILESTRING: " + cInsert, 2);
 	}
 
 	private int proximaFechaApertura(List<Date> fechas, Date fechaInicial, int index) {
