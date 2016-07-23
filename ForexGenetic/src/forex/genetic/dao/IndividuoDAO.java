@@ -254,7 +254,8 @@ public class IndividuoDAO {
         List<Individuo> list = null;
         String sql = "SELECT IND.* FROM INDIVIDUO IND"
         		+ " INNER JOIN PROCESO P ON P.ID_INDIVIDUO=IND.ID AND P.FECHA_HISTORICO>=?"
-        		+ " WHERE NOT EXISTS (SELECT 1 FROM OPERACION OPER WHERE OPER.ID_INDIVIDUO=IND.ID)";
+        		+ " WHERE NOT EXISTS (SELECT 1 FROM OPERACION OPER WHERE OPER.ID_INDIVIDUO=IND.ID)"
+        		+ " AND ROWNUM<1000";
         PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
 

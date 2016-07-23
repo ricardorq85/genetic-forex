@@ -6,6 +6,7 @@ package forex.genetic.thread;
 
 import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.IndividuoDAO;
+import forex.genetic.dao.OperacionSemanalDAO;
 import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.ProcesoPoblacionDAO;
 import forex.genetic.entities.Individuo;
@@ -31,6 +32,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
     private Connection conn = null;
     private DatoHistoricoDAO daoHistorico;
     private OperacionesDAO daoOperaciones;
+    private OperacionSemanalDAO daoOperacionSemanal;
     private IndividuoDAO daoIndividuo;
     private ProcesoPoblacionDAO daoProceso;
     private Date maxFechaHistorico = null;
@@ -54,10 +56,12 @@ public class ProcesarIndividuoThreadBD extends Thread {
             daoOperaciones = new OperacionesDAO(conn);
             daoIndividuo = new IndividuoDAO(conn);
             daoProceso = new ProcesoPoblacionDAO(conn);
+            daoOperacionSemanal = new OperacionSemanalDAO(conn);
             this.maxFechaHistorico = daoHistorico.getFechaHistoricaMaxima();
             for (Individuo individuo : individuos) {
                 try {
                     procesarIndividuo(individuo);
+                    actualizarOperacionSemanal(individuo);
                 } catch (SQLException ex) {
                     conn.rollback();
                     ex.printStackTrace();
@@ -75,7 +79,43 @@ public class ProcesarIndividuoThreadBD extends Thread {
 		}
     }
 
-    private int proximaFechaApertura(List<Date> fechas, Date fechaInicial, int index) {
+    private void actualizarOperacionSemanal(Individuo individuo) throws SQLException {
+    	// Semana
+    	int cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACION_X_SEMANA");    	
+    	int cInsert = daoOperacionSemanal.insertOperacionesSemana(individuo);    	
+    	conn.commit();
+    	LogUtil.logTime(individuo.getId() + "Borrados OPERACION_X_SEMANA: " + cDelete, 1);
+    	LogUtil.logTime(individuo.getId() + "Insertados OPERACION_X_SEMANA: " + cInsert, 1);
+    	cInsert = daoOperacionSemanal.insertSemanas(individuo);    	    
+		conn.commit();
+		LogUtil.logTime("Insertados SEMANAS: " + cInsert, 1);		
+		//Mes
+    	cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACIONES_ACUM_SEMANA_MES");   	
+    	cInsert = daoOperacionSemanal.insertOperacionesSemanaAcumuladas(individuo, "OPERACIONES_ACUM_SEMANA_MES", -1000, -1);    	
+    	conn.commit();
+    	LogUtil.logTime(individuo.getId() + "Borrados OPERACIONES_ACUM_SEMANA_MES: " + cDelete, 1);
+    	LogUtil.logTime(individuo.getId() + "Insertados OPERACIONES_ACUM_SEMANA_MES: " + cInsert, 1);
+		//Anyo
+    	cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACIONES_ACUM_SEMANA_ANYO");   	
+    	cInsert = daoOperacionSemanal.insertOperacionesSemanaAcumuladas(individuo, "OPERACIONES_ACUM_SEMANA_ANYO", -2000, -12);    	
+    	conn.commit();
+    	LogUtil.logTime(individuo.getId() + "Borrados OPERACIONES_ACUM_SEMANA_ANYO: " + cDelete, 1);
+    	LogUtil.logTime(individuo.getId() + "Insertados OPERACIONES_ACUM_SEMANA_ANYO: " + cInsert, 1);
+		//Consolidado
+    	cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACIONES_ACUM_SEMANA_CONSOL");
+    	cInsert = daoOperacionSemanal.insertOperacionesSemanaAcumuladas(individuo, "OPERACIONES_ACUM_SEMANA_CONSOL", -3000, -120);    	
+    	conn.commit();
+    	LogUtil.logTime(individuo.getId() + "Borrados OPERACIONES_ACUM_SEMANA_CONSOL: " + cDelete, 1);
+    	LogUtil.logTime(individuo.getId() + "Insertados OPERACIONES_ACUM_SEMANA_CONSOL: " + cInsert, 1);
+		//Previo
+    	cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "PREVIO_TOFILESTRING");   	
+    	cInsert = daoOperacionSemanal.insertOperacionesSemanaPrevio(individuo);    	
+    	conn.commit();
+    	LogUtil.logTime(individuo.getId() + "Borrados PREVIO_TOFILESTRING: " + cDelete, 1);
+    	LogUtil.logTime(individuo.getId() + "Insertados PREVIO_TOFILESTRING: " + cInsert, 1);
+	}
+
+	private int proximaFechaApertura(List<Date> fechas, Date fechaInicial, int index) {
         int new_index = index;
         while ((fechaInicial != null) && (new_index < fechas.size()) && (fechas.get(new_index).before(fechaInicial))) {
             new_index++;
