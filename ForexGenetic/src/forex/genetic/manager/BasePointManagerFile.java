@@ -162,7 +162,7 @@ public class BasePointManagerFile {
 					point.setClose(NumberUtil.round(baseClose));
 					point.setVolume(volume);
 					point.setSpread(spread);
-					point.setCloseCompare(NumberUtil.round(compareCloseValue));
+					point.setCloseCompare(NumberUtil.round(compareCloseValue, 5));
 
 					average = new Average("Ma");
 					average.setAverage(NumberUtil.round(baseAverage));
@@ -175,7 +175,7 @@ public class BasePointManagerFile {
 					if (compareAverageValue == 0.0) {
 						compareAverageValue = Double.POSITIVE_INFINITY;
 					}
-					compareAverage.setAverage(NumberUtil.round(compareAverageValue));
+					compareAverage.setAverage(NumberUtil.round(compareAverageValue, 5));
 
 					sar = new Sar("Sar");
 					sar.setSar(NumberUtil.round(baseSar));
@@ -216,7 +216,7 @@ public class BasePointManagerFile {
 					if (compareAverage1200Value == 0.0) {
 						compareAverage1200Value = Double.POSITIVE_INFINITY;
 					}
-					compareAverage1200.setAverage(NumberUtil.round(compareAverage1200Value));
+					compareAverage1200.setAverage(NumberUtil.round(compareAverage1200Value, 5));
 
 					sar1200 = new Sar("Sar1200");
 					sar1200.setSar(NumberUtil.round(baseSar1200));

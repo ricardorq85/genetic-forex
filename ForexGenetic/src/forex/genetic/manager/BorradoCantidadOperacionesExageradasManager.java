@@ -17,7 +17,7 @@ import java.util.List;
 public class BorradoCantidadOperacionesExageradasManager extends BorradoManager {
 
     public BorradoCantidadOperacionesExageradasManager() {
-    }
+    }     
 
     @Override
     public List<Individuo> consultarIndividuos() throws ClassNotFoundException, SQLException {

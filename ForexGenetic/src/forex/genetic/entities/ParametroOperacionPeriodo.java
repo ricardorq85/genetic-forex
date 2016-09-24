@@ -3,6 +3,7 @@ package forex.genetic.entities;
 import java.util.Date;
 
 import forex.genetic.util.Constants.OperationType;
+import forex.genetic.util.DateUtil;
 
 public class ParametroOperacionPeriodo {
 
@@ -189,8 +190,8 @@ public class ParametroOperacionPeriodo {
 				+ ", cantidad=" + cantidad + ", cantidadParalelas=" + cantidadParalelas + ", firstOrder=" + firstOrder
 				+ ", secondOrder=" + secondOrder + ", pipsTotales=" + pipsTotales + ", pipsParalelas=" + pipsParalelas
 				+ ", pipsAgrupadoMinutos=" + pipsAgrupadoMinutos + ", pipsAgrupadoHoras=" + pipsAgrupadoHoras
-				+ ", pipsAgrupadoDias=" + pipsAgrupadoDias + ", fechaInicial=" + fechaInicial + ", fechaFinal="
-				+ fechaFinal + ", fecha=" + fecha + ", tipoOperacion=" + tipoOperacion + "]";
+				+ ", pipsAgrupadoDias=" + pipsAgrupadoDias + ", fechaInicial=" + DateUtil.getDateString(fechaInicial) + ", fechaFinal="
+				+ DateUtil.getDateString(fechaFinal) + ", fecha=" + DateUtil.getDateString(fecha) + ", tipoOperacion=" + tipoOperacion + "]";
 	}
 
 }

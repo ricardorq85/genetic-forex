@@ -4,6 +4,13 @@
  */
 package forex.genetic.facade;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.ProcesoPoblacionDAO;
 import forex.genetic.entities.IndividuoEstrategia;
@@ -11,15 +18,10 @@ import forex.genetic.entities.Poblacion;
 import forex.genetic.manager.PoblacionManagerBD;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.controller.IndicadorController;
+import forex.genetic.proxy.ProcesosAlternosProxy;
 import forex.genetic.thread.ProcesarIndividuoThread;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

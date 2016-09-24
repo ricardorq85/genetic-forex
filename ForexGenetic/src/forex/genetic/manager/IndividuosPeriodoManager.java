@@ -65,8 +65,10 @@ public class IndividuosPeriodoManager {
 		Date fechaInicioProceso = DateUtil.adicionarMes(fechaFinProceso, -mesesProceso);
 		while (fechaInicioProceso.after(this.parametroFechaInicioProceso)) {
 			logTime("Fecha Inicio Proceso:" + DateUtil.getDateString(fechaInicioProceso) + "; Fecha Fin Proceso:"
-					+ DateUtil.getDateString(fechaFinProceso), 1);			
+					+ DateUtil.getDateString(fechaFinProceso), 1);
 			List<ParametroOperacionPeriodo> inclusiones = estrategiaOperacionPeriodoDAO.consultarInclusiones();
+			logTime("Inclusiones:" + inclusiones.size(), 1);
+			int contadorParametrosYaProcesados = 0;
 			for (ParametroOperacionPeriodo paramBase : inclusiones) {
 				for (int i = 0; i < TIPO_OPERACION.length; i++) {
 					ParametroOperacionPeriodo param = new ParametroOperacionPeriodo(paramBase.getFiltroPipsXSemana(),
@@ -78,27 +80,31 @@ public class IndividuosPeriodoManager {
 					param.setTipoOperacion(TIPO_OPERACION[i]);
 					if (param.isFiltroValido()) {
 						logTime(param.toString(), 2);
-						this.procesarIndividuosXPeriodo(param);
+						contadorParametrosYaProcesados += this.procesarIndividuosXPeriodo(param);
 					} else {
 						logTime("Filtros inválidos: " + param.toString(), 3);
 					}
 				}
 			}
+			System.out.println("");
+			logTime("Parametros ya procesados: " + contadorParametrosYaProcesados, 1);
 			fechaFinProceso = DateUtil.adicionarMes(fechaFinProceso, -1);
 			fechaInicioProceso = DateUtil.adicionarMes(fechaFinProceso, -mesesProceso);
 		}
 	}
 
-	public void procesarIndividuosXPeriodo(ParametroOperacionPeriodo param) throws SQLException {
-		if (estrategiaOperacionPeriodoDAO.existe(param)) {
-			logTime("Parametros ya procesados previamente", 2);
+	public int procesarIndividuosXPeriodo(ParametroOperacionPeriodo param) throws SQLException {
+		if (estrategiaOperacionPeriodoDAO.existe(param)) {			
+			logTime("Ya procesado:" + param.toString(), 3);
+			System.out.print(".");
+			return 1;
 		} else {
 			operacionesDAO.cleanOperacionesPeriodo();
 			logTime("Registros borrados.", 2);
 
 			int insertados = operacionesDAO.insertOperacionesPeriodo(param);
 			conn.commit();
-			logTime("Registro insertados: " + insertados, 1);
+			logTime("Registro insertados TMP_TOFILESTRING: " + insertados, 1);
 
 			List<Individuo> ordenesCreadas = this.ejecutarIndividuosXPeriodo(param);
 			int id = estrategiaOperacionPeriodoDAO.insert(param);
@@ -109,6 +115,7 @@ public class IndividuosPeriodoManager {
 			}
 			conn.commit();
 			logTime(param.toString(), 1);
+			return 0;
 		}
 	}
 

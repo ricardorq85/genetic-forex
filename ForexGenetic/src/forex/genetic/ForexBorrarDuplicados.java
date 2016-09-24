@@ -19,7 +19,8 @@ import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-import forex.genetic.manager.DuplicadosManager;
+import forex.genetic.manager.BorradoDuplicadosManager;
+import forex.genetic.manager.BorradoManager;
 
 /**
  *
@@ -43,8 +44,8 @@ public class ForexBorrarDuplicados {
         setErr(out);
         logTime("Inicio: " + id, 1);
         setId(Long.toString(id));
-        DuplicadosManager manager = new DuplicadosManager();
-        manager.borrarDuplicados("DUPLICADO_OPERACIONES");
+        BorradoManager manager = new BorradoDuplicadosManager();
+        manager.borrarIndividuos();
         logTime("Fin: " + id, 1);
     }
     private static final Logger LOG = Logger.getLogger(ForexBorrarDuplicados.class.getName());

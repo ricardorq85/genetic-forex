@@ -9,4 +9,5 @@ D:\app\USER\product\11.2.0\eurjpy_home\BIN\sqlplus FOREX/forex@localhost:1521/FO
 --@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\Export Multiples Estrategia Operacion.sql" 
 --@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\new DELETE AND INSERT INTO OPERACION CONSOLIDADAS.sql"
 --@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\OPERACION_POSITIVAS_NEGATIVAS.sql"
-
+--@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\ToFileString.sql"
+--@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\Borrar datos historicosX.sql"

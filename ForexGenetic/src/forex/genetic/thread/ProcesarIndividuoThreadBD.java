@@ -82,16 +82,17 @@ public class ProcesarIndividuoThreadBD extends Thread {
     private void actualizarOperacionSemanal(Individuo individuo) throws SQLException {
     	// Semana
     	int cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACION_X_SEMANA");    	
-    	int cInsert = daoOperacionSemanal.insertOperacionesSemana(individuo);    	
+    	int cInsert = daoOperacionSemanal.insertOperacionesSemana(individuo);
     	conn.commit();
     	LogUtil.logTime(individuo.getId() + ". Borrados OPERACION_X_SEMANA: " + cDelete, 2);
     	LogUtil.logTime(individuo.getId() + ". Insertados OPERACION_X_SEMANA: " + cInsert, 2);
+    	//TODO: hacerlo por las semanas de OPERACION x individuo, no de OPERACION_X_SEMANA
     	cInsert = daoOperacionSemanal.insertSemanas(individuo);    	    
 		conn.commit();
 		LogUtil.logTime("Insertados SEMANAS: " + cInsert, 1);		
 		//Mes
-    	cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACIONES_ACUM_SEMANA_MES");   	
-    	cInsert = daoOperacionSemanal.insertOperacionesSemanaAcumuladas(individuo, "OPERACIONES_ACUM_SEMANA_MES", -1000, -1);    	
+    	cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACIONES_ACUM_SEMANA_MES");
+    	cInsert = daoOperacionSemanal.insertOperacionesSemanaAcumuladas(individuo, "OPERACIONES_ACUM_SEMANA_MES", -1000, -1);
     	conn.commit();
     	LogUtil.logTime(individuo.getId() + ". Borrados OPERACIONES_ACUM_SEMANA_MES: " + cDelete, 2);
     	LogUtil.logTime(individuo.getId() + ". Insertados OPERACIONES_ACUM_SEMANA_MES: " + cInsert, 2);
@@ -188,7 +189,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
             }
             if (individuo.getFechaApertura() == null) {
                 int index = proximaFechaApertura(fechas, lastDate, indexFecha);
-                if ((index == indexFecha) || (index >= fechas.size())) {
+                if (((index>0) && (index == indexFecha)) || (index >= fechas.size())) {
                     this.updateProceso(maxFechaHistorico, individuo.getId());
                     conn.commit();
                     break;

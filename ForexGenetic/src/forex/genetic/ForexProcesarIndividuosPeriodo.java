@@ -18,9 +18,9 @@ import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.logging.Logger;
 
 import forex.genetic.manager.IndividuosPeriodoManager;
+import forex.genetic.proxy.ProcesosAlternosProxy;
 
 /**
  *
@@ -52,7 +52,13 @@ public class ForexProcesarIndividuosPeriodo {
 			ex.printStackTrace();
 		}
 		logTime("Fin: " + id, 1);
+		logTime("Lanzando Procesos alternos...", 1);
+		ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(id);
+		try {
+			alternosManager.procesar();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		logTime("Init Proceso alternos", 1);
 	}
-
-	private static final Logger LOG = Logger.getLogger(ForexProcesarIndividuosPeriodo.class.getName());
 }

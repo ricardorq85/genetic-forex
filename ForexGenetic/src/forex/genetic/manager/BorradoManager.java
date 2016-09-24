@@ -5,6 +5,12 @@
  */
 package forex.genetic.manager;
 
+import static forex.genetic.util.LogUtil.logTime;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
 import forex.genetic.dao.EstrategiaDAO;
 import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.OperacionesDAO;
@@ -12,12 +18,7 @@ import forex.genetic.dao.ProcesoPoblacionDAO;
 import forex.genetic.dao.TendenciaDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.util.LogUtil;
-import static forex.genetic.util.LogUtil.logTime;
 import forex.genetic.util.jdbc.JDBCUtil;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
-import static forex.genetic.util.LogUtil.logTime;
 
 /**
  *
@@ -30,7 +31,7 @@ public abstract class BorradoManager {
 	protected abstract List<Individuo> consultarIndividuos() throws ClassNotFoundException, SQLException;
 
 	public abstract void borrarIndividuos() throws ClassNotFoundException, SQLException;
-
+	
 	protected void borrarIndividuos(String tipoProceso) throws ClassNotFoundException, SQLException {
 		try {
 			conn = JDBCUtil.getConnection();
@@ -42,8 +43,10 @@ public abstract class BorradoManager {
 			EstrategiaDAO estrategiaDAO = new EstrategiaDAO(conn);
 
 			List<Individuo> individuos = this.consultarIndividuos();
+			LogUtil.logTime("Individuos consultados: " + individuos.size(), 1);
 			int count = 0;
 			while ((individuos != null) && (!individuos.isEmpty())) {
+				LogUtil.logTime("Individuos consultados: " + individuos.size(), 1);
 				for (Individuo individuo : individuos) {
 					LogUtil.logTime("Individuo: " + individuo.getId(), 1);
 					int r_proceso = procesoDAO.deleteProceso(individuo.getId());

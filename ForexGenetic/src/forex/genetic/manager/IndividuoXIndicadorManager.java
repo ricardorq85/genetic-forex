@@ -21,6 +21,7 @@ import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.ParametroDAO;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.RangoOperacionIndividuo;
 import forex.genetic.entities.RangoOperacionIndividuoIndicador;
 import forex.genetic.entities.indicator.Indicator;
@@ -121,10 +122,28 @@ public class IndividuoXIndicadorManager {
 			IndividuoEstrategia individuoBuy = createIndividuo(rangoOperacionIndividuo, Constants.OperationType.BUY);
 			insertIndividuo(individuoSell);
 			insertIndividuo(individuoBuy);
+
+			if ((individuoSell != null) && (individuoBuy != null)) {
+				Poblacion poblacion = new Poblacion();
+				poblacion.add(individuoSell);
+				poblacion.add(individuoBuy);
+				mutarIndividuos(poblacion);
+			}
 		} else {
 			logTime("NO cumple con el rango valido.", 1);
 		}
 		return found_any;
+	}
+
+	private void mutarIndividuos(Poblacion poblacion) throws SQLException {
+		MutationIndividuoManager mutator = new MutationIndividuoManager();
+		Poblacion[] mutacion = mutator.mutate(1, poblacion, 10);
+		if ((mutacion != null) && (mutacion.length > 0)) {
+			List<IndividuoEstrategia> mutados = mutacion[1].getIndividuos();
+			for (IndividuoEstrategia individuoMutado : mutados) {
+				insertIndividuo(individuoMutado);
+			}
+		}
 	}
 
 	private void insertIndividuo(IndividuoEstrategia individuo) throws SQLException {

@@ -18,9 +18,10 @@ import static java.lang.System.setOut;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
-import java.util.logging.Logger;
+import java.sql.SQLException;
 
 import forex.genetic.delegate.PoblacionDelegate;
+import forex.genetic.proxy.ProcesosAlternosProxy;
 
 /**
  *
@@ -50,6 +51,13 @@ public class ForexInsertDatosHistoricos {
         logTime("Init Insert Datos Historicos", 1);
         delegate.cargarDatosHistoricos();
         logTime("End Insert Datos Historicos", 1);
+        logTime("Lanzando Procesos alternos...", 1);
+        ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(id);
+		try {
+			alternosManager.procesar();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		logTime("End Proceso alternos", 1);
     }
-    private static final Logger LOG = Logger.getLogger(ForexInsertDatosHistoricos.class.getName());
 }
