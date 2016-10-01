@@ -26,49 +26,63 @@ import forex.genetic.util.jdbc.JDBCUtil;
  */
 public abstract class BorradoManager {
 
+	protected String tipoProceso = "DEFAULT";
 	protected Connection conn = null;
+	protected IndividuoDAO individuoDAO;
+	protected OperacionesDAO operacionDAO;
+	protected ProcesoPoblacionDAO procesoDAO;
+	protected TendenciaDAO tendenciaDAO;
+	protected EstrategiaDAO estrategiaDAO;
 
-	protected abstract List<Individuo> consultarIndividuos() throws ClassNotFoundException, SQLException;
+	public BorradoManager() throws ClassNotFoundException, SQLException {
+		conn = JDBCUtil.getConnection();
+		individuoDAO = new IndividuoDAO(conn);
+		operacionDAO = new OperacionesDAO(conn);
+		procesoDAO = new ProcesoPoblacionDAO(conn);
+		tendenciaDAO = new TendenciaDAO(conn);
+		estrategiaDAO = new EstrategiaDAO(conn);
+	}
+
+	protected abstract List<Individuo> consultarIndividuos(Individuo individuo)
+			throws ClassNotFoundException, SQLException;
 
 	public abstract void borrarIndividuos() throws ClassNotFoundException, SQLException;
-	
-	protected void borrarIndividuos(String tipoProceso) throws ClassNotFoundException, SQLException {
+
+	public abstract void validarYBorrarIndividuo(Individuo individuo) throws ClassNotFoundException, SQLException;
+
+	protected void procesarBorradoIndividuos(Individuo individuo) throws ClassNotFoundException, SQLException {
 		try {
-			conn = JDBCUtil.getConnection();
-
-			IndividuoDAO individuoDAO = new IndividuoDAO(conn);
-			OperacionesDAO operacionDAO = new OperacionesDAO(conn);
-			ProcesoPoblacionDAO procesoDAO = new ProcesoPoblacionDAO(conn);
-			TendenciaDAO tendenciaDAO = new TendenciaDAO(conn);
-			EstrategiaDAO estrategiaDAO = new EstrategiaDAO(conn);
-
-			List<Individuo> individuos = this.consultarIndividuos();
+			List<Individuo> individuos = this.consultarIndividuos(individuo);
 			LogUtil.logTime("Individuos consultados: " + individuos.size(), 1);
 			int count = 0;
 			while ((individuos != null) && (!individuos.isEmpty())) {
 				LogUtil.logTime("Individuos consultados: " + individuos.size(), 1);
-				for (Individuo individuo : individuos) {
-					LogUtil.logTime("Individuo: " + individuo.getId(), 1);
-					int r_proceso = procesoDAO.deleteProceso(individuo.getId());
-					logTime("Registro borrados PROCESO = " + r_proceso, 1);
-					int r_operaciones = operacionDAO.deleteOperaciones(individuo.getId());
-					logTime("Registro borrados OPERACIONES = " + r_operaciones, 1);
-					int r_tendencia = tendenciaDAO.deleteTendencia(individuo.getId());
-					logTime("Registro borrados TENDENCIA = " + r_tendencia, 1);
-					try {
-						int r_indEst = estrategiaDAO.deleteIndividuoEstrategia(individuo.getId());
-						logTime("Registro borrados INDIVIDUOESTRATEGIA = " + r_indEst, 1);
-					} catch (SQLException e) {
-					}
-					individuoDAO.smartDelete(individuo.getId(), tipoProceso, null);
-				}
+				this.smartDelete(individuos);
 				conn.commit();
 				count += individuos.size();
 				logTime("Individuos borrados= " + count, 1);
-				individuos = this.consultarIndividuos();
+				individuos = this.consultarIndividuos(individuo);
 			}
 		} finally {
 			JDBCUtil.close(conn);
+		}
+	}
+
+	protected void smartDelete(List<Individuo> individuos) throws SQLException {
+		for (Individuo individuo : individuos) {
+			LogUtil.logTime("Individuo: " + individuo.getId(), 1);
+			int r_proceso = procesoDAO.deleteProceso(individuo.getId());
+			logTime("Registro borrados PROCESO = " + r_proceso, 1);
+			int r_operaciones = operacionDAO.deleteOperaciones(individuo.getId());
+			logTime("Registro borrados OPERACIONES = " + r_operaciones, 1);
+			int r_tendencia = tendenciaDAO.deleteTendencia(individuo.getId());
+			logTime("Registro borrados TENDENCIA = " + r_tendencia, 1);
+			try {
+				int r_indEst = estrategiaDAO.deleteIndividuoEstrategia(individuo.getId());
+				logTime("Registro borrados INDIVIDUOESTRATEGIA = " + r_indEst, 1);
+			} catch (SQLException e) {
+			}
+			individuoDAO.smartDelete(individuo.getId(), tipoProceso, individuo.getIdParent1());
 		}
 	}
 

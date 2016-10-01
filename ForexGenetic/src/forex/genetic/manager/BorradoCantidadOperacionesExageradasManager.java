@@ -16,21 +16,30 @@ import java.util.List;
  */
 public class BorradoCantidadOperacionesExageradasManager extends BorradoManager {
 
-    public BorradoCantidadOperacionesExageradasManager() {
-    }     
+	public BorradoCantidadOperacionesExageradasManager() throws ClassNotFoundException, SQLException {
+		super.tipoProceso = "CANTIDAD_LIMITE";
+	}
 
-    @Override
-    public List<Individuo> consultarIndividuos() throws ClassNotFoundException, SQLException {
-        List<Individuo> individuos;
-        IndividuoDAO individuoDAO = new IndividuoDAO(conn);
-        double cantidadLimite = 0.010;
-        individuos = individuoDAO.consultarIndividuosCantidadLimite(cantidadLimite);
-        return individuos;
-    }
+	@Override
+	public List<Individuo> consultarIndividuos(Individuo individuo) throws ClassNotFoundException, SQLException {
+		List<Individuo> individuos;
+		IndividuoDAO individuoDAO = new IndividuoDAO(conn);
+		double cantidadLimite = 0.010;
+		if (individuo == null) {
+			individuos = individuoDAO.consultarIndividuosCantidadLimite(cantidadLimite);
+		} else {
+			individuos = individuoDAO.consultarIndividuosCantidadLimite(cantidadLimite, individuo.getId());
+		}
+		return individuos;
+	}
 
-    @Override
-    public void borrarIndividuos() throws ClassNotFoundException, SQLException {
-        String tipoProceso = "CANTIDAD_LIMITE";
-        super.borrarIndividuos(tipoProceso);
-    }
+	@Override
+	public void borrarIndividuos() throws ClassNotFoundException, SQLException {
+		super.procesarBorradoIndividuos(null);
+	}
+
+	@Override
+	public void validarYBorrarIndividuo(Individuo individuo) throws ClassNotFoundException, SQLException {
+		super.procesarBorradoIndividuos(individuo);
+	}
 }

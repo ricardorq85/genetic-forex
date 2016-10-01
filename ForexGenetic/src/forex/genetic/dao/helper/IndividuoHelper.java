@@ -49,6 +49,7 @@ public class IndividuoHelper {
         while (resultado.next()) {
             Individuo ind = new Individuo();
             ind.setId(resultado.getString("ID_INDIVIDUO"));
+            ind.setIdParent1(resultado.getString("ID_INDIVIDUO_PADRE"));            
             list.add(ind);
         }
         return list;

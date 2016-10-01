@@ -247,8 +247,8 @@ public class DatoHistoricoDAO {
 				+ " ICHIMOKUKIJUNSEN, ICHIMOKUSENKOUSPANA, ICHIMOKUSENKOUSPANB, ICHIMOKUCHINKOUSPAN, "
 				+ " MA1200, MACD20X_VALUE, MACD20X_SIGNAL, AVERAGE_COMPARE1200, SAR1200, ADX_VALUE168, ADX_PLUS168, ADX_MINUS168, "
 				+ " RSI84, BOLLINGER_UPPER240, BOLLINGER_LOWER240, MOMENTUM1200, ICHIMOKUTENKANSEN6, "
-				+ " ICHIMOKUKIJUNSEN6, ICHIMOKUSENKOUSPANA6, ICHIMOKUSENKOUSPANB6, ICHIMOKUCHINKOUSPAN6 ) "
-				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ " ICHIMOKUKIJUNSEN6, ICHIMOKUSENKOUSPANA6, ICHIMOKUSENKOUSPANB6, ICHIMOKUCHINKOUSPAN6, FECHA_REGISTRO ) "
+				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		int i = 1;
 		PreparedStatement statement = null;
@@ -477,6 +477,8 @@ public class DatoHistoricoDAO {
 			} else {
 				statement.setDouble(i++, d);
 			}
+			
+			statement.setTimestamp(i++, new java.sql.Timestamp(new Date().getTime()));
 
 			statement.executeUpdate();
 		} finally {
@@ -487,7 +489,7 @@ public class DatoHistoricoDAO {
 	public void updateDatoHistorico(Point point) throws SQLException {
 		String sql = "UPDATE DATOHISTORICO SET SAR1200=?, ADX_VALUE168=?, ADX_PLUS168=?, ADX_MINUS168=?, "
 				+ " RSI84=?, BOLLINGER_UPPER240=?, BOLLINGER_LOWER240=?, MOMENTUM1200=?, ICHIMOKUTENKANSEN6=?, "
-				+ " ICHIMOKUKIJUNSEN6=?, ICHIMOKUSENKOUSPANA6=?, ICHIMOKUSENKOUSPANB6=?, ICHIMOKUCHINKOUSPAN6=? "
+				+ " ICHIMOKUKIJUNSEN6=?, ICHIMOKUSENKOUSPANA6=?, ICHIMOKUSENKOUSPANB6=?, ICHIMOKUCHINKOUSPAN6=?, FECHA_REGISTRO=? "
 				+ " WHERE PAR=? AND MINUTOS=? AND FECHA=?";
 
 		int i = 1;
@@ -579,6 +581,7 @@ public class DatoHistoricoDAO {
 			statement.setString(i++, point.getMoneda());
 			statement.setInt(i++, point.getPeriodo());
 			statement.setTimestamp(i++, new java.sql.Timestamp(point.getDate().getTime()));
+			statement.setTimestamp(i++, new java.sql.Timestamp(new Date().getTime()));
 
 			statement.executeUpdate();
 		} finally {

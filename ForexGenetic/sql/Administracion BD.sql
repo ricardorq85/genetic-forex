@@ -25,3 +25,15 @@ from dba_indexes a, dba_data_files b
 where a.tablespace_name=b.tablespace_name and a.index_name='OPERACION_INDIV_FECHA_IDX';
 
 --ALTER TABLESPACE USERS ADD DATAFILE 'C:\APP\USER\ORADATA\FOREX3\USERS02.DBF' SIZE 32M;
+
+SELECT * FROM ALL_CONSTRAINTS WHERE TABLE_NAME = 'OPERACION_ESTRATEGIA_PERIODO';
+
+SELECT * FROM ALL_OBJECTS WHERE OBJECT_NAME = 'INDICADORES_COLUMNAS';
+
+SELECT * 
+   from all_constraints fk, all_constraints pk 
+    where fk.CONSTRAINT_TYPE = 'R' and 
+          pk.owner = 'FOREX' and
+          fk.r_owner = pk.owner and
+          fk.R_CONSTRAINT_NAME = pk.CONSTRAINT_NAME and 
+          pk.TABLE_NAME = 'INDIVIDUO';

@@ -36,7 +36,7 @@ public class IndividuoTendenciaDAO extends IndividuoDAO {
     public List<Individuo> consultarIndividuosTendencia(int cantidad) throws SQLException {
         List<Individuo> list = null;
         String sql = "SELECT * FROM ( "
-                + "  SELECT OPER.ID_INDIVIDUO, SUM (PIPS) PIPS "
+                + "  SELECT OPER.ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE, SUM (PIPS) PIPS "
                 + "  FROM OPERACION OPER "
                 + "  WHERE EXISTS "
                 + "    (SELECT 1  FROM INDICADOR_INDIVIDUO_TENDENCIAS IIT "

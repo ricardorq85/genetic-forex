@@ -30,8 +30,8 @@ public class ForexProcesosAlternos {
 		long id = currentTimeMillis();
 		load().join();
 		logTime("ProcesosAlternos: " + id, 1);
-		ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(id);
 		try {
+			ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(id);
 			alternosManager.procesar();
 		} catch (SQLException e) {
 			e.printStackTrace();

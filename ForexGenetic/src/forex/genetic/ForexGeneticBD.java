@@ -47,8 +47,8 @@ public class ForexGeneticBD {
 		delegate.process();
 		logTime("Fin: " + id, 1);
 		logTime("Lanzando Procesos alternos...", 1);
-		ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(id);
 		try {
+			ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(id);
 			alternosManager.procesar();
 		} catch (SQLException e) {
 			e.printStackTrace();

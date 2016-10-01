@@ -20,27 +20,37 @@ import forex.genetic.util.DateUtil;
  */
 public class BorradoIndividuoSinOperacionesManager extends BorradoManager {
 
-    public BorradoIndividuoSinOperacionesManager() {
-    }
+	public BorradoIndividuoSinOperacionesManager() throws ClassNotFoundException, SQLException {
+		super.tipoProceso = "SIN_OPERACIONES";
+	}
 
-    @Override
-    public List<Individuo> consultarIndividuos() throws ClassNotFoundException, SQLException {
-        List<Individuo> individuos;
-        IndividuoDAO individuoDAO = new IndividuoDAO(conn);
-        Date fechaLimite;
+	@Override
+	public List<Individuo> consultarIndividuos(Individuo individuo) throws ClassNotFoundException, SQLException {
+		List<Individuo> individuos;
+		IndividuoDAO individuoDAO = new IndividuoDAO(conn);
+		Date fechaLimite;
 		try {
-			fechaLimite = DateUtil.obtenerFecha("2014/01/01 00:00");
+			fechaLimite = DateUtil.obtenerFecha("2015/01/01 00:00");
 		} catch (ParseException e) {
 			fechaLimite = new Date();
 			e.printStackTrace();
 		}
-        individuos = individuoDAO.consultarIndividuosYaProcesadosSinOperaciones(fechaLimite);
-        return individuos;
-    }
+		if (individuo == null) {
+			individuos = individuoDAO.consultarIndividuosYaProcesadosSinOperaciones(fechaLimite);
+		} else {
+			individuos = individuoDAO.consultarIndividuosYaProcesadosSinOperaciones(fechaLimite, individuo.getId());
+		}
+		return individuos;
+	}
 
-    @Override
-    public void borrarIndividuos() throws ClassNotFoundException, SQLException {
-        String tipoProceso = "SIN_OPERACIONES";
-        super.borrarIndividuos(tipoProceso);
-    }
+	@Override
+	public void borrarIndividuos() throws ClassNotFoundException, SQLException {
+		super.procesarBorradoIndividuos(null);
+	}
+
+	@Override
+	public void validarYBorrarIndividuo(Individuo individuo) throws ClassNotFoundException, SQLException {
+		super.procesarBorradoIndividuos(individuo);
+	}
+
 }
