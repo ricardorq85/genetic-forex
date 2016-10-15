@@ -19,6 +19,7 @@ import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.IndicatorDAO;
 import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.ParametroDAO;
+import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
@@ -46,6 +47,8 @@ public class IndividuoXIndicadorManager {
 	private ParametroDAO parametroDAO;
 	private final int puntosHistoria;
 	private Date fechaMinima, fechaMaxima;
+	private Date maxFechaHistorico;
+	private Date minFechaHistorico;
 
 	private final IndicadorController indicadorController = ControllerFactory
 			.createIndicadorController(ControllerFactory.ControllerType.Individuo);
@@ -59,6 +62,8 @@ public class IndividuoXIndicadorManager {
 		fechaMinima = parametroDAO.getDateValorParametro("FECHA_MINIMA_CREAR_INDIVIDUO");
 		fechaMaxima = parametroDAO.getDateValorParametro("FECHA_MAXIMA_CREAR_INDIVIDUO");
 		puntosHistoria = dhDAO.consultarCantidadPuntos();
+		maxFechaHistorico = dhDAO.getFechaHistoricaMaxima();
+		minFechaHistorico = dhDAO.getFechaHistoricaMinima();
 	}
 
 	public void crearIndividuos() throws SQLException, ClassNotFoundException {
@@ -137,7 +142,7 @@ public class IndividuoXIndicadorManager {
 
 	private void mutarIndividuos(Poblacion poblacion) throws SQLException {
 		MutationIndividuoManager mutator = new MutationIndividuoManager();
-		Poblacion[] mutacion = mutator.mutate(1, poblacion, 10);
+		Poblacion[] mutacion = mutator.mutate(1, poblacion, 100);
 		if ((mutacion != null) && (mutacion.length > 0)) {
 			List<IndividuoEstrategia> mutados = mutacion[1].getIndividuos();
 			for (IndividuoEstrategia individuoMutado : mutados) {
@@ -150,6 +155,7 @@ public class IndividuoXIndicadorManager {
 		if (individuo != null) {
 			individuoDAO.insertIndividuo(individuo);
 			individuoDAO.insertIndicadorIndividuo(indicadorController, individuo);
+			individuoDAO.insertarIndividuoIndicadoresColumnas(individuo.getId());
 			conn.commit();
 			logTime("Individuo insertado a BD:" + individuo.getId(), 1);
 		}
@@ -241,9 +247,18 @@ public class IndividuoXIndicadorManager {
 			interval.setLowInterval(i1);
 			interval.setHighInterval(i2);
 		}
-		double porcCumplimiento = indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager, intervalIndicator,
-				puntosHistoria);
-		return porcCumplimiento;
+		double sumaPorcCumplimiento = indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager, intervalIndicator);
+		/*DateInterval di = DateUtil.obtenerIntervaloAnyo(minFechaHistorico);
+		while (di.getLowInterval().before(maxFechaHistorico)) {
+			sumaPorcCumplimiento += indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager, intervalIndicator, di);
+			di = DateUtil.obtenerIntervaloAnyo(di.getHighInterval());
+		}*/
+		return (sumaPorcCumplimiento/puntosHistoria);
+	}
+
+	private double porcentajeCumplimientoDummy(IntervalIndicatorManager<?> indManager,
+			IntervalIndicator intervalIndicator, Double i1, Double i2) throws SQLException {
+		return 0.7;
 	}
 
 	private IndividuoEstrategia createIndividuo(RangoOperacionIndividuo rango, Constants.OperationType tipoOperacion) {
@@ -280,7 +295,7 @@ public class IndividuoXIndicadorManager {
 		}
 
 		IndividuoEstrategia ind = null;
-		if (counter > 0) {
+		if (counter > 3) {
 			ind = new IndividuoEstrategia(Constants.IndividuoType.INDICADOR_GANADOR);
 			ind.setTipoOperacion(tipoOperacion);
 			ind.setLot(0.1);
@@ -290,7 +305,7 @@ public class IndividuoXIndicadorManager {
 			ind.setOpenIndicators(openIndicators);
 			ind.setCloseIndicators(closeIndicators);
 		} else {
-			logTime("Ningun indicator cumple con las caracteristicas necesarias. Individuo NO creado ", 1);
+			logTime("No tiene suficientes indicadores con las caracteristicas necesarias. Individuo NO creado ", 1);
 		}
 		return (ind);
 	}

@@ -12,5 +12,4 @@ D:\app\USER\product\11.2.0\eurjpy_home\BIN\sqlplus FOREX/forex@localhost:1521/FO
 --@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\OPERACION_POSITIVAS_NEGATIVAS.sql"
 --@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\ToFileString.sql"
 --@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\Borrar datos historicosX.sql"
---@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\INSERT DH_TEMPORAL WHILE.sql"
---@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\UPDATE FECHA_REGISTRO DATOHISTORICO.sql"
+--@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\Insertar Acumulados Semana.sql"

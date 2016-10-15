@@ -7,6 +7,7 @@ package forex.genetic.delegate;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.facade.PoblacionFacade;
 import java.io.FileNotFoundException;
+import java.sql.SQLException;
 
 /**
  *

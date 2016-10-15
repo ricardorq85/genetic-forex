@@ -4,16 +4,18 @@
  */
 package forex.genetic.dao;
 
-import forex.genetic.dao.helper.IndicatorHelper;
-import forex.genetic.entities.RangoOperacionIndividuo;
-import forex.genetic.entities.indicator.IntervalIndicator;
-import forex.genetic.manager.indicator.IntervalIndicatorManager;
-import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+
+import forex.genetic.dao.helper.IndicatorHelper;
+import forex.genetic.entities.DateInterval;
+import forex.genetic.entities.RangoOperacionIndividuo;
+import forex.genetic.entities.indicator.IntervalIndicator;
+import forex.genetic.manager.indicator.IntervalIndicatorManager;
+import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *
@@ -61,10 +63,10 @@ public class IndicatorDAO {
     }
     
     public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager<?> indManager,
-            IntervalIndicator ii, int puntosHistoria) throws SQLException {
+            IntervalIndicator ii) throws SQLException {
 
         String[] sqlIndicador = indManager.queryPorcentajeCumplimientoIndicador();
-        String sql = "SELECT COUNT(*)/? PORCENTAJE "
+        String sql = "SELECT COUNT(*) PUNTOS "
                 + "FROM DATOHISTORICO DH "
                 + "WHERE " + sqlIndicador[0];
 
@@ -72,17 +74,51 @@ public class IndicatorDAO {
         ResultSet resultado = null;
         try {
             stmtConsulta = this.connection.prepareStatement(sql);
-            stmtConsulta.setInt(1, puntosHistoria);
-            stmtConsulta.setDouble(2, ii.getInterval().getLowInterval());
-            stmtConsulta.setDouble(3, ii.getInterval().getHighInterval());
+            stmtConsulta.setDouble(1, ii.getInterval().getLowInterval());
+            stmtConsulta.setDouble(2, ii.getInterval().getHighInterval());
             if (indManager.isPriceDependence()) {
-                stmtConsulta.setDouble(4, ii.getInterval().getLowInterval());
-                stmtConsulta.setDouble(5, ii.getInterval().getHighInterval());
+                stmtConsulta.setDouble(3, ii.getInterval().getLowInterval());
+                stmtConsulta.setDouble(4, ii.getInterval().getHighInterval());
             }
             resultado = stmtConsulta.executeQuery();
 
             if (resultado.next()) {
-                return resultado.getDouble("PORCENTAJE");
+                return resultado.getDouble("PUNTOS");
+            } else {
+                return -1;
+            }
+        } finally {
+            JDBCUtil.close(resultado);
+            JDBCUtil.close(stmtConsulta);
+        }
+    }
+    
+    public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager<?> indManager,
+            IntervalIndicator ii, DateInterval di) throws SQLException {
+
+        String[] sqlIndicador = indManager.queryPorcentajeCumplimientoIndicador();
+        String sql = "SELECT COUNT(*) PUNTOS "
+                + "FROM DATOHISTORICO DH "
+                + "WHERE " + sqlIndicador[0] 
+                		+ " AND DH.FECHA >= ? AND DH.FECHA < ?";
+
+        PreparedStatement stmtConsulta = null;
+        ResultSet resultado = null;
+        try {
+        	int count = 0;
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setDouble(++count, ii.getInterval().getLowInterval());
+            stmtConsulta.setDouble(++count, ii.getInterval().getHighInterval());
+            if (indManager.isPriceDependence()) {
+                stmtConsulta.setDouble(++count, ii.getInterval().getLowInterval());
+                stmtConsulta.setDouble(++count, ii.getInterval().getHighInterval());
+            }
+            stmtConsulta.setTimestamp(++count, new Timestamp(di.getLowInterval().getTime()));
+            stmtConsulta.setTimestamp(++count, new Timestamp(di.getHighInterval().getTime()));
+            resultado = stmtConsulta.executeQuery();
+
+            if (resultado.next()) {
+                return resultado.getDouble("PUNTOS");
             } else {
                 return -1;
             }

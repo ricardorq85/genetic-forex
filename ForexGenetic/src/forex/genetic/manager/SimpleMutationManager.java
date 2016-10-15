@@ -12,31 +12,58 @@ import java.util.Random;
  */
 public class SimpleMutationManager extends EspecificMutationManager {
 
-    private final Random random = new Random();
+	private final Random random = new Random();
 
-    /**
-     *
-     * @param d1
-     * @param min
-     * @param max
-     * @return
-     */
-    @Override
-    public double mutate(double d1, double min, double max) {
-        return ((Double.isInfinite(min) || Double.isInfinite(max))
-                ? ((d1 + random.nextDouble() * d1) / 2) : (d1 + (min + random.nextDouble() * (max - min))) / 2);
-    }
+	private double mutate(double base, double factor) {
+		double r = random.nextDouble();
+		int criterio = random.nextInt(5) + 1;
 
-    /**
-     *
-     * @param d1
-     * @param min
-     * @param max
-     * @return
-     */
-    @Override
-    public int mutate(int d1, int min, int max) {
-        return (((min == Integer.MIN_VALUE) || (max == Integer.MAX_VALUE))
-                ? (d1 + (random.nextInt(d1)) / 2) : (d1 + (min + random.nextInt(max - min))) / 2);
-    }
+		double mutated = (base + r * factor) / criterio;
+
+		return mutated;
+	}
+
+	private int mutate(int base, int factor) {
+		int r = random.nextInt(factor);
+		int criterio = random.nextInt(5) + 1;
+
+		int mutated = (int) ((base + r) / criterio);
+
+		return mutated;
+	}
+
+	/**
+	 *
+	 * @param d1
+	 * @param min
+	 * @param max
+	 * @return
+	 */
+	@Override
+	public double mutate(double d1, double min, double max) {
+		double base = (Double.isInfinite(min) || Double.isInfinite(max)) ? d1 : (d1 + min);
+		double factor = (Double.isInfinite(min) || Double.isInfinite(max)) ? d1 : (max - min);
+		return (mutate(base, factor));
+		// return ((Double.isInfinite(min) || Double.isInfinite(max)) ?
+		// ((d1 + random.nextDouble() * d1) / 2)
+		// : (d1 + min + random.nextDouble() * (max - min)) / 2);
+	}
+
+	/**
+	 *
+	 * @param d1
+	 * @param min
+	 * @param max
+	 * @return
+	 */
+	@Override
+	public int mutate(int d1, int min, int max) {
+		int base = (Double.isInfinite(min) || Double.isInfinite(max)) ? d1 : (d1 + min);
+		int factor = (Double.isInfinite(min) || Double.isInfinite(max)) ? d1 : (max - min);
+		return (mutate(base, factor));
+		// return (((min == Integer.MIN_VALUE) || (max == Integer.MAX_VALUE))
+		// ? (d1 + (random.nextInt(d1)) / 2) : (d1 + (min + random.nextInt(max -
+		// min))) / 2);
+
+	}
 }

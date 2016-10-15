@@ -30,6 +30,8 @@ import forex.genetic.util.jdbc.JDBCUtil;
 public class PoblacionFacade {
 
     /**
+     * @throws SQLException 
+     * @throws ClassNotFoundException 
      *
      */
     public void process() {

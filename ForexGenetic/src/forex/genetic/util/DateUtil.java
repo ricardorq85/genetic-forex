@@ -10,6 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import forex.genetic.entities.DateInterval;
+
 /**
  *
  * @author ricardorq85
@@ -26,6 +28,25 @@ public class DateUtil {
         gc.setTime(fecha);
         gc.add(Calendar.MONTH, 1);
         return gc.getTime();
+    }
+    
+    public static DateInterval obtenerIntervaloAnyo(Date fecha) {
+    	DateInterval di = new DateInterval ();
+        GregorianCalendar gcInicial = new GregorianCalendar();
+        gcInicial.setTime(fecha);
+        gcInicial.set(Calendar.MONTH, Calendar.JANUARY);
+        gcInicial.set(Calendar.DAY_OF_MONTH, 1);
+        gcInicial.set(Calendar.HOUR_OF_DAY, 0);
+        gcInicial.set(Calendar.MINUTE, 0);
+        gcInicial.set(Calendar.SECOND, 0);
+        gcInicial.set(Calendar.MILLISECOND, 0);
+        
+        GregorianCalendar gcFinal = (GregorianCalendar)gcInicial.clone();
+        gcFinal.set(Calendar.YEAR, gcInicial.get(Calendar.YEAR)+1);
+        
+        di.setLowInterval(gcInicial.getTime());
+        di.setHighInterval(gcFinal.getTime());
+        return di;
     }
 
     public static Date adicionarMes(Date fecha, int meses) {

@@ -1,5 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
+close * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package forex.genetic.thread;
@@ -39,6 +39,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
 	private IndividuoDAO daoIndividuo;
 	private ProcesoPoblacionDAO daoProceso;
 	private Date maxFechaHistorico = null;
+	private Date minFechaHistorico = null;
 
 	/**
 	 *
@@ -60,7 +61,6 @@ public class ProcesarIndividuoThreadBD extends Thread {
 			daoIndividuo = new IndividuoDAO(conn);
 			daoProceso = new ProcesoPoblacionDAO(conn);
 			daoOperacionSemanal = new OperacionSemanalDAO(conn);
-			this.maxFechaHistorico = daoHistorico.getFechaHistoricaMaxima();
 			for (Individuo individuo : individuos) {
 				try {
 					procesarIndividuo(individuo);
@@ -153,7 +153,9 @@ public class ProcesarIndividuoThreadBD extends Thread {
 		int duracionPromedio = Math.max(5000, daoIndividuo.duracionPromedioMinutos(individuo.getId()));
 		daoIndividuo.insertarIndividuoIndicadoresColumnas(individuo.getId());
 		conn.commit();
-		List<Date> fechas = daoIndividuo.consultarPuntosApertura(individuo.getFechaHistorico(), individuo.getId());
+		Date fechaMayorQue = (individuo.getFechaHistorico() == null) ? this.minFechaHistorico
+				: individuo.getFechaHistorico();
+		List<Date> fechas = daoIndividuo.consultarPuntosApertura(fechaMayorQue, individuo.getId());
 		LogUtil.logTime(super.getName() + ": Fechas consultadas: " + fechas.size() + " :" + individuo.getId(), 1);
 		if (individuo.getFechaApertura() == null) {
 			if (fechas.isEmpty()) {
@@ -174,7 +176,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
 					DateUtil.adicionarMinutos(nextFechaHistorico, duracionPromedio));
 		}
 
-		daoIndividuo.consultarDetalleIndividuoProceso(individuo);
+		daoIndividuo.consultarDetalleIndividuoProceso(individuo, this.maxFechaHistorico);
 		OperacionesManager operacionesManager = new OperacionesManager(conn);
 		Date lastDate = fechaInicialHistorico;
 		if ((points != null) && (!points.isEmpty())) {
@@ -249,4 +251,21 @@ public class ProcesarIndividuoThreadBD extends Thread {
 			return lastDate;
 		}
 	}
+
+	public Date getMaxFechaHistorico() {
+		return maxFechaHistorico;
+	}
+
+	public void setMaxFechaHistorico(Date maxFechaHistorico) {
+		this.maxFechaHistorico = maxFechaHistorico;
+	}
+
+	public Date getMinFechaHistorico() {
+		return minFechaHistorico;
+	}
+
+	public void setMinFechaHistorico(Date minFechaHistorico) {
+		this.minFechaHistorico = minFechaHistorico;
+	}
+
 }

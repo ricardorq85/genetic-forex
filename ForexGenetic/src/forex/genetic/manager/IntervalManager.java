@@ -239,8 +239,10 @@ public class IntervalManager {
             interval1 = generateDefault();
             interval2 = generateDefault();
         } else {
-            interval1 = ESPECIFIC_MUTATION_MANAGER.mutate(interval.getLowInterval(), min, interval.getHighInterval());
-            interval2 = ESPECIFIC_MUTATION_MANAGER.mutate(interval.getHighInterval(), Math.min(interval1, interval.getLowInterval()), Math.max(interval1, interval.getHighInterval()));
+        	interval1 = ESPECIFIC_MUTATION_MANAGER.mutate(interval.getLowInterval(), min, max);
+            interval2 = ESPECIFIC_MUTATION_MANAGER.mutate(interval.getHighInterval(), min, max);
+//            interval1 = ESPECIFIC_MUTATION_MANAGER.mutate(interval.getLowInterval(), min, interval.getHighInterval());
+//            interval2 = ESPECIFIC_MUTATION_MANAGER.mutate(interval.getHighInterval(), Math.min(interval1, interval.getLowInterval()), Math.max(interval1, interval.getHighInterval()));
         }
         intervalHijo.setLowInterval(NumberUtil.round(Math.min(interval1, interval2)));
         intervalHijo.setHighInterval(NumberUtil.round(Math.max(interval1, interval2)));

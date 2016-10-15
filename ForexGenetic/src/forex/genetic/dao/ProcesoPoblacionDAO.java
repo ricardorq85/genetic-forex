@@ -302,15 +302,16 @@ public class ProcesoPoblacionDAO {
      * @return
      * @throws SQLException
      */
-    public List<Individuo> getIndividuos(String filtroAdicional) throws SQLException {
+    public List<Individuo> getIndividuos(String filtroAdicional, Date fechaHistorico) throws SQLException {
         List<Individuo> individuos = null;
         String sql = PropertiesManager.getQueryIndividuos().replaceAll("<FILTRO_ADICIONAL>", filtroAdicional);
-        Statement stmtConsulta = null;
+        PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
 
         try {
-            stmtConsulta = this.connection.createStatement();
-            resultado = stmtConsulta.executeQuery(sql);
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setTimestamp(1, new Timestamp(fechaHistorico.getTime()));
+            resultado = stmtConsulta.executeQuery();
             individuos = IndividuoHelper.createIndividuos(resultado);
         } finally {
             JDBCUtil.close(resultado);
