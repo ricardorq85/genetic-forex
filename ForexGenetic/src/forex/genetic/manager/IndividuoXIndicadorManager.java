@@ -140,13 +140,18 @@ public class IndividuoXIndicadorManager {
 		return found_any;
 	}
 
-	private void mutarIndividuos(Poblacion poblacion) throws SQLException {
+	private void mutarIndividuos(Poblacion poblacion) {
 		MutationIndividuoManager mutator = new MutationIndividuoManager();
 		Poblacion[] mutacion = mutator.mutate(1, poblacion, 100);
 		if ((mutacion != null) && (mutacion.length > 0)) {
 			List<IndividuoEstrategia> mutados = mutacion[1].getIndividuos();
-			for (IndividuoEstrategia individuoMutado : mutados) {
-				insertIndividuo(individuoMutado);
+			try {
+				for (IndividuoEstrategia individuoMutado : mutados) {
+					insertIndividuo(individuoMutado);
+				}
+			} catch (SQLException e) {
+				JDBCUtil.rollback(conn);
+				e.printStackTrace();
 			}
 		}
 	}
@@ -247,13 +252,17 @@ public class IndividuoXIndicadorManager {
 			interval.setLowInterval(i1);
 			interval.setHighInterval(i2);
 		}
-		double sumaPorcCumplimiento = indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager, intervalIndicator);
-		/*DateInterval di = DateUtil.obtenerIntervaloAnyo(minFechaHistorico);
-		while (di.getLowInterval().before(maxFechaHistorico)) {
-			sumaPorcCumplimiento += indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager, intervalIndicator, di);
-			di = DateUtil.obtenerIntervaloAnyo(di.getHighInterval());
-		}*/
-		return (sumaPorcCumplimiento/puntosHistoria);
+		double sumaPorcCumplimiento = indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager,
+				intervalIndicator);
+		/*
+		 * DateInterval di = DateUtil.obtenerIntervaloAnyo(minFechaHistorico);
+		 * while (di.getLowInterval().before(maxFechaHistorico)) {
+		 * sumaPorcCumplimiento +=
+		 * indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager,
+		 * intervalIndicator, di); di =
+		 * DateUtil.obtenerIntervaloAnyo(di.getHighInterval()); }
+		 */
+		return (sumaPorcCumplimiento / puntosHistoria);
 	}
 
 	private double porcentajeCumplimientoDummy(IntervalIndicatorManager<?> indManager,

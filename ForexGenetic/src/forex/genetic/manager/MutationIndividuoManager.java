@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
-import forex.genetic.entities.RelacionGeneraciones;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.indicator.IndicadorManager;
@@ -58,8 +56,8 @@ public class MutationIndividuoManager extends MutationManager {
 		int minSL = PropertiesManager.getMinSL();
 		int maxSL = PropertiesManager.getMaxSL();
 		while ((counter < percentValue) && (!endProcess)) {
-			int pos1 = counter % individuos.size();
-			// int pos1 = random.nextInt(individuos.size());
+			// int pos1 = counter % individuos.size();
+			int pos1 = random.nextInt(individuos.size());
 			if (pos1 < individuos.size()) {
 				try {
 					IndividuoEstrategia individuo1 = individuos.get(pos1);
@@ -109,6 +107,9 @@ public class MutationIndividuoManager extends MutationManager {
 					int slHijo = sl1;
 					if (random.nextBoolean()) {
 						slHijo = especificMutationManager.mutate(sl1, minSL, maxSL);
+//						if (slHijo < 300) {
+//							slHijo = especificMutationManager.mutate(sl1, minSL, maxSL);
+//						}
 					}
 					hijo.setStopLoss(slHijo);
 
@@ -131,6 +132,7 @@ public class MutationIndividuoManager extends MutationManager {
 					if (!hijos.contains(hijo)) {
 						parents.add(individuo1);
 						hijos.add(hijo);
+						//individuos.add(hijo);
 					}
 				} catch (ArrayIndexOutOfBoundsException ex) {
 					ex.printStackTrace();

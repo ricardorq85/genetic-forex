@@ -68,11 +68,11 @@ public class ProcesarIndividuoThreadBD extends Thread {
 						actualizarOperacionSemanal(individuo);
 					}
 				} catch (SQLException ex) {
-					conn.rollback();
+					JDBCUtil.rollback(conn);
 					ex.printStackTrace();
-					System.err.println(ex.getMessage() + " " + individuo.getId());
+					System.err.println(ex.getMessage() + " " + individuo.getId());					
 				} catch (ParseException ex) {
-					conn.rollback();
+					JDBCUtil.rollback(conn);
 					ex.printStackTrace();
 					System.err.println(ex.getMessage() + " " + individuo.getId());
 				}
