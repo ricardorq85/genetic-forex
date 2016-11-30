@@ -52,12 +52,6 @@ public class IndividuosPeriodoManager {
 		parametroFechaInicioProceso = parametroDAO.getDateValorParametro("FECHA_INDIVIDUO_PERIODO");
 		parametroFechaFinProceso = parametroDAO.getDateValorParametro("FECHA_FIN_INDIVIDUO_PERIODO");
 		mesesProceso = parametroDAO.getIntValorParametro("MESES_INDIVIDUO_PERIODO");
-
-		/*
-		 * SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd"); try {
-		 * fechaHistoricaMaxima = sdf.parse("2011/01/11"); } catch
-		 * (ParseException e) { e.printStackTrace(); }
-		 */
 	}
 
 	public void procesarIndividuosXPeriodo() throws SQLException {
@@ -94,7 +88,7 @@ public class IndividuosPeriodoManager {
 	}
 
 	public int procesarIndividuosXPeriodo(ParametroOperacionPeriodo param) throws SQLException {
-		if (estrategiaOperacionPeriodoDAO.existe(param)) {			
+		if (estrategiaOperacionPeriodoDAO.existe(param)) {
 			logTime("Ya procesado:" + param.toString(), 3);
 			System.out.print(".");
 			return 1;
@@ -176,4 +170,13 @@ public class IndividuosPeriodoManager {
 		param.setPipsAgrupadoHoras(pipsAgrupadoHoras);
 		param.setPipsAgrupadoDias(pipsAgrupadoDias);
 	}
+
+	public EstrategiaOperacionPeriodoDAO getEstrategiaOperacionPeriodoDAO() {
+		return estrategiaOperacionPeriodoDAO;
+	}
+
+	public void setEstrategiaOperacionPeriodoDAO(EstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO) {
+		this.estrategiaOperacionPeriodoDAO = estrategiaOperacionPeriodoDAO;
+	}
+
 }

@@ -1,3 +1,4 @@
+package mutation;
 import static forex.genetic.delegate.GeneticDelegate.setId;
 import static forex.genetic.manager.PropertiesManager.load;
 import static java.lang.System.currentTimeMillis;

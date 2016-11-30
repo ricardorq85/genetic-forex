@@ -4,8 +4,8 @@ SET term off;
 SET pagesize 0;
 SET linesize 5000; 
 
---SPOOL d:/ricardorq85/JavaProjects/ForexGeneticRunning/Estrategia_Tester/spool/FileStringOut_EURJPY.txt;
-SPOOL d:/ricardorq85/JavaProjects/ForexGeneticRunning/Estrategia_Tester/spool/FileStringOut_USDCAD.txt;
+SPOOL d:/ricardorq85/JavaProjects/ForexGeneticRunning/Estrategia_Tester/spool/FileStringOut_EURJPY.txt;
+--SPOOL d:/ricardorq85/JavaProjects/ForexGeneticRunning/Estrategia_Tester/spool/FileStringOut_USDCAD.txt;
 
 ALTER SESSION SET NLS_NUMERIC_CHARACTERS = '.,';
 
