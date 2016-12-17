@@ -37,7 +37,7 @@ public class OperacionesDAO {
 		List<DateInterval> vigencias;
 		String sql = "SELECT DISTINCT VIGENCIA1, VIGENCIA2 FROM TMP_TOFILESTRING " + " WHERE VIGENCIA1>? "
 				+ " ORDER BY VIGENCIA1 ASC, VIGENCIA2 ASC ";
-		
+
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 
@@ -56,21 +56,21 @@ public class OperacionesDAO {
 		return vigencias;
 	}
 
-	public List<Individuo> consultarOperacionesXPeriodo(Date fechaPeriodo, Date fechaFinal) throws SQLException {
+	public List<Individuo> consultarOperacionesXPeriodo(Date fechaInicial, Date fechaFinal) throws SQLException {
 		List<Individuo> ordenes;
 		String sql = "SELECT OPER.* FROM OPERACION OPER "
 				+ " INNER JOIN TMP_TOFILESTRING TFS ON TFS.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
 				+ " AND OPER.FECHA_APERTURA BETWEEN VIGENCIA1 AND VIGENCIA2 "
-				+ " WHERE OPER.FECHA_APERTURA>? AND OPER.FECHA_APERTURA<=? "
-				+ " AND OPER.FECHA_CIERRE IS NOT NULL "
-				+ " ORDER BY OPER.FECHA_APERTURA ASC, TFS.CRITERIO_ORDER1 DESC, TFS.CRITERIO_ORDER2 DESC";
+				+ " WHERE OPER.FECHA_APERTURA>? AND OPER.FECHA_APERTURA<=? AND OPER.FECHA_CIERRE IS NOT NULL "
+				+ " ORDER BY OPER.FECHA_APERTURA ASC, " + " TRUNC(TFS.FECHA_ORDER1) DESC, "
+				+ " TFS.CRITERIO_ORDER1 DESC, TRUNC(TFS.FECHA_ORDER2) DESC, TFS.CRITERIO_ORDER2 DESC";
 
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setTimestamp(1, new Timestamp(fechaPeriodo.getTime()));
+			stmtConsulta.setTimestamp(1, new Timestamp(fechaInicial.getTime()));
 			stmtConsulta.setTimestamp(2, new Timestamp(fechaFinal.getTime()));
 			resultado = stmtConsulta.executeQuery();
 
@@ -407,37 +407,53 @@ public class OperacionesDAO {
 			JDBCUtil.close(stmtConsulta);
 		}
 	}
-	
+
 	public int insertOperacionesPeriodo(ParametroOperacionPeriodo param) throws SQLException {
-		String sql = "INSERT INTO TMP_TOFILESTRING (ID_INDIVIDUO, CRITERIO_ORDER1, CRITERIO_ORDER2, VIGENCIA1, VIGENCIA2) "
-				+ " SELECT PRE.ID_INDIVIDUO, SUM(" + param.getFirstOrder() + "), " + " SUM("
-				+ param.getSecondOrder() + "), " + "  PRE.FECHA_SEMANA, PRE.FECHA_SEMANA+7"
-				+ " FROM PREVIO_TOFILESTRING PRE "
+		String sql = "INSERT INTO TMP_TOFILESTRING (ID_INDIVIDUO, CRITERIO_ORDER1, CRITERIO_ORDER2, VIGENCIA1, VIGENCIA2, FECHA_ORDER1, FECHA_ORDER2) "
+				+ " SELECT PRE.ID_INDIVIDUO, SUM(" + param.getFirstOrder() + "), " + " SUM(" + param.getSecondOrder()
+				+ "), " + "  PRE.FECHA_SEMANA, PRE.FECHA_SEMANA+7, ?, ? " + " FROM PREVIO_TOFILESTRING PRE "
 				+ " WHERE PRE.TIPO_OPERACION=?"
-				+ " AND ( NVL(PRE.PIPS_SEMANA,0)>? AND PRE.PIPS_MES>? AND PRE.PIPS_ANYO>? AND PRE.PIPS_TOTALES>?) "
-				+ " AND PRE.FECHA_SEMANA > ? "
+				+ " AND (NVL(PRE.PIPS_SEMANA,0)>? AND PRE.PIPS_MES>? AND PRE.PIPS_ANYO>? AND PRE.PIPS_TOTALES>?) "
+				+ " AND (PRE.R2_SEMANA>? AND PRE.R2_MES>? AND PRE.R2_ANYO>? AND PRE.R2_CONSOL>?) "
+				+ " AND (PRE.PENDIENTE_SEMANA>? AND PRE.PENDIENTE_MES>? AND PRE.PENDIENTE_ANYO>? AND PRE.PENDIENTE_CONSOL>?) "
+				+ " AND PRE.FECHA_SEMANA > ? AND PRE.FECHA_SEMANA+7 <= ? "
 				+ " GROUP BY PRE.ID_INDIVIDUO, PRE.FECHA_SEMANA";
 		PreparedStatement stmtConsulta = null;
 		try {
+			int index = 0;
 			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setString(1, param.getTipoOperacion().name());
-			stmtConsulta.setInt(2, param.getFiltroPipsXSemana());
-			stmtConsulta.setInt(3, param.getFiltroPipsXMes());
-			stmtConsulta.setInt(4, param.getFiltroPipsXAnyo());
-			stmtConsulta.setInt(5, param.getFiltroPipsTotales());
-			stmtConsulta.setDate(6, new java.sql.Date(param.getFechaInicial().getTime()));
+			stmtConsulta.setDate(++index, new java.sql.Date(param.getFecha().getTime()));
+			stmtConsulta.setDate(++index, new java.sql.Date(param.getFechaFinal().getTime()));
+
+			stmtConsulta.setString(++index, param.getTipoOperacion().name());
+			stmtConsulta.setInt(++index, param.getFiltroPipsXSemana());
+			stmtConsulta.setInt(++index, param.getFiltroPipsXMes());
+			stmtConsulta.setInt(++index, param.getFiltroPipsXAnyo());
+			stmtConsulta.setInt(++index, param.getFiltroPipsTotales());
+
+			stmtConsulta.setDouble(++index, param.getFiltroR2Semana());
+			stmtConsulta.setDouble(++index, param.getFiltroR2Mes());
+			stmtConsulta.setDouble(++index, param.getFiltroR2Anyo());
+			stmtConsulta.setDouble(++index, param.getFiltroR2Totales());
+
+			stmtConsulta.setDouble(++index, param.getFiltroPendienteSemana());
+			stmtConsulta.setDouble(++index, param.getFiltroPendienteMes());
+			stmtConsulta.setDouble(++index, param.getFiltroPendienteAnyo());
+			stmtConsulta.setDouble(++index, param.getFiltroPendienteTotales());
+
+			stmtConsulta.setDate(++index, new java.sql.Date(param.getFechaInicial().getTime()));
+			stmtConsulta.setDate(++index, new java.sql.Date(param.getFechaFinal().getTime()));
 
 			return stmtConsulta.executeUpdate();
 		} finally {
 			JDBCUtil.close(stmtConsulta);
 		}
-	}	
+	}
 
 	public int insertOperacionesPeriodoOld(ParametroOperacionPeriodo param) throws SQLException {
 		String sql = "INSERT INTO TMP_TOFILESTRING (ID_INDIVIDUO, CRITERIO_ORDER1, CRITERIO_ORDER2, VIGENCIA1, VIGENCIA2) "
 				+ " SELECT OPER_SEMANA.ID_INDIVIDUO, SUM(" + param.getFirstOrder() + "), " + " SUM("
-				+ param.getSecondOrder() + "), " + "  SEMANAS.FECHA_SEMANA, SEMANAS.FECHA_SEMANA+7"
-				+ " FROM SEMANAS "
+				+ param.getSecondOrder() + "), " + "  SEMANAS.FECHA_SEMANA, SEMANAS.FECHA_SEMANA+7" + " FROM SEMANAS "
 				+ " LEFT JOIN OPERACION_X_SEMANA OPER_SEMANA "
 				+ " ON SEMANAS.FECHA_SEMANA=OPER_SEMANA.FECHA_SEMANA+7 AND OPER_SEMANA.TIPO_OPERACION=? "
 				+ " INNER JOIN OPERACIONES_ACUM_SEMANA_MES OPER_MES "
@@ -447,11 +463,9 @@ public class OperacionesDAO {
 				+ " ON OPER_ANYO.ID_INDIVIDUO=OPER_SEMANA.ID_INDIVIDUO "
 				+ " AND OPER_ANYO.FECHA_SEMANA=SEMANAS.FECHA_SEMANA-7 "
 				+ " INNER JOIN OPERACIONES_ACUM_SEMANA_CONSOL OPER "
-				+ " ON OPER_SEMANA.ID_INDIVIDUO=OPER.ID_INDIVIDUO  " 
-				+ " AND OPER.FECHA_SEMANA=SEMANAS.FECHA_SEMANA-7 "
+				+ " ON OPER_SEMANA.ID_INDIVIDUO=OPER.ID_INDIVIDUO  " + " AND OPER.FECHA_SEMANA=SEMANAS.FECHA_SEMANA-7 "
 				+ " WHERE (( NVL(OPER_SEMANA.PIPS,0)>? AND OPER_MES.PIPS>? AND OPER_ANYO.PIPS>? AND OPER.PIPS>?)) "
-				+ " AND SEMANAS.FECHA_SEMANA > ? "
-				+ " GROUP BY OPER_SEMANA.ID_INDIVIDUO, SEMANAS.FECHA_SEMANA";
+				+ " AND SEMANAS.FECHA_SEMANA > ? " + " GROUP BY OPER_SEMANA.ID_INDIVIDUO, SEMANAS.FECHA_SEMANA";
 		PreparedStatement stmtConsulta = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);

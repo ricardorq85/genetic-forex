@@ -43,6 +43,10 @@ public abstract class BorradoManager {
 		estrategiaDAO = new EstrategiaDAO(conn);
 	}
 
+	public void finish() {
+		JDBCUtil.close(conn);
+	}
+
 	protected abstract List<Individuo> consultarIndividuos(Individuo individuo)
 			throws ClassNotFoundException, SQLException;
 
@@ -60,7 +64,9 @@ public abstract class BorradoManager {
 				this.smartDelete(individuos);
 				conn.commit();
 				count += individuos.size();
-				logTime("Individuos borrados= " + count, 1);
+				if (count > 0) {
+					logTime("Individuos borrados= " + count, 1);
+				}
 				individuos = this.consultarIndividuos(individuo);
 			}
 		} finally {
@@ -70,16 +76,15 @@ public abstract class BorradoManager {
 
 	protected void smartDelete(List<Individuo> individuos) throws SQLException {
 		for (Individuo individuo : individuos) {
-			LogUtil.logTime("Individuo: " + individuo.getId(), 1);
 			int r_proceso = procesoDAO.deleteProceso(individuo.getId());
-			logTime("Registro borrados PROCESO = " + r_proceso, 1);
+			logTime("Individuo: " + individuo.getId() + ". Borrados PROCESO = " + r_proceso, 1);
 			int r_operaciones = operacionDAO.deleteOperaciones(individuo.getId());
-			logTime("Registro borrados OPERACIONES = " + r_operaciones, 1);
+			logTime("Individuo: " + individuo.getId() + ". Borrados OPERACIONES = " + r_operaciones, 1);
 			int r_tendencia = tendenciaDAO.deleteTendencia(individuo.getId());
-			logTime("Registro borrados TENDENCIA = " + r_tendencia, 1);
+			logTime("Individuo: " + individuo.getId() + ". Borrados TENDENCIA = " + r_tendencia, 1);
 			try {
 				int r_indEst = estrategiaDAO.deleteIndividuoEstrategia(individuo.getId());
-				logTime("Registro borrados INDIVIDUOESTRATEGIA = " + r_indEst, 1);
+				logTime("Borrados INDIVIDUOESTRATEGIA = " + r_indEst, 1);
 			} catch (SQLException e) {
 			}
 			individuoDAO.smartDelete(individuo.getId(), tipoProceso, individuo.getIdParent1());

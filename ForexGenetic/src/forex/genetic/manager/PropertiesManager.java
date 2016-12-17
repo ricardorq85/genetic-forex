@@ -517,7 +517,7 @@ public class PropertiesManager {
         String s = getPropertyString(Constants.POINTS_CONTROL);
         if (s.contains("Integer.MAX_VALUE")) {
             points = Integer.MAX_VALUE;
-        } else if (s.contains("Integer.MAX_VALUE")) {
+        } else if (s.contains("Integer.MIN_VALUE")) {
             points = Integer.MIN_VALUE;
         } else {
             points = getPropertyInt(Constants.POINTS_CONTROL);

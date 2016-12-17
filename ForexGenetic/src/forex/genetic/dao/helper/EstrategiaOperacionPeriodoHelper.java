@@ -47,6 +47,17 @@ public class EstrategiaOperacionPeriodoHelper {
 			param.setFiltroPipsXMes(resultado.getInt("R_MES"));
 			param.setFiltroPipsXAnyo(resultado.getInt("R_ANYO"));
 			param.setFiltroPipsTotales(resultado.getInt("R_TOTALES"));
+			
+			param.setFiltroR2Semana(resultado.getDouble("R2_SEMANA"));
+			param.setFiltroR2Mes(resultado.getDouble("R2_MES"));
+			param.setFiltroR2Anyo(resultado.getDouble("R2_ANYO"));
+			param.setFiltroR2Totales(resultado.getDouble("R2_TOTALES"));
+
+			param.setFiltroPendienteSemana(resultado.getDouble("PENDIENTE_SEMANA"));
+			param.setFiltroPendienteMes(resultado.getDouble("PENDIENTE_MES"));
+			param.setFiltroPendienteAnyo(resultado.getDouble("PENDIENTE_ANYO"));
+			param.setFiltroPendienteTotales(resultado.getDouble("PENDIENTE_TOTALES"));
+			
 			inclusiones.add(param);
 		}
 		return inclusiones;

@@ -30,12 +30,18 @@ public class DatoHistoricoFacade {
             int countError = 0;
 
             for (int i = 0; i < points.size(); i++) {
-                Point point = points.get(i);
+                Point point = points.get(i);                
                 try {
-                    if (dao.existHistorico(point))  {
+                    if (dao.existHistorico(point))  {                    
                         dao.updateDatoHistorico(point);
+                        System.out.print("*");
                     } else {
                         dao.insertDatoHistorico(point);
+                        System.out.print(".");
+                    }
+                    if ((i % 3000)==0){
+                    	conn.commit();
+                    	System.out.println("");
                     }
                 } catch (SQLException ex) {
                     ex.printStackTrace();

@@ -17,7 +17,8 @@ import java.util.Random;
 
 import forex.genetic.entities.Individuo;
 import forex.genetic.manager.BorradoCantidadOperacionesExageradasManager;
-import forex.genetic.manager.BorradoDuplicadosManager;
+import forex.genetic.manager.BorradoDuplicadoIndividuoManager;
+import forex.genetic.manager.BorradoDuplicadoOperacionesManager;
 import forex.genetic.manager.BorradoInconsistentesStopLossManager;
 import forex.genetic.manager.BorradoIndividuoSinOperacionesManager;
 import forex.genetic.manager.BorradoManager;
@@ -29,15 +30,17 @@ public class ProcesosAlternosProxy {
 
 	public ProcesosAlternosProxy(long id) throws ClassNotFoundException, SQLException {
 		this.id = id;
-		managers = new ArrayList<>();
-		managers.add(new BorradoCantidadOperacionesExageradasManager());
-		managers.add(new BorradoInconsistentesStopLossManager());
-		managers.add(new BorradoIndividuoSinOperacionesManager());
-		managers.add(new BorradoDuplicadosManager());
 	}
 
 	public void procesar()
 			throws ClassNotFoundException, SQLException, FileNotFoundException, UnsupportedEncodingException {
+		managers = new ArrayList<>();					
+		managers.add(new BorradoDuplicadoIndividuoManager());		
+		managers.add(new BorradoInconsistentesStopLossManager());
+		managers.add(new BorradoIndividuoSinOperacionesManager());
+		managers.add(new BorradoCantidadOperacionesExageradasManager());				
+		managers.add(new BorradoDuplicadoOperacionesManager());
+		
 		StringBuilder name = new StringBuilder(getPropertyString(LOG_PATH));
 		name.append("ProcesosAlternos").append(id).append("_log.log");
 		PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
@@ -51,20 +54,31 @@ public class ProcesosAlternosProxy {
 			logTime(manager.getClass().getName(), 1);
 			manager.borrarIndividuos();
 			managers.remove(index);
+			manager.finish();
 		}
 		logTime("Fin Procesos alternos", 1);
 	}
 
 	public void procesar(Individuo individuo)
 			throws ClassNotFoundException, SQLException, FileNotFoundException {
+		
+		managers = new ArrayList<>();					
+		managers.add(new BorradoDuplicadoIndividuoManager());		
+		managers.add(new BorradoInconsistentesStopLossManager());
+		managers.add(new BorradoIndividuoSinOperacionesManager());
+		managers.add(new BorradoCantidadOperacionesExageradasManager());				
+		//managers.add(new BorradoDuplicadoOperacionesManager());
+		
 		logTime("Init Procesos alternos:" + individuo.getId(), 1);
 		Random random = new Random();
+		int index = 0;
 		while (!managers.isEmpty()) {
-			int index = random.nextInt(managers.size());
-			BorradoManager manager = managers.get(index);
+//			int index = random.nextInt(managers.size());
+			BorradoManager manager = managers.get(0);
 			logTime(manager.getClass().getName(), 1);
 			manager.validarYBorrarIndividuo(individuo);
 			managers.remove(index);
+			manager.finish();
 		}
 		logTime("Fin Procesos alternos:" + individuo.getId(), 1);
 	}

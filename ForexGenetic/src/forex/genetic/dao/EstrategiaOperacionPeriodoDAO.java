@@ -34,24 +34,37 @@ public class EstrategiaOperacionPeriodoDAO {
 		String sql = "SELECT 1 FROM ESTRATEGIA_OPERACION_PERIODO E "
 				+ " WHERE E.FILTRO_PIPS_X_SEMANA=? AND E.FILTRO_PIPS_X_MES=? "
 				+ " AND E.FILTRO_PIPS_X_ANYO=? AND E.FILTRO_PIPS_TOTALES=? "
-				+ " AND E.FECHA_INICIAL=? AND E.FECHA_FINAL=?  "
-				+ " AND E.TIPO_OPERACION=?";
+				+ " AND E.FILTRO_R2_SEMANA=? AND E.FILTRO_R2_MES=? AND E.FILTRO_R2_ANYO=? AND E.FILTRO_R2_TOTALES=? "
+				+ " AND E.FILTRO_PENDIENTE_SEMANA=? AND E.FILTRO_PENDIENTE_MES=? AND E.FILTRO_PENDIENTE_ANYO=? AND E.FILTRO_PENDIENTE_TOTALES=? "
+				+ " AND E.FECHA_INICIAL=? AND E.FECHA_FINAL=?  " + " AND E.TIPO_OPERACION=?";
 
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 
 		try {
+			int index = 0;
 			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setInt(1, param.getFiltroPipsXSemana());
-			stmtConsulta.setInt(2, param.getFiltroPipsXMes());
-			stmtConsulta.setInt(3, param.getFiltroPipsXAnyo());
-			stmtConsulta.setInt(4, param.getFiltroPipsTotales());
-			stmtConsulta.setTimestamp(5, new Timestamp(param.getFechaInicial().getTime()));
-			stmtConsulta.setTimestamp(6, new Timestamp(param.getFechaFinal().getTime()));
-			stmtConsulta.setString(7, param.getTipoOperacion().name());
+			stmtConsulta.setInt(++index, param.getFiltroPipsXSemana());
+			stmtConsulta.setInt(++index, param.getFiltroPipsXMes());
+			stmtConsulta.setInt(++index, param.getFiltroPipsXAnyo());
+			stmtConsulta.setInt(++index, param.getFiltroPipsTotales());
+
+			stmtConsulta.setDouble(++index, param.getFiltroR2Semana());
+			stmtConsulta.setDouble(++index, param.getFiltroR2Mes());
+			stmtConsulta.setDouble(++index, param.getFiltroR2Anyo());
+			stmtConsulta.setDouble(++index, param.getFiltroR2Totales());
+
+			stmtConsulta.setDouble(++index, param.getFiltroPendienteSemana());
+			stmtConsulta.setDouble(++index, param.getFiltroPendienteMes());
+			stmtConsulta.setDouble(++index, param.getFiltroPendienteAnyo());
+			stmtConsulta.setDouble(++index, param.getFiltroPendienteTotales());
+
+			stmtConsulta.setTimestamp(++index, new Timestamp(param.getFechaInicial().getTime()));
+			stmtConsulta.setTimestamp(++index, new Timestamp(param.getFechaFinal().getTime()));
+			stmtConsulta.setString(++index, param.getTipoOperacion().name());
 			resultado = stmtConsulta.executeQuery();
 
-			return (resultado.next());			
+			return (resultado.next());
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -80,21 +93,26 @@ public class EstrategiaOperacionPeriodoDAO {
 
 		return param;
 	}
-	
+
 	public List<ParametroOperacionPeriodo> consultarInclusiones() throws SQLException {
 		List<ParametroOperacionPeriodo> inclusiones;
 		String sql = "SELECT FLOOR(FILTRO_PIPS_X_SEMANA/ 100)*100 R_SEMANA, FLOOR(FILTRO_PIPS_X_MES/ 100)*100 R_MES,"
-				+ " FLOOR(FILTRO_PIPS_X_ANYO/ 100)*100 R_ANYO, FLOOR(FILTRO_PIPS_TOTALES/ 100)*100 R_TOTALES"
+				+ " FLOOR(FILTRO_PIPS_X_ANYO/ 100)*100 R_ANYO, FLOOR(FILTRO_PIPS_TOTALES/ 100)*100 R_TOTALES,"
+				+ " ROUND(FILTRO_R2_SEMANA,2) R2_SEMANA, ROUND(FILTRO_R2_MES,2) R2_MES, "
+				+ " ROUND(FILTRO_R2_ANYO,2) R2_ANYO, ROUND(FILTRO_R2_TOTALES,2) R2_TOTALES,"
+				+ " ROUND(FILTRO_PENDIENTE_SEMANA,2) PENDIENTE_SEMANA, ROUND(FILTRO_PENDIENTE_MES,2) PENDIENTE_MES,"
+				+ " ROUND(FILTRO_PENDIENTE_ANYO,2) PENDIENTE_ANYO, ROUND(FILTRO_PENDIENTE_TOTALES,2) PENDIENTE_TOTALES"
 				+ " FROM ESTRATEGIA_OPERACION_PERIODO EOP "
-				+ " GROUP BY FLOOR(FILTRO_PIPS_X_SEMANA/ 100), FLOOR(FILTRO_PIPS_X_MES/ 100), "
-				+ " FLOOR(FILTRO_PIPS_X_ANYO/ 100), FLOOR(FILTRO_PIPS_TOTALES/ 100) "
-				+ " HAVING MAX(EOP.PIPS_TOTALES)>=5000"
+				+ " GROUP BY FLOOR(FILTRO_PIPS_X_SEMANA/ 100), FLOOR(FILTRO_PIPS_X_MES/ 100),"
+				+ " FLOOR(FILTRO_PIPS_X_ANYO/ 100), FLOOR(FILTRO_PIPS_TOTALES/ 100),"
+				+ " ROUND(FILTRO_R2_SEMANA,2), ROUND(FILTRO_R2_MES,2),"
+				+ " ROUND(FILTRO_R2_ANYO,2), ROUND(FILTRO_R2_TOTALES,2),"
+				+ " ROUND(FILTRO_PENDIENTE_SEMANA,2), ROUND(FILTRO_PENDIENTE_MES,2),"
+				+ " ROUND(FILTRO_PENDIENTE_ANYO,2), ROUND(FILTRO_PENDIENTE_TOTALES,2)"
+				+ " HAVING MAX(EOP.PIPS_TOTALES)>0"
 				+ " ORDER BY ROUND(FLOOR(AVG(EOP.PIPS_TOTALES)/1000))*1000 DESC, ROUND(FLOOR(AVG(EOP.PIPS_TOTALES_PARALELAS)/1000))*1000 DESC,"
 				+ " ROUND(FLOOR(AVG(EOP.PIPS_AGRUPADO_DIAS)/100))*100 DESC, ROUND(FLOOR(AVG(EOP.PIPS_AGRUPADO_HORAS)/100))*100 DESC,"
 				+ " ROUND(FLOOR(AVG(EOP.PIPS_AGRUPADO_MINUTOS)/100))*100 DESC";
-
-				//+ " ORDER BY MAX(EOP.PIPS_TOTALES) DESC";
-
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 
@@ -110,7 +128,7 @@ public class EstrategiaOperacionPeriodoDAO {
 		}
 
 		return inclusiones;
-	}	
+	}
 
 	/**
 	 *
@@ -120,12 +138,14 @@ public class EstrategiaOperacionPeriodoDAO {
 	 */
 	public int insert(ParametroOperacionPeriodo param) throws SQLException {
 		String sql = "INSERT INTO ESTRATEGIA_OPERACION_PERIODO(ID, "
-				+ " FILTRO_PIPS_X_SEMANA, FILTRO_PIPS_X_MES, FILTRO_PIPS_X_ANYO, "
-				+ " FILTRO_PIPS_TOTALES, FIRST_ORDER, SECOND_ORDER, "
+				+ " FILTRO_PIPS_X_SEMANA, FILTRO_PIPS_X_MES, FILTRO_PIPS_X_ANYO, FILTRO_PIPS_TOTALES, "
+				+ " FILTRO_R2_SEMANA, FILTRO_R2_MES, FILTRO_R2_ANYO, FILTRO_R2_TOTALES, "
+				+ " FILTRO_PENDIENTE_SEMANA, FILTRO_PENDIENTE_MES, FILTRO_PENDIENTE_ANYO, FILTRO_PENDIENTE_TOTALES, "
+				+ " FIRST_ORDER, SECOND_ORDER, "
 				+ " PIPS_TOTALES, CANTIDAD, PIPS_TOTALES_PARALELAS, CANTIDAD_PARALELAS, "
 				+ " FECHA, FECHA_INICIAL, FECHA_FINAL,"
-				+ " PIPS_AGRUPADO_MINUTOS, PIPS_AGRUPADO_HORAS, PIPS_AGRUPADO_DIAS, TIPO_OPERACION) "
-				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ " PIPS_AGRUPADO_MINUTOS, PIPS_AGRUPADO_HORAS, PIPS_AGRUPADO_DIAS, TIPO_OPERACION, CANTIDAD_INDIVIDUOS, MAX_FECHA_CIERRE) "
+				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		PreparedStatement statement = null;
 		int nextId = 0;
@@ -138,6 +158,16 @@ public class EstrategiaOperacionPeriodoDAO {
 			statement.setInt(index++, param.getFiltroPipsXMes());
 			statement.setInt(index++, param.getFiltroPipsXAnyo());
 			statement.setInt(index++, param.getFiltroPipsTotales());
+
+			statement.setDouble(index++, param.getFiltroR2Semana());
+			statement.setDouble(index++, param.getFiltroR2Mes());
+			statement.setDouble(index++, param.getFiltroR2Anyo());
+			statement.setDouble(index++, param.getFiltroR2Totales());
+			statement.setDouble(index++, param.getFiltroPendienteSemana());
+			statement.setDouble(index++, param.getFiltroPendienteMes());
+			statement.setDouble(index++, param.getFiltroPendienteAnyo());
+			statement.setDouble(index++, param.getFiltroPendienteTotales());
+
 			statement.setString(index++, param.getFirstOrder());
 			statement.setString(index++, param.getSecondOrder());
 			statement.setDouble(index++, param.getPipsTotales());
@@ -151,6 +181,12 @@ public class EstrategiaOperacionPeriodoDAO {
 			statement.setDouble(index++, param.getPipsAgrupadoHoras());
 			statement.setDouble(index++, param.getPipsAgrupadoDias());
 			statement.setString(index++, param.getTipoOperacion().name());
+			statement.setInt(index++, param.getCantidadIndividuos());
+			if (param.getMaxFechaCierre() != null) {
+				statement.setTimestamp(index++, new Timestamp(param.getMaxFechaCierre().getTime()));
+			} else {
+				statement.setNull(index++, java.sql.Types.TIMESTAMP);
+			}
 			statement.executeUpdate();
 		} finally {
 			JDBCUtil.close(statement);

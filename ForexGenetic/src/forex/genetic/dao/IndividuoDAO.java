@@ -461,7 +461,7 @@ public class IndividuoDAO {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Individuo> consultarIndividuosRepetidos(Individuo individuoPadre) throws SQLException {
+	public List<Individuo> consultarIndividuosRepetidosOperaciones(Individuo individuoPadre) throws SQLException {
 		List<Individuo> list = null;
 		String sql = "SELECT ID_INDIVIDUO2 ID_INDIVIDUO, ID_INDIVIDUO1 ID_INDIVIDUO_PADRE "
 				+ " FROM INDIVIDUOS_REPETIDOS_OPER"
@@ -472,6 +472,24 @@ public class IndividuoDAO {
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
 			stmtConsulta.setString(1, individuoPadre.getId());
+			resultado = stmtConsulta.executeQuery();
+
+			list = IndividuoHelper.createIndividuosById(resultado);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+		return list;
+	}
+	
+	public List<Individuo> consultarIndividuosRepetidos() throws SQLException {
+		List<Individuo> list = null;
+		String sql = "SELECT ID_INDIVIDUO2 ID_INDIVIDUO, ID_INDIVIDUO1 ID_INDIVIDUO_PADRE "
+				+ " FROM INDIVIDUOS_REPETIDOS WHERE ROWNUM < 100";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
@@ -503,11 +521,31 @@ public class IndividuoDAO {
 		return individuo;
 	}
 
-	public List<Individuo> consultarIndividuoHijoRepetido(Individuo individuoHijo) throws SQLException {
+	public List<Individuo> consultarIndividuoHijoRepetidoOperaciones(Individuo individuoHijo) throws SQLException {
 		List<Individuo> list = null;
 		String sql = "SELECT ID_INDIVIDUO2 ID_INDIVIDUO, ID_INDIVIDUO1 ID_INDIVIDUO_PADRE "
 				+ " FROM INDIVIDUOS_REPETIDOS_OPER"
 				// + "INDIVIDUOS_REPETIDOS "
+				+ " WHERE ID_INDIVIDUO2 = ?";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setString(1, individuoHijo.getId());
+			resultado = stmtConsulta.executeQuery();
+
+			list = IndividuoHelper.createIndividuosById(resultado);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+		return list;
+	}
+	
+	public List<Individuo> consultarIndividuoHijoRepetido(Individuo individuoHijo) throws SQLException {
+		List<Individuo> list = null;
+		String sql = "SELECT ID_INDIVIDUO2 ID_INDIVIDUO, ID_INDIVIDUO1 ID_INDIVIDUO_PADRE "
+				+ " FROM INDIVIDUOS_REPETIDOS "
 				+ " WHERE ID_INDIVIDUO2 = ?";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;

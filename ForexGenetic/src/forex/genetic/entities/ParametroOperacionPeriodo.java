@@ -5,30 +5,37 @@ import java.util.Date;
 import forex.genetic.util.Constants.OperationType;
 import forex.genetic.util.DateUtil;
 
-public class ParametroOperacionPeriodo {
+public class ParametroOperacionPeriodo implements Cloneable {
 
-	private int id, filtroPipsXSemana, filtroPipsXMes, filtroPipsXAnyo, filtroPipsTotales, cantidad, cantidadParalelas;
+	private int id;
+	// Filtros PIPS
+	private int filtroPipsXSemana, filtroPipsXMes, filtroPipsXAnyo, filtroPipsTotales;
+	// Filtros R2
+	private double filtroR2Semana, filtroR2Mes, filtroR2Anyo, filtroR2Totales;
+	// Filtros PENDIENTE
+	private double filtroPendienteSemana, filtroPendienteMes, filtroPendienteAnyo, filtroPendienteTotales;
+	private int cantidad, cantidadParalelas, cantidadIndividuos;
 	private String firstOrder, secondOrder;
 	private double pipsTotales, pipsParalelas, pipsAgrupadoMinutos, pipsAgrupadoHoras, pipsAgrupadoDias;
-	private Date fechaInicial, fechaFinal, fecha;
+	private Date fechaInicial, fechaFinal, fecha, maxFechaCierre;
 	private OperationType tipoOperacion;
-
-	public ParametroOperacionPeriodo(int filtroPipsXSemana, int filtroPipsXMes, int filtroPipsXAnyo,
-			int filtroPipsTotales, String firstOrder, String secondOrder) {
-		super();
-		this.fecha = new Date();
-		this.filtroPipsXSemana = filtroPipsXSemana;
-		this.filtroPipsXMes = filtroPipsXMes;
-		this.filtroPipsXAnyo = filtroPipsXAnyo;
-		this.filtroPipsTotales = filtroPipsTotales;
-		this.firstOrder = firstOrder;
-		this.secondOrder = secondOrder;
-	}
 
 	public ParametroOperacionPeriodo() {
 		super();
 		this.fecha = new Date();
+	}	
+
+	public Date getMaxFechaCierre() {
+		return maxFechaCierre;
 	}
+
+
+
+	public void setMaxFechaCierre(Date maxFechaCierre) {
+		this.maxFechaCierre = maxFechaCierre;
+	}
+
+
 
 	public int getId() {
 		return id;
@@ -174,6 +181,78 @@ public class ParametroOperacionPeriodo {
 		this.tipoOperacion = tipoOperacion;
 	}
 
+	public double getFiltroR2Semana() {
+		return filtroR2Semana;
+	}
+
+	public void setFiltroR2Semana(double filtroR2Semana) {
+		this.filtroR2Semana = filtroR2Semana;
+	}
+
+	public double getFiltroR2Mes() {
+		return filtroR2Mes;
+	}
+
+	public void setFiltroR2Mes(double filtroR2Mes) {
+		this.filtroR2Mes = filtroR2Mes;
+	}
+
+	public double getFiltroR2Anyo() {
+		return filtroR2Anyo;
+	}
+
+	public void setFiltroR2Anyo(double filtroR2Anyo) {
+		this.filtroR2Anyo = filtroR2Anyo;
+	}
+
+	public double getFiltroR2Totales() {
+		return filtroR2Totales;
+	}
+
+	public void setFiltroR2Totales(double filtroR2Totales) {
+		this.filtroR2Totales = filtroR2Totales;
+	}
+
+	public double getFiltroPendienteSemana() {
+		return filtroPendienteSemana;
+	}
+
+	public void setFiltroPendienteSemana(double filtroPendienteSemana) {
+		this.filtroPendienteSemana = filtroPendienteSemana;
+	}
+
+	public double getFiltroPendienteMes() {
+		return filtroPendienteMes;
+	}
+
+	public void setFiltroPendienteMes(double filtroPendienteMes) {
+		this.filtroPendienteMes = filtroPendienteMes;
+	}
+
+	public double getFiltroPendienteAnyo() {
+		return filtroPendienteAnyo;
+	}
+
+	public void setFiltroPendienteAnyo(double filtroPendienteAnyo) {
+		this.filtroPendienteAnyo = filtroPendienteAnyo;
+	}
+
+	public double getFiltroPendienteTotales() {
+		return filtroPendienteTotales;
+	}
+
+	public void setFiltroPendienteTotales(double filtroPendienteTotales) {
+		this.filtroPendienteTotales = filtroPendienteTotales;
+	}
+
+	public int getCantidadIndividuos() {
+		return cantidadIndividuos;
+	}
+
+	public void setCantidadIndividuos(int cantidadIndividuos) {
+		this.cantidadIndividuos = cantidadIndividuos;
+	}
+
 	public boolean isFiltroValido() {
 		int countPositivos = 0;
 		countPositivos += (filtroPipsXSemana >= 0) ? 1 : 0;
@@ -187,11 +266,68 @@ public class ParametroOperacionPeriodo {
 	public String toString() {
 		return "ParametroOperacionPeriodo [id=" + id + ", filtroPipsXSemana=" + filtroPipsXSemana + ", filtroPipsXMes="
 				+ filtroPipsXMes + ", filtroPipsXAnyo=" + filtroPipsXAnyo + ", filtroPipsTotales=" + filtroPipsTotales
-				+ ", cantidad=" + cantidad + ", cantidadParalelas=" + cantidadParalelas + ", firstOrder=" + firstOrder
-				+ ", secondOrder=" + secondOrder + ", pipsTotales=" + pipsTotales + ", pipsParalelas=" + pipsParalelas
+				+ ", filtroR2Semana=" + filtroR2Semana + ", filtroR2Mes=" + filtroR2Mes + ", filtroR2Anyo="
+				+ filtroR2Anyo + ", filtroR2Totales=" + filtroR2Totales + ", filtroPendienteSemana="
+				+ filtroPendienteSemana + ", filtroPendienteMes=" + filtroPendienteMes + ", filtroPendienteAnyo="
+				+ filtroPendienteAnyo + ", filtroPendienteTotales=" + filtroPendienteTotales + ", cantidad=" + cantidad
+				+ ", cantidadParalelas=" + cantidadParalelas + ", firstOrder=" + firstOrder + ", secondOrder="
+				+ secondOrder + ", pipsTotales=" + pipsTotales + ", pipsParalelas=" + pipsParalelas
 				+ ", pipsAgrupadoMinutos=" + pipsAgrupadoMinutos + ", pipsAgrupadoHoras=" + pipsAgrupadoHoras
-				+ ", pipsAgrupadoDias=" + pipsAgrupadoDias + ", fechaInicial=" + DateUtil.getDateString(fechaInicial) + ", fechaFinal="
-				+ DateUtil.getDateString(fechaFinal) + ", fecha=" + DateUtil.getDateString(fecha) + ", tipoOperacion=" + tipoOperacion + "]";
+				+ ", pipsAgrupadoDias=" + pipsAgrupadoDias + ", fechaInicial=" + DateUtil.getDateString(fechaInicial)
+				+ ", fechaFinal=" + DateUtil.getDateString(fechaFinal) + ", fecha=" + DateUtil.getDateString(fecha)
+				+ ", tipoOperacion=" + tipoOperacion + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + filtroPipsTotales;
+		result = prime * result + filtroPipsXAnyo;
+		result = prime * result + filtroPipsXMes;
+		result = prime * result + filtroPipsXSemana;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof ParametroOperacionPeriodo))
+			return false;
+		ParametroOperacionPeriodo other = (ParametroOperacionPeriodo) obj;
+		if (filtroPipsTotales != other.filtroPipsTotales)
+			return false;
+		if (filtroPipsXAnyo != other.filtroPipsXAnyo)
+			return false;
+		if (filtroPipsXMes != other.filtroPipsXMes)
+			return false;
+		if (filtroPipsXSemana != other.filtroPipsXSemana)
+			return false;
+		return true;
+	}
+
+	@Override
+	public ParametroOperacionPeriodo clone() throws CloneNotSupportedException {
+		ParametroOperacionPeriodo param = new ParametroOperacionPeriodo();
+		param.setFiltroPipsXSemana(this.getFiltroPipsXSemana());
+		param.setFiltroPipsXMes(this.getFiltroPipsXMes());
+		param.setFiltroPipsXAnyo(this.getFiltroPipsXAnyo());
+		param.setFiltroPipsTotales(this.getFiltroPipsTotales());
+
+		param.setFiltroR2Semana(this.getFiltroR2Semana());
+		param.setFiltroR2Mes(this.getFiltroR2Mes());
+		param.setFiltroR2Anyo(this.getFiltroR2Anyo());
+		param.setFiltroR2Totales(this.getFiltroR2Totales());
+
+		param.setFiltroPendienteSemana(this.getFiltroPendienteSemana());
+		param.setFiltroPendienteMes(this.getFiltroPendienteMes());
+		param.setFiltroPendienteAnyo(this.getFiltroPendienteAnyo());
+		param.setFiltroPendienteTotales(this.getFiltroPendienteTotales());
+
+		return param;
 	}
 
 }

@@ -578,10 +578,10 @@ public class DatoHistoricoDAO {
 				statement.setDouble(i++, d);
 			}
 
+			statement.setTimestamp(i++, new java.sql.Timestamp(new Date().getTime()));
 			statement.setString(i++, point.getMoneda());
 			statement.setInt(i++, point.getPeriodo());
-			statement.setTimestamp(i++, new java.sql.Timestamp(point.getDate().getTime()));
-			statement.setTimestamp(i++, new java.sql.Timestamp(new Date().getTime()));
+			statement.setTimestamp(i++, new java.sql.Timestamp(point.getDate().getTime()));			
 
 			statement.executeUpdate();
 		} finally {

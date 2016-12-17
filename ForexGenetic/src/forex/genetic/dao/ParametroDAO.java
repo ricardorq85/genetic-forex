@@ -41,6 +41,12 @@ public class ParametroDAO {
         String valor = getValorParametro(nombre);
         return (Integer.parseInt(valor));
     }
+    
+    public float getFloatValorParametro(String nombre) throws SQLException {
+        String valor = getValorParametro(nombre);
+        return (Float.parseFloat(valor));
+    }
+
 
     /**
      *

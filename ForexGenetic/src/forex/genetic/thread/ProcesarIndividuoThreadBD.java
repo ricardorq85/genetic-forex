@@ -63,14 +63,14 @@ public class ProcesarIndividuoThreadBD extends Thread {
 			daoOperacionSemanal = new OperacionSemanalDAO(conn);
 			for (Individuo individuo : individuos) {
 				try {
-					procesarIndividuo(individuo);
-					if (!validarYBorrarIndividuoInvalido(individuo)) {
+					boolean processed = procesarIndividuo(individuo);
+					if (processed && !validarYBorrarIndividuoInvalido(individuo)) {
 						actualizarOperacionSemanal(individuo);
 					}
 				} catch (SQLException ex) {
 					JDBCUtil.rollback(conn);
 					ex.printStackTrace();
-					System.err.println(ex.getMessage() + " " + individuo.getId());					
+					System.err.println(ex.getMessage() + " " + individuo.getId());
 				} catch (ParseException ex) {
 					JDBCUtil.rollback(conn);
 					ex.printStackTrace();
@@ -146,7 +146,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
 		return new_index;
 	}
 
-	private void procesarIndividuo(Individuo individuo) throws SQLException, ClassNotFoundException, ParseException {
+	private boolean procesarIndividuo(Individuo individuo) throws SQLException, ClassNotFoundException, ParseException {
 		List<Point> points;
 		Date fechaInicialHistorico;
 		int indexFecha = 0;
@@ -162,7 +162,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
 				LogUtil.logTime(super.getName() + ": Individuo sin operaciones: " + individuo.getId(), 1);
 				this.updateProceso(maxFechaHistorico, individuo.getId());
 				conn.commit();
-				return;
+				return true;
 			} else {
 				indexFecha = proximaFechaApertura(fechas, individuo.getFechaHistorico(), indexFecha);
 				fechaInicialHistorico = fechas.get(indexFecha);
@@ -211,6 +211,11 @@ public class ProcesarIndividuoThreadBD extends Thread {
 			} else {
 				lastDate = fechaInicialHistorico;
 			}
+			if (DateUtil.anyoMesMayorQue(fechaInicialHistorico, lastDate)) {
+				if (validarYBorrarIndividuoInvalido(individuo)) {
+					return false;
+				}
+			}
 			if (individuo.getFechaApertura() == null) {
 				int index = proximaFechaApertura(fechas, lastDate, indexFecha);
 				if (((index > 0) && (index == indexFecha)) || (index >= fechas.size())) {
@@ -235,6 +240,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
 			}
 			duracionPromedio = Math.max(3000, daoIndividuo.duracionPromedioMinutos(individuo.getId()));
 		}
+		return true;
 	}
 
 	private void updateProceso(Date fechaHistorico, String idIndividuo) throws SQLException {
