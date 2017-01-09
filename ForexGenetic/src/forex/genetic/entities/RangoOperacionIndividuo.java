@@ -32,16 +32,16 @@ public class RangoOperacionIndividuo {
 	private boolean positivas;
 	private boolean rangoValido;
 	private List<RangoOperacionIndividuoIndicador> indicadores;
-	private RangoOperacionIndividuo rangoCierre;
+	private RangoCierreOperacionIndividuo rangoCierre;
 
-	public RangoOperacionIndividuo(int c_pips, double retroceso, Date fechaFiltro, int meses, boolean positivas) {
+	public RangoOperacionIndividuo(double c_pips, double retroceso, DateInterval fechaFiltro, boolean positivas) {
 		indicadores = new ArrayList<RangoOperacionIndividuoIndicador>();
 		this.setPositivas(positivas);
-		this.setRangoCierre(rangoCierre);
-		this.setPips(220 * c_pips);
+		this.setPips(c_pips);
 		this.setRetroceso(retroceso);
-		this.setFechaFiltro(fechaFiltro);
-		this.setFechaFiltro2(DateUtil.adicionarMes(fechaFiltro, meses));
+		this.setFechaFiltro(fechaFiltro.getLowInterval());
+		//this.setFechaFiltro2(DateUtil.adicionarMes(fechaFiltro, meses));
+		this.setFechaFiltro2(fechaFiltro.getHighInterval());
 	}
 
 	public Date getFechaFiltro() {
@@ -173,11 +173,21 @@ public class RangoOperacionIndividuo {
 	}
 
 	public boolean isRangoValido() {
-		return ((this.getIndicadores() != null) && (this.getIndicadores().size() > 3)
+		return this.isRangoValido(4);
+	}
+	
+	protected boolean isRangoValido(int cantidad) {
+		return ((this.getIndicadores() != null) && containsCantidadIndicadores(cantidad)
 				&& (this.containsIndicadorNuevo()));
 	}
 
-	private boolean containsIndicadorNuevo() {
+	protected boolean containsCantidadIndicadores(int cantidad) {
+		return this.getIndicadores().size() > cantidad;
+	}
+	
+	
+
+	protected boolean containsIndicadorNuevo() {
 		return true;
 		/*
 		 * List<RangoOperacionIndicador> nuevos = new ArrayList<>();
@@ -207,11 +217,11 @@ public class RangoOperacionIndividuo {
 		this.rangoValido = rangoValido;
 	}
 
-	public RangoOperacionIndividuo getRangoCierre() {
+	public RangoCierreOperacionIndividuo getRangoCierre() {
 		return rangoCierre;
 	}
 
-	public void setRangoCierre(RangoOperacionIndividuo rangoCierre) {
+	public void setRangoCierre(RangoCierreOperacionIndividuo rangoCierre) {
 		this.rangoCierre = rangoCierre;
 	}
 

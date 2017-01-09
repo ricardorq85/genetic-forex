@@ -68,6 +68,7 @@ public class MutationIndividuoManager extends MutationManager {
 							.synchronizedList(new ArrayList<>(indicadorController.getIndicatorNumber()));
 					List<Indicator> closeIndicators = Collections
 							.synchronizedList(new ArrayList<>(indicadorController.getIndicatorNumber()));
+					int countCloseNotNull = 0;
 					for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
 						Indicator openIndicator = null;
 						if (individuo1.getOpenIndicators().size() > i) {
@@ -88,8 +89,11 @@ public class MutationIndividuoManager extends MutationManager {
 						indHijo = closeIndicator;
 						if ((random.nextDouble() < 0.1)) {
 							indHijo = null;
-						} else if ((random.nextDouble() < 0.1)) {
+						} else if ((countCloseNotNull > 0 && countCloseNotNull < 2) || (random.nextDouble() < 0.1)) {
 							indHijo = indicatorManager.mutate(closeIndicator);
+						}
+						if (indHijo != null) {
+							countCloseNotNull++;
 						}
 						closeIndicators.add(indHijo);
 					}
@@ -107,32 +111,37 @@ public class MutationIndividuoManager extends MutationManager {
 					int slHijo = sl1;
 					if (random.nextBoolean()) {
 						slHijo = especificMutationManager.mutate(sl1, minSL, maxSL);
-//						if (slHijo < 300) {
-//							slHijo = especificMutationManager.mutate(sl1, minSL, maxSL);
-//						}
+						// if (slHijo < 300) {
+						// slHijo = especificMutationManager.mutate(sl1, minSL,
+						// maxSL);
+						// }
 					}
 					hijo.setStopLoss(slHijo);
 
 					double lot1 = individuo1.getLot();
 					double lotHijo = lot1;
-					if (random.nextBoolean()) {
-						lotHijo = NumberUtil.round(especificMutationManager.mutate(lot1, PropertiesManager.getMinLot(),
-								PropertiesManager.getMaxLot()), PropertiesManager.getLotScaleRounding());
-					}
+					// if (random.nextBoolean()) {
+					// lotHijo =
+					// NumberUtil.round(especificMutationManager.mutate(lot1,
+					// PropertiesManager.getMinLot(),
+					// PropertiesManager.getMaxLot()),
+					// PropertiesManager.getLotScaleRounding());
+					// }
 					hijo.setLot(lotHijo);
 
 					int balance1 = individuo1.getInitialBalance();
 					int balanceHijo = balance1;
-					if (random.nextBoolean()) {
-						balanceHijo = especificMutationManager.mutate(balance1, PropertiesManager.getMinBalance(),
-								PropertiesManager.getMaxBalance());
-					}
+					// if (random.nextBoolean()) {
+					// balanceHijo = especificMutationManager.mutate(balance1,
+					// PropertiesManager.getMinBalance(),
+					// PropertiesManager.getMaxBalance());
+					// }
 					hijo.setInitialBalance(balanceHijo);
 
 					if (!hijos.contains(hijo)) {
 						parents.add(individuo1);
 						hijos.add(hijo);
-						//individuos.add(hijo);
+						// individuos.add(hijo);
 					}
 				} catch (ArrayIndexOutOfBoundsException ex) {
 					ex.printStackTrace();

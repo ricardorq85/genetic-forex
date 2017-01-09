@@ -1,19 +1,19 @@
-SET echo OFF;
+SET echo OFF; 
 SET feedback off;
 SET term off;
 SET pagesize 0;
-SET linesize 5000; 
+SET linesize 5000;
 
-SPOOL d:/ricardorq85/JavaProjects/ForexGeneticRunning/Estrategia_Tester/spool/FileStringOut_EURJPY.txt;
---SPOOL d:/ricardorq85/JavaProjects/ForexGeneticRunning/Estrategia_Tester/spool/FileStringOut_USDCAD.txt;
+--SPOOL d:/ricardorq85/JavaProjects/ForexGeneticRunning/Estrategia_Tester/spool/FileStringOut_EURJPY.txt;
+SPOOL d:/ricardorq85/JavaProjects/ForexGeneticRunning/Estrategia_Tester/spool/FileStringOut_USDCAD.txt;
 
 ALTER SESSION SET NLS_NUMERIC_CHARACTERS = '.,';
 
-SELECT 'EstrategiaId='||II.ID||',VigenciaLower='||TO_CHAR(TFS.VIGENCIA1, 'YYYY.MM.DD HH24:MI')||
+SELECT 	'CriterioOrder1='||TFS.CRITERIO_ORDER1||',CriterioOrder2='||TFS.CRITERIO_ORDER2||',EstrategiaId='||II.ID||',VigenciaLower='||TO_CHAR(TFS.VIGENCIA1, 'YYYY.MM.DD HH24:MI')||
     ',VigenciaHigher='||TO_CHAR(TFS.VIGENCIA2, 'YYYY.MM.DD HH24:MI')||
     ',Active=true,Pair='||II.MONEDA||',Operation='||II.TIPO_OPERACION||',TakeProfit='||II.TAKE_PROFIT
   ||',StopLoss='||II.STOP_LOSS
-  ||',Lote='||II.LOTE||','||
+  ||',Lote=0.1,'||
 'OPEN'||'MA'||'LOWER='||II.OPEN_INFERIOR_MA*100||','||'OPEN'||'MA'||'HIGHER='||II.OPEN_SUPERIOR_MA*100||','||
 'OPEN'||'MACD'||'LOWER='||II.OPEN_INFERIOR_MACD*100||','||'OPEN'||'MACD'||'HIGHER='||II.OPEN_SUPERIOR_MACD*100||','||
 'OPEN'||'MACOMPARE'||'LOWER='||II.OPEN_INFERIOR_COMPARE*100||','||'OPEN'||'MACOMPARE'||'HIGHER='||II.OPEN_SUPERIOR_COMPARE*100||','||
@@ -65,8 +65,10 @@ FROM    INDIVIDUO_INDICADORES II,
       --AND TFS.VIGENCIA1 BETWEEN TO_DATE('20110101','YYYYMMDD') AND TO_DATE('20120101','YYYYMMDD')
       --AND TFS.VIGENCIA1 > TO_DATE('20120819','YYYYMMDD') 
       --AND ROWNUM<=10000
-ORDER BY TFS.VIGENCIA1 ASC, TFS.CRITERIO_ORDER1 DESC, TFS.CRITERIO_ORDER2 DESC
+ORDER BY TFS.VIGENCIA1 ASC, TRUNC(TFS.FECHA_ORDER1) DESC, TFS.CRITERIO_ORDER1 DESC, TRUNC(TFS.FECHA_ORDER2) DESC, TFS.CRITERIO_ORDER2 DESC
 ;
 
 ALTER SESSION SET NLS_NUMERIC_CHARACTERS = ',.';
 SPOOL OFF;
+SET echo ON; 
+/ 

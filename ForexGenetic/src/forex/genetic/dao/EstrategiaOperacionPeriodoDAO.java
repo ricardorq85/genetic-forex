@@ -16,6 +16,7 @@ import forex.genetic.dao.helper.EstrategiaOperacionPeriodoHelper;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.ParametroOperacionPeriodo;
+import forex.genetic.util.DateUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -96,6 +97,69 @@ public class EstrategiaOperacionPeriodoDAO {
 
 	public List<ParametroOperacionPeriodo> consultarInclusiones() throws SQLException {
 		List<ParametroOperacionPeriodo> inclusiones;
+		String sql = "SELECT DISTINCT " + " FILTRO_PIPS_X_SEMANA R_SEMANA, FILTRO_PIPS_X_MES R_MES, "
+				+ " FILTRO_PIPS_X_ANYO R_ANYO, FILTRO_PIPS_TOTALES R_TOTALES,"
+				+ " FILTRO_R2_SEMANA R2_SEMANA, FILTRO_R2_MES R2_MES, "
+				+ " FILTRO_R2_ANYO R2_ANYO, FILTRO_R2_TOTALES R2_TOTALES, "
+				+ " FILTRO_PENDIENTE_SEMANA PENDIENTE_SEMANA, FILTRO_PENDIENTE_MES PENDIENTE_MES,"
+				+ " FILTRO_PENDIENTE_ANYO PENDIENTE_ANYO, FILTRO_PENDIENTE_TOTALES PENDIENTE_TOTALES"
+				+ " FROM ESTRATEGIA_OPERACION_PERIODO EOP"
+				+ " WHERE EOP.PIPS_TOTALES>0 AND  EOP.PIPS_TOTALES_PARALELAS>0 "
+				+ " AND (EOP.PIPS_AGRUPADO_MINUTOS>0 AND EOP.PIPS_AGRUPADO_HORAS>0 AND EOP.PIPS_AGRUPADO_DIAS>0)"
+				+ " AND EOP.CANTIDAD>1 AND EOP.CANTIDAD_INDIVIDUOS>1";
+		// + "AND ROWNUM<100"
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			resultado = stmtConsulta.executeQuery();
+
+			inclusiones = EstrategiaOperacionPeriodoHelper.inclusiones(resultado);
+
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+
+		return inclusiones;
+	}
+
+	public List<ParametroOperacionPeriodo> consultarInclusionesxIndividuos(Date fechaInicio, int cantidad)
+			throws SQLException {
+		List<ParametroOperacionPeriodo> inclusiones;
+		String sql = "SELECT DISTINCT " + " PIPS_SEMANA R_SEMANA, PIPS_MES R_MES, "
+				+ " PIPS_ANYO R_ANYO, PIPS_TOTALES R_TOTALES, " + " R2_SEMANA R2_SEMANA, R2_MES R2_MES, "
+				+ " R2_ANYO R2_ANYO, R2_CONSOL R2_TOTALES, "
+				+ " PENDIENTE_SEMANA PENDIENTE_SEMANA, PENDIENTE_MES PENDIENTE_MES,"
+				+ " PENDIENTE_ANYO PENDIENTE_ANYO, PENDIENTE_CONSOL PENDIENTE_TOTALES"
+				+ " FROM PREVIO_TOFILESTRING PTFS "
+				+ " WHERE PTFS.PIPS_ANYO>0 AND PTFS.PIPS_TOTALES>0 AND PTFS.TIPO_OPERACION='SELL' "
+				+ " AND ROWNUM<? "
+				+ " AND PTFS.FECHA_SEMANA>=? AND PTFS.FECHA_SEMANA<?";
+		// + "AND ROWNUM<100"
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setInt(1, cantidad);
+			stmtConsulta.setTimestamp(2, new Timestamp(DateUtil.adicionarMes(fechaInicio, -1).getTime()));
+			stmtConsulta.setTimestamp(3, new Timestamp(fechaInicio.getTime()));
+			resultado = stmtConsulta.executeQuery();
+
+			inclusiones = EstrategiaOperacionPeriodoHelper.inclusiones(resultado);
+
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+
+		return inclusiones;
+	}
+
+	public List<ParametroOperacionPeriodo> consultarInclusionesPromedio() throws SQLException {
+		List<ParametroOperacionPeriodo> inclusiones;
 		String sql = "SELECT FLOOR(FILTRO_PIPS_X_SEMANA/ 100)*100 R_SEMANA, FLOOR(FILTRO_PIPS_X_MES/ 100)*100 R_MES,"
 				+ " FLOOR(FILTRO_PIPS_X_ANYO/ 100)*100 R_ANYO, FLOOR(FILTRO_PIPS_TOTALES/ 100)*100 R_TOTALES,"
 				+ " ROUND(FILTRO_R2_SEMANA,2) R2_SEMANA, ROUND(FILTRO_R2_MES,2) R2_MES, "
@@ -109,7 +173,7 @@ public class EstrategiaOperacionPeriodoDAO {
 				+ " ROUND(FILTRO_R2_ANYO,2), ROUND(FILTRO_R2_TOTALES,2),"
 				+ " ROUND(FILTRO_PENDIENTE_SEMANA,2), ROUND(FILTRO_PENDIENTE_MES,2),"
 				+ " ROUND(FILTRO_PENDIENTE_ANYO,2), ROUND(FILTRO_PENDIENTE_TOTALES,2)"
-				+ " HAVING MAX(EOP.PIPS_TOTALES)>0"
+				+ " HAVING MAX(EOP.PIPS_TOTALES)>0" + " AND MAX(EOP.PIPS_TOTALES_PARALELAS)>0"
 				+ " ORDER BY ROUND(FLOOR(AVG(EOP.PIPS_TOTALES)/1000))*1000 DESC, ROUND(FLOOR(AVG(EOP.PIPS_TOTALES_PARALELAS)/1000))*1000 DESC,"
 				+ " ROUND(FLOOR(AVG(EOP.PIPS_AGRUPADO_DIAS)/100))*100 DESC, ROUND(FLOOR(AVG(EOP.PIPS_AGRUPADO_HORAS)/100))*100 DESC,"
 				+ " ROUND(FLOOR(AVG(EOP.PIPS_AGRUPADO_MINUTOS)/100))*100 DESC";
@@ -144,8 +208,8 @@ public class EstrategiaOperacionPeriodoDAO {
 				+ " FIRST_ORDER, SECOND_ORDER, "
 				+ " PIPS_TOTALES, CANTIDAD, PIPS_TOTALES_PARALELAS, CANTIDAD_PARALELAS, "
 				+ " FECHA, FECHA_INICIAL, FECHA_FINAL,"
-				+ " PIPS_AGRUPADO_MINUTOS, PIPS_AGRUPADO_HORAS, PIPS_AGRUPADO_DIAS, TIPO_OPERACION, CANTIDAD_INDIVIDUOS, MAX_FECHA_CIERRE) "
-				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ " PIPS_AGRUPADO_MINUTOS, PIPS_AGRUPADO_HORAS, PIPS_AGRUPADO_DIAS, TIPO_OPERACION, CANTIDAD_INDIVIDUOS, MAX_FECHA_CIERRE, EOP_VERSION) "
+				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		PreparedStatement statement = null;
 		int nextId = 0;
@@ -187,6 +251,7 @@ public class EstrategiaOperacionPeriodoDAO {
 			} else {
 				statement.setNull(index++, java.sql.Types.TIMESTAMP);
 			}
+			statement.setString(index++, param.getVersion());
 			statement.executeUpdate();
 		} finally {
 			JDBCUtil.close(statement);

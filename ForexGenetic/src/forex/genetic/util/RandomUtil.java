@@ -11,18 +11,18 @@ public class RandomUtil {
 		}
 		int value;
 		int minToProcess = min;
-		int maxToProcess = max+1;
+		int maxToProcess = max + 1;
 		int flag = 1;
 		if (max <= 0) {
 			minToProcess = -max;
-			maxToProcess = -min-1;
+			maxToProcess = -min + 1;
 			flag = -1;
 		}
-		value = flag * (random.nextInt(maxToProcess-minToProcess) + minToProcess);
+		value = flag * (random.nextInt(maxToProcess - minToProcess) + minToProcess);
 
 		return value;
 	}
-	
+
 	public static double generateNegativePositive(double min, double max) {
 		if (min > max) {
 			throw new IllegalArgumentException("min debe ser menor que max");
@@ -36,12 +36,21 @@ public class RandomUtil {
 			maxToProcess = -min;
 			flag = -1;
 		}
-		value = flag * (random.nextDouble()*(maxToProcess-minToProcess) + minToProcess);
+		double r = random.nextDouble();
+		value = flag * (r * (maxToProcess - minToProcess) + minToProcess);
 
 		return value;
-	}	
-	
+	}
+
+	public static double nextDOuble() {
+		return random.nextDouble();
+	}
+
 	public static int nextInt(int bound) {
 		return random.nextInt(bound);
+	}
+
+	public static boolean nextBoolean() {
+		return random.nextBoolean();
 	}
 }

@@ -4,6 +4,13 @@
  */
 package forex.genetic.dao.helper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoOptimo;
@@ -15,12 +22,6 @@ import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.Constants;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -47,8 +48,7 @@ public class IndividuoHelper {
     public static List<Individuo> createIndividuosById(ResultSet resultado) throws SQLException {
         List<Individuo> list = new ArrayList<>();
         while (resultado.next()) {
-            Individuo ind = new Individuo();
-            ind.setId(resultado.getString("ID_INDIVIDUO"));
+            Individuo ind = new Individuo(resultado.getString("ID_INDIVIDUO"));
             ind.setIdParent1(resultado.getString("ID_INDIVIDUO_PADRE"));            
             list.add(ind);
         }

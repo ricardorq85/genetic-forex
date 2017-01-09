@@ -4,7 +4,17 @@
  */
 package forex.genetic.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+
 import forex.genetic.dao.helper.BasePointHelper;
+import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
@@ -19,14 +29,6 @@ import forex.genetic.entities.indicator.Sar;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.jdbc.JDBCUtil;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -55,6 +57,26 @@ public class DatoHistoricoDAO {
 		try {
 			stmtConsulta = this.connection.createStatement();
 			resultado = stmtConsulta.executeQuery(sql);
+			if (resultado.next()) {
+				cantidad = resultado.getInt("REGISTROS");
+			}
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+		return cantidad;
+	}
+	
+	public int consultarCantidadPuntos(DateInterval interval) throws SQLException {
+		int cantidad = 0;
+		String sql = "SELECT COUNT(*) REGISTROS FROM DATOHISTORICO WHERE FECHA BETWEEN ? AND ?";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setTimestamp(1, new Timestamp(interval.getLowInterval().getTime()));
+			stmtConsulta.setTimestamp(2, new Timestamp(interval.getHighInterval().getTime()));
+			resultado = stmtConsulta.executeQuery();
 			if (resultado.next()) {
 				cantidad = resultado.getInt("REGISTROS");
 			}

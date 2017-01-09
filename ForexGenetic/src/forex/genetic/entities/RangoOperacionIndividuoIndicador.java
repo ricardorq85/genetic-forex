@@ -18,10 +18,10 @@ public class RangoOperacionIndividuoIndicador {
 	private double porcentajeCumplimiento;
 
 	public boolean cumplePorcentajeIndicador() {
-		return ((porcentajeCumplimiento > 0.2) /*
-												 * && (porcentajeCumplimiento <
-												 * 0.8)
-												 */);
+		return (porcentajeCumplimiento > 0.2);
+		/*
+		 * && (porcentajeCumplimiento < 0.8)
+		 */
 	}
 
 	public double getPorcentajeCumplimiento() {

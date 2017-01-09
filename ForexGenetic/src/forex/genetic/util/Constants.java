@@ -465,6 +465,11 @@ public class Constants {
         BUY,
         SELL;
     }
+    
+    public static OperationType getOperationType(String operationTypeName) {
+        return ("SELL".equalsIgnoreCase(operationTypeName)
+                ? Constants.OperationType.SELL : Constants.OperationType.BUY);
+    }
 
     public enum FortalezaType {
         Pips,

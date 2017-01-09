@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.helper.IndividuoHelper;
+import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.IndividuoOptimo;
@@ -100,6 +101,52 @@ public class IndividuoDAO {
 			stmtConsulta = this.connection.prepareStatement(sql);
 			stmtConsulta.setString(1, idIndividuo);
 			stmtConsulta.setTimestamp(2, new Timestamp(fechaMayorQue.getTime()));
+			resultado = stmtConsulta.executeQuery();
+			fechas = IndividuoHelper.createFechas(resultado);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+		return fechas;
+	}
+
+	public List<Date> consultarPuntosApertura(DateInterval rango, String idIndividuo) throws SQLException {
+		List<Date> fechas;
+		String sql = "SELECT DH.FECHA-1/24/60 FECHA " + " FROM DATOHISTORICO DH"
+				+ "  INNER JOIN INDIVIDUO_INDICADORES IC ON IC.ID=? AND "
+				+ "      (IC.OPEN_INFERIOR_MA IS NULL OR IC.OPEN_SUPERIOR_MA IS NULL OR "
+				+ "     ROUND(DH.AVERAGE-DH.LOW, 5) BETWEEN IC.OPEN_INFERIOR_MA AND IC.OPEN_SUPERIOR_MA OR ROUND(DH.AVERAGE-DH.HIGH,5) BETWEEN IC.OPEN_INFERIOR_MA AND IC.OPEN_SUPERIOR_MA) "
+				+ "    AND (IC.OPEN_INFERIOR_MACD IS NULL OR IC.OPEN_SUPERIOR_MACD IS NULL OR ROUND(DH.MACD_VALUE-DH.MACD_SIGNAL, 5) BETWEEN IC.OPEN_INFERIOR_MACD AND IC.OPEN_SUPERIOR_MACD) "
+				+ "    AND (IC.OPEN_INFERIOR_COMPARE IS NULL OR IC.OPEN_SUPERIOR_COMPARE IS NULL OR ROUND(DH.AVERAGE_COMPARE-DH.COMPARE_VALUE, 5) BETWEEN IC.OPEN_INFERIOR_COMPARE AND IC.OPEN_SUPERIOR_COMPARE) "
+				+ "    AND (IC.OPEN_INFERIOR_ADX IS NULL OR IC.OPEN_SUPERIOR_ADX IS NULL OR ROUND(DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_MINUS), 5) BETWEEN IC.OPEN_INFERIOR_ADX AND IC.OPEN_SUPERIOR_ADX) "
+				+ "    AND (IC.OPEN_INFERIOR_SAR IS NULL OR IC.OPEN_SUPERIOR_SAR IS NULL OR ROUND(DH.SAR-DH.LOW, 5) BETWEEN IC.OPEN_INFERIOR_SAR AND IC.OPEN_SUPERIOR_SAR OR DH.SAR-DH.HIGH BETWEEN IC.OPEN_INFERIOR_SAR AND IC.OPEN_SUPERIOR_SAR) "
+				+ "    AND (IC.OPEN_INFERIOR_RSI IS NULL OR IC.OPEN_SUPERIOR_RSI IS NULL OR ROUND(DH.RSI, 5) BETWEEN IC.OPEN_INFERIOR_RSI AND IC.OPEN_SUPERIOR_RSI) "
+				+ "    AND (IC.OPEN_INFERIOR_BOLLINGER IS NULL OR IC.OPEN_SUPERIOR_BOLLINGER IS NULL OR ROUND(DH.BOLLINGER_UPPER-DH.BOLLINGER_LOWER, 5) BETWEEN IC.OPEN_INFERIOR_BOLLINGER AND IC.OPEN_SUPERIOR_BOLLINGER) "
+				+ "    AND (IC.OPEN_INFERIOR_MOMENTUM IS NULL OR IC.OPEN_SUPERIOR_MOMENTUM IS NULL OR ROUND(DH.MOMENTUM, 5) BETWEEN IC.OPEN_INFERIOR_MOMENTUM AND IC.OPEN_SUPERIOR_MOMENTUM) "
+				+ "    AND (IC.OPEN_INFERIOR_ICHISIGNAL IS NULL OR IC.OPEN_SUPERIOR_ICHISIGNAL IS NULL OR ROUND(DH.ICHIMOKUCHINKOUSPAN*(DH.ICHIMOKUTENKANSEN-DH.ICHIMOKUKIJUNSEN),5) BETWEEN IC.OPEN_INFERIOR_ICHISIGNAL AND IC.OPEN_SUPERIOR_ICHISIGNAL) "
+				+ "    AND (IC.OPEN_INFERIOR_ICHITREND IS NULL OR IC.OPEN_SUPERIOR_ICHITREND IS NULL OR ROUND(DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-DH.LOW, 5) BETWEEN IC.OPEN_INFERIOR_ICHITREND AND IC.OPEN_SUPERIOR_ICHITREND "
+				+ "          OR ROUND(DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-DH.HIGH, 5) BETWEEN IC.OPEN_INFERIOR_ICHITREND AND IC.OPEN_SUPERIOR_ICHITREND) "
+				+ "    AND (IC.OPEN_INFERIOR_MA1200 IS NULL OR IC.OPEN_SUPERIOR_MA1200 IS NULL OR "
+				+ "     ROUND(DH.MA1200-DH.LOW, 5) BETWEEN IC.OPEN_INFERIOR_MA1200 AND IC.OPEN_SUPERIOR_MA1200 OR ROUND(DH.MA1200-DH.HIGH,5) BETWEEN IC.OPEN_INFERIOR_MA1200 AND IC.OPEN_SUPERIOR_MA1200) "
+				+ "    AND (IC.OPEN_INFERIOR_MACD20X IS NULL OR IC.OPEN_SUPERIOR_MACD20X IS NULL OR ROUND(DH.MACD20X_VALUE+DH.MACD20X_SIGNAL, 5) BETWEEN IC.OPEN_INFERIOR_MACD20X AND IC.OPEN_SUPERIOR_MACD20X) "
+				+ "    AND (IC.OPEN_INFERIOR_COMPARE1200 IS NULL OR IC.OPEN_SUPERIOR_COMPARE1200 IS NULL OR ROUND(DH.AVERAGE_COMPARE1200-DH.COMPARE_VALUE, 5) BETWEEN IC.OPEN_INFERIOR_COMPARE1200 AND IC.OPEN_SUPERIOR_COMPARE1200) "
+				+ "    AND (IC.OPEN_INFERIOR_ADX168 IS NULL OR IC.OPEN_SUPERIOR_ADX168 IS NULL OR ROUND(DH.ADX_VALUE168*(DH.ADX_PLUS168-DH.ADX_MINUS168), 5) BETWEEN IC.OPEN_INFERIOR_ADX168 AND IC.OPEN_SUPERIOR_ADX168) "
+				+ "    AND (IC.OPEN_INFERIOR_SAR1200 IS NULL OR IC.OPEN_SUPERIOR_SAR1200 IS NULL "
+				+ "			OR ROUND(DH.SAR1200-DH.LOW, 5) BETWEEN IC.OPEN_INFERIOR_SAR1200 AND IC.OPEN_SUPERIOR_SAR1200 OR ROUND(DH.SAR1200-DH.HIGH,5) BETWEEN IC.OPEN_INFERIOR_SAR1200 AND IC.OPEN_SUPERIOR_SAR1200) "
+				+ "    AND (IC.OPEN_INFERIOR_RSI84 IS NULL OR IC.OPEN_SUPERIOR_RSI84 IS NULL OR ROUND(DH.RSI84, 5) BETWEEN IC.OPEN_INFERIOR_RSI84 AND IC.OPEN_SUPERIOR_RSI84) "
+				+ "    AND (IC.OPEN_INFERIOR_BOLLINGER240 IS NULL OR IC.OPEN_SUPERIOR_BOLLINGER240 IS NULL OR ROUND(DH.BOLLINGER_UPPER240-DH.BOLLINGER_LOWER240, 5) BETWEEN IC.OPEN_INFERIOR_BOLLINGER240 AND IC.OPEN_SUPERIOR_BOLLINGER240) "
+				+ "    AND (IC.OPEN_INFERIOR_MOMENTUM1200 IS NULL OR IC.OPEN_SUPERIOR_MOMENTUM1200 IS NULL OR ROUND(DH.MOMENTUM1200, 5) BETWEEN IC.OPEN_INFERIOR_MOMENTUM1200 AND IC.OPEN_SUPERIOR_MOMENTUM1200) "
+				+ "    AND (IC.OPEN_INFERIOR_ICHISIGNAL6 IS NULL OR IC.OPEN_SUPERIOR_ICHISIGNAL6 IS NULL OR ROUND(DH.ICHIMOKUCHINKOUSPAN6*(DH.ICHIMOKUTENKANSEN6-DH.ICHIMOKUKIJUNSEN6),5) BETWEEN IC.OPEN_INFERIOR_ICHISIGNAL6 AND IC.OPEN_SUPERIOR_ICHISIGNAL6) "
+				+ "    AND (IC.OPEN_INFERIOR_ICHITREND6 IS NULL OR IC.OPEN_SUPERIOR_ICHITREND6 IS NULL OR ROUND(DH.ICHIMOKUSENKOUSPANA6-DH.ICHIMOKUSENKOUSPANB6-DH.LOW, 5) BETWEEN IC.OPEN_INFERIOR_ICHITREND6 AND IC.OPEN_SUPERIOR_ICHITREND6 "
+				+ "          OR ROUND(DH.ICHIMOKUSENKOUSPANA6-DH.ICHIMOKUSENKOUSPANB6-DH.HIGH, 5) BETWEEN IC.OPEN_INFERIOR_ICHITREND6 AND IC.OPEN_SUPERIOR_ICHITREND6) "
+				+ " WHERE DH.FECHA>? AND DH.FECHA<=? ORDER BY FECHA ASC ";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setString(1, idIndividuo);
+			stmtConsulta.setTimestamp(2, new Timestamp(rango.getLowInterval().getTime()));
+			stmtConsulta.setTimestamp(3, new Timestamp(rango.getHighInterval().getTime()));
 			resultado = stmtConsulta.executeQuery();
 			fechas = IndividuoHelper.createFechas(resultado);
 		} finally {
@@ -389,52 +436,6 @@ public class IndividuoDAO {
 		return list;
 	}
 
-	public List<Individuo> consultarIndividuosYaProcesadosSinOperaciones(Date fechaLimite) throws SQLException {
-		List<Individuo> list = null;
-		String sql = "SELECT IND.* FROM INDIVIDUO IND"
-				+ " INNER JOIN PROCESO P ON P.ID_INDIVIDUO=IND.ID AND P.FECHA_HISTORICO>=?"
-				+ " WHERE (SELECT COUNT(*) FROM OPERACION OPER WHERE OPER.ID_INDIVIDUO=IND.ID)<10" + " AND ROWNUM<1000";
-		PreparedStatement stmtConsulta = null;
-		ResultSet resultado = null;
-
-		try {
-			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setTimestamp(1, new java.sql.Timestamp(fechaLimite.getTime()));
-			resultado = stmtConsulta.executeQuery();
-
-			list = IndividuoHelper.createIndividuosBase(resultado);
-		} finally {
-			JDBCUtil.close(resultado);
-			JDBCUtil.close(stmtConsulta);
-		}
-
-		return list;
-	}
-
-	public List<Individuo> consultarIndividuosYaProcesadosSinOperaciones(Date fechaLimite, String idIndividuo)
-			throws SQLException {
-		List<Individuo> list = null;
-		String sql = "SELECT IND.* FROM INDIVIDUO IND"
-				+ " INNER JOIN PROCESO P ON P.ID_INDIVIDUO=IND.ID AND P.FECHA_HISTORICO>=?"
-				+ " WHERE (SELECT COUNT(*) FROM OPERACION OPER WHERE OPER.ID_INDIVIDUO=IND.ID)<10" + " AND IND.ID=?";
-		PreparedStatement stmtConsulta = null;
-		ResultSet resultado = null;
-
-		try {
-			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setTimestamp(1, new java.sql.Timestamp(fechaLimite.getTime()));
-			stmtConsulta.setString(2, idIndividuo);
-			resultado = stmtConsulta.executeQuery();
-
-			list = IndividuoHelper.createIndividuosBase(resultado);
-		} finally {
-			JDBCUtil.close(resultado);
-			JDBCUtil.close(stmtConsulta);
-		}
-
-		return list;
-	}
-
 	/**
 	 *
 	 * @param idIndividuo
@@ -481,11 +482,11 @@ public class IndividuoDAO {
 		}
 		return list;
 	}
-	
+
 	public List<Individuo> consultarIndividuosRepetidos() throws SQLException {
 		List<Individuo> list = null;
 		String sql = "SELECT ID_INDIVIDUO2 ID_INDIVIDUO, ID_INDIVIDUO1 ID_INDIVIDUO_PADRE "
-				+ " FROM INDIVIDUOS_REPETIDOS WHERE ROWNUM < 100";
+				+ " FROM INDIVIDUOS_REPETIDOS WHERE ROWNUM < 300";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 		try {
@@ -541,12 +542,11 @@ public class IndividuoDAO {
 		}
 		return list;
 	}
-	
+
 	public List<Individuo> consultarIndividuoHijoRepetido(Individuo individuoHijo) throws SQLException {
 		List<Individuo> list = null;
 		String sql = "SELECT ID_INDIVIDUO2 ID_INDIVIDUO, ID_INDIVIDUO1 ID_INDIVIDUO_PADRE "
-				+ " FROM INDIVIDUOS_REPETIDOS "
-				+ " WHERE ID_INDIVIDUO2 = ?";
+				+ " FROM INDIVIDUOS_REPETIDOS " + " WHERE ID_INDIVIDUO2 = ?";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 		try {
@@ -610,11 +610,12 @@ public class IndividuoDAO {
 		StringBuilder sql = new StringBuilder();
 		sql.append(
 				"SELECT IND2.ID ID_INDIVIDUO, IND2.PARENT_ID_1, IND2.PARENT_ID_2, IND2.TAKE_PROFIT, IND2.STOP_LOSS, ");
-		sql.append("IND2.LOTE, IND2.INITIAL_BALANCE, IND2.CREATION_DATE, ");
-		sql.append("IND3.ID_INDICADOR, IND3.INTERVALO_INFERIOR, IND3.INTERVALO_SUPERIOR, IND3.TIPO ");
+		sql.append(
+				"IND2.LOTE, IND2.INITIAL_BALANCE, IND2.CREATION_DATE, IND2.TIPO_OPERACION TIPO_OPERACION_INDIVIDUO, ");
+		sql.append(" IND3.ID_INDICADOR, IND3.INTERVALO_INFERIOR, IND3.INTERVALO_SUPERIOR, IND3.TIPO TIPO_INDICADOR ");
 		sql.append(" FROM INDIVIDUO IND2");
 		sql.append("  INNER JOIN ");
-		// sql.append(indicadorController.getNombreTabla());
+		sql.append(indicadorController.getNombreTabla());
 		sql.append(" IND3 ON IND2.ID=IND3.ID_INDIVIDUO");
 		sql.append(" WHERE IND2.ID=?");
 		sql.append(" ORDER BY IND2.ID DESC");
@@ -784,4 +785,139 @@ public class IndividuoDAO {
 		return count;
 	}
 
+	public List<Individuo> consultarIndividuosResumenSemanal(Date fechaInicial, Date fechaFinal) throws SQLException {
+		List<Individuo> list = null;
+		String sql = "SELECT DISTINCT ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE " + " FROM FILTERED_PARA_OPERAR_SELL PTFS "
+				+ " WHERE PTFS.FECHA_SEMANA BETWEEN ? AND ? " + " UNION ALL "
+				+ " SELECT DISTINCT ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE" + " FROM FILTERED_PARA_OPERAR_BUY PTFS "
+				+ " WHERE PTFS.FECHA_SEMANA BETWEEN ? AND ?";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setTimestamp(1, new Timestamp(fechaInicial.getTime()));
+			stmtConsulta.setTimestamp(2, new Timestamp(fechaFinal.getTime()));
+			stmtConsulta.setTimestamp(3, new Timestamp(fechaInicial.getTime()));
+			stmtConsulta.setTimestamp(4, new Timestamp(fechaFinal.getTime()));
+			resultado = stmtConsulta.executeQuery();
+
+			list = IndividuoHelper.createIndividuosById(resultado);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+
+		return list;
+	}
+
+	public List<Individuo> consultarIndividuosIndicadoresCloseMinimos(int minimo) throws SQLException {
+		List<Individuo> list = null;
+		String sql = "SELECT II.ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE FROM FOREX.INDICADOR_INDIVIDUO II"
+				+ " WHERE II.TIPO='CLOSE' AND II.INTERVALO_INFERIOR IS NOT NULL" + " GROUP BY II.ID_INDIVIDUO "
+				+ " HAVING COUNT(*)>0 AND COUNT(*)<?";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setInt(1, minimo);
+			resultado = stmtConsulta.executeQuery();
+
+			list = IndividuoHelper.createIndividuosById(resultado);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+
+		return list;
+	}
+
+	public List<Individuo> consultarIndividuosIndicadoresCloseMinimos(int minimo, String id) throws SQLException {
+		List<Individuo> list = null;
+		String sql = "SELECT II.ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE FROM FOREX.INDICADOR_INDIVIDUO II"
+				+ " WHERE II.TIPO='CLOSE' AND II.INTERVALO_INFERIOR IS NOT NULL " + " AND II.ID_INDIVIDUO=?"
+				+ " GROUP BY II.ID_INDIVIDUO " + " HAVING COUNT(*)>0 AND COUNT(*)<?";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setString(1, id);
+			stmtConsulta.setInt(2, minimo);
+			resultado = stmtConsulta.executeQuery();
+
+			list = IndividuoHelper.createIndividuosById(resultado);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+
+		return list;
+
+	}
+
+	public List<Individuo> consultarIndividuosIntervaloIndicadores() throws SQLException {
+		List<Individuo> list = null;
+		String sql = "SELECT DISTINCT II.ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE " + " FROM INDICADOR_INDIVIDUO II "
+				+ " INNER JOIN INTERVALO_INDICADOR_PROCESADOS II_PROC ON II.ID_INDICADOR=II_PROC.ID_INDICADOR AND II.TIPO=II_PROC.TIPO "
+				+ " INNER JOIN INTERVALO_INDICADOR_SIN_OPER II_SINOPER ON II.ID_INDICADOR=II_SINOPER.ID_INDICADOR AND II.TIPO=II_SINOPER.TIPO "
+				+ "    AND II_SINOPER.DIFFMIN<II_PROC.DIFFMIN "
+				+ " WHERE II.INTERVALO_INFERIOR IS NOT NULL AND ROUND((II.INTERVALO_SUPERIOR-II.INTERVALO_INFERIOR),5)<=II_SINOPER.DIFFMIN "
+				+ " AND ROWNUM<100";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			resultado = stmtConsulta.executeQuery();
+
+			list = IndividuoHelper.createIndividuosById(resultado);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+
+		return list;
+	}
+
+	public List<Individuo> consultarIndividuosIntervaloIndicadores(String idIndividuo) throws SQLException {
+		List<Individuo> list = null;
+		String sql = "SELECT DISTINCT II.ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE " + " FROM INDICADOR_INDIVIDUO II "
+				+ " INNER JOIN INTERVALO_INDICADOR_PROCESADOS II_PROC ON II.ID_INDICADOR=II_PROC.ID_INDICADOR AND II.TIPO=II_PROC.TIPO "
+				+ " INNER JOIN INTERVALO_INDICADOR_SIN_OPER II_SINOPER ON II.ID_INDICADOR=II_SINOPER.ID_INDICADOR AND II.TIPO=II_SINOPER.TIPO "
+				+ "    AND II_SINOPER.DIFFMIN<II_PROC.DIFFMIN "
+				+ " WHERE II.INTERVALO_INFERIOR IS NOT NULL AND ROUND((II.INTERVALO_SUPERIOR-II.INTERVALO_INFERIOR),5)<=II_SINOPER.DIFFMIN "
+				+ " AND II.ID_INDIVIDUO=? " + " AND ROWNUM<100";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setString(1, idIndividuo);
+			resultado = stmtConsulta.executeQuery();
+
+			list = IndividuoHelper.createIndividuosById(resultado);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+
+		return list;
+	}
+
+	public List<Individuo> consultarIndividuosParaBorrar(int param) throws SQLException {
+		return null;
+	}
+
+	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, int param) throws SQLException {
+		return null;
+	}
+
+	public List<Individuo> consultarIndividuosParaBorrar(Date fechaLimite) throws SQLException {
+		return null;
+	}
+
+	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, Date fechaLimite) throws SQLException {
+		return null;
+	}
 }

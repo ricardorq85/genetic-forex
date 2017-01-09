@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.manager;
+package forex.genetic.manager.borrado;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 
 import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.entities.Individuo;
-import java.sql.SQLException;
-import java.util.List;
 
 /**
  *
@@ -16,14 +18,13 @@ import java.util.List;
  */
 public class BorradoCantidadOperacionesExageradasManager extends BorradoManager {
 
-	public BorradoCantidadOperacionesExageradasManager() throws ClassNotFoundException, SQLException {
-		super.tipoProceso = "CANTIDAD_LIMITE";
+	public BorradoCantidadOperacionesExageradasManager(Connection conn) throws ClassNotFoundException, SQLException {
+		super(conn, "CANTIDAD_LIMITE");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuos(Individuo individuo) throws ClassNotFoundException, SQLException {
 		List<Individuo> individuos;
-		IndividuoDAO individuoDAO = new IndividuoDAO(conn);
 		double cantidadLimite = 0.010;
 		if (individuo == null) {
 			individuos = individuoDAO.consultarIndividuosCantidadLimite(cantidadLimite);
@@ -33,13 +34,4 @@ public class BorradoCantidadOperacionesExageradasManager extends BorradoManager 
 		return individuos;
 	}
 
-	@Override
-	public void borrarIndividuos() throws ClassNotFoundException, SQLException {
-		super.procesarBorradoIndividuos(null);
-	}
-
-	@Override
-	public void validarYBorrarIndividuo(Individuo individuo) throws ClassNotFoundException, SQLException {
-		super.procesarBorradoIndividuos(individuo);
-	}
 }

@@ -19,23 +19,24 @@ public class ParametroOperacionPeriodo implements Cloneable {
 	private double pipsTotales, pipsParalelas, pipsAgrupadoMinutos, pipsAgrupadoHoras, pipsAgrupadoDias;
 	private Date fechaInicial, fechaFinal, fecha, maxFechaCierre;
 	private OperationType tipoOperacion;
+	private static final String VERSION = "20170105";
 
 	public ParametroOperacionPeriodo() {
 		super();
 		this.fecha = new Date();
-	}	
+	}
+
+	public String getVersion() {
+		return VERSION;
+	}
 
 	public Date getMaxFechaCierre() {
 		return maxFechaCierre;
 	}
 
-
-
 	public void setMaxFechaCierre(Date maxFechaCierre) {
 		this.maxFechaCierre = maxFechaCierre;
 	}
-
-
 
 	public int getId() {
 		return id;
@@ -259,7 +260,7 @@ public class ParametroOperacionPeriodo implements Cloneable {
 		countPositivos += (filtroPipsXMes >= 0) ? 1 : 0;
 		countPositivos += (filtroPipsXAnyo >= 0) ? 1 : 0;
 		countPositivos += (filtroPipsTotales >= 0) ? 1 : 0;
-		return (countPositivos >= 3);
+		return (countPositivos >= 1);
 	}
 
 	@Override
@@ -282,10 +283,27 @@ public class ParametroOperacionPeriodo implements Cloneable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(filtroPendienteAnyo);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(filtroPendienteMes);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(filtroPendienteSemana);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(filtroPendienteTotales);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + filtroPipsTotales;
 		result = prime * result + filtroPipsXAnyo;
 		result = prime * result + filtroPipsXMes;
 		result = prime * result + filtroPipsXSemana;
+		temp = Double.doubleToLongBits(filtroR2Anyo);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(filtroR2Mes);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(filtroR2Semana);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(filtroR2Totales);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
 	}
 
@@ -298,6 +316,14 @@ public class ParametroOperacionPeriodo implements Cloneable {
 		if (!(obj instanceof ParametroOperacionPeriodo))
 			return false;
 		ParametroOperacionPeriodo other = (ParametroOperacionPeriodo) obj;
+		if (Double.doubleToLongBits(filtroPendienteAnyo) != Double.doubleToLongBits(other.filtroPendienteAnyo))
+			return false;
+		if (Double.doubleToLongBits(filtroPendienteMes) != Double.doubleToLongBits(other.filtroPendienteMes))
+			return false;
+		if (Double.doubleToLongBits(filtroPendienteSemana) != Double.doubleToLongBits(other.filtroPendienteSemana))
+			return false;
+		if (Double.doubleToLongBits(filtroPendienteTotales) != Double.doubleToLongBits(other.filtroPendienteTotales))
+			return false;
 		if (filtroPipsTotales != other.filtroPipsTotales)
 			return false;
 		if (filtroPipsXAnyo != other.filtroPipsXAnyo)
@@ -305,6 +331,14 @@ public class ParametroOperacionPeriodo implements Cloneable {
 		if (filtroPipsXMes != other.filtroPipsXMes)
 			return false;
 		if (filtroPipsXSemana != other.filtroPipsXSemana)
+			return false;
+		if (Double.doubleToLongBits(filtroR2Anyo) != Double.doubleToLongBits(other.filtroR2Anyo))
+			return false;
+		if (Double.doubleToLongBits(filtroR2Mes) != Double.doubleToLongBits(other.filtroR2Mes))
+			return false;
+		if (Double.doubleToLongBits(filtroR2Semana) != Double.doubleToLongBits(other.filtroR2Semana))
+			return false;
+		if (Double.doubleToLongBits(filtroR2Totales) != Double.doubleToLongBits(other.filtroR2Totales))
 			return false;
 		return true;
 	}
@@ -328,6 +362,10 @@ public class ParametroOperacionPeriodo implements Cloneable {
 		param.setFiltroPendienteTotales(this.getFiltroPendienteTotales());
 
 		return param;
+	}
+
+	public boolean isCantidadValida() {
+		return ((this.getCantidad() > 0) && (this.getCantidadParalelas() > 0));
 	}
 
 }

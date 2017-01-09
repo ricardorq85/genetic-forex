@@ -16,6 +16,7 @@ import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.OperacionSemanalDAO;
 import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.ProcesoPoblacionDAO;
+import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
@@ -62,25 +63,50 @@ public class ProcesarIndividuoThreadBD extends Thread {
 			daoProceso = new ProcesoPoblacionDAO(conn);
 			daoOperacionSemanal = new OperacionSemanalDAO(conn);
 			for (Individuo individuo : individuos) {
-				try {
-					boolean processed = procesarIndividuo(individuo);
-					if (processed && !validarYBorrarIndividuoInvalido(individuo)) {
-						actualizarOperacionSemanal(individuo);
-					}
-				} catch (SQLException ex) {
-					JDBCUtil.rollback(conn);
-					ex.printStackTrace();
-					System.err.println(ex.getMessage() + " " + individuo.getId());
-				} catch (ParseException ex) {
-					JDBCUtil.rollback(conn);
-					ex.printStackTrace();
-					System.err.println(ex.getMessage() + " " + individuo.getId());
-				}
+				runIndividuo(individuo);
 			}
 		} catch (SQLException | ClassNotFoundException ex) {
 			ex.printStackTrace();
 		} finally {
 			JDBCUtil.close(conn);
+		}
+	}
+
+	protected void runIndividuo(Individuo individuo) throws ClassNotFoundException {
+		try {
+			daoIndividuo.insertarIndividuoIndicadoresColumnas(individuo.getId());
+			conn.commit();
+			if (!validarYBorrarIndividuoInvalido(individuo)) {
+				Date fechaMayorQue = (individuo.getFechaHistorico() == null) ? this.minFechaHistorico
+						: individuo.getFechaHistorico();
+				Date fechaMenorOIgualQue = DateUtil.obtenerFechaMinima(this.maxFechaHistorico,
+						DateUtil.adicionarMes(fechaMayorQue, 12));
+				boolean processed = true;
+				while (processed && !fechaMenorOIgualQue.after(this.maxFechaHistorico)
+						&& fechaMenorOIgualQue.after(fechaMayorQue)) {
+					DateInterval intervaloFechasIndividuo = new DateInterval(fechaMayorQue, fechaMenorOIgualQue);
+
+					Date lastProcessedDate = procesarIndividuo(individuo, intervaloFechasIndividuo);
+
+					processed = (lastProcessedDate != null);
+					if (processed) {
+						fechaMayorQue = lastProcessedDate;
+						fechaMenorOIgualQue = DateUtil.obtenerFechaMinima(this.maxFechaHistorico,
+								DateUtil.adicionarMes(fechaMayorQue, 12));
+					}
+				}
+				if (processed && !validarYBorrarIndividuoInvalido(individuo)) {
+					this.actualizarOperacionSemanal(individuo);
+				}
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			System.err.println(ex.getMessage() + ": " + individuo.getId());
+			JDBCUtil.rollback(conn);
+		} catch (ParseException ex) {
+			ex.printStackTrace();
+			System.err.println(ex.getMessage() + ": " + individuo.getId());
+			JDBCUtil.rollback(conn);
 		}
 	}
 
@@ -111,22 +137,22 @@ public class ProcesarIndividuoThreadBD extends Thread {
 		LogUtil.logTime("Insertados SEMANAS: " + cInsert, 1);
 		// Mes
 		cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACIONES_ACUM_SEMANA_MES");
-		cInsert = daoOperacionSemanal.insertOperacionesSemanaAcumuladas(individuo, "OPERACIONES_ACUM_SEMANA_MES", -2000,
-				1);
+		cInsert = daoOperacionSemanal.insertOperacionesSemanaAcumuladas(individuo, "OPERACIONES_ACUM_SEMANA_MES",
+				-10000, 1);
 		conn.commit();
 		LogUtil.logTime(individuo.getId() + ". Borrados OPERACIONES_ACUM_SEMANA_MES: " + cDelete, 2);
 		LogUtil.logTime(individuo.getId() + ". Insertados OPERACIONES_ACUM_SEMANA_MES: " + cInsert, 2);
 		// Anyo
 		cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACIONES_ACUM_SEMANA_ANYO");
 		cInsert = daoOperacionSemanal.insertOperacionesSemanaAcumuladas(individuo, "OPERACIONES_ACUM_SEMANA_ANYO",
-				-5000, 12);
+				-20000, 12);
 		conn.commit();
 		LogUtil.logTime(individuo.getId() + ". Borrados OPERACIONES_ACUM_SEMANA_ANYO: " + cDelete, 2);
 		LogUtil.logTime(individuo.getId() + ". Insertados OPERACIONES_ACUM_SEMANA_ANYO: " + cInsert, 2);
 		// Consolidado
 		cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACIONES_ACUM_SEMANA_CONSOL");
 		cInsert = daoOperacionSemanal.insertOperacionesSemanaAcumuladas(individuo, "OPERACIONES_ACUM_SEMANA_CONSOL",
-				-10000, 240);
+				-30000, 240);
 		conn.commit();
 		LogUtil.logTime(individuo.getId() + ". Borrados OPERACIONES_ACUM_SEMANA_CONSOL: " + cDelete, 2);
 		LogUtil.logTime(individuo.getId() + ". Insertados OPERACIONES_ACUM_SEMANA_CONSOL: " + cInsert, 2);
@@ -146,31 +172,28 @@ public class ProcesarIndividuoThreadBD extends Thread {
 		return new_index;
 	}
 
-	private boolean procesarIndividuo(Individuo individuo) throws SQLException, ClassNotFoundException, ParseException {
+	private Date procesarIndividuo(Individuo individuo, DateInterval intervaloFechasIndividuo)
+			throws SQLException, ClassNotFoundException, ParseException {
 		List<Point> points;
 		Date fechaInicialHistorico;
 		int indexFecha = 0;
-		int duracionPromedio = Math.max(5000, daoIndividuo.duracionPromedioMinutos(individuo.getId()));
-		daoIndividuo.insertarIndividuoIndicadoresColumnas(individuo.getId());
-		conn.commit();
-		Date fechaMayorQue = (individuo.getFechaHistorico() == null) ? this.minFechaHistorico
-				: individuo.getFechaHistorico();
-		List<Date> fechas = daoIndividuo.consultarPuntosApertura(fechaMayorQue, individuo.getId());
-		LogUtil.logTime(super.getName() + ": Fechas consultadas: " + fechas.size() + " :" + individuo.getId(), 1);
+		int duracionPromedio = Math.max(3000, daoIndividuo.duracionPromedioMinutos(individuo.getId()));
+		List<Date> fechas = daoIndividuo.consultarPuntosApertura(intervaloFechasIndividuo, individuo.getId());
+		LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + intervaloFechasIndividuo.toString()
+				+ ",Fechas consultadas: " + fechas.size(), 1);
 		if (individuo.getFechaApertura() == null) {
 			if (fechas.isEmpty()) {
-				LogUtil.logTime(super.getName() + ": Individuo sin operaciones: " + individuo.getId(), 1);
-				this.updateProceso(maxFechaHistorico, individuo.getId());
-				conn.commit();
-				return true;
+				LogUtil.logTime(super.getName() + ": Individuo sin operaciones: " + individuo.getId(), 2);
+				this.updateProceso(intervaloFechasIndividuo.getHighInterval(), individuo.getId());
+				return intervaloFechasIndividuo.getHighInterval();
 			} else {
-				indexFecha = proximaFechaApertura(fechas, individuo.getFechaHistorico(), indexFecha);
+				indexFecha = proximaFechaApertura(fechas, intervaloFechasIndividuo.getLowInterval(), indexFecha);
 				fechaInicialHistorico = fechas.get(indexFecha);
 				points = daoHistorico.consultarHistorico(fechaInicialHistorico,
 						DateUtil.adicionarMinutos(fechaInicialHistorico, duracionPromedio));
 			}
 		} else {
-			fechaInicialHistorico = individuo.getFechaHistorico();
+			fechaInicialHistorico = intervaloFechasIndividuo.getLowInterval();
 			Date nextFechaHistorico = daoHistorico.getFechaHistoricaMinima(fechaInicialHistorico);
 			points = daoHistorico.consultarHistorico(fechaInicialHistorico,
 					DateUtil.adicionarMinutos(nextFechaHistorico, duracionPromedio));
@@ -182,9 +205,12 @@ public class ProcesarIndividuoThreadBD extends Thread {
 		if ((points != null) && (!points.isEmpty())) {
 			lastDate = points.get(points.size() - 1).getDate();
 		}
-		while ((lastDate.before(maxFechaHistorico)) || ((lastDate.equals(maxFechaHistorico)))) {
+		Date fechaRetorno = lastDate;
+		while ((lastDate.before(intervaloFechasIndividuo.getHighInterval()))
+				|| ((lastDate.equals(intervaloFechasIndividuo.getHighInterval())))) {
 			if ((points != null) && (!points.isEmpty())) {
 				lastDate = points.get(points.size() - 1).getDate();
+				fechaRetorno = lastDate;
 				LogUtil.logTime("Procesar Individuo;" + this.getName() + ";" + individuo.getId() + ";lastDate="
 						+ DateUtil.getDateString(lastDate), 1);
 				List<Order> ordenes = operacionesManager.calcularOperaciones(points, individuo);
@@ -199,7 +225,6 @@ public class ProcesarIndividuoThreadBD extends Thread {
 				}
 				daoOperaciones.insertOperaciones(individuo, ordenes);
 				this.updateProceso(lastDate, individuo.getId());
-				conn.commit();
 				if (updateOrder != null) {
 					ordenes.add(updateOrder);
 				}
@@ -207,20 +232,20 @@ public class ProcesarIndividuoThreadBD extends Thread {
 				operacionesManager.procesarMaximosReproceso(individuo);
 				if (individuo.getCurrentOrder() != null) {
 					individuo.setFechaApertura(individuo.getCurrentOrder().getOpenDate());
+					duracionPromedio = Math.max(3000, daoIndividuo.duracionPromedioMinutos(individuo.getId()));
 				}
 			} else {
 				lastDate = fechaInicialHistorico;
 			}
 			if (DateUtil.anyoMesMayorQue(fechaInicialHistorico, lastDate)) {
 				if (validarYBorrarIndividuoInvalido(individuo)) {
-					return false;
+					return null;
 				}
 			}
 			if (individuo.getFechaApertura() == null) {
 				int index = proximaFechaApertura(fechas, lastDate, indexFecha);
 				if (((index > 0) && (index == indexFecha)) || (index >= fechas.size())) {
-					this.updateProceso(maxFechaHistorico, individuo.getId());
-					conn.commit();
+					this.updateProceso(intervaloFechasIndividuo.getHighInterval(), individuo.getId());
 					break;
 				} else {
 					indexFecha = index;
@@ -238,9 +263,8 @@ public class ProcesarIndividuoThreadBD extends Thread {
 					break;
 				}
 			}
-			duracionPromedio = Math.max(3000, daoIndividuo.duracionPromedioMinutos(individuo.getId()));
 		}
-		return true;
+		return fechaRetorno;
 	}
 
 	private void updateProceso(Date fechaHistorico, String idIndividuo) throws SQLException {
@@ -248,6 +272,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
 		if (processed == 0) {
 			daoProceso.insertProceso(fechaHistorico, idIndividuo);
 		}
+		conn.commit();
 	}
 
 	private Date getLastDate(Date lastDate, Date fechaInicialHistorico) {

@@ -2,14 +2,15 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.manager;
+package forex.genetic.manager.borrado;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.util.LogUtil;
-import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *
@@ -17,8 +18,13 @@ import forex.genetic.util.jdbc.JDBCUtil;
  */
 public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 
-	public BorradoDuplicadoIndividuoManager() throws ClassNotFoundException, SQLException {
-		super.tipoProceso = "DUPLICADO_INDIVIDUO";
+	public BorradoDuplicadoIndividuoManager(Connection conn) throws ClassNotFoundException, SQLException {
+		super(conn, "DUPLICADO_INDIVIDUO");
+	}
+	
+	public BorradoDuplicadoIndividuoManager(Connection conn, IndividuoDAO individuoDAO, String tipoProceso)
+			throws ClassNotFoundException, SQLException {
+		super(conn, individuoDAO, tipoProceso);
 	}
 
 	@Override
@@ -54,7 +60,6 @@ public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
-			JDBCUtil.close(conn);
 		}
 	}
 
@@ -78,7 +83,6 @@ public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
-			JDBCUtil.close(conn);
 		}
 	}
 

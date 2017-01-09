@@ -95,4 +95,11 @@ public class CrossoverIndividuoTendenciaManager extends CrossoverManager {
 
         return poblacionArray;
     }
+
+	@Override
+	public Poblacion[] crossover(int generacion, Poblacion poblacionBase, Poblacion poblacionParaCruzar,
+			int percentValue) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

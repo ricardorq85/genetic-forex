@@ -58,9 +58,6 @@ public class PropertiesManager {
     private static String urlDB = null;
     private static String userDB = null;
     private static String pwdDB = null;
-    private static int initialPipsRangoOperacionIndicador=0;
-    private static int initialRetrocesoRangoOperacionIndicador=0;
-    private static int initialMesesRangoOperacionIndicador=0;
 
     /**
      *
@@ -116,9 +113,6 @@ public class PropertiesManager {
                 queryProcesarTendenciasValorProbableBase = PropertiesManager.getPropertyString(Constants.QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE_BASE);
                 queryProcesarTendenciasValorProbableDetalle = PropertiesManager.getPropertyString(Constants.QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE_DETALLE);
                 queryTendenciaGenetica = PropertiesManager.getPropertyString(Constants.QUERY_TENDENCIA_GENETICA);
-                initialPipsRangoOperacionIndicador= PropertiesManager.getPropertyInt(Constants.INITIAL_PIPS_RANGOOPERACIONINDICADOR);
-                initialRetrocesoRangoOperacionIndicador= PropertiesManager.getPropertyInt(Constants.INITIAL_RETROCESO_RANGOOPERACIONINDICADOR);
-                initialMesesRangoOperacionIndicador= PropertiesManager.getPropertyInt(Constants.INITIAL_MESES_RANGOOPERACIONINDICADOR);
 
                 urlDB = PropertiesManager.getPropertyString(Constants.URL_DB);
                 userDB = PropertiesManager.getPropertyString(Constants.USER_DB);
@@ -447,18 +441,6 @@ public class PropertiesManager {
      */
     public static int getMinTP() {
         return minTP;
-    }
-
-    public static int getInitialPipsRangoOperacionIndicador() {
-        return initialPipsRangoOperacionIndicador;
-    }
-
-    public static int getInitialRetrocesoRangoOperacionIndicador() {
-        return initialRetrocesoRangoOperacionIndicador;
-    }
-
-    public static int getInitialMesesRangoOperacionIndicador() {
-        return initialMesesRangoOperacionIndicador;
     }
 
     /**

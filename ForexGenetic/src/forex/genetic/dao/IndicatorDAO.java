@@ -9,10 +9,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 
 import forex.genetic.dao.helper.IndicatorHelper;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.RangoOperacionIndividuo;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -41,8 +43,8 @@ public class IndicatorDAO {
                 + " INNER JOIN " + (r.isPositivas()? "OPERACION_POSITIVAS":"OPERACION_NEGATIVAS")
                 		 + " OPER ON DH.FECHA=OPER.FECHA_APERTURA\n"
                 + " WHERE " + (r.isPositivas()? 
-                		"OPER.PIPS >= ? AND (MAX_PIPS_RETROCESO >= ?) "
-                		:"OPER.PIPS <= ? AND (MAX_PIPS_RETROCESO <= ?) ")
+                		" OPER.PIPS >= ? AND (MAX_PIPS_RETROCESO >= ?) "
+                		:" OPER.PIPS <= ? AND (MAX_PIPS_RETROCESO <= ?) ")
                 + r.getFilters()
                 + "  AND OPER.FECHA_APERTURA BETWEEN ? AND ? ";
         PreparedStatement stmtConsulta = null;
