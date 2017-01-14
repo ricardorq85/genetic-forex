@@ -63,9 +63,8 @@ public class OperacionesDAO {
 				+ " INNER JOIN TMP_TOFILESTRING TFS ON TFS.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
 				+ " AND OPER.FECHA_APERTURA BETWEEN VIGENCIA1 AND VIGENCIA2 "
 				+ " WHERE OPER.FECHA_APERTURA>? AND OPER.FECHA_APERTURA<=? AND OPER.FECHA_CIERRE IS NOT NULL "
-				+ " ORDER BY OPER.FECHA_APERTURA ASC, " 
-				+ " TRUNC(TFS.FECHA_ORDER1) DESC, "
-				+ " TFS.CRITERIO_ORDER1 DESC, TRUNC(TFS.FECHA_ORDER2) DESC, TFS.CRITERIO_ORDER2 DESC";
+				+ " ORDER BY OPER.FECHA_APERTURA ASC, " + " TFS.CRITERIO_ORDER1 DESC, " + " TFS.CRITERIO_ORDER2 DESC, "
+				+ " TRUNC(TFS.FECHA_ORDER1) DESC, " + " TRUNC(TFS.FECHA_ORDER2) DESC ";
 
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
@@ -434,14 +433,14 @@ public class OperacionesDAO {
 				+ " SELECT PRE.ID_INDIVIDUO, SUM(" + param.getFirstOrder() + "), " + " SUM(" + param.getSecondOrder()
 				+ "), " + "  PRE.FECHA_SEMANA, PRE.FECHA_SEMANA+7, ?, ? " + " FROM PREVIO_TOFILESTRING PRE "
 				+ " WHERE PRE.TIPO_OPERACION=?"
-				+ " AND (NVL(PRE.PIPS_SEMANA,0)>? AND PRE.PIPS_MES>? AND PRE.PIPS_ANYO>? AND PRE.PIPS_TOTALES>?) "
-				+ " AND (NVL(PRE.R2_SEMANA,0)>? AND PRE.R2_MES>? AND PRE.R2_ANYO>? AND PRE.R2_CONSOL>?) "
-				+ " AND (NVL(PRE.PENDIENTE_SEMANA,0)>? AND PRE.PENDIENTE_MES>? AND PRE.PENDIENTE_ANYO>? AND PRE.PENDIENTE_CONSOL>?) "
+				+ " AND (NVL(PRE.PIPS_SEMANA,0)>? AND NVL(PRE.PIPS_MES,0)>? AND NVL(PRE.PIPS_ANYO,0)>? AND PRE.PIPS_TOTALES>?) "
+				+ " AND (NVL(PRE.R2_SEMANA,0)>? AND NVL(PRE.R2_MES,0)>? AND NVL(PRE.R2_ANYO,0)>? AND PRE.R2_CONSOL>?) "
+				+ " AND (NVL(PRE.PENDIENTE_SEMANA,0)>? AND NVL(PRE.PENDIENTE_MES,0)>? AND NVL(PRE.PENDIENTE_ANYO,0)>? AND PRE.PENDIENTE_CONSOL>?) "
 				+ " AND PRE.FECHA_SEMANA > ? AND PRE.FECHA_SEMANA <= ? "
 				+ " GROUP BY PRE.ID_INDIVIDUO, PRE.FECHA_SEMANA";
 		PreparedStatement stmtConsulta = null;
 		try {
-			//String t = temporal(param);
+			// String t = temporal(param);
 			int index = 0;
 			stmtConsulta = this.connection.prepareStatement(sql);
 			stmtConsulta.setDate(++index, new java.sql.Date(param.getFecha().getTime()));
@@ -474,18 +473,19 @@ public class OperacionesDAO {
 
 	public void actualizarOperacionesPositivasYNegativas() throws SQLException {
 		try {
-			this.dropVistaMaterializada("OPERACION_POSITIVAS");
-			this.dropVistaMaterializada("OPERACION_NEGATIVAS");
+			JDBCUtil.refreshMaterializedView(this.connection, "OPERACION_POSITIVAS", "C");
+			JDBCUtil.refreshMaterializedView(this.connection, "OPERACION_NEGATIVAS", "C");
+			//this.dropVistaMaterializada("OPERACION_POSITIVAS");
+			//this.dropVistaMaterializada("OPERACION_NEGATIVAS");
 		} catch (SQLException e) {
-			 e.printStackTrace();
+			e.printStackTrace();
 		}
-		this.actualizarOperacionesPositivas();
-		this.actualizarOperacionesNegativas();
+		//this.actualizarOperacionesPositivas();
+		//this.actualizarOperacionesNegativas();
 	}
 
 	private void actualizarOperacionesNegativas() throws SQLException {
 		this.crearVistaMaterializadaNegativas();
-
 	}
 
 	private void actualizarOperacionesPositivas() throws SQLException {

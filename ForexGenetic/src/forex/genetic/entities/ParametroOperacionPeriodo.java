@@ -19,7 +19,7 @@ public class ParametroOperacionPeriodo implements Cloneable {
 	private double pipsTotales, pipsParalelas, pipsAgrupadoMinutos, pipsAgrupadoHoras, pipsAgrupadoDias;
 	private Date fechaInicial, fechaFinal, fecha, maxFechaCierre;
 	private OperationType tipoOperacion;
-	private static final String VERSION = "20170105";
+	private static final String VERSION = "20170109";
 
 	public ParametroOperacionPeriodo() {
 		super();
@@ -364,8 +364,16 @@ public class ParametroOperacionPeriodo implements Cloneable {
 		return param;
 	}
 
-	public boolean isCantidadValida() {
+	public boolean isResultadoValido() {
+		return (this.isCantidadValida() && this.isPipsValidos());
+	}
+
+	private boolean isCantidadValida() {
 		return ((this.getCantidad() > 0) && (this.getCantidadParalelas() > 0));
+	}
+
+	private boolean isPipsValidos() {
+		return ((this.getPipsTotales() > 0) || (this.getPipsParalelas() > 0));
 	}
 
 }

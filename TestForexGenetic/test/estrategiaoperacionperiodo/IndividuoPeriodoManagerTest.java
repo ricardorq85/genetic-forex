@@ -61,7 +61,7 @@ public class IndividuoPeriodoManagerTest {
 			EstrategiaOperacionPeriodoDAO mockDAO = mock(EstrategiaOperacionPeriodoDAO.class);
 			when(mockDAO.consultarInclusiones()).thenReturn(new ArrayList<>());
 			manager.setEstrategiaOperacionPeriodoDAO(mockDAO);
-			int inclusiones = manager.consultarInclusiones(null).size();
+			int inclusiones = manager.consultarInclusiones(null, "SELL").size();
 			System.out.println("cuandoNoHayInclusionesDebeGenerarParametroAleatorios=" + inclusiones);
 			Assert.assertTrue("Inclusiones=" + inclusiones, inclusiones > 0);
 		} catch (ClassNotFoundException | SQLException e) {
@@ -78,7 +78,7 @@ public class IndividuoPeriodoManagerTest {
 			EstrategiaOperacionPeriodoDAO mockDAO = mock(EstrategiaOperacionPeriodoDAO.class);
 			when(mockDAO.consultarInclusiones()).thenReturn(inclusionesForMock);
 			manager.setEstrategiaOperacionPeriodoDAO(mockDAO);
-			int inclusiones = manager.consultarInclusiones(null).size();
+			int inclusiones = manager.consultarInclusiones(null, "SELL").size();
 			System.out.println(
 					"cuandoHayMenosDelNumeroDeInclusionesParametrizadasDebeGenerarParametroAleatoriosHastaCompletarlas="
 							+ inclusiones);
@@ -99,7 +99,7 @@ public class IndividuoPeriodoManagerTest {
 			when(mockDAO.consultarInclusiones()).thenReturn(inclusionesForMock);
 			manager.setEstrategiaOperacionPeriodoDAO(mockDAO);
 
-			List<ParametroOperacionPeriodo> inclusiones = manager.consultarInclusiones(null);
+			List<ParametroOperacionPeriodo> inclusiones = manager.consultarInclusiones(null, "SELL");
 			ParametroOperacionPeriodo param = inclusiones.get(RandomUtil.nextInt(inclusiones.size()));
 			double filtroR2Semana = param.getFiltroR2Semana();
 			double filtroR2Mes = param.getFiltroR2Mes();
@@ -125,7 +125,7 @@ public class IndividuoPeriodoManagerTest {
 			when(mockDAO.consultarInclusiones()).thenReturn(inclusionesForMock);
 			manager.setEstrategiaOperacionPeriodoDAO(mockDAO);
 
-			List<ParametroOperacionPeriodo> inclusiones = manager.consultarInclusiones(null);
+			List<ParametroOperacionPeriodo> inclusiones = manager.consultarInclusiones(null, "SELL");
 			ParametroOperacionPeriodo param = inclusiones.get(RandomUtil.nextInt(inclusiones.size()));
 			double filtroPendienteSemana = param.getFiltroPendienteSemana();
 			double filtroPendienteMes = param.getFiltroPendienteMes();

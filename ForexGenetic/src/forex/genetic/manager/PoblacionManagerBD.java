@@ -28,6 +28,8 @@ public class PoblacionManagerBD {
 	private DatoHistoricoDAO dhDAO;
 	private Date maxFechaHistorico;
 	private Date minFechaHistorico;
+	private String[] vistas = { "FILTERED_PTFS", "FILTERED_EOP", "FILTERED_PARALELAS_EOP",
+			"FILTERED_PARA_OPERAR_SELL", "FILTERED_PARA_OPERAR_BUY", "FILTERED_PARA_OPERAR_BOTH" };
 
 	public PoblacionManagerBD() {
 		super();
@@ -44,9 +46,6 @@ public class PoblacionManagerBD {
 		}
 	}
 
-	/**
-	 *
-	 */
 	public void process() {
 		boolean any;
 		try {
@@ -81,12 +80,16 @@ public class PoblacionManagerBD {
 				for (Thread thread : threads) {
 					thread.join();
 				}
+				this.consolidarIndividuo();
 			} while (any);
 		} catch (InterruptedException | SQLException ex) {
 			ex.printStackTrace();
 		} finally {
 			JDBCUtil.close(conn);
 		}
+	}
 
+	private void consolidarIndividuo() throws SQLException {
+		JDBCUtil.refreshMaterializedViews(conn, vistas);
 	}
 }

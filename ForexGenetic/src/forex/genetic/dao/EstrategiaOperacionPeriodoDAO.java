@@ -125,18 +125,17 @@ public class EstrategiaOperacionPeriodoDAO {
 		return inclusiones;
 	}
 
-	public List<ParametroOperacionPeriodo> consultarInclusionesxIndividuos(Date fechaInicio, int cantidad)
-			throws SQLException {
+	public List<ParametroOperacionPeriodo> consultarInclusionesxIndividuos(Date fechaInicio, int cantidad,
+			String tipoOperacion) throws SQLException {
 		List<ParametroOperacionPeriodo> inclusiones;
 		String sql = "SELECT DISTINCT " + " PIPS_SEMANA R_SEMANA, PIPS_MES R_MES, "
 				+ " PIPS_ANYO R_ANYO, PIPS_TOTALES R_TOTALES, " + " R2_SEMANA R2_SEMANA, R2_MES R2_MES, "
 				+ " R2_ANYO R2_ANYO, R2_CONSOL R2_TOTALES, "
 				+ " PENDIENTE_SEMANA PENDIENTE_SEMANA, PENDIENTE_MES PENDIENTE_MES,"
 				+ " PENDIENTE_ANYO PENDIENTE_ANYO, PENDIENTE_CONSOL PENDIENTE_TOTALES"
-				+ " FROM PREVIO_TOFILESTRING PTFS "
-				+ " WHERE PTFS.PIPS_ANYO>0 AND PTFS.PIPS_TOTALES>0 AND PTFS.TIPO_OPERACION='SELL' "
-				+ " AND ROWNUM<? "
-				+ " AND PTFS.FECHA_SEMANA>=? AND PTFS.FECHA_SEMANA<?";
+				+ " FROM PREVIO_TOFILESTRING PTFS " + " WHERE PTFS.PIPS_ANYO>0 AND PTFS.PIPS_TOTALES>0 "
+				+ " AND ROWNUM<? " + " AND PTFS.FECHA_SEMANA>=? AND PTFS.FECHA_SEMANA<?"
+				+ " AND PTFS.TIPO_OPERACION=? ";
 		// + "AND ROWNUM<100"
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
@@ -146,6 +145,7 @@ public class EstrategiaOperacionPeriodoDAO {
 			stmtConsulta.setInt(1, cantidad);
 			stmtConsulta.setTimestamp(2, new Timestamp(DateUtil.adicionarMes(fechaInicio, -1).getTime()));
 			stmtConsulta.setTimestamp(3, new Timestamp(fechaInicio.getTime()));
+			stmtConsulta.setString(4, tipoOperacion);
 			resultado = stmtConsulta.executeQuery();
 
 			inclusiones = EstrategiaOperacionPeriodoHelper.inclusiones(resultado);

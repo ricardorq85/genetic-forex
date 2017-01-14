@@ -14,4 +14,11 @@ C:\app\USER\product\11.2.0\dbhome_2\BIN\sqlplus FOREX/forex@localhost:1522/FOREX
 --@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\Borrar datos historicosX.sql"
 --@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\Insertar Acumulados Semana.sql"
 
-C:\app\USER\product\11.2.0\dbhome_2\BIN\sqlplus FOREX/forex@localhost:1522/FOREX3 @"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\new INSERT INTO TMP_TOFILESTRING.sql"
+--Consulta Individuos Para Operar
+C:\app\USER\product\11.2.0\dbhome_2\BIN\sqlplus FOREX/forex@localhost:1522/FOREX3 @"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\Consulta Individuos Para Operar.sql"
+C:\app\USER\product\11.2.0\dbhome_2\BIN\sqlplus FOREX/forex@localhost:1522/FOREX3 @"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\new INSERT INTO TMP_TOFILESTRING2.sql"
+
+
+--Delete ESTRATEGIA_OPERACION_PERIODO pips negativos
+C:\app\USER\product\11.2.0\dbhome_2\BIN\sqlplus FOREX/forex@localhost:1522/FOREX3 @"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\Bloque Anonimo Delete ESTRATEGIA_OPERACION_PERIODO pips negativos.sql"
+
