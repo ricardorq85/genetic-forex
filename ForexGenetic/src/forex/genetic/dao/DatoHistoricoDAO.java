@@ -66,7 +66,7 @@ public class DatoHistoricoDAO {
 		}
 		return cantidad;
 	}
-	
+
 	public int consultarCantidadPuntos(DateInterval interval) throws SQLException {
 		int cantidad = 0;
 		String sql = "SELECT COUNT(*) REGISTROS FROM DATOHISTORICO WHERE FECHA BETWEEN ? AND ?";
@@ -318,7 +318,7 @@ public class DatoHistoricoDAO {
 			} else {
 				statement.setDouble(i++, d);
 			}
-			
+
 			d = ((Sar) point.getIndicators().get(3)).getSar();
 			if (Double.isInfinite(d) || Double.isNaN(d)) {
 				statement.setNull(i++, java.sql.Types.DOUBLE);
@@ -499,7 +499,7 @@ public class DatoHistoricoDAO {
 			} else {
 				statement.setDouble(i++, d);
 			}
-			
+
 			statement.setTimestamp(i++, new java.sql.Timestamp(new Date().getTime()));
 
 			statement.executeUpdate();
@@ -603,7 +603,7 @@ public class DatoHistoricoDAO {
 			statement.setTimestamp(i++, new java.sql.Timestamp(new Date().getTime()));
 			statement.setString(i++, point.getMoneda());
 			statement.setInt(i++, point.getPeriodo());
-			statement.setTimestamp(i++, new java.sql.Timestamp(point.getDate().getTime()));			
+			statement.setTimestamp(i++, new java.sql.Timestamp(point.getDate().getTime()));
 
 			statement.executeUpdate();
 		} finally {
@@ -726,7 +726,8 @@ public class DatoHistoricoDAO {
 	 */
 	public Point consultarRetroceso(Order orden) throws SQLException {
 		StringBuilder sql = new StringBuilder();
-		if (orden.getPips() > 0) {
+		boolean isBuy = (orden.getTipo().equals(Constants.OperationType.BUY));
+		if (((!isBuy) && (orden.getPips() > 0)) || ((isBuy) && (orden.getPips() < 0))) {
 			sql.append("SELECT * FROM DATOHISTORICO DH WHERE HIGH=(SELECT MAX(HIGH) MAXIMO FROM DATOHISTORICO ");
 			sql.append(" WHERE FECHA>? AND FECHA<? AND HIGH>?) ");
 			sql.append(" AND FECHA>? AND FECHA<? AND HIGH>? AND ROWNUM<2");

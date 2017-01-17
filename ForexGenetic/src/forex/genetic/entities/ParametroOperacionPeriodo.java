@@ -19,7 +19,7 @@ public class ParametroOperacionPeriodo implements Cloneable {
 	private double pipsTotales, pipsParalelas, pipsAgrupadoMinutos, pipsAgrupadoHoras, pipsAgrupadoDias;
 	private Date fechaInicial, fechaFinal, fecha, maxFechaCierre;
 	private OperationType tipoOperacion;
-	private static final String VERSION = "20170109";
+	private static final String VERSION = "20170115-3";
 
 	public ParametroOperacionPeriodo() {
 		super();

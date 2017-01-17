@@ -43,8 +43,8 @@ public class IndividuosPeriodoManager {
 	private Date parametroFechaInicioProceso, parametroFechaFinProceso;
 	private int parametroDiasProceso, parametroDiasRotacion;
 	private String[] parametroTiposOperacion;
-	private String[] vistas = { "FILTERED_PTFS", "FILTERED_EOP", "FILTERED_PARALELAS_EOP", "FILTERED_PARA_OPERAR_SELL",
-			"FILTERED_PARA_OPERAR_BUY", "FILTERED_PARA_OPERAR_BOTH" };
+	private String[] vistas = { "FILTERED_PTFS", "FILTERED_EOP", "FILTERED_PARA_OPERAR_SELL",
+			"FILTERED_PARA_OPERAR_BUY" };
 
 	public IndividuosPeriodoManager() throws ClassNotFoundException, SQLException {
 		super();
