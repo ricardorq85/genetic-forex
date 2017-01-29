@@ -42,7 +42,7 @@ public class IndividuoTendenciaDAO extends IndividuoDAO {
                 + "    (SELECT 1  FROM INDICADOR_INDIVIDUO_TENDENCIAS IIT "
                 + "    WHERE OPER.ID_INDIVIDUO=IIT.ID_INDIVIDUO "
                 + "    ) "
-                + " AND OPER.ID_INDIVIDUO='1422733861735.1037'"
+                //+ " AND OPER.ID_INDIVIDUO='1422733861735.1037'"
                 + "  GROUP BY OPER.ID_INDIVIDUO "
                 + "  ORDER BY SUM(OPER.PIPS) DESC) "
                 + " WHERE PIPS>0";

@@ -74,7 +74,7 @@ public class TendenciaDAO {
             } else {
                 statement.setTimestamp(17, new Timestamp(tendencia.getFechaCierre().getTime()));
             }
-            statement.setInt(18, tendencia.getTipoCalculo());
+            statement.setString(18, tendencia.getTipoCalculo());
             statement.setDouble(19, tendencia.getPipsReales());
 
             statement.executeUpdate();
@@ -125,7 +125,7 @@ public class TendenciaDAO {
 
             statement.setString(index++, tendencia.getIndividuo().getId());
             statement.setTimestamp(index++, new Timestamp(tendencia.getFechaBase().getTime()));
-            statement.setInt(index++, tendencia.getTipoCalculo());
+            statement.setString(index++, tendencia.getTipoCalculo());
 
             statement.executeUpdate();
             JDBCUtil.close(statement);
@@ -135,7 +135,7 @@ public class TendenciaDAO {
             JDBCUtil.close(statement);
         }
     }
-
+ 
     /**
      *
      * @param idIndividuo
@@ -249,7 +249,7 @@ public class TendenciaDAO {
             stmtConsulta = this.connection.prepareStatement(sql);
             stmtConsulta.setString(1, ten.getIndividuo().getId());
             stmtConsulta.setTimestamp(2, new Timestamp(ten.getFechaBase().getTime()));
-            stmtConsulta.setInt(3, ten.getTipoCalculo());
+            stmtConsulta.setString(3, ten.getTipoCalculo());
             resultado = stmtConsulta.executeQuery();
 
             if (resultado.next()) {

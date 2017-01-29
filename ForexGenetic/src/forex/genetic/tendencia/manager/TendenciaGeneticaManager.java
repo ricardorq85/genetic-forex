@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.manager;
+package forex.genetic.tendencia.manager;
 
 import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.IndividuoTendenciaDAO;
@@ -20,6 +20,8 @@ import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.ControllerFactory;
+import forex.genetic.manager.OperacionesManager;
+import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.helper.ParametroTendenciaGeneticaHelper;
 import forex.genetic.manager.indicator.IndicadorManager;

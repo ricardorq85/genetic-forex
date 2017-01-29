@@ -743,10 +743,19 @@ public class DatoHistoricoDAO {
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql.toString());
 			stmtConsulta.setTimestamp(1, new Timestamp(orden.getOpenDate().getTime()));
-			stmtConsulta.setTimestamp(2, new Timestamp(orden.getCloseDate().getTime()));
+			if (orden.getCloseDate() != null) {
+				stmtConsulta.setTimestamp(2, new Timestamp(orden.getCloseDate().getTime()));
+			} else {
+				stmtConsulta.setTimestamp(2, new Timestamp(orden.getOpenDate().getTime()));
+			}
 			stmtConsulta.setDouble(3, orden.getOpenOperationValue());
 			stmtConsulta.setTimestamp(4, new Timestamp(orden.getOpenDate().getTime()));
-			stmtConsulta.setTimestamp(5, new Timestamp(orden.getCloseDate().getTime()));
+			if (orden.getCloseDate() != null) {
+				stmtConsulta.setTimestamp(5, new Timestamp(orden.getCloseDate().getTime()));
+			} else {
+				stmtConsulta.setTimestamp(5, new Timestamp(orden.getOpenDate().getTime()));
+			}
+
 			stmtConsulta.setDouble(6, orden.getOpenOperationValue());
 
 			resultado = stmtConsulta.executeQuery();

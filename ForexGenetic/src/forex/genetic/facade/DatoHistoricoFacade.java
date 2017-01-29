@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author ricardorq85
  */
-public class DatoHistoricoFacade {
+public class DatoHistoricoFacade implements IGeneticFacade{
 
     /**
      *

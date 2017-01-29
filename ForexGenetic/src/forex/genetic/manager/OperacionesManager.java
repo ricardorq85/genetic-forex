@@ -16,6 +16,7 @@ import forex.genetic.entities.Point;
 import forex.genetic.manager.controller.OperationController;
 import forex.genetic.util.Constants;
 import forex.genetic.util.Constants.OperationType;
+import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.NumberUtil;
 
@@ -60,16 +61,20 @@ public class OperacionesManager {
 	 * @return
 	 */
 	public double calcularPips(List<Point> points, int index, Order operacion) {
+		return calcularPips(points.get(index), operacion);
+	}
+
+	public double calcularPips(Point currentPoint, Order operacion) {
 		double pips = 0.0D;
 		double stopLossPips = (operacion.getTipo().equals(Constants.OperationType.BUY))
-				? (operationController.calculateStopLossPrice(points, index, Constants.OperationType.BUY)
+				? (operationController.calculateStopLossPrice(currentPoint, Constants.OperationType.BUY)
 						- operacion.getOpenOperationValue()) * PropertiesManager.getPairFactor()
-				: (-operationController.calculateStopLossPrice(points, index, Constants.OperationType.SELL)
+				: (-operationController.calculateStopLossPrice(currentPoint, Constants.OperationType.SELL)
 						+ operacion.getOpenOperationValue()) * PropertiesManager.getPairFactor();
 		double takeProfitPips = (operacion.getTipo().equals(Constants.OperationType.BUY))
-				? (operationController.calculateTakePrice(points, index, Constants.OperationType.BUY)
+				? (operationController.calculateTakePrice(currentPoint, Constants.OperationType.BUY)
 						- operacion.getOpenOperationValue()) * PropertiesManager.getPairFactor()
-				: (-operationController.calculateTakePrice(points, index, Constants.OperationType.SELL)
+				: (-operationController.calculateTakePrice(currentPoint, Constants.OperationType.SELL)
 						+ operacion.getOpenOperationValue()) * PropertiesManager.getPairFactor();
 
 		if (stopLossPips < 0) {
@@ -239,6 +244,17 @@ public class OperacionesManager {
 		return this.calculateOpenPrice(currentPoint, OperationType.SELL);
 	}
 
+	public double calculatePrice(OperationType tipoOperacion, double precioBase, double pips) {
+		double precio = precioBase;
+		if (tipoOperacion.equals(OperationType.BUY)) {
+			precio += (pips / PropertiesManager.getPairFactor());
+		} else {
+			precio -= (pips / PropertiesManager.getPairFactor());
+		}
+		precio = NumberUtil.round(precio);
+		return precio;
+	}
+
 	/**
 	 *
 	 * @param currentPoint
@@ -251,7 +267,8 @@ public class OperacionesManager {
 			Interval pointInterval = new DoubleInterval(currentPoint.getLow(), currentPoint.getHigh());
 			DoubleInterval resultInterval = (DoubleInterval) IntervalManager.intersect(currentInterval, pointInterval);
 			if (resultInterval != null) {
-				price = (currentPoint.getOpen() <= resultInterval.getLowInterval()) ? resultInterval.getLowInterval()
+				double precioBase = (currentPoint.getOpen() <= resultInterval.getLowInterval())
+						? resultInterval.getLowInterval()
 						: (currentPoint.getOpen() >= resultInterval.getHighInterval())
 								? resultInterval.getHighInterval()
 								: (currentPoint.getClose() <= resultInterval.getLowInterval())
@@ -260,12 +277,15 @@ public class OperacionesManager {
 												? resultInterval.getLowInterval()
 												: (resultInterval.getLowInterval() + resultInterval.getHighInterval())
 														/ 2;
-				if (tipoOperacion.equals(OperationType.BUY)) {
-					price += PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor();
-				} else {
-					price -= PropertiesManager.getPipsFixer() / PropertiesManager.getPairFactor();
-				}
-				price = NumberUtil.round(price);
+				price = this.calculatePrice(tipoOperacion, precioBase, PropertiesManager.getPipsFixer());
+				/*
+				 * if (tipoOperacion.equals(OperationType.BUY)) { price +=
+				 * PropertiesManager.getPipsFixer() /
+				 * PropertiesManager.getPairFactor(); } else { price -=
+				 * PropertiesManager.getPipsFixer() /
+				 * PropertiesManager.getPairFactor(); } price =
+				 * NumberUtil.round(price);
+				 */
 			}
 		}
 		return price;
@@ -288,7 +308,8 @@ public class OperacionesManager {
 				if (individuo.getCloseIndicators() == null) {
 					individuo.setCloseIndicators(new ArrayList<>());
 				}
-				LogUtil.logTime("Individuo=" + individuo.getId() + ";Orden=" + individuo.getOrdenes().toString(), 1);
+				LogUtil.logTime("Individuo=" + individuo.getId() + ";Fecha apertura="
+						+ DateUtil.getDateString(individuo.getOrdenes().get(0).getOpenDate()), 1);
 				this.procesarMaximosReproceso(individuo);
 			}
 			individuos = operacionesDAO.consultarOperacionesIndividuoRetroceso(fechaMaximo);
@@ -323,38 +344,40 @@ public class OperacionesManager {
 	 * @throws SQLException
 	 */
 	public void procesarMaximosReproceso(Individuo individuo) throws ClassNotFoundException, SQLException {
-		DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
 		OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
 		List<Order> ordenes = individuo.getOrdenes();
 		for (Order currentOrder : ordenes) {
 			if ((currentOrder != null) && (currentOrder.getOpenDate() != null)
 					&& (currentOrder.getCloseDate() != null)) {
-				Point pointRetroceso = datoHistoricoDAO.consultarRetroceso(currentOrder);
-				if (pointRetroceso != null) {
-					boolean isBuy = (currentOrder.getTipo().equals(Constants.OperationType.BUY));
-					double valueRetroceso = (((((!isBuy) && (currentOrder.getPips() > 0))
-							|| ((isBuy) && (currentOrder.getPips() < 0)))) ? pointRetroceso.getHigh()
-									: pointRetroceso.getLow());
-	
-					// double valueRetroceso = ((currentOrder.getPips() > 0) ?
-					// pointRetroceso.getHigh() : pointRetroceso.getLow());
-					double pips = (currentOrder.getTipo().equals(Constants.OperationType.BUY))
-							? (valueRetroceso - currentOrder.getOpenOperationValue())
-									* PropertiesManager.getPairFactor()
-							: (-valueRetroceso + currentOrder.getOpenOperationValue())
-									* PropertiesManager.getPairFactor();
-					pips = (pips - currentOrder.getOpenSpread());
-					currentOrder.setMaxPipsRetroceso(pips);
-					currentOrder.setMaxValueRetroceso(valueRetroceso);
-					currentOrder.setMaxFechaRetroceso(pointRetroceso.getDate());
-				} else {
-					currentOrder.setMaxPipsRetroceso(0.0D);
-					currentOrder.setMaxValueRetroceso(0.0D);
-					currentOrder.setMaxFechaRetroceso(null);
-				}
+				calcularRetrocesoOrden(currentOrder);
 				operacionesDAO.updateMaximosReprocesoOperacion(individuo, currentOrder);
 			}
 		}
 		conn.commit();
+	}
+
+	public void calcularRetrocesoOrden(Order currentOrder) throws SQLException {
+		DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
+		Point pointRetroceso = datoHistoricoDAO.consultarRetroceso(currentOrder);
+		if (pointRetroceso != null) {
+			boolean isBuy = (currentOrder.getTipo().equals(Constants.OperationType.BUY));
+			double valueRetroceso = (((((!isBuy) && (currentOrder.getPips() > 0))
+					|| ((isBuy) && (currentOrder.getPips() < 0)))) ? pointRetroceso.getHigh()
+							: pointRetroceso.getLow());
+
+			// double valueRetroceso = ((currentOrder.getPips() > 0) ?
+			// pointRetroceso.getHigh() : pointRetroceso.getLow());
+			double pips = (currentOrder.getTipo().equals(Constants.OperationType.BUY))
+					? (valueRetroceso - currentOrder.getOpenOperationValue()) * PropertiesManager.getPairFactor()
+					: (-valueRetroceso + currentOrder.getOpenOperationValue()) * PropertiesManager.getPairFactor();
+			pips = (pips - currentOrder.getOpenSpread());
+			currentOrder.setMaxPipsRetroceso(pips);
+			currentOrder.setMaxValueRetroceso(valueRetroceso);
+			currentOrder.setMaxFechaRetroceso(pointRetroceso.getDate());
+		} else {
+			currentOrder.setMaxPipsRetroceso(0.0D);
+			currentOrder.setMaxValueRetroceso(0.0D);
+			currentOrder.setMaxFechaRetroceso(null);
+		}
 	}
 }

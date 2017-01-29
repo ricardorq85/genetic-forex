@@ -20,7 +20,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.logging.Logger;
 
-import forex.genetic.manager.MaxMinTendenciasManager;
+import forex.genetic.tendencia.manager.MaxMinTendenciasManager;
 
 /**
  *

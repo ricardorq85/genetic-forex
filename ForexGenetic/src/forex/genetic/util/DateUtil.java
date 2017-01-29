@@ -230,7 +230,7 @@ public class DateUtil {
 	 * @param fechaMayor
 	 * @return
 	 */
-	public static long calcularDuracion(Date fechaMenor, Date fechaMayor) {
+	public static long calcularDuracionMillis(Date fechaMenor, Date fechaMayor) {
 		long resultado = 0L;
 		GregorianCalendar gcMayor = new GregorianCalendar();
 		gcMayor.setFirstDayOfWeek(Calendar.MONDAY);

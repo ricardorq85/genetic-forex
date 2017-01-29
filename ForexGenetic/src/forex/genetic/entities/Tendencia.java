@@ -13,368 +13,368 @@ import java.util.Date;
  */
 public class Tendencia implements Serializable {
 
-    /**
-     *
-     */
-    public static final long serialVersionUID = 201208071601L;
-    private double tendencia = 0.0D;
-    private Date fechaBase;
-    private double precioBase;
-    private Individuo individuo;
-    private Date fechaTendencia;
-    private double pips;
-    private double precioCalculado;
-    private String tipoTendencia = null;
-    private Date fechaApertura;
-    private double precioApertura;
-    private long duracion;
-    private double pipsActuales;
-    private long duracionActual;
-    private double probabilidadPositivos;
-    private double probabilidadNegativos;
-    private Date fecha;
-    private double probabilidad;
-    private Date fechaCierre;
-    private int tipoCalculo;
-    private double pipsReales;
+	/**
+	 *
+	 */
+	public static final long serialVersionUID = 201208071601L;
+	private double tendencia = 0.0D;
+	private Date fechaBase;
+	private double precioBase;
+	private Individuo individuo;
+	private Date fechaTendencia;
+	private double pips;
+	private double precioCalculado;
+	private String tipoTendencia = null;
+	private Date fechaApertura;
+	private double precioApertura;
+	private long duracion;
+	private double pipsActuales;
+	private long duracionActual;
+	private double probabilidadPositivos;
+	private double probabilidadNegativos;
+	private Date fecha;
+	private double probabilidad;
+	private Date fechaCierre;
+	private String tipoCalculo = "DEFAULT";
+	private double pipsReales;
 
-    /**
-     *
-     * @return
-     */
-    public double getPipsReales() {
-        return pipsReales;
-    }
+	/**
+	 *
+	 */
+	public Tendencia() {
+		this.fecha = new Date();
+	}
 
-    /**
-     *
-     * @param pipsReales
-     */
-    public void setPipsReales(double pipsReales) {
-        this.pipsReales = pipsReales;
-    }
+	/**
+	 *
+	 * @param tendencia
+	 */
+	public Tendencia(double tendencia) {
+		this.tendencia = tendencia;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public int getTipoCalculo() {
-        return tipoCalculo;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public Date getFechaCierre() {
+		return (this.fechaCierre = fechaCierre != null ? new Date(fechaCierre.getTime()) : null);
+	}
 
-    /**
-     *
-     * @param tipoCalculo
-     */
-    public void setTipoCalculo(int tipoCalculo) {
-        this.tipoCalculo = tipoCalculo;
-    }
+	/**
+	 *
+	 * @param fechaCierre
+	 */
+	public void setFechaCierre(Date fechaCierre) {
+		this.fechaCierre = fechaCierre != null ? new Date(fechaCierre.getTime()) : null;
+	}
 
-    /**
-     *
-     */
-    public Tendencia() {
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public Date getFecha() {
+		return (this.fecha = fecha != null ? new Date(fecha.getTime()) : null);
+	}
 
-    /**
-     *
-     * @param tendencia
-     */
-    public Tendencia(double tendencia) {
-        this.tendencia = tendencia;
-    }
+	/**
+	 *
+	 * @param fecha
+	 */
+	public void setFecha(Date fecha) {
+		this.fecha = fecha != null ? new Date(fecha.getTime()) : null;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public Date getFechaCierre() {
-        return (this.fechaCierre = fechaCierre != null ? new Date(fechaCierre.getTime()) : null);
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getProbabilidad() {
+		return probabilidad;
+	}
 
-    /**
-     *
-     * @param fechaCierre
-     */
-    public void setFechaCierre(Date fechaCierre) {
-        this.fechaCierre = fechaCierre != null ? new Date(fechaCierre.getTime()) : null;
-    }
+	/**
+	 *
+	 * @param probabilidad
+	 */
+	public void setProbabilidad(double probabilidad) {
+		this.probabilidad = probabilidad;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public Date getFecha() {
-        return (this.fecha = fecha != null ? new Date(fecha.getTime()) : null);
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public long getDuracionActual() {
+		return duracionActual;
+	}
 
-    /**
-     *
-     * @param fecha
-     */
-    public void setFecha(Date fecha) {
-        this.fecha = fecha != null ? new Date(fecha.getTime()) : null;
-    }
+	/**
+	 *
+	 * @param duracionActual
+	 */
+	public void setDuracionActual(long duracionActual) {
+		this.duracionActual = duracionActual;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getProbabilidad() {
-        return probabilidad;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getPipsActuales() {
+		return pipsActuales;
+	}
 
-    /**
-     *
-     * @param probabilidad
-     */
-    public void setProbabilidad(double probabilidad) {
-        this.probabilidad = probabilidad;
-    }
+	/**
+	 *
+	 * @param pipsActuales
+	 */
+	public void setPipsActuales(double pipsActuales) {
+		this.pipsActuales = pipsActuales;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public long getDuracionActual() {
-        return duracionActual;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public long getDuracion() {
+		return duracion;
+	}
 
-    /**
-     *
-     * @param duracionActual
-     */
-    public void setDuracionActual(long duracionActual) {
-        this.duracionActual = duracionActual;
-    }
+	/**
+	 *
+	 * @param duracion
+	 */
+	public void setDuracion(long duracion) {
+		this.duracion = duracion;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getPipsActuales() {
-        return pipsActuales;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public String getTipoTendencia() {
+		return tipoTendencia;
+	}
 
-    /**
-     *
-     * @param pipsActuales
-     */
-    public void setPipsActuales(double pipsActuales) {
-        this.pipsActuales = pipsActuales;
-    }
+	/**
+	 *
+	 * @param tipoTendencia
+	 */
+	public void setTipoTendencia(String tipoTendencia) {
+		this.tipoTendencia = tipoTendencia;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public long getDuracion() {
-        return duracion;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getTendencia() {
+		return tendencia;
+	}
 
-    /**
-     *
-     * @param duracion
-     */
-    public void setDuracion(long duracion) {
-        this.duracion = duracion;
-    }
+	/**
+	 *
+	 * @param tendencia
+	 */
+	public void setTendencia(double tendencia) {
+		this.tendencia = tendencia;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public String getTipoTendencia() {
-        return tipoTendencia;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public Date getFechaBase() {
+		return (this.fechaBase = fechaBase != null ? new Date(fechaBase.getTime()) : null);
+	}
 
-    /**
-     *
-     * @param tipoTendencia
-     */
-    public void setTipoTendencia(String tipoTendencia) {
-        this.tipoTendencia = tipoTendencia;
-    }
+	/**
+	 *
+	 * @param fechaBase
+	 */
+	public void setFechaBase(Date fechaBase) {
+		this.fechaBase = fechaBase != null ? new Date(fechaBase.getTime()) : null;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getTendencia() {
-        return tendencia;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public Date getFechaTendencia() {
+		return (this.fechaTendencia = fechaTendencia != null ? new Date(fechaTendencia.getTime()) : null);
+	}
 
-    /**
-     *
-     * @param tendencia
-     */
-    public void setTendencia(double tendencia) {
-        this.tendencia = tendencia;
-    }
+	/**
+	 *
+	 * @param fechaTendencia
+	 */
+	public void setFechaTendencia(Date fechaTendencia) {
+		this.fechaTendencia = fechaTendencia != null ? new Date(fechaTendencia.getTime()) : null;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public Date getFechaBase() {
-        return (this.fechaBase = fechaBase != null ? new Date(fechaBase.getTime()) : null);
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public Individuo getIndividuo() {
+		return individuo;
+	}
 
-    /**
-     *
-     * @param fechaBase
-     */
-    public void setFechaBase(Date fechaBase) {
-        this.fechaBase = fechaBase != null ? new Date(fechaBase.getTime()) : null;
-    }
+	/**
+	 *
+	 * @param individuo
+	 */
+	public void setIndividuo(Individuo individuo) {
+		this.individuo = individuo;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public Date getFechaTendencia() {
-        return (this.fechaTendencia = fechaTendencia != null ? new Date(fechaTendencia.getTime()) : null);
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getPips() {
+		return pips;
+	}
 
-    /**
-     *
-     * @param fechaTendencia
-     */
-    public void setFechaTendencia(Date fechaTendencia) {
-        this.fechaTendencia = fechaTendencia != null ? new Date(fechaTendencia.getTime()) : null;
-    }
+	/**
+	 *
+	 * @param pips
+	 */
+	public void setPips(double pips) {
+		this.pips = pips;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public Individuo getIndividuo() {
-        return individuo;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getPrecioBase() {
+		return precioBase;
+	}
 
-    /**
-     *
-     * @param individuo
-     */
-    public void setIndividuo(Individuo individuo) {
-        this.individuo = individuo;
-    }
+	/**
+	 *
+	 * @param precioBase
+	 */
+	public void setPrecioBase(double precioBase) {
+		this.precioBase = precioBase;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getPips() {
-        return pips;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getPrecioCalculado() {
+		return precioCalculado;
+	}
 
-    /**
-     *
-     * @param pips
-     */
-    public void setPips(double pips) {
-        this.pips = pips;
-    }
+	/**
+	 *
+	 * @param precioCalculado
+	 */
+	public void setPrecioCalculado(double precioCalculado) {
+		this.precioCalculado = precioCalculado;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getPrecioBase() {
-        return precioBase;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public Date getFechaApertura() {
+		return (this.fechaApertura = fechaApertura != null ? new Date(fechaApertura.getTime()) : null);
+	}
 
-    /**
-     *
-     * @param precioBase
-     */
-    public void setPrecioBase(double precioBase) {
-        this.precioBase = precioBase;
-    }
+	/**
+	 *
+	 * @param fechaApertura
+	 */
+	public void setFechaApertura(Date fechaApertura) {
+		this.fechaApertura = fechaApertura != null ? new Date(fechaApertura.getTime()) : null;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getPrecioCalculado() {
-        return precioCalculado;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getPrecioApertura() {
+		return precioApertura;
+	}
 
-    /**
-     *
-     * @param precioCalculado
-     */
-    public void setPrecioCalculado(double precioCalculado) {
-        this.precioCalculado = precioCalculado;
-    }
+	/**
+	 *
+	 * @param precioApertura
+	 */
+	public void setPrecioApertura(double precioApertura) {
+		this.precioApertura = precioApertura;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public Date getFechaApertura() {
-        return (this.fechaApertura = fechaApertura != null ? new Date(fechaApertura.getTime()) : null);
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getProbabilidadNegativos() {
+		return probabilidadNegativos;
+	}
 
-    /**
-     *
-     * @param fechaApertura
-     */
-    public void setFechaApertura(Date fechaApertura) {
-        this.fechaApertura = fechaApertura != null ? new Date(fechaApertura.getTime()) : null;
-    }
+	/**
+	 *
+	 * @param probabilidadNegativos
+	 */
+	public void setProbabilidadNegativos(double probabilidadNegativos) {
+		this.probabilidadNegativos = probabilidadNegativos;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getPrecioApertura() {
-        return precioApertura;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getProbabilidadPositivos() {
+		return probabilidadPositivos;
+	}
 
-    /**
-     *
-     * @param precioApertura
-     */
-    public void setPrecioApertura(double precioApertura) {
-        this.precioApertura = precioApertura;
-    }
+	/**
+	 *
+	 * @param probabilidadPositivos
+	 */
+	public void setProbabilidadPositivos(double probabilidadPositivos) {
+		this.probabilidadPositivos = probabilidadPositivos;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getProbabilidadNegativos() {
-        return probabilidadNegativos;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public double getPipsReales() {
+		return pipsReales;
+	}
 
-    /**
-     *
-     * @param probabilidadNegativos
-     */
-    public void setProbabilidadNegativos(double probabilidadNegativos) {
-        this.probabilidadNegativos = probabilidadNegativos;
-    }
+	/**
+	 *
+	 * @param pipsReales
+	 */
+	public void setPipsReales(double pipsReales) {
+		this.pipsReales = pipsReales;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public double getProbabilidadPositivos() {
-        return probabilidadPositivos;
-    }
+	public String getTipoCalculo() {
+		return tipoCalculo;
+	}
 
-    /**
-     *
-     * @param probabilidadPositivos
-     */
-    public void setProbabilidadPositivos(double probabilidadPositivos) {
-        this.probabilidadPositivos = probabilidadPositivos;
-    }
+	public void setTipoCalculo(String tipoCalculo) {
+		this.tipoCalculo = tipoCalculo;
+	}
 
-    @Override
-    public String toString() {
-        return "Tendencia{" + "tendencia=" + ", individuo=" + individuo + tendencia + ", fechaBase=" + fechaBase + ", precioBase=" + precioBase + ", fechaTendencia=" + fechaTendencia + ", pips=" + pips + ", precioCalculado=" + precioCalculado + ", tipoTendencia=" + tipoTendencia + ", fechaApertura=" + fechaApertura + ", precioApertura=" + precioApertura + ", duracion=" + duracion + ", pipsActuales=" + pipsActuales + ", duracionActual=" + duracionActual + ", probabilidadPositivos=" + probabilidadPositivos + ", probabilidadNegativos=" + probabilidadNegativos + ", fecha=" + fecha + ", probabilidad=" + probabilidad + ", fechaCierre=" + fechaCierre + ", tipoCalculo=" + tipoCalculo + '}';
-    }
+	@Override
+	public String toString() {
+		return "Tendencia{" + "tendencia=" + ", individuo=" + individuo + tendencia + ", fechaBase=" + fechaBase
+				+ ", precioBase=" + precioBase + ", fechaTendencia=" + fechaTendencia + ", pips=" + pips
+				+ ", precioCalculado=" + precioCalculado + ", tipoTendencia=" + tipoTendencia + ", fechaApertura="
+				+ fechaApertura + ", precioApertura=" + precioApertura + ", duracion=" + duracion + ", pipsActuales="
+				+ pipsActuales + ", duracionActual=" + duracionActual + ", probabilidadPositivos="
+				+ probabilidadPositivos + ", probabilidadNegativos=" + probabilidadNegativos + ", fecha=" + fecha
+				+ ", probabilidad=" + probabilidad + ", fechaCierre=" + fechaCierre + ", tipoCalculo=" + tipoCalculo
+				+ '}';
+	}
 
 }

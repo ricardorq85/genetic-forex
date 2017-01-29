@@ -27,7 +27,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class PoblacionFacade {
+public class PoblacionFacade implements IGeneticFacade{
 
     /**
      * @throws SQLException 
