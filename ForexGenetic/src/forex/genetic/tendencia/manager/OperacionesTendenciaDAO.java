@@ -62,7 +62,7 @@ public class OperacionesTendenciaDAO extends OperacionesDAO {
 	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, int filas) throws SQLException {
 		List<Individuo> individuos = null;
 		StringBuilder sqlBuffer = new StringBuilder(this.getQuery());
-		sqlBuffer.append(" ORDER BY OPER.FECHA_APERTURA DESC");
+		//sqlBuffer.append(" ORDER BY OPER.FECHA_APERTURA DESC");
 		String sql = sqlBuffer.toString();
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
