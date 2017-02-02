@@ -90,6 +90,6 @@ public class PoblacionManagerBD {
 	}
 
 	private void consolidarIndividuo() throws SQLException {
-		JDBCUtil.refreshMaterializedViews(conn, vistas);
+		//JDBCUtil.refreshMaterializedViews(conn, vistas);
 	}
 }

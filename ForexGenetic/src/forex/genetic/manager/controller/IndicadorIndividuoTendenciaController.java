@@ -5,9 +5,10 @@
  */
 package forex.genetic.manager.controller;
 
-import forex.genetic.manager.indicator.PeriodoAgrupadorIndicatorManager;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import forex.genetic.manager.indicator.PeriodoAgrupadorIndicatorManager;
 
 /**
  *

@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.entities.Individuo;
 
 /**

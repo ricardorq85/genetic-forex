@@ -4,6 +4,11 @@
  */
 package forex.genetic.tendencia.manager;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.Date;
+
 import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.TendenciaDAO;
@@ -13,10 +18,6 @@ import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.util.Date;
 
 /**
  *

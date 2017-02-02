@@ -4,14 +4,15 @@
  */
 package forex.genetic.dao;
 
-import forex.genetic.dao.helper.IndividuoHelper;
-import forex.genetic.entities.Individuo;
-import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import forex.genetic.dao.helper.IndividuoHelper;
+import forex.genetic.entities.Individuo;
+import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *

@@ -18,6 +18,8 @@ import forex.genetic.entities.DateInterval;
  */
 public class DateUtil {
 
+	private static final long HORAS_WEEKEND = 48;
+
 	public static boolean anyoMesMayorQue(Date fechaMenor, Date fechaMayor) {
 		int yearMonth1 = obtenerAnyoMes(fechaMenor);
 		int yearMonth2 = obtenerAnyoMes(fechaMayor);
@@ -36,6 +38,20 @@ public class DateUtil {
 		int year2 = obtenerAnyo(fechaMayor);
 
 		return (year2 - year1 > 0);
+	}
+
+	public static int obtenerDiaSemana(Date fecha) {
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.setTime(fecha);
+		int dia = gc.get(Calendar.DAY_OF_WEEK);
+		return dia;
+	}
+
+	public static boolean isDiaHabil(Date fecha) {
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.setTime(fecha);
+		int dia = gc.get(Calendar.DAY_OF_WEEK);
+		return ((dia != Calendar.SATURDAY) && (dia != Calendar.SUNDAY));
 	}
 
 	public static int obtenerAnyo(Date fecha) {
@@ -77,7 +93,7 @@ public class DateUtil {
 		gc.add(Calendar.MONTH, meses);
 		return gc.getTime();
 	}
-	
+
 	public static Date adicionarMes(Date fecha, float meses) {
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.setTime(fecha);
@@ -85,7 +101,7 @@ public class DateUtil {
 		gc.add(Calendar.MINUTE, minutos);
 		return gc.getTime();
 	}
-	
+
 	public static Date adicionarDias(Date fecha, int dias) {
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.setTime(fecha);
@@ -212,12 +228,11 @@ public class DateUtil {
 		}
 		long semanasMenor = weekMenor;
 
-		resultado = (timeMayor - timeMenor) + (semanasMayor - semanasMenor) * 49 * 60 * 60 * 1000;
+		resultado = (timeMayor - timeMenor) + (semanasMayor - semanasMenor) * HORAS_WEEKEND * 60 * 60 * 1000;
 		gcMayor.setTimeInMillis(timeMenor + resultado);
-		if (((gcMayor.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) && (gcMayor.get(Calendar.HOUR_OF_DAY) == 23)
-				&& (gcMayor.get(Calendar.MINUTE) > 0)) || (gcMayor.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+		if ((gcMayor.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
 				|| (gcMayor.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)) {
-			resultado = resultado + (49 * 60 * 60 * 1000);
+			resultado = resultado + (HORAS_WEEKEND * 60 * 60 * 1000);
 		}
 
 		Date fecha = new Date(timeMenor + resultado);
@@ -251,8 +266,7 @@ public class DateUtil {
 			semanasMayor = weekMayor + 52;
 		}
 		long semanasMenor = weekMenor;
-
-		resultado = (timeMayor - timeMenor) - (semanasMayor - semanasMenor) * 49 * 60 * 60 * 1000;
+		resultado = (timeMayor - timeMenor) - (semanasMayor - semanasMenor) * HORAS_WEEKEND * 60 * 60 * 1000;
 
 		return resultado;
 	}

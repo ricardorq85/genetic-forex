@@ -5,8 +5,9 @@
  */
 package forex.genetic.manager.controller;
 
-import forex.genetic.manager.indicator.IndicadorManager;
 import java.util.List;
+
+import forex.genetic.manager.indicator.IndicadorManager;
 
 /**
  *

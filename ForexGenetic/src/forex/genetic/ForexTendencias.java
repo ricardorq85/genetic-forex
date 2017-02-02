@@ -19,9 +19,7 @@ import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-import forex.genetic.exception.GeneticException;
 import forex.genetic.facade.TendenciaFacade;
-import forex.genetic.tendencia.manager.TendenciasManager;
 
 /**
  *

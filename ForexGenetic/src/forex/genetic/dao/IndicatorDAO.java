@@ -9,12 +9,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.List;
 
 import forex.genetic.dao.helper.IndicatorHelper;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.RangoOperacionIndividuo;
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.jdbc.JDBCUtil;

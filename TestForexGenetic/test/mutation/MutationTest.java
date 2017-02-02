@@ -15,7 +15,6 @@ import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.EspecificMutationManager;

@@ -4,14 +4,15 @@
  */
 package forex.genetic.thread;
 	
+import java.io.File;
+import java.io.IOException;
+
 import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.io.SerializationPoblacionManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
-import java.io.File;
-import java.io.IOException;
 
 /**
  *

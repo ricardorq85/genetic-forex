@@ -4,9 +4,10 @@
  */
 package forex.genetic.manager.io;
 
-import forex.genetic.entities.IndividuoEstrategia;
 import java.io.File;
 import java.io.FileFilter;
+
+import forex.genetic.entities.IndividuoEstrategia;
 
 /**
  *

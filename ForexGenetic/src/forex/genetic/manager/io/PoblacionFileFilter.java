@@ -4,11 +4,12 @@
  */
 package forex.genetic.manager.io;
 
-import forex.genetic.entities.Learning;
-import forex.genetic.entities.RelacionPair;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
+
+import forex.genetic.entities.Learning;
+import forex.genetic.entities.RelacionPair;
 
 /**
  *

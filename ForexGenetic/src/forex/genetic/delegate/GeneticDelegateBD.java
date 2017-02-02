@@ -4,10 +4,10 @@
  */
 package forex.genetic.delegate;
 
+import java.io.FileNotFoundException;
+
 import forex.genetic.entities.Poblacion;
 import forex.genetic.facade.PoblacionFacade;
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
 
 /**
  *

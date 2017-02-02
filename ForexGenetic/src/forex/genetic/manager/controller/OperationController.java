@@ -4,6 +4,10 @@
  */
 package forex.genetic.manager.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Interval;
@@ -15,9 +19,6 @@ import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.NumberUtil;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  *

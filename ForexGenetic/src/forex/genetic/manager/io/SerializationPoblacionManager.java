@@ -4,16 +4,6 @@
  */
 package forex.genetic.manager.io;
 
-import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.entities.IndividuoReadData;
-import forex.genetic.entities.Interval;
-import forex.genetic.entities.Learning;
-import forex.genetic.entities.Poblacion;
-import forex.genetic.manager.PropertiesManager;
-import forex.genetic.manager.statistic.EstadisticaManager;
-import forex.genetic.util.CollectionUtil;
-import forex.genetic.util.Constants;
-import forex.genetic.util.LogUtil;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -28,6 +18,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
+import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.IndividuoReadData;
+import forex.genetic.entities.Interval;
+import forex.genetic.entities.Learning;
+import forex.genetic.entities.Poblacion;
+import forex.genetic.manager.PropertiesManager;
+import forex.genetic.manager.statistic.EstadisticaManager;
+import forex.genetic.util.CollectionUtil;
+import forex.genetic.util.Constants;
+import forex.genetic.util.LogUtil;
 
 /**
  *

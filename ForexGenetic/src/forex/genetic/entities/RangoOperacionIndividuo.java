@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.util.DateUtil;
-
 /**
  *
  * @author ricardorq85

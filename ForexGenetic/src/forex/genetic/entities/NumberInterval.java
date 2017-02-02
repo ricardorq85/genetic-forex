@@ -4,8 +4,6 @@
  */
 package forex.genetic.entities;
 
-import java.math.BigDecimal;
-
 /**
  *
  * @author ricardorq85

@@ -4,17 +4,18 @@
  */
 package forex.genetic.dao.helper;
 
-import forex.genetic.entities.DateInterval;
-import forex.genetic.entities.Estadistica;
-import forex.genetic.entities.Individuo;
-import forex.genetic.entities.Order;
-import forex.genetic.util.Constants;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import forex.genetic.entities.DateInterval;
+import forex.genetic.entities.Estadistica;
+import forex.genetic.entities.Individuo;
+import forex.genetic.entities.Order;
+import forex.genetic.util.Constants;
 
 /**
  *

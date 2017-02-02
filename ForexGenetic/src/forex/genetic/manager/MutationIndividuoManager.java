@@ -16,7 +16,6 @@ import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.util.Constants.IndividuoType;
 import forex.genetic.util.LogUtil;
-import forex.genetic.util.NumberUtil;
 
 /**
  *

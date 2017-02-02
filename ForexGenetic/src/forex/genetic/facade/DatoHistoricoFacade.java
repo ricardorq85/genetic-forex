@@ -4,13 +4,14 @@
  */
 package forex.genetic.facade;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
 import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.entities.Point;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
 
 /**
  *

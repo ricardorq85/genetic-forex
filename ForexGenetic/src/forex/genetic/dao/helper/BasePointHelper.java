@@ -4,6 +4,12 @@
  */
 package forex.genetic.dao.helper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Adx;
 import forex.genetic.entities.indicator.Average;
@@ -16,11 +22,6 @@ import forex.genetic.entities.indicator.Rsi;
 import forex.genetic.entities.indicator.Sar;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  *

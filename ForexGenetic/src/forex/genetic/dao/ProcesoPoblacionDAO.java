@@ -4,11 +4,6 @@
  */
 package forex.genetic.dao;
 
-import forex.genetic.dao.helper.IndividuoHelper;
-import forex.genetic.entities.Individuo;
-import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.manager.PropertiesManager;
-import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,6 +13,12 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+
+import forex.genetic.dao.helper.IndividuoHelper;
+import forex.genetic.entities.Individuo;
+import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.manager.PropertiesManager;
+import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *

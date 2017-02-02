@@ -10,7 +10,6 @@ import java.util.List;
 
 import forex.genetic.entities.Individuo;
 import forex.genetic.util.LogUtil;
-import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *

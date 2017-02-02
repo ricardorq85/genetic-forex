@@ -4,10 +4,11 @@
  */
 package forex.genetic.manager;
 
-import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
+
+import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *

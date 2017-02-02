@@ -18,7 +18,6 @@ import forex.genetic.entities.Poblacion;
 import forex.genetic.manager.PoblacionManagerBD;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.controller.IndicadorController;
-import forex.genetic.proxy.ProcesosAlternosProxy;
 import forex.genetic.thread.ProcesarIndividuoThread;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;

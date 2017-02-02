@@ -4,13 +4,14 @@
  */
 package forex.genetic.dao;
 
-import forex.genetic.entities.ProcesoTendencia;
-import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+
+import forex.genetic.entities.ProcesoTendencia;
+import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *

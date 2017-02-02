@@ -4,6 +4,12 @@
  */
 package forex.genetic.manager;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.List;
+
 import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.EstrategiaDAO;
 import forex.genetic.dao.IndividuoDAO;
@@ -15,11 +21,6 @@ import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
 
 /**
  *

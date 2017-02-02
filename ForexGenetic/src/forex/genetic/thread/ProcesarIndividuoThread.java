@@ -4,11 +4,12 @@
  */
 package forex.genetic.thread;
 
-import forex.genetic.dao.ProcesoPoblacionDAO;
-import forex.genetic.util.LogUtil;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+
+import forex.genetic.dao.ProcesoPoblacionDAO;
+import forex.genetic.util.LogUtil;
 
 /**
  *

@@ -4,7 +4,6 @@ import static forex.genetic.manager.PropertiesManager.load;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +19,9 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import forex.genetic.dao.EstrategiaOperacionPeriodoDAO;
-import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.entities.ParametroOperacionPeriodo;
 import forex.genetic.manager.InclusionesManager;
-import forex.genetic.manager.IndividuosPeriodoManager;
 import forex.genetic.util.RandomUtil;
-import forex.genetic.util.jdbc.JDBCUtil;
 
 public class IndividuoPeriodoManagerTest {
 

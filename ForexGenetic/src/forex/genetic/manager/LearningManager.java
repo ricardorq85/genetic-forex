@@ -4,6 +4,11 @@
  */
 package forex.genetic.manager;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.IndividuoReadData;
 import forex.genetic.entities.IntegerInterval;
@@ -17,10 +22,6 @@ import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  *

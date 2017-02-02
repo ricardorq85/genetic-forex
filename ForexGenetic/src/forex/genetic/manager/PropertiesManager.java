@@ -8,7 +8,6 @@ import forex.genetic.manager.io.FileProperties;
 import forex.genetic.util.Constants;
 import forex.genetic.util.Constants.FortalezaType;
 import forex.genetic.util.Constants.OperationType;
-import forex.genetic.util.LogUtil;
 
 /**
  *

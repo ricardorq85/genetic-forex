@@ -96,7 +96,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
 					}
 				}
 				if (processed && !validarYBorrarIndividuoInvalido(individuo)) {
-					this.actualizarOperacionSemanal(individuo);
+					//this.actualizarOperacionSemanal(individuo);
 				}
 			}
 		} catch (SQLException ex) {

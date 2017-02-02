@@ -4,6 +4,14 @@
  */
 package forex.genetic.tendencia.manager;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
 import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.IndividuoTendenciaDAO;
 import forex.genetic.dao.OperacionesDAO;
@@ -32,13 +40,6 @@ import forex.genetic.util.LogUtil;
 import forex.genetic.util.NumberUtil;
 import forex.genetic.util.ThreadUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 
 /**
  *

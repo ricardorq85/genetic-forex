@@ -1,7 +1,5 @@
 package forex.genetic.util.jdbc;
 
-import forex.genetic.manager.PropertiesManager;
-
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import forex.genetic.manager.PropertiesManager;
 
 /**
  *

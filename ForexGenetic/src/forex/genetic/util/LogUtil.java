@@ -4,8 +4,9 @@
  */
 package forex.genetic.util;
 
-import forex.genetic.manager.PropertiesManager;
 import java.util.Date;
+
+import forex.genetic.manager.PropertiesManager;
 
 /**
  *

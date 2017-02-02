@@ -4,13 +4,13 @@
  */
 package forex.genetic.manager;
 
+import java.util.Random;
+
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.util.NumberUtil;
 import forex.genetic.util.RandomUtil;
-
-import java.util.Random;
 
 /**
  *

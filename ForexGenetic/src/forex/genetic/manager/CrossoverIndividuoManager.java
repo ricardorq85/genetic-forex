@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Random;
 
 import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.factory.ControllerFactory;
