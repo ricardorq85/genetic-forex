@@ -28,7 +28,7 @@ public class Constants {
     /**
      *
      */
-    public static final String TIPO_TENDENCIA = "BUY_SELL_20170201";
+    public static String TIPO_TENDENCIA = "BUY_SELL_20170204-2";
 
     /**
      *

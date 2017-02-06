@@ -13,7 +13,8 @@ public class CalculoTendenciaEstadistica extends CalculoTendencia {
 	double baseProbabilidadXDuracion = 0.1D;
 	double baseProbabilidadXCantidad = 0.4D;
 	double baseProbabilidadXPips = 0.3D;
-	double baseProbabilidadXPipsFaltantes = 0.2D;
+	double baseProbabilidadXPipsFaltantes = 0.05D;
+	double baseProbabilidadXPipsRetroceso = 0.15D;
 
 	private Estadistica estadistica = null;
 	private Order ordenActual;
@@ -29,22 +30,36 @@ public class CalculoTendenciaEstadistica extends CalculoTendencia {
 	}
 
 	public void calcularProbabilidades() {
-		double probPositivosXCantidad = this.calcularProbabilidadXCantidadPositivos();
-		double probNegativosXCantidad = this.calcularProbabilidadXCantidadNegativos();
+		double probPositivosXCantidad = this.calcularProbabilidadXCantidadPositivos() * baseProbabilidadXCantidad;
+		double probNegativosXCantidad = this.calcularProbabilidadXCantidadNegativos() * baseProbabilidadXCantidad;
 
-		double probPositivosXPips = this.calcularProbabilidadXPipsPositivos();
-		double probNegativosXPips = this.calcularProbabilidadXPipsNegativos();
+		double probPositivosXPips = this.calcularProbabilidadXPipsPositivos() * baseProbabilidadXPips;
+		double probNegativosXPips = this.calcularProbabilidadXPipsNegativos() * baseProbabilidadXPips;
 
-		double probPositivosXPipsFaltantes = this.calcularProbabilidadXPipsPositivosFaltantes();
-		double probNegativosXPipsFaltantes = this.calcularProbabilidadXPipsNegativosFaltantes();
+		double probPositivosXPipsFaltantes = this.calcularProbabilidadXPipsPositivosFaltantes()
+				* baseProbabilidadXPipsFaltantes;
+		double probNegativosXPipsFaltantes = this.calcularProbabilidadXPipsNegativosFaltantes()
+				* baseProbabilidadXPipsFaltantes;
 
-		double probPositivosXDuracion = this.calcularProbabilidadXDuracionPositivos();
-		double probNegativosXDuracion = this.calcularProbabilidadXDuracionNegativos();
+		double probPositivosXDuracion = this.calcularProbabilidadXDuracionPositivos() * baseProbabilidadXDuracion;
+		double probNegativosXDuracion = this.calcularProbabilidadXDuracionNegativos() * baseProbabilidadXDuracion;
+
+		double probPositivosXRetroceso = 0.5D;
+		double probNegativosXRetroceso = 0.5D;
+		if (this.ordenActual.getPips() > 0) {
+			probPositivosXRetroceso = this.calcularProbabilidadXRetrocesosPositivos();
+			probNegativosXRetroceso = (1 - probPositivosXRetroceso);
+		} else if (this.ordenActual.getPips() < 0) {
+			probNegativosXRetroceso = this.calcularProbabilidadXRetrocesosNegativos();
+			probPositivosXRetroceso = (1 - probNegativosXRetroceso);
+		}
+		probPositivosXRetroceso *= baseProbabilidadXPipsRetroceso;
+		probNegativosXRetroceso *= baseProbabilidadXPipsRetroceso;
 
 		double probPositivos = (probPositivosXCantidad + probPositivosXPips + probPositivosXPipsFaltantes
-				+ probPositivosXDuracion);
+				+ probPositivosXDuracion + probPositivosXRetroceso);
 		double probNegativos = (probNegativosXCantidad + probNegativosXPips + probNegativosXPipsFaltantes
-				+ probNegativosXDuracion);
+				+ probNegativosXDuracion + probNegativosXRetroceso);
 
 		this.setProbabilidadPositivos(probPositivos);
 		this.setProbabilidadNegativos(probNegativos);
@@ -53,25 +68,24 @@ public class CalculoTendenciaEstadistica extends CalculoTendencia {
 	private double calcularProbabilidadXCantidad(int cantidad) {
 		double probabilidad = 0.0D;
 		if (estadistica.getCantidadTotal() > 0) {
-			probabilidad = (cantidad / (double) estadistica.getCantidadTotal()) * baseProbabilidadXCantidad;
+			probabilidad = (cantidad / (double) estadistica.getCantidadTotal());
 		}
-		return probabilidad;
+		return (probabilidad);
 	}
 
 	private double calcularProbabilidadXPips(double pips) {
 		double probabilidad = 0.0D;
 		if (estadistica.getSumaPipsAbs() > 0.0D) {
-			probabilidad = (Math.abs(pips) / (estadistica.getSumaPipsAbs())) * baseProbabilidadXPips;
+			probabilidad = (Math.abs(pips) / (estadistica.getSumaPipsAbs()));
 		}
-		return probabilidad;
+		return (probabilidad);
 	}
 
 	private double calcularProbabilidadXPipsFaltantes(double pips) {
 		double probabilidad = 0.0D;
 		if (estadistica.getSumaDiferenciaPipsPromedio(ordenActual.getPips()) > 0.0D) {
 			probabilidad = (1.0D
-					- (Math.abs(pips) / (estadistica.getSumaDiferenciaPipsPromedio(ordenActual.getPips()))))
-					* baseProbabilidadXPipsFaltantes;
+					- (Math.abs(pips) / (estadistica.getSumaDiferenciaPipsPromedio(ordenActual.getPips()))));
 		}
 		return (probabilidad);
 	}
@@ -80,10 +94,24 @@ public class CalculoTendenciaEstadistica extends CalculoTendencia {
 		double probabilidad = 0.0D;
 		if ((estadistica.getSumaDiferenciaDuracionPromedio(ordenActual.getDuracionMinutos())) > 0) {
 			probabilidad = (1.0D - (Math.abs(ordenActual.getDuracionMinutos() - duracion)
-					/ (estadistica.getSumaDiferenciaDuracionPromedio(ordenActual.getDuracionMinutos()))))
-					* baseProbabilidadXDuracion;
+					/ (estadistica.getSumaDiferenciaDuracionPromedio(ordenActual.getDuracionMinutos()))));
 		}
-		return probabilidad;
+		return (probabilidad);
+	}
+
+	public double calcularProbabilidadXRetrocesos(double limiteExtremo, double promedio) {
+		double probabilidad = 0.5D;
+		if (Math.abs(promedio) > 0) {
+			if (Math.abs(ordenActual.getPips()) > Math.abs(promedio)) {
+				probabilidad = 0.8D;
+			}
+		}
+		if (Math.abs(limiteExtremo) > 0) {
+			if (Math.abs(ordenActual.getPips()) > Math.abs(limiteExtremo)) {
+				probabilidad = 1.0D;
+			}
+		}
+		return (probabilidad);
 	}
 
 	private void calcularPips() {
@@ -135,11 +163,11 @@ public class CalculoTendenciaEstadistica extends CalculoTendencia {
 	}
 
 	private double calcularProbabilidadXPipsNegativosFaltantes() {
-		return this.calcularProbabilidadXPipsFaltantes(calcularPips(estadistica.getPipsPromedioPositivos()));
+		return this.calcularProbabilidadXPipsFaltantes(calcularPips(estadistica.getPipsPromedioNegativos()));
 	}
 
 	private double calcularProbabilidadXPipsPositivosFaltantes() {
-		return this.calcularProbabilidadXPipsFaltantes(calcularPips(estadistica.getPipsPromedioNegativos()));
+		return this.calcularProbabilidadXPipsFaltantes(calcularPips(estadistica.getPipsPromedioPositivos()));
 	}
 
 	private double calcularProbabilidadXCantidadPositivos() {
@@ -148,6 +176,16 @@ public class CalculoTendenciaEstadistica extends CalculoTendencia {
 
 	private double calcularProbabilidadXCantidadNegativos() {
 		return this.calcularProbabilidadXCantidad(estadistica.getCantidadNegativos());
+	}
+
+	public double calcularProbabilidadXRetrocesosPositivos() {
+		return (calcularProbabilidadXRetrocesos(estadistica.getPipsMaximosRetrocesoNegativos(),
+				estadistica.getPipsPromedioRetrocesoNegativos()));
+	}
+
+	public double calcularProbabilidadXRetrocesosNegativos() {
+		return (calcularProbabilidadXRetrocesos(estadistica.getPipsMinimosRetrocesoPositivos(),
+				estadistica.getPipsPromedioRetrocesoPositivos()));
 	}
 
 	public Estadistica getEstadistica() {
@@ -172,5 +210,4 @@ public class CalculoTendenciaEstadistica extends CalculoTendencia {
 				+ ", getProbabilidadPositivos()=" + getProbabilidadPositivos() + ", getDuracion()=" + getDuracion()
 				+ ", getPips()=" + getPips() + "]";
 	}
-
 }

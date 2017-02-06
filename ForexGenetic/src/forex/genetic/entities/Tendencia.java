@@ -35,7 +35,7 @@ public class Tendencia implements Serializable {
 	private Date fecha;
 	private double probabilidad;
 	private Date fechaCierre;
-	private String tipoCalculo = "DEFAULT";
+	private String tipoCalculo = "DEFAULT_2";
 	private double pipsReales;
 
 	/**
