@@ -49,5 +49,5 @@ public class ProcesarTendenciaTest extends GeneticTest {
 		Date fechaBase = DateUtil.obtenerFecha("2016/11/18 23:59");
 		Order orden = manager.procesarTendencias(fechaBase);
 		Assert.assertEquals(25.0D, orden.getStopLoss(), 0.00001D);
-	}		
+	}
 }

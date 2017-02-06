@@ -23,6 +23,7 @@ import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.TendenciaEstadistica;
 import forex.genetic.tendencia.manager.TendenciaBuySellManager;
+import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.NumberUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -417,13 +418,14 @@ public class TendenciaTest extends GeneticTest {
 	}
 
 	@Test
-	public final void individuo1484511934277p2009ValidarPipsProyectados() throws Exception {		
-		String idIndividuo = "1477365411387.404";
-		Date fechaBase = DateUtil.obtenerFecha("2017/01/27 23:58");
-		tendenciaManager.borrarTendencia(idIndividuo, fechaBase);
+	public final void individuo1484511934277p1495ValidarPipsProyectados() throws Exception {		
+		String idIndividuo = "1484511934277.1495";
+		Date fechaBase = DateUtil.obtenerFecha("2017/02/01 11:51");
+		//tendenciaManager.borrarTendencia(idIndividuo, fechaBase);
+		Constants.TIPO_TENDENCIA="TEST";
 		TendenciaEstadistica tendencia = this.testIndividuo(fechaBase, idIndividuo);
 		boolean habil = DateUtil.isDiaHabil(tendencia.getFechaTendencia());
 		Assert.assertTrue("Es sábado o domingo", habil);
 	}
-	
+
 }
