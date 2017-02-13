@@ -52,10 +52,12 @@ public class TendenciaBuySellManager extends TendenciasManager {
 				try {
 					LogUtil.logTime("Calculando..." + individuo.getId(), 2);
 					tendencia = this.calcularTendencia(pointsFechaTendencia.get(0), individuo);
-					LogUtil.logTime(tendencia.toString(), 1);
-					LogUtil.logTime("Guardando..." + individuo.getId(), 4);
-					this.guardarTendencia(tendencia);
-					listaTendencias.add(tendencia);
+					if (tendencia != null) {
+						LogUtil.logTime(tendencia.toString(), 1);
+						LogUtil.logTime("Guardando..." + individuo.getId(), 4);
+						this.guardarTendencia(tendencia);
+						listaTendencias.add(tendencia);
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -84,12 +86,14 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		return this.calcularTendencia(currentPoint, individuo);
 	}
 
-	public TendenciaEstadistica calcularTendencia(Date fechaBase, String idIndividuo) throws SQLException, CloneNotSupportedException, ClassNotFoundException {
+	public TendenciaEstadistica calcularTendencia(Date fechaBase, String idIndividuo)
+			throws SQLException, CloneNotSupportedException, ClassNotFoundException {
 		Individuo individuo = operacionesDAO.consultarIndividuoOperacionActiva(idIndividuo, fechaBase, 2);
 		return this.calcularTendencia(fechaBase, individuo);
 	}
 
-	public TendenciaEstadistica calcularTendencia(Date fechaBase, Individuo individuo) throws SQLException, CloneNotSupportedException, ClassNotFoundException {
+	public TendenciaEstadistica calcularTendencia(Date fechaBase, Individuo individuo)
+			throws SQLException, CloneNotSupportedException, ClassNotFoundException {
 		TendenciaEstadistica tendenciaEstadistica = null;
 		List<Point> pointsFechaTendencia = datoHistoricoDAO.consultarHistorico(fechaBase, fechaBase);
 		if ((pointsFechaTendencia != null) && (!pointsFechaTendencia.isEmpty())) {
@@ -98,7 +102,8 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		return tendenciaEstadistica;
 	}
 
-	public TendenciaEstadistica calcularTendencia(Point pointFecha, Individuo individuo) throws SQLException, CloneNotSupportedException, ClassNotFoundException {
+	public TendenciaEstadistica calcularTendencia(Point pointFecha, Individuo individuo)
+			throws SQLException, CloneNotSupportedException, ClassNotFoundException {
 		TendenciaEstadistica tendencia = null;
 		Date fechaBase = pointFecha.getDate();
 		if (individuo != null) {
@@ -117,14 +122,16 @@ public class TendenciaBuySellManager extends TendenciasManager {
 			LogUtil.logTime("Consultando estadística...", 3);
 			Estadistica estadisticaHistorica = this.consultarEstadisticasIndividuo(parametroConsultaEstadistica);
 
-			LogUtil.logTime("Creando tendencia...", 5);
-			tendencia = this.crearTendencia(estadisticaHistorica, estadisticaFiltradaActual, ordenActual);
-			tendencia.setIndividuo(individuo);
-			tendencia.setFechaBase(fechaBase);
-			LogUtil.logTime("Procesando tendencia...", 3);
-			tendencia.procesarTendencia();
-			LogUtil.logTime("Completando tendencia...", 5);
-			this.completarTendencia(tendencia, pointFecha);
+			if (estadisticaHistorica.getCantidadTotal() > 0) {
+				LogUtil.logTime("Creando tendencia...", 5);
+				tendencia = this.crearTendencia(estadisticaHistorica, estadisticaFiltradaActual, ordenActual);
+				tendencia.setIndividuo(individuo);
+				tendencia.setFechaBase(fechaBase);
+				LogUtil.logTime("Procesando tendencia...", 3);
+				tendencia.procesarTendencia();
+				LogUtil.logTime("Completando tendencia...", 5);
+				this.completarTendencia(tendencia, pointFecha);
+			}
 		}
 		return tendencia;
 	}

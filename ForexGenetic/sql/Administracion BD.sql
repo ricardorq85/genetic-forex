@@ -1,3 +1,20 @@
+SELECT * FROM DBA_BLOCKERS;
+SELECT * FROM DBA_DDL_LOCKS;
+SELECT * FROM DBA_DML_LOCKS;
+
+select s.sid, s.serial#, p.spid 
+from 
+   v$session s, 
+   v$process p 
+where 
+   s.paddr = p.addr 
+and 
+   s.sid in (select SESSION_ID from v$locked_object);
+
+select v.USED_UREC, v.* from V$TRANSACTION v;
+
+ALTER SYSTEM KILL SESSION '213, 2297' IMMEDIATE;
+
 SELECT
   q.SQL_FULLTEXT sql_text
 FROM
