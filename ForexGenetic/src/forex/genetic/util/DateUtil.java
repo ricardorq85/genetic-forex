@@ -280,5 +280,10 @@ public class DateUtil {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm.ss");
 		return ((fecha == null) ? null : formatter.format(fecha));
 	}
+	
+	public static String getDateString(String formato, Date fecha) {
+		SimpleDateFormat formatter = new SimpleDateFormat(formato);
+		return ((fecha == null) ? null : formatter.format(fecha));
+	}
 
 }

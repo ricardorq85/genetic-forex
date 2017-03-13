@@ -29,7 +29,8 @@ public class OperacionesTendenciaDAO extends OperacionesDAO {
 				+ " WHERE OPER.FECHA_APERTURA<?	AND (OPER.FECHA_CIERRE IS NULL	OR OPER.FECHA_CIERRE>?) "
 				+ " AND OPER.FECHA_APERTURA>?-15 "
 				+ " AND NOT EXISTS (SELECT 1 FROM TENDENCIA T WHERE T.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
-				+ " AND T.FECHA_BASE=? AND T.TIPO_TENDENCIA=?) " + " AND ROWNUM<? ";
+				+ " AND T.FECHA_BASE=? AND T.TIPO_TENDENCIA=?) " 
+				+ " AND ROWNUM<? ";
 		return sql;
 	}
 
@@ -62,7 +63,7 @@ public class OperacionesTendenciaDAO extends OperacionesDAO {
 	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, int filas) throws SQLException {
 		List<Individuo> individuos = null;
 		StringBuilder sqlBuffer = new StringBuilder(this.getQuery());
-		//sqlBuffer.append(" ORDER BY OPER.FECHA_APERTURA DESC");
+		sqlBuffer.append(" ORDER BY PROC.FECHA_PROCESO DESC");
 		String sql = sqlBuffer.toString();
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;

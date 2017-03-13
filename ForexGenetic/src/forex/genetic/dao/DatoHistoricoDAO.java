@@ -135,6 +135,27 @@ public class DatoHistoricoDAO {
 		}
 		return fechaHistorica;
 	}
+	
+	public Date getFechaHistoricaMaxima(Date fecha) throws SQLException {
+		Date fechaHistorica = null;
+		String sql = "SELECT MAX(FECHA) FECHA_MAXIMA_HISTORIA FROM DATOHISTORICO " + " WHERE FECHA<?";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setTimestamp(1, new Timestamp(fecha.getTime()));
+			resultado = stmtConsulta.executeQuery();
+			if (resultado.next()) {
+				if (resultado.getObject(1) != null) {
+					fechaHistorica = new Date(resultado.getTimestamp(1).getTime());
+				}
+			}
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+		return fechaHistorica;
+	}	
 
 	/**
 	 *
