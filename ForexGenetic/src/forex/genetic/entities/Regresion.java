@@ -4,6 +4,7 @@ public class Regresion {
 
 	private double r2;
 	private double pendiente;
+	private double desviacion;
 	private double minPrecio;
 	private double maxPrecio;
 	private int	   cantidad;
@@ -47,4 +48,13 @@ public class Regresion {
 	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
 	}
+
+	public double getDesviacion() {
+		return desviacion;
+	}
+
+	public void setDesviacion(double desviacion) {
+		this.desviacion = desviacion;
+	}
+
 }

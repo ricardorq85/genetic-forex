@@ -18,6 +18,7 @@ import forex.genetic.entities.TendenciaEstadistica;
 import forex.genetic.manager.OperacionesManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
+import forex.genetic.util.RandomUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 public class TendenciaBuySellManager extends TendenciasManager {
@@ -41,17 +42,42 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		tendenciaDAO = new TendenciaDAO(conn);
 	}
 
-	public List<TendenciaEstadistica> calcularTendencias(Date fechaBase, int filas) throws SQLException {
-		List<Point> pointsFechaTendencia = datoHistoricoDAO.consultarHistorico(fechaBase, fechaBase);
+	public List<TendenciaEstadistica> calcularTendencias(Date fechaBaseInicial, Date fechaBaseFinal, int filas)
+			throws SQLException {
 		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
+		List<Point> pointsFechaTendencia = datoHistoricoDAO.consultarHistoricoOrderByPrecio(fechaBaseInicial,
+				fechaBaseFinal);
 		if ((pointsFechaTendencia != null) && (!pointsFechaTendencia.isEmpty())) {
-			List<Individuo> individuos = operacionesDAO.consultarIndividuoOperacionActiva(fechaBase, filas);
+			int size = pointsFechaTendencia.size();
+			int sizeLimit = (int) (size * 0.1);
+			int index = RandomUtil.nextInt(sizeLimit + 1);
+			listaTendencias.addAll(this.calcularTendencias(pointsFechaTendencia.get(index), filas));
+			listaTendencias.addAll(this.calcularTendencias(pointsFechaTendencia.get(size - index - 1), filas));
+		}
+		return listaTendencias;
+	}
+
+	public List<TendenciaEstadistica> calcularTendencias(Date fechaBase, int filas) throws SQLException {
+		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
+		List<Point> pointsFechaTendencia = datoHistoricoDAO.consultarHistorico(fechaBase, fechaBase);
+		if ((pointsFechaTendencia != null) && (!pointsFechaTendencia.isEmpty())) {
+			listaTendencias.addAll(this.calcularTendencias(pointsFechaTendencia.get(0), filas));
+		}
+		return listaTendencias;
+	}
+
+	public List<TendenciaEstadistica> calcularTendencias(Point puntoTendencia, int filas) throws SQLException {
+		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
+		if ((puntoTendencia != null)) {
+			LogUtil.logTime("Fecha base=" + DateUtil.getDateString(puntoTendencia.getDate()), 1);
+			List<Individuo> individuos = operacionesDAO.consultarIndividuoOperacionActiva(puntoTendencia.getDate(),
+					filas);
 			LogUtil.logTime("Individuos=" + individuos.size(), 1);
 			individuos.stream().forEach((individuo) -> {
 				TendenciaEstadistica tendencia;
 				try {
 					LogUtil.logTime("Calculando..." + individuo.getId(), 2);
-					tendencia = this.calcularTendencia(pointsFechaTendencia.get(0), individuo);
+					tendencia = this.calcularTendencia(puntoTendencia, individuo);
 					if (tendencia != null) {
 						LogUtil.logTime(tendencia.toString(), 1);
 						LogUtil.logTime("Guardando..." + individuo.getId(), 4);

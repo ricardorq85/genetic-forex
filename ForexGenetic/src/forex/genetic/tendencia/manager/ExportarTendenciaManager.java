@@ -18,8 +18,9 @@ import forex.genetic.util.jdbc.JDBCUtil;
 public class ExportarTendenciaManager {
 
 	private Connection conn = null;
-	private TendenciaProcesoBuySellDAO dao;
+	protected TendenciaProcesoBuySellDAO dao;
 	private ProcesoTendenciaBuySell paraProcesar;
+	private static int index = 0;
 
 	public ExportarTendenciaManager() throws ClassNotFoundException, SQLException {
 		this(JDBCUtil.getConnection());
@@ -28,14 +29,15 @@ public class ExportarTendenciaManager {
 	public ExportarTendenciaManager(Connection c) throws ClassNotFoundException, SQLException {
 		super();
 		this.conn = c;
-		this.dao = new TendenciaProcesoBuySellDAO(conn);
 	}
 
 	public void export() {
 		List<TendenciaParaOperar> tendencias = paraProcesar.getTendencias();
 		if (tendencias != null) {
 			tendencias.stream().forEach((ten) -> {
-				System.out.println(ten.toString());
+				index++;
+				//System.out.println("INDEX=" + (index)+ "," + ten.toString());
+				System.out.println(ten.toString());				
 			});
 		}
 	}
@@ -48,7 +50,7 @@ public class ExportarTendenciaManager {
 	}
 
 	private void procesarTendencia() throws SQLException {
-		List<TendenciaParaOperar> tendencias = dao.consultarTendencias(paraProcesar);
+		List<TendenciaParaOperar> tendencias = this.consultarTendencias();
 		this.calcularPuntosDiferenciaInicial(tendencias);
 		tendencias.stream().forEach((ten) -> {
 			ten.setPuntosDiferenciaInicial(paraProcesar.getPuntosDiferenciaInicial());
@@ -67,12 +69,16 @@ public class ExportarTendenciaManager {
 		paraProcesar.setTendencias(tendencias);
 	}
 
+	protected List<TendenciaParaOperar> consultarTendencias() throws SQLException {
+		List<TendenciaParaOperar> tendencias = dao.consultarTendencias(paraProcesar);
+		return tendencias;
+	}
+
 	private void calcularPuntosDiferenciaInicial(List<TendenciaParaOperar> tendencias) throws SQLException {
 		TendenciaParaOperar op = tendencias.get(0);
 		DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
-		Date fechaConsultaHistorico  = datoHistoricoDAO.getFechaHistoricaMaxima(paraProcesar.getFechaBase());
-		List<Point> historico = datoHistoricoDAO.consultarHistorico(fechaConsultaHistorico,
-				fechaConsultaHistorico);
+		Date fechaConsultaHistorico = datoHistoricoDAO.getFechaHistoricaMaxima(paraProcesar.getFechaBase());
+		List<Point> historico = datoHistoricoDAO.consultarHistorico(fechaConsultaHistorico, fechaConsultaHistorico);
 		Point point = null;
 		if ((historico != null) && (!historico.isEmpty())) {
 			point = historico.get(0);

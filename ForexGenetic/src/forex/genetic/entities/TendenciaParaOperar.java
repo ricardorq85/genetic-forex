@@ -11,7 +11,7 @@ public class TendenciaParaOperar {
 
 	private static final float FACTOR_TP = 0.5F;
 	private static final float FACTOR_SL = 1.0F;
-	private static final int MIN_PIPS_TP = 100;
+	private static final int MIN_PIPS_TP = 200;
 	private static final int MIN_PIPS_SL = 800;
 
 	private String name = null;
@@ -189,7 +189,9 @@ public class TendenciaParaOperar {
 				+ NumberUtil.round(sl) + ",FECHA_TENDENCIA="
 				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaTendencia) + ",VIGENCIALOWER="
 				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", vigenciaLower) + ",VIGENCIAHIGHER="
-				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", vigenciaHigher) + ",R2=" + regresion.getR2()
+				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", vigenciaHigher) 
+				+ ",R2=" + regresion.getR2()
+				+ ",DESVIACION=" + regresion.getDesviacion()
 				+ ",PENDIENTE=" + regresion.getPendiente() + ",LOTE=" + NumberUtil.round(0.1) + ",FECHA_BASE="
 				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaBase);
 	}

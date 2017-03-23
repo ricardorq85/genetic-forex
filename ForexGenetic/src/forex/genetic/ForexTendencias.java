@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.util.logging.Logger;
 
 import forex.genetic.facade.TendenciaFacade;
 
@@ -51,5 +50,4 @@ public class ForexTendencias {
 		logTime("Fin: " + id, 1);
 	}
 
-	private static final Logger LOG = Logger.getLogger(ForexTendencias.class.getName());
 }

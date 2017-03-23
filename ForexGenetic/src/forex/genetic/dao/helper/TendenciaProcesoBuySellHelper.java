@@ -16,6 +16,7 @@ public class TendenciaProcesoBuySellHelper {
 			regresion = new Regresion();
 			regresion.setR2(resultado.getDouble("R2"));
 			regresion.setPendiente(resultado.getDouble("PENDIENTE"));
+			regresion.setDesviacion(resultado.getDouble("DESV"));
 			regresion.setMinPrecio(resultado.getDouble("MINPRECIO"));
 			regresion.setMaxPrecio(resultado.getDouble("MAXPRECIO"));
 			regresion.setCantidad(resultado.getInt("CANTIDAD_TENDENCIAS"));

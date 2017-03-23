@@ -15,14 +15,14 @@ import static java.lang.System.setOut;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.logging.Logger;
 
 import forex.genetic.exception.GeneticException;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
-import forex.genetic.tendencia.manager.ProcesarTendenciasGraficaManager;
+import forex.genetic.tendencia.manager.ProcesarTendenciasCruceManager;
 
 /**
  *
@@ -46,9 +46,10 @@ public class ProcesarTendenciasBuySell {
         logTime("Inicio: " + id, 1);
         setId(Long.toString(id));
         try {
-            ProcesarTendenciasBuySellManager manager = new ProcesarTendenciasBuySellManager();
+            ProcesarTendenciasBuySellManager manager = new ProcesarTendenciasCruceManager(); 
+            		//new ProcesarTendenciasBuySellManager();
             manager.procesarTendencias();
-        } catch (SQLException | GeneticException ex) {
+        } catch (SQLException | GeneticException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
             ex.printStackTrace();
         }
         logTime("Fin: " + id, 1);

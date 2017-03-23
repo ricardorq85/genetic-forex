@@ -21,7 +21,7 @@ public class OperacionesTendenciaDAO extends OperacionesDAO {
 	}
 
 	private String getQuery() {
-		String sql = "SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.OPEN_PRICE, OPER.SPREAD, "
+		String sql = "SELECT * FROM (SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.OPEN_PRICE, OPER.SPREAD, "
 				+ " OPER.LOTE, OPER.PIPS, OPER.TIPO, OPER.TIPO TIPO_OPERACION, OPER.TAKE_PROFIT, OPER.STOP_LOSS "
 				+ " FROM OPERACION OPER "
 				+ " INNER JOIN PROCESO PROC ON PROC.ID_INDIVIDUO=OPER.ID_INDIVIDUO AND (PROC.FECHA_HISTORICO>=?) "
@@ -29,8 +29,9 @@ public class OperacionesTendenciaDAO extends OperacionesDAO {
 				+ " WHERE OPER.FECHA_APERTURA<?	AND (OPER.FECHA_CIERRE IS NULL	OR OPER.FECHA_CIERRE>?) "
 				+ " AND OPER.FECHA_APERTURA>?-15 "
 				+ " AND NOT EXISTS (SELECT 1 FROM TENDENCIA T WHERE T.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
-				+ " AND T.FECHA_BASE=? AND T.TIPO_TENDENCIA=?) " 
-				+ " AND ROWNUM<? ";
+				+ " AND T.FECHA_BASE=? AND T.TIPO_TENDENCIA=?) "
+				+ " ORDER BY DBMS_RANDOM.VALUE) "
+				+ " WHERE ROWNUM<? ";
 		return sql;
 	}
 
@@ -63,7 +64,7 @@ public class OperacionesTendenciaDAO extends OperacionesDAO {
 	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, int filas) throws SQLException {
 		List<Individuo> individuos = null;
 		StringBuilder sqlBuffer = new StringBuilder(this.getQuery());
-		sqlBuffer.append(" ORDER BY PROC.FECHA_PROCESO DESC");
+		//sqlBuffer.append(" ORDER BY PROC.FECHA_PROCESO DESC");
 		String sql = sqlBuffer.toString();
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;

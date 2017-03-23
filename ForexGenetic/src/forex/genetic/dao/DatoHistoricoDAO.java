@@ -218,6 +218,38 @@ public class DatoHistoricoDAO {
 		return points;
 	}
 
+	public List<Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2) throws SQLException {
+		List<Point> points = null;
+		String sql = "SELECT PAR, MINUTOS, PAR_COMPARE, FECHA, "
+				+ " OPEN, LOW, HIGH, CLOSE, VOLUME, SPREAD, AVERAGE, MACD_VALUE, MACD_SIGNAL, "
+				+ " COMPARE_VALUE, AVERAGE_COMPARE, SAR, ADX_VALUE, ADX_PLUS, ADX_MINUS, "
+				+ " RSI, BOLLINGER_UPPER, BOLLINGER_LOWER, MOMENTUM, ICHIMOKUTENKANSEN, "
+				+ " ICHIMOKUKIJUNSEN, ICHIMOKUSENKOUSPANA, ICHIMOKUSENKOUSPANB, ICHIMOKUCHINKOUSPAN, "
+				+ " MA1200, MACD20X_VALUE, MACD20X_SIGNAL, AVERAGE_COMPARE1200, "
+				+ " SAR1200, ADX_VALUE168, ADX_PLUS168, ADX_MINUS168, "
+				+ " RSI84, BOLLINGER_UPPER240, BOLLINGER_LOWER240, MOMENTUM1200, ICHIMOKUTENKANSEN6, "
+				+ " ICHIMOKUKIJUNSEN6, ICHIMOKUSENKOUSPANA6, ICHIMOKUSENKOUSPANB6, ICHIMOKUCHINKOUSPAN6 "
+				+ " FROM DATOHISTORICO WHERE " + " FECHA >= ? AND FECHA<=? "
+				+ " ORDER BY ((HIGH+LOW+OPEN+CLOSE)/4) DESC, "
+				+ " FECHA ASC";
+
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setTimestamp(1, new Timestamp(fechaBase1.getTime()));
+			stmtConsulta.setTimestamp(2, new Timestamp(fechaBase2.getTime()));
+			resultado = stmtConsulta.executeQuery();
+
+			points = BasePointHelper.createPoints(resultado);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+
+		return points;
+	}	
+
 	public boolean existHistorico(Point point) throws SQLException {
 		String sql = "SELECT 1 FROM DATOHISTORICO WHERE FECHA=? AND PAR=? AND MINUTOS=?";
 		PreparedStatement stmtConsulta = null;

@@ -29,12 +29,18 @@ public class TendenciaFacade implements IGeneticFacade {
 	}
 
 	public void procesarTendencias() throws ClassNotFoundException, SQLException {
-		Date fechaBase = parametroFechaInicio;
+		Date fechaBaseFinal = parametroFechaInicio;
 		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
-		while (fechaBase.after(DateUtil.adicionarDias(fechaBase, -30))) {
-			LogUtil.logTime("Fecha base=" + DateUtil.getDateString(fechaBase), 1);
-			List<TendenciaEstadistica> tendencias = tendenciaManager.calcularTendencias(fechaBase, parametroFilasTendencia);
-			fechaBase = DateUtil.adicionarMinutos(fechaBase, -parametroStepTendencia);
+		LogUtil.logTime("Fecha base="
+				+ DateUtil.getDateString(fechaBaseFinal), 1);
+		tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia);
+		while (fechaBaseFinal.after(DateUtil.adicionarDias(fechaBaseFinal, -30))) {
+			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, -parametroStepTendencia);
+			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
+					+ DateUtil.getDateString(fechaBaseFinal), 1);
+			List<TendenciaEstadistica> tendencias = tendenciaManager.calcularTendencias(fechaBaseInicial,
+					fechaBaseFinal, parametroFilasTendencia);
+			fechaBaseFinal = fechaBaseInicial;
 		}
 	}
 }

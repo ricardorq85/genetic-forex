@@ -18,6 +18,7 @@ public class ProcesoTendenciaBuySell {
 	private static final double MIN_R2 = 0.5;
 	private static final double MIN_PENDIENTE = 0.0001;
 	private static final double MIN_PORCENTAJE_CANTIDAD_REGRESION = 0.35;
+	private static final double MAX_DESVIACION = 10000.0D;
 	private double puntosDiferenciaInicial = 0.0D;
 	private String periodo = null;
 	private String tipoTendencia = null;
@@ -26,7 +27,7 @@ public class ProcesoTendenciaBuySell {
 	private Date fechaBase = null;
 	private OperationType tipoOperacion = null;
 	private List<TendenciaParaOperar> tendencias;
-
+	
 	public ProcesoTendenciaBuySell(String periodo2, String tipoTendencia2, double tiempoTendencia2, Date fechaBase2) {
 		this.periodo = periodo2;
 		this.tipoTendencia = tipoTendencia2;
@@ -99,7 +100,11 @@ public class ProcesoTendenciaBuySell {
 	}
 
 	public boolean isRegresionValida() {
-		return isR2Valido() && isPendienteValida() && isCantidadValida();
+		return isR2Valido() && isPendienteValida() && isCantidadValida() && isDesviacionValida();
+	}
+
+	private boolean isDesviacionValida() {
+		return (this.regresion.getDesviacion() < MAX_DESVIACION);
 	}
 
 	private boolean isCantidadValida() {

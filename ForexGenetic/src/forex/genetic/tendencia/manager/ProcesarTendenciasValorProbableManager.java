@@ -88,7 +88,7 @@ public class ProcesarTendenciasValorProbableManager {
             tendenciasManager.calcularTendencias(DateUtil.adicionarMinutos(fechaProceso, -1), 0, -1);
             if ((actualizarTendencia) || (individuo.getCurrentOrder() == null)) {
                 boolean recalculated = false;
-                tendenciasManager.calcularTendencias(DateUtil.adicionarMinutos(fechaProceso, -step), fechaProceso, -1);
+                tendenciasManager.calcularTendenciasDeprecated(DateUtil.adicionarMinutos(fechaProceso, -step), fechaProceso, -1);
                 procesoTendencia = tendenciaDAO.consultarProcesarTendencia(fechaProceso, fechaProcesoFinal, "VALOR_PROBABLE");
                 /*if ((procesoTendencia != null) && (procesoTendencia.getCantidad() < Constants.MIN_CANTIDAD_TENDENCIA)) {
                     tendenciasManager.calcularTendencias(DateUtil.adicionarMinutos(fechaProceso, -step), fechaProceso,

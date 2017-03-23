@@ -108,7 +108,7 @@ public class TendenciasManager {
 	 * @throws SQLException
 	 * @throws GeneticException
 	 */
-	public void calcularTendencias(Date fechaInicio, Date fechaFin, int filasTendencia)
+	public void calcularTendenciasDeprecated(Date fechaInicio, Date fechaFin, int filasTendencia)
 			throws ClassNotFoundException, SQLException, GeneticException {
 		if (conn == null) {
 			conn = JDBCUtil.getConnection();
