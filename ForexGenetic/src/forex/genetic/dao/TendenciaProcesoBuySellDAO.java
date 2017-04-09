@@ -71,10 +71,15 @@ public abstract class TendenciaProcesoBuySellDAO extends TendenciaDAO {
 		resultado = stmtConsulta.executeQuery();
 		return resultado;
 	}
-
+	
 	public Regresion consultarRegresion(ProcesoTendenciaBuySell procesoTendencia) throws SQLException {
+		String sqlRegresion = "SELECT PARAM.PERIODO PERIODO, REG.*  FROM PARAMETROS PARAM, REGRESION REG";
+		return this.consultarRegresion(procesoTendencia, sqlRegresion);
+	}
+
+	public Regresion consultarRegresion(ProcesoTendenciaBuySell procesoTendencia, String sqlRegresion) throws SQLException {
 		Regresion regresion;
-		String sql = this.getSqlBase() + " SELECT PARAM.PERIODO PERIODO, REG.*  FROM PARAMETROS PARAM, REGRESION REG";
+		String sql = this.getSqlBase() + " " + sqlRegresion;
 		ResultSet resultado = null;
 		PreparedStatement stmtConsulta = null;
 		try {
@@ -92,7 +97,8 @@ public abstract class TendenciaProcesoBuySellDAO extends TendenciaDAO {
 	public List<TendenciaParaOperar> consultarTendencias(ProcesoTendenciaBuySell procesoTendencia) throws SQLException {
 		List<TendenciaParaOperar> tendencias = new ArrayList<>();
 		String sql = this.getSqlBase()
-				+ "SELECT PARAM.PERIODO PERIODO, TEN.*  FROM PARAMETROS PARAM, PROMEDIOS PROM, TENDENCIA_CALCULADA TEN	"
+				+ "SELECT PARAM.PERIODO PERIODO, TEN.*  FROM PARAMETROS PARAM, PROMEDIOS PROM, "
+				+ this.getTablaTendencia() + " TEN	"
 				+ " WHERE TEN.CANTIDAD>=PROM.AVGCANTIDAD"
 				+ " ORDER BY TEN.FECHA_TENDENCIA ASC ";
 		ResultSet resultado = null;
@@ -107,5 +113,9 @@ public abstract class TendenciaProcesoBuySellDAO extends TendenciaDAO {
 		}
 
 		return tendencias;
+	}
+
+	protected String getTablaTendencia() {
+		return "TENDENCIA_CALCULADA";
 	}
 }

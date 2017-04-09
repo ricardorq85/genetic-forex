@@ -3,10 +3,8 @@ package forex.genetic.facade;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.List;
 
 import forex.genetic.dao.ParametroDAO;
-import forex.genetic.entities.TendenciaEstadistica;
 import forex.genetic.tendencia.manager.TendenciaBuySellManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -31,14 +29,13 @@ public class TendenciaFacade implements IGeneticFacade {
 	public void procesarTendencias() throws ClassNotFoundException, SQLException {
 		Date fechaBaseFinal = parametroFechaInicio;
 		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
-		LogUtil.logTime("Fecha base="
-				+ DateUtil.getDateString(fechaBaseFinal), 1);
 		tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia);
 		while (fechaBaseFinal.after(DateUtil.adicionarDias(fechaBaseFinal, -30))) {
-			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, -parametroStepTendencia);
+			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1);
+			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, -parametroStepTendencia);			
 			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
 					+ DateUtil.getDateString(fechaBaseFinal), 1);
-			List<TendenciaEstadistica> tendencias = tendenciaManager.calcularTendencias(fechaBaseInicial,
+			tendenciaManager.calcularTendencias(fechaBaseInicial,
 					fechaBaseFinal, parametroFilasTendencia);
 			fechaBaseFinal = fechaBaseInicial;
 		}

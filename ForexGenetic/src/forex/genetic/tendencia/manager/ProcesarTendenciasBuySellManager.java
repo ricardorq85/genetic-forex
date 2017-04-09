@@ -15,6 +15,7 @@ import forex.genetic.dao.ParametroDAO;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.util.DateUtil;
+import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -40,7 +41,10 @@ public class ProcesarTendenciasBuySellManager {
 		parametroFechaFin = parametroDAO.getDateValorParametro("FECHA_FIN_PROCESAR_TENDENCIA");
 		parametroStep = parametroDAO.getIntValorParametro("STEP_PROCESAR_TENDENCIA");
 		parametroTipoExportacion = parametroDAO.getValorParametro("TIPO_EXPORTACION_TENDENCIA");
-		System.out.println(parametroTipoExportacion);
+		LogUtil.logTime(parametroTipoExportacion, 2);
+		LogUtil.logTime("Step=" + (parametroStep), 1);
+		LogUtil.logTime(
+				DateUtil.getDateString(parametroFechaInicio) + " - " + DateUtil.getDateString(parametroFechaFin), 1);
 	}
 
 	public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, GeneticException,
@@ -62,12 +66,14 @@ public class ProcesarTendenciasBuySellManager {
 		}
 	}
 
-	protected void procesarExporter(ProcesoTendenciaBuySell paraProcesar)
-			throws ClassNotFoundException, SQLException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+	protected ExportarTendenciaManager procesarExporter(ProcesoTendenciaBuySell paraProcesar)
+			throws ClassNotFoundException, SQLException, NoSuchMethodException, InstantiationException,
+			IllegalAccessException, InvocationTargetException {
 		ExportarTendenciaManager exporter = createExporter();
-		exporter.setParaProcesar(paraProcesar);
+		exporter.setProcesoTendencia(paraProcesar);
 		exporter.procesar();
-		exporter.export();
+		//exporter.export();
+		return exporter;
 	}
 
 	protected ExportarTendenciaManager createExporter() throws ClassNotFoundException, NoSuchMethodException,

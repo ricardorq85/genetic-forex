@@ -20,6 +20,8 @@ public class TendenciaProcesoBuySellHelper {
 			regresion.setMinPrecio(resultado.getDouble("MINPRECIO"));
 			regresion.setMaxPrecio(resultado.getDouble("MAXPRECIO"));
 			regresion.setCantidad(resultado.getInt("CANTIDAD_TENDENCIAS"));
+			regresion.setMinFechaTendencia(resultado.getTimestamp("MINFETENDENCIA"));
+			regresion.setMaxFechaTendencia(resultado.getTimestamp("MAXFETENDENCIA"));
 		}
 		return regresion;
 	}
@@ -31,7 +33,7 @@ public class TendenciaProcesoBuySellHelper {
 			TendenciaParaOperar tendencia = new TendenciaParaOperar();
 			tendencia.setFechaBase(resultado.getTimestamp("FECHA_BASE"));
 			tendencia.setFechaTendencia(resultado.getTimestamp("FECHA_TENDENCIA"));
-			tendencia.setName(resultado.getString("PERIODO"));
+			tendencia.setPeriodo(resultado.getString("PERIODO"));
 			tendencia.setPrecioCalculado(resultado.getDouble("PRECIO_CALCULADO"));
 			tendencias.add(tendencia);			
 		}

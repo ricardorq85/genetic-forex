@@ -2,6 +2,7 @@ package forex.genetic.entities;
 
 import java.util.Date;
 
+import forex.genetic.delegate.GeneticDelegate;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.NumberUtil;
@@ -9,25 +10,35 @@ import forex.genetic.util.Constants.OperationType;
 
 public class TendenciaParaOperar {
 
-	private static final float FACTOR_TP = 0.5F;
-	private static final float FACTOR_SL = 1.0F;
-	private static final int MIN_PIPS_TP = 200;
-	private static final int MIN_PIPS_SL = 800;
+	protected float factorTP = 0.5F;
+	protected float factorSL = 1.0F;
+	protected int minPipsTP = 200;
+	protected int minPipsSL = 800;
 
-	private String name = null;
+	private String period = null;
 	private OperationType tipoOperacion = null;
 	private double puntosDiferenciaInicial;
 	private Date fechaBase = null;
 	private Date fechaTendencia = null;
 	private Date vigenciaLower = null;
 	private Date vigenciaHigher = null;
-	private double precioCalculado = 0.0D;
-	private double tp = 0.0D;
-	private double sl = 0.0D;
+	protected double precioCalculado = 0.0D;
+	protected double tp = 0.0D;
+	protected double sl = 0.0D;
 	private Regresion regresion;
+
+	private double lote = 0.01F;
 
 	public TendenciaParaOperar() {
 
+	}
+
+	public TendenciaParaOperar(float factorTP, float factorSL, int minPipsTP, int minPipsSL) {
+		super();
+		this.factorTP = factorTP;
+		this.factorSL = factorSL;
+		this.minPipsTP = minPipsTP;
+		this.minPipsSL = minPipsSL;
 	}
 
 	public TendenciaParaOperar(OperationType tipo, double precio, double tp) {
@@ -36,12 +47,12 @@ public class TendenciaParaOperar {
 		this.tp = tp;
 	}
 
-	public String getName() {
-		return name;
+	public String getPeriod() {
+		return period;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setPeriodo(String name) {
+		this.period = name;
 	}
 
 	public OperationType getTipoOperacion() {
@@ -98,7 +109,20 @@ public class TendenciaParaOperar {
 
 	public void setTp(double tp) {
 		double pips = this.getPips(tp);
-		double pipsConFactor = (-pips * FACTOR_TP);
+		double pipsConFactor = (-pips * factorTP);
+		double pipsValueConFactor = NumberUtil.round(this.precioCalculado + pipsConFactor);
+		double valueConDiferenciaInicial;
+		if (this.tipoOperacion.equals(OperationType.BUY)) {
+			valueConDiferenciaInicial = NumberUtil.round(pipsValueConFactor + this.puntosDiferenciaInicial);
+		} else {
+			valueConDiferenciaInicial = NumberUtil.round(pipsValueConFactor - this.puntosDiferenciaInicial);
+		}
+		this.tp = valueConDiferenciaInicial;
+	}
+
+	public void setTp2(double tp) {
+		double pips = this.getPips(tp);
+		double pipsConFactor = (-pips * factorTP);
 		double valueConFactor = NumberUtil.round(this.precioCalculado + pipsConFactor);
 		double value = NumberUtil.round(tp - this.puntosDiferenciaInicial);
 		if (this.tipoOperacion.equals(OperationType.BUY)) {
@@ -114,7 +138,7 @@ public class TendenciaParaOperar {
 		}
 	}
 
-	private double getPips(double value) {
+	protected double getPips(double value) {
 		return (this.precioCalculado - value);
 	}
 
@@ -124,8 +148,8 @@ public class TendenciaParaOperar {
 
 	public void setSl(double sl) {
 		double pips = this.getPips(sl);
-		double pipsConFactor = (pips * FACTOR_SL);
-		double pipsMinimosSL = this.getPipsMinimos(MIN_PIPS_SL, OperationType.SELL);
+		double pipsConFactor = (pips * factorSL);
+		double pipsMinimosSL = this.getPipsMinimos(minPipsSL, OperationType.SELL);
 		if (this.getTipoOperacion().equals(OperationType.BUY)) {
 			if (pipsMinimosSL > pipsConFactor) {
 				pipsConFactor = pipsMinimosSL;
@@ -161,7 +185,7 @@ public class TendenciaParaOperar {
 	private boolean isTPValido() {
 		boolean valid = true;
 		double pips = this.getPips(this.getTp());
-		double pipsMinimosTP = this.getPipsMinimos(MIN_PIPS_TP, OperationType.BUY);
+		double pipsMinimosTP = this.getPipsMinimos(minPipsTP, OperationType.BUY);
 		if (this.getTipoOperacion().equals(OperationType.SELL)) {
 			if (pipsMinimosTP > pips) {
 				valid = false;
@@ -184,15 +208,14 @@ public class TendenciaParaOperar {
 
 	@Override
 	public String toString() {
-		return "NAME=" + name + ",TIPO_OPERACION=" + tipoOperacion.toString() + ",PRECIO_CALCULADO="
+		return "PERIOD=" + period + ",TIPO_OPERACION=" + tipoOperacion.toString() + ",PRECIO_CALCULADO="
 				+ NumberUtil.round(precioCalculado) + ",TAKE_PROFIT=" + NumberUtil.round(tp) + ",STOP_LOSS="
 				+ NumberUtil.round(sl) + ",FECHA_TENDENCIA="
 				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaTendencia) + ",VIGENCIALOWER="
 				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", vigenciaLower) + ",VIGENCIAHIGHER="
-				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", vigenciaHigher) 
-				+ ",R2=" + regresion.getR2()
-				+ ",DESVIACION=" + regresion.getDesviacion()
-				+ ",PENDIENTE=" + regresion.getPendiente() + ",LOTE=" + NumberUtil.round(0.1) + ",FECHA_BASE="
+				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", vigenciaHigher) + ",R2=" + regresion.getR2()
+				+ ",DESVIACION=" + regresion.getDesviacion() + ",PENDIENTE=" + regresion.getPendiente() + ",LOTE="
+				+ NumberUtil.round(lote) + ",NAME=" + GeneticDelegate.getId() + ",FECHA_BASE="
 				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaBase);
 	}
 }

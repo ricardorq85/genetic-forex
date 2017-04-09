@@ -19,7 +19,7 @@ public class ExportarTendenciaManager {
 
 	private Connection conn = null;
 	protected TendenciaProcesoBuySellDAO dao;
-	private ProcesoTendenciaBuySell paraProcesar;
+	protected ProcesoTendenciaBuySell procesoTendencia;
 	private static int index = 0;
 
 	public ExportarTendenciaManager() throws ClassNotFoundException, SQLException {
@@ -32,52 +32,54 @@ public class ExportarTendenciaManager {
 	}
 
 	public void export() {
-		List<TendenciaParaOperar> tendencias = paraProcesar.getTendencias();
+		List<TendenciaParaOperar> tendencias = procesoTendencia.getTendencias();
 		if (tendencias != null) {
 			tendencias.stream().forEach((ten) -> {
 				index++;
-				//System.out.println("INDEX=" + (index)+ "," + ten.toString());
-				System.out.println(ten.toString());				
+				// System.out.println("INDEX=" + (index)+ "," + ten.toString());
+				System.out.println(ten.toString());
 			});
 		}
 	}
 
 	public void procesar() throws ClassNotFoundException, SQLException {
 		this.procesarRegresion();
-		if (this.paraProcesar.isRegresionValida()) {
+		if ((this.procesoTendencia.getRegresion() != null) && (this.procesoTendencia.isRegresionValida())) {
 			this.procesarTendencia();
 		}
 	}
 
-	private void procesarTendencia() throws SQLException {
+	protected void procesarTendencia() throws SQLException {
 		List<TendenciaParaOperar> tendencias = this.consultarTendencias();
-		this.calcularPuntosDiferenciaInicial(tendencias);
-		tendencias.stream().forEach((ten) -> {
-			ten.setPuntosDiferenciaInicial(paraProcesar.getPuntosDiferenciaInicial());
-			ten.setRegresion(paraProcesar.getRegresion());
-			ten.setTipoOperacion(paraProcesar.getTipoOperacion());
-			ten.setVigenciaLower(ten.getFechaTendencia());
-			ten.setVigenciaHigher(DateUtil.adicionarMinutos(ten.getFechaTendencia(), 121));
-			if (paraProcesar.getTipoOperacion().equals(OperationType.BUY)) {
-				ten.setTp(paraProcesar.getRegresion().getMaxPrecio());
-				ten.setSl(paraProcesar.getRegresion().getMinPrecio());
-			} else {
-				ten.setTp(paraProcesar.getRegresion().getMinPrecio());
-				ten.setSl(paraProcesar.getRegresion().getMaxPrecio());
-			}
-		});
-		paraProcesar.setTendencias(tendencias);
+		if ((tendencias != null) && (!tendencias.isEmpty())) {
+			this.calcularPuntosDiferenciaInicial(tendencias);
+			tendencias.stream().forEach((ten) -> {
+				ten.setPuntosDiferenciaInicial(procesoTendencia.getPuntosDiferenciaInicial());
+				ten.setRegresion(procesoTendencia.getRegresion());
+				ten.setTipoOperacion(procesoTendencia.getTipoOperacion());
+				ten.setVigenciaLower(ten.getFechaTendencia());
+				ten.setVigenciaHigher(DateUtil.adicionarMinutos(ten.getFechaTendencia(), 121));
+				if (procesoTendencia.getTipoOperacion().equals(OperationType.BUY)) {
+					ten.setTp(procesoTendencia.getRegresion().getMaxPrecio());
+					ten.setSl(procesoTendencia.getRegresion().getMinPrecio());
+				} else {
+					ten.setTp(procesoTendencia.getRegresion().getMinPrecio());
+					ten.setSl(procesoTendencia.getRegresion().getMaxPrecio());
+				}
+			});
+			procesoTendencia.setTendencias(tendencias);
+		}
 	}
 
 	protected List<TendenciaParaOperar> consultarTendencias() throws SQLException {
-		List<TendenciaParaOperar> tendencias = dao.consultarTendencias(paraProcesar);
+		List<TendenciaParaOperar> tendencias = dao.consultarTendencias(procesoTendencia);
 		return tendencias;
 	}
 
 	private void calcularPuntosDiferenciaInicial(List<TendenciaParaOperar> tendencias) throws SQLException {
 		TendenciaParaOperar op = tendencias.get(0);
 		DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
-		Date fechaConsultaHistorico = datoHistoricoDAO.getFechaHistoricaMaxima(paraProcesar.getFechaBase());
+		Date fechaConsultaHistorico = datoHistoricoDAO.getFechaHistoricaMaxima(procesoTendencia.getFechaBase());
 		List<Point> historico = datoHistoricoDAO.consultarHistorico(fechaConsultaHistorico, fechaConsultaHistorico);
 		Point point = null;
 		if ((historico != null) && (!historico.isEmpty())) {
@@ -86,25 +88,29 @@ public class ExportarTendenciaManager {
 		double precioHistorico = (point.getClose() + point.getHigh() + point.getLow() + point.getOpen()) / 4;
 		double precioCalculado = op.getPrecioCalculado();
 		double diff = precioHistorico - precioCalculado;
-		paraProcesar.setPuntosDiferenciaInicial(diff);
+		procesoTendencia.setPuntosDiferenciaInicial(diff);
 	}
 
-	private void procesarRegresion() throws SQLException {
-		Regresion regresion = dao.consultarRegresion(paraProcesar);
-		paraProcesar.setRegresion(regresion);
+	protected void procesarRegresion(Regresion regresion) throws SQLException {
+		procesoTendencia.setRegresion(regresion);
 		if (regresion.getPendiente() < 0) {
-			paraProcesar.setTipoOperacion(OperationType.SELL);
+			procesoTendencia.setTipoOperacion(OperationType.SELL);
 		} else if (regresion.getPendiente() > 0) {
-			paraProcesar.setTipoOperacion(OperationType.BUY);
+			procesoTendencia.setTipoOperacion(OperationType.BUY);
 		}
 	}
 
-	public ProcesoTendenciaBuySell getParaProcesar() {
-		return paraProcesar;
+	protected void procesarRegresion() throws SQLException {
+		Regresion regresion = dao.consultarRegresion(procesoTendencia);
+		procesarRegresion(regresion);
 	}
 
-	public void setParaProcesar(ProcesoTendenciaBuySell paraProcesar) {
-		this.paraProcesar = paraProcesar;
+	public ProcesoTendenciaBuySell getProcesoTendencia() {
+		return procesoTendencia;
+	}
+
+	public void setProcesoTendencia(ProcesoTendenciaBuySell procesoTendencia) {
+		this.procesoTendencia = procesoTendencia;
 	}
 
 }

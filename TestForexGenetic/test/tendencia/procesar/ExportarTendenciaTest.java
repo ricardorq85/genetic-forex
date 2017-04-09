@@ -24,11 +24,11 @@ public class ExportarTendenciaTest extends GeneticTest {
 		String periodo = "2D";
 		String tipoTendencia = "BUY_SELL_20170204-2";
 		double tiempoTendencia = (24 * 2 / 24) * 24 * 60;
-		ProcesoTendenciaBuySell paraProcesar = new ProcesoTendenciaBuySell(periodo, tipoTendencia, tiempoTendencia,
+		ProcesoTendenciaBuySell procesoTendencia = new ProcesoTendenciaBuySell(periodo, tipoTendencia, tiempoTendencia,
 				fechaBase);
-		exporter.setParaProcesar(paraProcesar);
+		exporter.setProcesoTendencia(procesoTendencia);
 		exporter.procesar();
-		return paraProcesar;
+		return procesoTendencia;
 	}
 
 	@Test

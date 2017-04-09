@@ -22,7 +22,7 @@ import java.text.ParseException;
 
 import forex.genetic.exception.GeneticException;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
-import forex.genetic.tendencia.manager.ProcesarTendenciasCruceManager;
+import forex.genetic.tendencia.manager.ProcesarTendenciasGrupalManager;
 
 /**
  *
@@ -46,7 +46,8 @@ public class ProcesarTendenciasBuySell {
         logTime("Inicio: " + id, 1);
         setId(Long.toString(id));
         try {
-            ProcesarTendenciasBuySellManager manager = new ProcesarTendenciasCruceManager(); 
+            ProcesarTendenciasBuySellManager manager = new ProcesarTendenciasGrupalManager();
+            		//new ProcesarTendenciasIndividualManager(); 
             		//new ProcesarTendenciasBuySellManager();
             manager.procesarTendencias();
         } catch (SQLException | GeneticException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {

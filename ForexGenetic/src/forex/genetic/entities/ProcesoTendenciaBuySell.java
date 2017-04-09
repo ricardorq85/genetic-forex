@@ -15,19 +15,16 @@ import forex.genetic.util.Constants.OperationType;
  */
 public class ProcesoTendenciaBuySell {
 
-	private static final double MIN_R2 = 0.5;
-	private static final double MIN_PENDIENTE = 0.0001;
-	private static final double MIN_PORCENTAJE_CANTIDAD_REGRESION = 0.35;
-	private static final double MAX_DESVIACION = 10000.0D;
 	private double puntosDiferenciaInicial = 0.0D;
 	private String periodo = null;
 	private String tipoTendencia = null;
 	private double tiempoTendencia = 0.0D;
 	private Regresion regresion = null;
+	private Regresion regresionFiltrada = null;
 	private Date fechaBase = null;
 	private OperationType tipoOperacion = null;
 	private List<TendenciaParaOperar> tendencias;
-	
+
 	public ProcesoTendenciaBuySell(String periodo2, String tipoTendencia2, double tiempoTendencia2, Date fechaBase2) {
 		this.periodo = periodo2;
 		this.tipoTendencia = tipoTendencia2;
@@ -49,6 +46,14 @@ public class ProcesoTendenciaBuySell {
 
 	public void setRegresion(Regresion regresion) {
 		this.regresion = regresion;
+	}
+
+	public Regresion getRegresionFiltrada() {
+		return regresionFiltrada;
+	}
+
+	public void setRegresionFiltrada(Regresion regresionFiltrada) {
+		this.regresionFiltrada = regresionFiltrada;
 	}
 
 	public String getPeriodo() {
@@ -99,35 +104,16 @@ public class ProcesoTendenciaBuySell {
 		this.puntosDiferenciaInicial = puntosDiferenciaInicial;
 	}
 
-	public boolean isRegresionValida() {
-		return isR2Valido() && isPendienteValida() && isCantidadValida() && isDesviacionValida();
-	}
-
-	private boolean isDesviacionValida() {
-		return (this.regresion.getDesviacion() < MAX_DESVIACION);
-	}
-
-	private boolean isCantidadValida() {
-		return (this.regresion.getCantidad() > getCantidadMinimaRegresion());
-	}
-
-	private int getCantidadMinimaRegresion() {
-		return (int) ((this.tiempoTendencia / 60.0D) * MIN_PORCENTAJE_CANTIDAD_REGRESION);
-	}
-
-	protected boolean isPendienteValida() {
-		return Math.abs(this.regresion.getPendiente()) > MIN_PENDIENTE;
-	}
-
-	protected boolean isR2Valido() {
-		return this.regresion.getR2() > MIN_R2;
-	}
-
 	public List<TendenciaParaOperar> seleccionarTendencias(List<TendenciaParaOperar> ten) {
 		ten.removeIf((t) -> {
 			return !t.isValido();
 		});
 		return ten;
+	}
+
+	public boolean isRegresionValida() {
+		return ((this.regresion != null) && (this.regresion.isRegresionValida()) && (this.regresionFiltrada != null)
+				&& (this.regresionFiltrada.isRegresionValida()));
 	}
 
 }
