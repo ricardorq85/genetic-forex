@@ -35,10 +35,10 @@ public class ProcesarTendenciasIndividualManager extends ProcesarTendenciasBuySe
 		try {
 			Date fechaProceso = parametroFechaInicio;
 			// float[] dias = { 0.25F, 0.5F, 1.0F, 2.0F, 3.0F };
-			float[] dias = { 1.0F };
+			float[] dias = parametroDiasTendencia;
 			LogUtil.logTime("Dias=" + Arrays.toString(dias), 1);
 			while (fechaProceso.before(parametroFechaFin)) {
-				// System.out.println(DateUtil.getDateString(fechaProceso));
+				LogUtil.logTime(DateUtil.getDateString(fechaProceso), 2);
 				Date fechaBase = tendenciaDAO.nextFechaBase(fechaProceso);
 				if (fechaBase != null) {
 					for (int i = 0; i < dias.length; i++) {
@@ -60,4 +60,9 @@ public class ProcesarTendenciasIndividualManager extends ProcesarTendenciasBuySe
 		}
 	}
 
+	@Override
+	protected ExportarTendenciaManager getExporter() {
+		return new ExportarTendenciaFiltradaManager(conn);
+		//return new ExportarTendenciaFiltroFechaTendenciaFechaBaseManager(conn);
+	}
 }

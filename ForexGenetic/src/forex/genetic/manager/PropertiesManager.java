@@ -521,6 +521,18 @@ public class PropertiesManager {
         }
         return FileProperties.getPropertyString(key);
     }
+    
+    public static void setFileId(String value) {
+        try {
+            if (FileProperties.getProperties().isEmpty()) {
+                t.join();
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        fileId = value;
+        FileProperties.setProperty(Constants.FILE_ID, value);
+    }
 
     /**
      *

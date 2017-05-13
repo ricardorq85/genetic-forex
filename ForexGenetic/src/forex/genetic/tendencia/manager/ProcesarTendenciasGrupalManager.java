@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import forex.genetic.dao.TendenciaDAO;
-import forex.genetic.entities.ProcesoTendenciaBuySell;
+import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -34,7 +34,10 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		try {
 			Date fechaProceso = parametroFechaInicio;
-			float[] dias = { 0.25F / 2.0F, 0.25F, 0.5F, 1.0F, 2.0F, 3.0F, 4.0F, 5.0F, 6.0F, 7.0F, 8.0F, 9.0F, 10.0F };
+			float[] dias = parametroDiasTendencia;
+			// { 0.25F / 2.0F, 0.25F, 0.5F, 1.0F, 2.0F, 3.0F, 4.0F, 5.0F, 6.0F,
+			// 7.0F, 8.0F, 9.0F, 10.0F };
+
 			Arrays.sort(dias);
 			LogUtil.logTime("Dias=" + Arrays.toString(dias), 1);
 			while (fechaProceso.before(parametroFechaFin)) {
@@ -46,9 +49,10 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 						float tiempoTendencia = dias[i];
 						String periodo = tiempoTendencia + "D";
 						double tiempoTendenciaMinutos = (tiempoTendencia) * 24 * 60;
-						ProcesoTendenciaBuySell procesoTendencia = new ProcesoTendenciaBuySell(periodo, super.tipoTendencia,
-								tiempoTendenciaMinutos, fechaBase);
-						agrupador.add(procesarExporter(procesoTendencia).getProcesoTendencia());
+						ProcesoTendenciaFiltradaBuySell procesoTendencia = new ProcesoTendenciaFiltradaBuySell(periodo,
+								super.tipoTendencia, tiempoTendenciaMinutos, fechaBase);
+						agrupador.add((ProcesoTendenciaFiltradaBuySell) procesarExporter(procesoTendencia)
+								.getProcesoTendencia());
 					}
 					agrupador.procesar();
 					agrupador.export();
@@ -61,6 +65,11 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 		} finally {
 			JDBCUtil.close(conn);
 		}
+	}
+
+	@Override
+	protected ExportarTendenciaManager getExporter() {
+		return new ExportarTendenciaGrupalManager(conn);
 	}
 
 }

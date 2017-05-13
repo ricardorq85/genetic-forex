@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import forex.genetic.dao.TendenciaProcesoFiltroFechaTendenciaFechaBaseDAO;
-import forex.genetic.entities.Regresion;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 public class ExportarTendenciaFiltroFechaTendenciaFechaBaseManager extends ExportarTendenciaManager {
@@ -12,7 +11,7 @@ public class ExportarTendenciaFiltroFechaTendenciaFechaBaseManager extends Expor
 		super(JDBCUtil.getConnection());
 	}
 
-	public ExportarTendenciaFiltroFechaTendenciaFechaBaseManager(Connection c) throws ClassNotFoundException, SQLException {
+	public ExportarTendenciaFiltroFechaTendenciaFechaBaseManager(Connection c) {
 		super(c);
 		super.dao = new TendenciaProcesoFiltroFechaTendenciaFechaBaseDAO(c);
 	}
@@ -20,10 +19,6 @@ public class ExportarTendenciaFiltroFechaTendenciaFechaBaseManager extends Expor
 	@Override
 	protected void procesarRegresion() throws SQLException {
 		super.procesarRegresion();
-		
 	}
-	
-	
-	
 
 }

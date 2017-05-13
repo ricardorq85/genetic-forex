@@ -85,7 +85,7 @@ public abstract class TendenciaProcesoBuySellDAO extends TendenciaDAO {
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
 			resultado = this.execute(stmtConsulta, procesoTendencia);
-			regresion = TendenciaProcesoBuySellHelper.helpRegresion(resultado);
+			regresion = TendenciaProcesoBuySellHelper.helpRegresion(resultado, procesoTendencia);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);

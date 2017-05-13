@@ -26,7 +26,7 @@ public class ExportarTendenciaManager {
 		this(JDBCUtil.getConnection());
 	}
 
-	public ExportarTendenciaManager(Connection c) throws ClassNotFoundException, SQLException {
+	public ExportarTendenciaManager(Connection c) {
 		super();
 		this.conn = c;
 	}
@@ -103,6 +103,10 @@ public class ExportarTendenciaManager {
 	protected void procesarRegresion() throws SQLException {
 		Regresion regresion = dao.consultarRegresion(procesoTendencia);
 		procesarRegresion(regresion);
+	}
+	
+	protected void setParametrosRegresion(Regresion regresion) {
+		
 	}
 
 	public ProcesoTendenciaBuySell getProcesoTendencia() {

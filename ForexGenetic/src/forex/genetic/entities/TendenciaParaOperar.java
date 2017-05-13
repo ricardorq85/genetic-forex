@@ -107,7 +107,7 @@ public class TendenciaParaOperar {
 		return tp;
 	}
 
-	public void setTp(double tp) {
+	public void setTp2(double tp) {
 		double pips = this.getPips(tp);
 		double pipsConFactor = (-pips * factorTP);
 		double pipsValueConFactor = NumberUtil.round(this.precioCalculado + pipsConFactor);
@@ -120,7 +120,7 @@ public class TendenciaParaOperar {
 		this.tp = valueConDiferenciaInicial;
 	}
 
-	public void setTp2(double tp) {
+	public void setTp(double tp) {
 		double pips = this.getPips(tp);
 		double pipsConFactor = (-pips * factorTP);
 		double valueConFactor = NumberUtil.round(this.precioCalculado + pipsConFactor);
@@ -214,7 +214,7 @@ public class TendenciaParaOperar {
 				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaTendencia) + ",VIGENCIALOWER="
 				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", vigenciaLower) + ",VIGENCIAHIGHER="
 				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", vigenciaHigher) + ",R2=" + regresion.getR2()
-				+ ",DESVIACION=" + regresion.getDesviacion() + ",PENDIENTE=" + regresion.getPendiente() + ",LOTE="
+				+ ",CANTIDAD=" + regresion.getCantidad() + ",PENDIENTE=" + regresion.getPendiente() + ",LOTE="
 				+ NumberUtil.round(lote) + ",NAME=" + GeneticDelegate.getId() + ",FECHA_BASE="
 				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaBase);
 	}

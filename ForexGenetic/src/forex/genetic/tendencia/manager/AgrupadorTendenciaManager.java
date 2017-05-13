@@ -6,13 +6,14 @@ import java.util.List;
 
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
+import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
 import forex.genetic.entities.Regresion;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
 import forex.genetic.util.Constants.OperationType;
 
 public class AgrupadorTendenciaManager {
 
-	private List<ProcesoTendenciaBuySell> listaTendencias;
+	private List<ProcesoTendenciaFiltradaBuySell> listaTendencias;
 	private List<TendenciaParaOperarMaxMin> tendenciasResultado;
 	private Date fechaBase;
 
@@ -23,7 +24,7 @@ public class AgrupadorTendenciaManager {
 		this.setFechaBase(fechaBase);
 	}
 
-	public void add(ProcesoTendenciaBuySell paraProcesar) {
+	public void add(ProcesoTendenciaFiltradaBuySell paraProcesar) {
 		this.listaTendencias.add(paraProcesar);
 	}
 
@@ -33,7 +34,7 @@ public class AgrupadorTendenciaManager {
 		double maximoMaximoFiltrada = Double.NEGATIVE_INFINITY, minimoMinimoFiltrada = Double.POSITIVE_INFINITY;
 		double maximoMinimoFiltrada = Double.POSITIVE_INFINITY, minimoMaximoFiltrada = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < listaTendencias.size(); i++) {
-			ProcesoTendenciaBuySell procesoIndex = listaTendencias.get(i);
+			ProcesoTendenciaFiltradaBuySell procesoIndex = listaTendencias.get(i);
 			// Regresion regresionIndex = procesoIndex.getRegresion();
 			// if ((regresionIndex != null) &&
 			// (regresionIndex.isRegresionValida())) {
@@ -47,7 +48,7 @@ public class AgrupadorTendenciaManager {
 			// regresionIndex.getMinPrecio());
 			// }
 			Regresion regresionFiltradaIndex = procesoIndex.getRegresionFiltrada();
-			if ((regresionFiltradaIndex != null) && (regresionFiltradaIndex.isRegresionValida())) {
+			if ((regresionFiltradaIndex != null) && (regresionFiltradaIndex.isRegresionValidaMaximoMinimo())) {
 				maximoMaximoFiltrada = Math.max(maximoMaximoFiltrada, regresionFiltradaIndex.getMaxPrecio());
 				minimoMinimoFiltrada = Math.min(minimoMinimoFiltrada, regresionFiltradaIndex.getMinPrecio());
 				maximoMinimoFiltrada = Math.min(maximoMinimoFiltrada, regresionFiltradaIndex.getMaxPrecio());
@@ -100,8 +101,8 @@ public class AgrupadorTendenciaManager {
 	private boolean validarRegresion(int index) {
 		// ProcesoTendenciaBuySell procesoLastIndex = listaTendencias.get(index
 		// - 1);
-		ProcesoTendenciaBuySell procesoIndex = listaTendencias.get(index);
-		ProcesoTendenciaBuySell procesoNextIndex = listaTendencias.get(index + 1);
+		ProcesoTendenciaFiltradaBuySell procesoIndex = listaTendencias.get(index);
+		ProcesoTendenciaFiltradaBuySell procesoNextIndex = listaTendencias.get(index + 1);
 
 		// return (validarRegresion(procesoLastIndex.getRegresion()) &&
 		// validarRegresion(procesoIndex.getRegresion())

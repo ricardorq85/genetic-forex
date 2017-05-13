@@ -21,8 +21,8 @@ import java.sql.SQLException;
 import java.text.ParseException;
 
 import forex.genetic.exception.GeneticException;
+import forex.genetic.factory.ProcesarTendenciasFactory;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
-import forex.genetic.tendencia.manager.ProcesarTendenciasGrupalManager;
 
 /**
  *
@@ -46,7 +46,8 @@ public class ProcesarTendenciasBuySell {
         logTime("Inicio: " + id, 1);
         setId(Long.toString(id));
         try {
-            ProcesarTendenciasBuySellManager manager = new ProcesarTendenciasGrupalManager();
+            ProcesarTendenciasBuySellManager manager = ProcesarTendenciasFactory.createManager();  
+            		//new ProcesarTendenciasGrupalManager();
             		//new ProcesarTendenciasIndividualManager(); 
             		//new ProcesarTendenciasBuySellManager();
             manager.procesarTendencias();

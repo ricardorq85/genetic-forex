@@ -47,10 +47,12 @@ public class ForexInsertDatosHistoricos {
 		PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
 		setOut(out);
 		setErr(out);
+		
 		PoblacionDelegate delegate = new PoblacionDelegate();
 		logTime("Init Insert Datos Historicos", 1);
 		delegate.cargarDatosHistoricos();
 		logTime("End Insert Datos Historicos", 1);
+		
 		logTime("Lanzando Procesos alternos...", 1);
 		try {
 			ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(id);

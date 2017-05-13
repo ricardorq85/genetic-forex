@@ -3,14 +3,6 @@ package forex.genetic.entities;
 import java.util.Date;
 
 public class Regresion {
-
-	private static final double MIN_R2 = 0.5D;
-	private static final double MAX_R2 = 1.1D;
-	private static final double MIN_PENDIENTE = 0.0001;
-	private static final double MAX_PENDIENTE = 1.1D;
-	private static final double MIN_PORCENTAJE_CANTIDAD_REGRESION = 0.2D;
-	private static final double MAX_DESVIACION = 10000.0D;
-
 	private double tiempoTendencia;
 	private double r2;
 	private double pendiente;
@@ -20,25 +12,37 @@ public class Regresion {
 	private int cantidad;
 	private Date minFechaTendencia;
 	private Date maxFechaTendencia;
+	private double minimoR2;
+	private double maximoR2;
+	private double minimoPendiente;
+	private double maximoPendiente;
+	private double minimoPorcentajeCantidadRegresion;
+	private double maximoDesviacion;
 
 	protected boolean isR2Valido() {
-		return (this.getR2() > MIN_R2 && this.getR2() < MAX_R2);
+		return (this.getR2() > minimoR2 && this.getR2() < maximoR2);
 	}
 
 	protected boolean isPendienteValida() {
-		return (Math.abs(this.getPendiente()) > MIN_PENDIENTE && Math.abs(this.getPendiente()) < MAX_PENDIENTE);
+		return (Math.abs(this.getPendiente()) > minimoPendiente && Math.abs(this.getPendiente()) < maximoPendiente);
 	}
 
 	private int getCantidadMinimaRegresion() {
-		return (int) (((this.getTiempoTendencia() / 60.0D)) * MIN_PORCENTAJE_CANTIDAD_REGRESION);
+		return (int) (((this.getTiempoTendencia() / 60.0D)) * minimoPorcentajeCantidadRegresion);
 	}
 
 	public boolean isRegresionValida() {
 		return isR2Valido() && isPendienteValida() && isCantidadValida() && isDesviacionValida();
 	}
 
+	public boolean isRegresionValidaMaximoMinimo() {
+		// return isR2Valido() && isPendienteValida() && isCantidadValida() &&
+		// isDesviacionValida();
+		return (this.cantidad > 0);
+	}
+
 	private boolean isDesviacionValida() {
-		return (this.getDesviacion() < MAX_DESVIACION);
+		return (this.getDesviacion() < maximoDesviacion);
 	}
 
 	private boolean isCantidadValida() {
@@ -115,6 +119,30 @@ public class Regresion {
 
 	public void setMaxFechaTendencia(Date maxFechaTendencia) {
 		this.maxFechaTendencia = maxFechaTendencia;
+	}
+
+	public void setMinimoR2(double minR2) {
+		this.minimoR2 = minR2;
+	}
+
+	public void setMaximoR2(double maxR2) {
+		this.maximoR2 = maxR2;
+	}
+
+	public void setMinimoPendiente(double minPendiente) {
+		this.minimoPendiente = minPendiente;
+	}
+
+	public void setMaximoPendiente(double maxPendiente) {
+		this.maximoPendiente = maxPendiente;
+	}
+
+	public void setMinimoPorcetnajeCantidadRegresion(double minPorcentajeCantidadRegresion) {
+		this.minimoPorcentajeCantidadRegresion = minPorcentajeCantidadRegresion;
+	}
+
+	public void setMaximoDesviacion(double maxDesviacion) {
+		this.maximoDesviacion = maxDesviacion;
 	}
 
 }

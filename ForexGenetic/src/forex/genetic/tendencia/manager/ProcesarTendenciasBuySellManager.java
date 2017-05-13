@@ -4,7 +4,6 @@
  */
 package forex.genetic.tendencia.manager;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -22,15 +21,15 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class ProcesarTendenciasBuySellManager {
+public abstract class ProcesarTendenciasBuySellManager {
 
 	protected Connection conn = null;
 	protected ParametroDAO parametroDAO;
 	protected Date parametroFechaInicio;
 	protected int parametroStep;
 	protected Date parametroFechaFin;
-	protected String parametroTipoExportacion;
 	protected String tipoTendencia;
+	protected float[] parametroDiasTendencia;
 
 	public ProcesarTendenciasBuySellManager() throws SQLException, ClassNotFoundException {
 		conn = JDBCUtil.getConnection();
@@ -40,11 +39,25 @@ public class ProcesarTendenciasBuySellManager {
 		parametroFechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");
 		parametroFechaFin = parametroDAO.getDateValorParametro("FECHA_FIN_PROCESAR_TENDENCIA");
 		parametroStep = parametroDAO.getIntValorParametro("STEP_PROCESAR_TENDENCIA");
-		parametroTipoExportacion = parametroDAO.getValorParametro("TIPO_EXPORTACION_TENDENCIA");
-		LogUtil.logTime(parametroTipoExportacion, 2);
+		parametroDiasTendencia = convertArrayStringToFloat(
+				parametroDAO.getArrayStringParametro("DIAS_EXPORTACION_TENDENCIA"));
+
 		LogUtil.logTime("Step=" + (parametroStep), 1);
 		LogUtil.logTime(
 				DateUtil.getDateString(parametroFechaInicio) + " - " + DateUtil.getDateString(parametroFechaFin), 1);
+	}
+
+	private float[] convertArrayStringToFloat(String[] arrayStringParametro) {
+		if ((arrayStringParametro == null) || (arrayStringParametro.length == 0)) {
+			throw new IllegalArgumentException(
+					"Dias para procesar tendencia sin definir: parametro DIAS_EXPORTACION_TENDENCIA");
+		}
+		float[] floatArray = new float[arrayStringParametro.length];
+		for (int i = 0; i < arrayStringParametro.length; i++) {
+			String strValue = arrayStringParametro[i];
+			floatArray[i] = Float.parseFloat(strValue);
+		}
+		return floatArray;
 	}
 
 	public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, GeneticException,
@@ -69,21 +82,13 @@ public class ProcesarTendenciasBuySellManager {
 	protected ExportarTendenciaManager procesarExporter(ProcesoTendenciaBuySell paraProcesar)
 			throws ClassNotFoundException, SQLException, NoSuchMethodException, InstantiationException,
 			IllegalAccessException, InvocationTargetException {
-		ExportarTendenciaManager exporter = createExporter();
+		ExportarTendenciaManager exporter = getExporter();
 		exporter.setProcesoTendencia(paraProcesar);
 		exporter.procesar();
-		//exporter.export();
+		// exporter.export();
 		return exporter;
 	}
 
-	protected ExportarTendenciaManager createExporter() throws ClassNotFoundException, NoSuchMethodException,
-			InstantiationException, IllegalAccessException, InvocationTargetException {
-		Class<?> exporterClass = Class.forName(parametroTipoExportacion);
-		Constructor<?> exporterConstructor = exporterClass.getConstructor(java.sql.Connection.class);
-		// ExportarTendenciaManager exporter = new
-		// ExportarTendenciaManager(this.conn);
-		ExportarTendenciaManager exporter = (ExportarTendenciaManager) exporterConstructor.newInstance(this.conn);
-		return exporter;
-	}
+	protected abstract ExportarTendenciaManager getExporter();
 
 }

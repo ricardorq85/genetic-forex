@@ -5,15 +5,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.Regresion;
 import forex.genetic.entities.TendenciaParaOperar;
 
 public class TendenciaProcesoBuySellHelper {
 
-	public static Regresion helpRegresion(ResultSet resultado) throws SQLException {
+	public static Regresion helpRegresion(ResultSet resultado, ProcesoTendenciaBuySell procesoTendencia) throws SQLException {
 		Regresion regresion = null;
 		if (resultado.next()) {
 			regresion = new Regresion();
+			regresion.setTiempoTendencia(procesoTendencia.getTiempoTendencia());
 			regresion.setR2(resultado.getDouble("R2"));
 			regresion.setPendiente(resultado.getDouble("PENDIENTE"));
 			regresion.setDesviacion(resultado.getDouble("DESV"));
