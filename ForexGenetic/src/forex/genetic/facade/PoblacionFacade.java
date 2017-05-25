@@ -26,81 +26,89 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class PoblacionFacade implements IGeneticFacade{
+public class PoblacionFacade implements IGeneticFacade {
 
-    /**
-     * @throws SQLException 
-     * @throws ClassNotFoundException 
-     *
-     */
-    public void process() {
-        PoblacionManagerBD manager = new PoblacionManagerBD();
-        manager.process();
-    }
+	/**
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 *
+	 */
+	public void process() {
+		this.process(false);
+	}
 
-    /**
-     *
-     */
-    public void process2() {
-        List<Thread> threads = new ArrayList<Thread>();
-        try {
-            int countFiltro = 1;
-            String filtroAdicional = PropertiesManager.getPropertyString("FILTRO_ADICIONAL_" + countFiltro);
-            while (filtroAdicional != null) {
-                Connection conn = JDBCUtil.getConnection();
-                ProcesoPoblacionDAO dao = new ProcesoPoblacionDAO(conn);
-                List<String> individuos = null;//dao.getIndividuos(filtroAdicional);
-                ProcesarIndividuoThread procesarIndividuoThread = new ProcesarIndividuoThread("FILTRO_ADICIONAL_" + countFiltro, dao, individuos);
-                procesarIndividuoThread.start();
-                threads.add(procesarIndividuoThread);
+	public void process(boolean onlyOne) {
+		PoblacionManagerBD manager = new PoblacionManagerBD();
+		manager.process(onlyOne);
+	}
 
-                countFiltro++;
-                try {
-                    filtroAdicional = PropertiesManager.getPropertyString("FILTRO_ADICIONAL_" + countFiltro);
-                } catch (IllegalArgumentException ex) {
-                    filtroAdicional = null;
-                }
-            }
-            for (int i = 0; i < threads.size(); i++) {
-                Thread thread = threads.get(i);
-                thread.join();
-            }
-        } catch (InterruptedException ex) {
-            Logger.getLogger(PoblacionFacade.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException | SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
+	/**
+	 *
+	 */
+	public void process2() {
+		List<Thread> threads = new ArrayList<Thread>();
+		try {
+			int countFiltro = 1;
+			String filtroAdicional = PropertiesManager.getPropertyString("FILTRO_ADICIONAL_" + countFiltro);
+			while (filtroAdicional != null) {
+				Connection conn = JDBCUtil.getConnection();
+				ProcesoPoblacionDAO dao = new ProcesoPoblacionDAO(conn);
+				List<String> individuos = null;// dao.getIndividuos(filtroAdicional);
+				ProcesarIndividuoThread procesarIndividuoThread = new ProcesarIndividuoThread(
+						"FILTRO_ADICIONAL_" + countFiltro, dao, individuos);
+				procesarIndividuoThread.start();
+				threads.add(procesarIndividuoThread);
 
-    /**
-     *
-     * @param indicadorController
-     * @param poblacion
-     */
-    public void cargarPoblacion(IndicadorController indicadorController, Poblacion poblacion) {
-        Connection conn = null;
-        try {
-            conn = JDBCUtil.getConnection();
-            IndividuoDAO dao = new IndividuoDAO(conn);
+				countFiltro++;
+				try {
+					filtroAdicional = PropertiesManager.getPropertyString("FILTRO_ADICIONAL_" + countFiltro);
+				} catch (IllegalArgumentException ex) {
+					filtroAdicional = null;
+				}
+			}
+			for (int i = 0; i < threads.size(); i++) {
+				Thread thread = threads.get(i);
+				thread.join();
+			}
+		} catch (InterruptedException ex) {
+			Logger.getLogger(PoblacionFacade.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (ClassNotFoundException | SQLException ex) {
+			ex.printStackTrace();
+		}
+	}
 
-            List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
-            int countError = 0;
-            for (IndividuoEstrategia individuo1 : individuos) {
-                try {
-                    IndividuoEstrategia individuo = individuo1;
-                    dao.insertIndividuo(individuo);
-                    dao.insertIndicadorIndividuo(indicadorController, individuo);
-                } catch (SQLException ex) {
-                    //ex.printStackTrace();
-                    countError++;
-                }
-            }            
-            conn.commit();
-            LogUtil.logTime("Individuos cargados=" + (individuos.size() - countError) + ";Individuos con error=" + countError, 1);
-        } catch (ClassNotFoundException | SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            JDBCUtil.close(conn);
-        }
-    }
+	/**
+	 *
+	 * @param indicadorController
+	 * @param poblacion
+	 */
+	public void cargarPoblacion(IndicadorController indicadorController, Poblacion poblacion) {
+		Connection conn = null;
+		try {
+			conn = JDBCUtil.getConnection();
+			IndividuoDAO dao = new IndividuoDAO(conn);
+
+			List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
+			int countError = 0;
+			for (IndividuoEstrategia individuo1 : individuos) {
+				try {
+					IndividuoEstrategia individuo = individuo1;
+					dao.insertIndividuo(individuo);
+					dao.insertIndicadorIndividuo(indicadorController, individuo);
+				} catch (SQLException ex) {
+					// ex.printStackTrace();
+					countError++;
+				}
+			}
+			conn.commit();
+			LogUtil.logTime(
+					"Individuos cargados=" + (individuos.size() - countError) + ";Individuos con error=" + countError,
+					1);
+		} catch (ClassNotFoundException | SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			JDBCUtil.close(conn);
+		}
+	}
+
 }

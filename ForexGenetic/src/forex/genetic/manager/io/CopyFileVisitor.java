@@ -7,6 +7,7 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +42,8 @@ public class CopyFileVisitor implements FileVisitor<Path> {
 
 	@Override
 	public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-		Files.copy(file, targetPath.resolve(sourcePath.relativize(file)));
-		Files.move(file, processedPath.resolve(sourcePath.relativize(file)));
+		Files.copy(file, targetPath.resolve(sourcePath.relativize(file)), StandardCopyOption.REPLACE_EXISTING);
+		Files.move(file, processedPath.resolve(sourcePath.relativize(file)), StandardCopyOption.REPLACE_EXISTING);
 		copiedFiles.add(file);
 		return FileVisitResult.CONTINUE;
 	}

@@ -13,25 +13,28 @@ import forex.genetic.facade.PoblacionFacade;
  *
  * @author ricardorq85
  */
-public class GeneticDelegateBD extends GeneticDelegate
-{
+public class GeneticDelegateBD extends GeneticDelegate {
 
-    /**
-     *
-     * @throws FileNotFoundException
-     */
-    public GeneticDelegateBD() throws FileNotFoundException {
-    	super(false);
-    }
+	/**
+	 *
+	 * @throws FileNotFoundException
+	 */
+	public GeneticDelegateBD() throws FileNotFoundException {
+		super(false);
+	}
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public Poblacion process() {
-        PoblacionFacade facade = new PoblacionFacade();
-        facade.process();
-        return null;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	@Override
+	public Poblacion process() {
+		this.process(false);
+		return null;
+	}
+
+	public void process(boolean onlyOne) {
+		PoblacionFacade facade = new PoblacionFacade();
+		facade.process(onlyOne);
+	}
 }

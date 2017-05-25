@@ -15,6 +15,7 @@ public class AgrupadorTendenciaManager {
 
 	private List<ProcesoTendenciaFiltradaBuySell> listaTendencias;
 	private List<TendenciaParaOperarMaxMin> tendenciasResultado;
+
 	private Date fechaBase;
 
 	public AgrupadorTendenciaManager(Date fechaBase) {
@@ -35,18 +36,6 @@ public class AgrupadorTendenciaManager {
 		double maximoMinimoFiltrada = Double.POSITIVE_INFINITY, minimoMaximoFiltrada = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < listaTendencias.size(); i++) {
 			ProcesoTendenciaFiltradaBuySell procesoIndex = listaTendencias.get(i);
-			// Regresion regresionIndex = procesoIndex.getRegresion();
-			// if ((regresionIndex != null) &&
-			// (regresionIndex.isRegresionValida())) {
-			// maximoMaximo = Math.max(maximoMaximo,
-			// regresionIndex.getMaxPrecio());
-			// minimoMinimo = Math.min(minimoMinimo,
-			// regresionIndex.getMinPrecio());
-			// maximoMinimo = Math.min(maximoMinimo,
-			// regresionIndex.getMaxPrecio());
-			// minimoMaximo = Math.max(minimoMaximo,
-			// regresionIndex.getMinPrecio());
-			// }
 			Regresion regresionFiltradaIndex = procesoIndex.getRegresionFiltrada();
 			if ((regresionFiltradaIndex != null) && (regresionFiltradaIndex.isRegresionValidaMaximoMinimo())) {
 				maximoMaximoFiltrada = Math.max(maximoMaximoFiltrada, regresionFiltradaIndex.getMaxPrecio());
@@ -55,12 +44,6 @@ public class AgrupadorTendenciaManager {
 				minimoMaximoFiltrada = Math.max(minimoMaximoFiltrada, regresionFiltradaIndex.getMinPrecio());
 			}
 		}
-		// DoubleInterval extremos = new DoubleInterval((minimoMinimo +
-		// minimoMinimoFiltrada) / 2,
-		// (maximoMaximo + maximoMaximoFiltrada) / 2);
-		// DoubleInterval extremosIntermedios = new DoubleInterval((minimoMaximo
-		// + minimoMaximoFiltrada) / 2,
-		// (maximoMinimo + maximoMinimoFiltrada) / 2);
 		DoubleInterval extremos = new DoubleInterval((minimoMinimoFiltrada), (maximoMaximoFiltrada));
 		DoubleInterval extremosIntermedios = new DoubleInterval((minimoMaximoFiltrada), (maximoMinimoFiltrada));
 		procesarExtremos(extremos, extremosIntermedios);
@@ -125,12 +108,12 @@ public class AgrupadorTendenciaManager {
 			precio = extremos.getLowInterval();
 			sl = precio;
 			tp = extremosIntermedios.getHighInterval();
-			//tp = extremos.getHighInterval();
+			// tp = extremos.getHighInterval();
 		} else if (OperationType.SELL.equals(procesoIndex.getTipoOperacion())) {
 			precio = extremos.getHighInterval();
 			sl = precio;
 			tp = extremosIntermedios.getLowInterval();
-			//tp = extremos.getLowInterval();
+			// tp = extremos.getLowInterval();
 		}
 
 		tendencia = new TendenciaParaOperarMaxMin();
@@ -163,6 +146,14 @@ public class AgrupadorTendenciaManager {
 				System.out.println(ten.toString());
 			});
 		}
+	}
+
+	public List<TendenciaParaOperarMaxMin> getTendenciasResultado() {
+		return tendenciasResultado;
+	}
+
+	public void setTendenciasResultado(List<TendenciaParaOperarMaxMin> tendenciasResultado) {
+		this.tendenciasResultado = tendenciasResultado;
 	}
 
 }

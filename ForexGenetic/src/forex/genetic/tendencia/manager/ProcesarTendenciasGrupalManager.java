@@ -4,14 +4,20 @@
  */
 package forex.genetic.tendencia.manager;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import forex.genetic.dao.TendenciaDAO;
 import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
+import forex.genetic.entities.TendenciaParaOperarMaxMin;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -24,15 +30,21 @@ import forex.genetic.util.jdbc.JDBCUtil;
 public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellManager {
 
 	private TendenciaDAO tendenciaDAO;
+	private List<TendenciaParaOperarMaxMin> tendenciasResultado;
 
 	public ProcesarTendenciasGrupalManager() throws ClassNotFoundException, SQLException {
 		super();
 		tendenciaDAO = new TendenciaDAO(conn);
+		tendenciasResultado = new ArrayList<>();
 	}
 
 	public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, GeneticException,
 			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		try {
+			LogUtil.logTime("Step=" + (parametroStep), 1);
+			LogUtil.logTime(
+					DateUtil.getDateString(parametroFechaInicio) + " - " + DateUtil.getDateString(parametroFechaFin),
+					1);
 			Date fechaProceso = parametroFechaInicio;
 			float[] dias = parametroDiasTendencia;
 			// { 0.25F / 2.0F, 0.25F, 0.5F, 1.0F, 2.0F, 3.0F, 4.0F, 5.0F, 6.0F,
@@ -56,6 +68,7 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 					}
 					agrupador.procesar();
 					agrupador.export();
+					this.tendenciasResultado.addAll(agrupador.getTendenciasResultado());
 					fechaProceso = DateUtil.calcularFechaXDuracion(parametroStep, fechaBase);
 				} else {
 					LogUtil.logTime("Fecha base NULL", 1);
@@ -72,4 +85,21 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 		return new ExportarTendenciaGrupalManager(conn);
 	}
 
+	@Override
+	public void export(Path path) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		List<TendenciaParaOperarMaxMin> tendencias = this.tendenciasResultado;
+		if (tendencias != null) {
+			tendencias.stream().forEach((ten) -> {
+				// System.out.println("INDEX=" + (index)+ "," + ten.toString());
+				try {
+					sb.append(ten.toString());
+					sb.append("\n");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		}
+		Files.write(path, sb.toString().getBytes());
+	}
 }

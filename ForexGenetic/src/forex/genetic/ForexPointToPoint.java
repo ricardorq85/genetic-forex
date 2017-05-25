@@ -21,9 +21,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 
 import forex.genetic.exception.GeneticException;
-import forex.genetic.factory.ProcesarTendenciasFactory;
 import forex.genetic.mediator.PointToPointMediator;
-import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
 
 /**
  *
@@ -50,7 +48,7 @@ public class ForexPointToPoint {
         	PointToPointMediator mediator = new PointToPointMediator();
         	mediator.init();
         	mediator.start();
-        } catch (SQLException ex) {
+        } catch (SQLException | InstantiationException | IllegalAccessException | InvocationTargetException | GeneticException ex) {
             ex.printStackTrace();
         }
         logTime("Fin: " + id, 1);

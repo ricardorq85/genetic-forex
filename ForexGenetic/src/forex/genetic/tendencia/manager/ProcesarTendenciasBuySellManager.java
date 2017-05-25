@@ -4,7 +4,9 @@
  */
 package forex.genetic.tendencia.manager;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -41,10 +43,6 @@ public abstract class ProcesarTendenciasBuySellManager {
 		parametroStep = parametroDAO.getIntValorParametro("STEP_PROCESAR_TENDENCIA");
 		parametroDiasTendencia = convertArrayStringToFloat(
 				parametroDAO.getArrayStringParametro("DIAS_EXPORTACION_TENDENCIA"));
-
-		LogUtil.logTime("Step=" + (parametroStep), 1);
-		LogUtil.logTime(
-				DateUtil.getDateString(parametroFechaInicio) + " - " + DateUtil.getDateString(parametroFechaFin), 1);
 	}
 
 	private float[] convertArrayStringToFloat(String[] arrayStringParametro) {
@@ -63,6 +61,10 @@ public abstract class ProcesarTendenciasBuySellManager {
 	public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, GeneticException,
 			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		try {
+			LogUtil.logTime("Step=" + (parametroStep), 1);
+			LogUtil.logTime(
+					DateUtil.getDateString(parametroFechaInicio) + " - " + DateUtil.getDateString(parametroFechaFin),
+					1);
 			Date fechaProceso = parametroFechaInicio;
 			while (fechaProceso.before(parametroFechaFin)) {
 				System.out.println(DateUtil.getDateString(fechaProceso));
@@ -90,5 +92,25 @@ public abstract class ProcesarTendenciasBuySellManager {
 	}
 
 	protected abstract ExportarTendenciaManager getExporter();
+
+	public void export(Path path) throws IOException {
+
+	}
+
+	public Date getParametroFechaInicio() {
+		return parametroFechaInicio;
+	}
+
+	public void setParametroFechaInicio(Date parametroFechaInicio) {
+		this.parametroFechaInicio = parametroFechaInicio;
+	}
+
+	public Date getParametroFechaFin() {
+		return parametroFechaFin;
+	}
+
+	public void setParametroFechaFin(Date parametroFechaFin) {
+		this.parametroFechaFin = parametroFechaFin;
+	}
 
 }

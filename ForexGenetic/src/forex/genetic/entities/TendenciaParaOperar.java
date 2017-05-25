@@ -10,14 +10,8 @@ import forex.genetic.util.Constants.OperationType;
 
 public class TendenciaParaOperar {
 
-	protected float factorTP = 0.5F;
-	protected float factorSL = 1.0F;
-	protected int minPipsTP = 200;
-	protected int minPipsSL = 800;
-
 	private String period = null;
 	private OperationType tipoOperacion = null;
-	private double puntosDiferenciaInicial;
 	private Date fechaBase = null;
 	private Date fechaTendencia = null;
 	private Date vigenciaLower = null;
@@ -26,8 +20,13 @@ public class TendenciaParaOperar {
 	protected double tp = 0.0D;
 	protected double sl = 0.0D;
 	private Regresion regresion;
+	private double puntosDiferenciaInicial;
 
 	private double lote = 0.01F;
+	protected float factorTP = 0.5F;
+	protected float factorSL = 1.0F;
+	protected int minPipsTP = 200;
+	protected int minPipsSL = 800;
 
 	public TendenciaParaOperar() {
 

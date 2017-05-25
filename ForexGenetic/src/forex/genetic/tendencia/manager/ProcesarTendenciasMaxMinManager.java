@@ -108,7 +108,7 @@ public class ProcesarTendenciasMaxMinManager {
                     procesoTendencia.setFechaBase(fechaProceso);
                     procesoTendencia.setFechaBaseFin(fechaProcesoFinal);
                     procesoTendencia.setTipo("COMPLETO");
-                    procesoTendenciaDAO.deleteTendencia(procesoTendencia);
+                    procesoTendenciaDAO.deleteTendenciaProcesada(procesoTendencia);
                     procesoTendenciaDAO.insertTendenciaProcesada(procesoTendencia);
                     conn.commit();
                 }
@@ -116,7 +116,7 @@ public class ProcesarTendenciasMaxMinManager {
                     procesoTendenciaBase.setFechaBase(fechaProceso);
                     procesoTendenciaBase.setFechaBaseFin(fechaProcesoFinal);
                     procesoTendenciaBase.setTipo("BASE");
-                    procesoTendenciaDAO.deleteTendencia(procesoTendenciaBase);
+                    procesoTendenciaDAO.deleteTendenciaProcesada(procesoTendenciaBase);
                     procesoTendenciaDAO.insertTendenciaProcesada(procesoTendenciaBase);
                     conn.commit();
                 }

@@ -61,7 +61,7 @@ public class ProcesosAlternosProxy {
 		while (!managers.isEmpty()) {
 			int index = 0; // random.nextInt(managers.size());
 			BorradoManager manager = managers.get(index);
-			logTime(manager.getClass().getName(), 1);
+			logTime(manager.getClass().getName(), 2);
 			manager.borrarIndividuos();
 			managers.remove(index);
 		}
@@ -87,7 +87,7 @@ public class ProcesosAlternosProxy {
 			while (!managers.isEmpty()) {
 				// int index = random.nextInt(managers.size());
 				BorradoManager manager = managers.get(0);
-				logTime(manager.getClass().getName(), 1);
+				logTime(manager.getClass().getName(), 2);
 				manager.validarYBorrarIndividuo(individuo);
 				managers.remove(index);
 			}
@@ -97,7 +97,7 @@ public class ProcesosAlternosProxy {
 			JDBCUtil.rollback(conn);
 		} finally {
 			JDBCUtil.close(conn);
-			logTime("Fin Procesos alternos:" + individuo.getId(), 1);
+			logTime("Fin Procesos alternos:" + individuo.getId(), 2);
 		}
 	}
 }
