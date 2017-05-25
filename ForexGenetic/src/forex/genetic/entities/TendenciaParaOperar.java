@@ -10,6 +10,7 @@ import forex.genetic.util.Constants.OperationType;
 
 public class TendenciaParaOperar {
 
+	private String tipoExportacion = "ProcesarTendenciasGrupalManager";
 	private String period = null;
 	private OperationType tipoOperacion = null;
 	private Date fechaBase = null;
@@ -203,6 +204,14 @@ public class TendenciaParaOperar {
 
 	public void setRegresion(Regresion regresion) {
 		this.regresion = regresion;
+	}
+
+	public String getTipoExportacion() {
+		return tipoExportacion;
+	}
+
+	public void setTipoExportacion(String tipoExportacion) {
+		this.tipoExportacion = tipoExportacion;
 	}
 
 	@Override
