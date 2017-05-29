@@ -6,10 +6,12 @@ package forex.genetic.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import forex.genetic.entities.Tendencia;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.util.jdbc.JDBCUtil;
 
@@ -34,12 +36,12 @@ public class TendenciaParaOperarDAO {
 	 * @param tendencia
 	 * @throws SQLException
 	 */
-	public void insertTendenciaProcesada(TendenciaParaOperar tendencia) throws SQLException {
+	public void insertTendenciaParaOperar(TendenciaParaOperar tendencia) throws SQLException {
 		String sql = "INSERT INTO TENDENCIA_PARA_OPERAR (" + " TIPO_EXPORTACION, PERIODO, TIPO_OPERACION, "
 				+ " FECHA_BASE, FECHA_TENDENCIA, VIGENCIA_LOWER,"
 				+ " VIGENCIA_HIGHER, PRECIO_CALCULADO, TAKE_PROFIT, STOP_LOSS,"
 				+ " TIEMPO_TENDENCIA, R2, PENDIENTE, DESVIACION, MIN_PRECIO, MAX_PRECIO," + " CANTIDAD, FECHA) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		int index = 1;
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -67,56 +69,70 @@ public class TendenciaParaOperarDAO {
 			JDBCUtil.close(statement);
 		}
 	}
-//
-//	/**
-//	 *
-//	 * @param tendencia
-//	 * @throws SQLException
-//	 */
-//	public void updateTendenciaProcesada(TendenciaParaOperar tendencia) throws SQLException {
-//		String sql = "UPDATE TENDENCIA_PROCESADA SET VALOR_PROBABLE=?, FECHA_BASE_FIN=?, "
-//				+ " PRECIO_MINIMO=?, PRECIO_MAXIMO=?, CANTIDAD=?, "
-//				+ " FECHA_MINIMA=?, FECHA_MAXIMA=?, PRECIO_BASE_PROMEDIO=?, "
-//				+ " FECHA=? WHERE FECHA_BASE=? AND TIPO=?";
-//
-//		PreparedStatement statement = connection.prepareStatement(sql);
-//		try {
-//			int index = 1;
-//			statement.setDouble(index++, tendencia.getValorMasProbable());
-//			statement.setTimestamp(index++, new Timestamp(tendencia.getFechaBaseFin().getTime()));
-//			statement.setDouble(index++, tendencia.getIntervaloPrecio().getLowInterval());
-//			statement.setDouble(index++, tendencia.getIntervaloPrecio().getHighInterval());
-//			statement.setInt(index++, tendencia.getCantidad());
-//			statement.setTimestamp(index++, new Timestamp(tendencia.getIntervaloFecha().getLowInterval().getTime()));
-//			statement.setTimestamp(index++, new Timestamp(tendencia.getIntervaloFecha().getHighInterval().getTime()));
-//			statement.setDouble(index++, tendencia.getPrecioBasePromedio());
-//			statement.setTimestamp(index++, new Timestamp(new Date().getTime()));
-//
-//			statement.setTimestamp(index++, new Timestamp(tendencia.getFechaBase().getTime()));
-//			statement.setString(index++, tendencia.getTipo());
-//
-//			statement.executeUpdate();
-//		} finally {
-//			JDBCUtil.close(statement);
-//		}
-//	}
-//
-//	/**
-//	 *
-//	 * @param tendencia
-//	 * @throws SQLException
-//	 */
-//	public void deleteTendenciaProcesada(TendenciaParaOperar tendencia) throws SQLException {
-//		String sql = "DELETE FROM TENDENCIA_PROCESADA WHERE FECHA_BASE=? AND TIPO=?";
-//		PreparedStatement statement = null;
-//		try {
-//			statement = this.connection.prepareStatement(sql);
-//			statement.setTimestamp(1, new Timestamp(tendencia.getFechaBase().getTime()));
-//			statement.setString(2, tendencia.getTipo());
-//
-//			statement.executeUpdate();
-//		} finally {
-//			JDBCUtil.close(statement);
-//		}
-//	}
+
+	/**
+	 *
+	 * @param tendencia
+	 * @throws SQLException
+	 */
+	public void updateTendenciaParaProcesar(TendenciaParaOperar tendencia) throws SQLException {
+		String sql = "UPDATE TENDENCIA_PARA_OPERAR SET  " + " TIPO_OPERACION=?, FECHA_TENDENCIA=?, VIGENCIA_LOWER=?,"
+				+ " VIGENCIA_HIGHER=?, PRECIO_CALCULADO=?, TAKE_PROFIT=?, STOP_LOSS=?,"
+				+ " TIEMPO_TENDENCIA=?, R2=?, PENDIENTE=?, DESVIACION=?, MIN_PRECIO=?, MAX_PRECIO=?,"
+				+ " CANTIDAD=?, FECHA=?" + " WHERE TIPO_EXPORTACION=? AND PERIODO=? AND FECHA_BASE=?";
+
+		PreparedStatement statement = connection.prepareStatement(sql);
+		try {
+			int index = 1;
+			statement.setString(index++, tendencia.getTipoOperacion().name());
+			statement.setTimestamp(index++, new Timestamp(tendencia.getFechaTendencia().getTime()));
+			statement.setTimestamp(index++, new Timestamp(tendencia.getVigenciaLower().getTime()));
+			statement.setTimestamp(index++, new Timestamp(tendencia.getVigenciaHigher().getTime()));
+			statement.setDouble(index++, tendencia.getPrecioCalculado());
+			statement.setDouble(index++, tendencia.getTp());
+			statement.setDouble(index++, tendencia.getSl());
+			statement.setDouble(index++, tendencia.getRegresion().getTiempoTendencia());
+			statement.setDouble(index++, tendencia.getRegresion().getR2());
+			statement.setDouble(index++, tendencia.getRegresion().getPendiente());
+			statement.setDouble(index++, tendencia.getRegresion().getDesviacion());
+			statement.setDouble(index++, tendencia.getRegresion().getMinPrecio());
+			statement.setDouble(index++, tendencia.getRegresion().getMaxPrecio());
+			statement.setInt(index++, tendencia.getRegresion().getCantidad());
+			statement.setTimestamp(index++, new Timestamp(new Date().getTime()));
+
+			statement.setString(index++, tendencia.getTipoExportacion());
+			statement.setString(index++, tendencia.getPeriod());
+			statement.setTimestamp(index++, new Timestamp(tendencia.getFechaBase().getTime()));
+
+			statement.executeUpdate();
+		} finally {
+			JDBCUtil.close(statement);
+		}
+	}
+
+	public boolean exists(TendenciaParaOperar tendencia) throws SQLException {
+		boolean exists = false;
+		String sql = "SELECT COUNT(*) FROM TENDENCIA_PARA_OPERAR "
+				+ " WHERE TIPO_EXPORTACION=? AND PERIODO=? AND FECHA_BASE=?";
+		PreparedStatement statement = null;
+		ResultSet resultado = null;
+
+		try {
+			int index = 1;
+			statement = this.connection.prepareStatement(sql);
+			statement.setString(index++, tendencia.getTipoExportacion());
+			statement.setString(index++, tendencia.getPeriod());
+			statement.setTimestamp(index++, new Timestamp(tendencia.getFechaBase().getTime()));
+
+			resultado = statement.executeQuery();
+
+			if (resultado.next()) {
+				exists = (resultado.getInt(1) > 0);
+			}
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(statement);
+		}
+		return exists;
+	}
 }

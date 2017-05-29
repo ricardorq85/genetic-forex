@@ -1,25 +1,34 @@
 package forex.genetic.tendencia.manager;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import forex.genetic.dao.TendenciaParaOperarDAO;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
 import forex.genetic.entities.Regresion;
+import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
 import forex.genetic.util.Constants.OperationType;
+import forex.genetic.util.jdbc.JDBCUtil;
 
 public class AgrupadorTendenciaManager {
 
 	private List<ProcesoTendenciaFiltradaBuySell> listaTendencias;
 	private List<TendenciaParaOperarMaxMin> tendenciasResultado;
+	private Connection conn;
+	private TendenciaParaOperarDAO tendenciaParaOperarDAO;
 
 	private Date fechaBase;
 
-	public AgrupadorTendenciaManager(Date fechaBase) {
+	public AgrupadorTendenciaManager(Date fechaBase, Connection conn) {
 		super();
+		this.conn = conn;
+		this.tendenciaParaOperarDAO = new TendenciaParaOperarDAO(conn);
 		this.listaTendencias = new ArrayList<>();
 		this.tendenciasResultado = new ArrayList<>();
 		this.setFechaBase(fechaBase);
@@ -138,13 +147,28 @@ public class AgrupadorTendenciaManager {
 		this.fechaBase = fechaBase;
 	}
 
-	public void export() {
+	private void saveTendenciaParaOperar(TendenciaParaOperar ten) throws SQLException {
+		boolean exists = tendenciaParaOperarDAO.exists(ten);
+		if (exists) {
+			tendenciaParaOperarDAO.updateTendenciaParaProcesar(ten);
+		} else {
+			tendenciaParaOperarDAO.insertTendenciaParaOperar(ten);
+		}
+	}
+
+	public void export() throws SQLException {
 		List<TendenciaParaOperarMaxMin> tendencias = this.tendenciasResultado;
 		if (tendencias != null) {
 			tendencias.stream().forEach((ten) -> {
 				// System.out.println("INDEX=" + (index)+ "," + ten.toString());
 				System.out.println(ten.toString());
+				try {
+					this.saveTendenciaParaOperar(ten);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			});
+			conn.commit();
 		}
 	}
 

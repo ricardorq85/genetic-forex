@@ -55,7 +55,7 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 			while (fechaProceso.before(parametroFechaFin)) {
 				// System.out.println(DateUtil.getDateString(fechaProceso));
 				Date fechaBase = tendenciaDAO.nextFechaBase(fechaProceso);
-				AgrupadorTendenciaManager agrupador = new AgrupadorTendenciaManager(fechaBase);
+				AgrupadorTendenciaManager agrupador = new AgrupadorTendenciaManager(fechaBase, conn);
 				if (fechaBase != null) {
 					for (int i = 0; i < dias.length; i++) {
 						float tiempoTendencia = dias[i];
