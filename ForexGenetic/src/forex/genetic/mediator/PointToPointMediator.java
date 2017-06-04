@@ -39,16 +39,29 @@ public class PointToPointMediator extends GeneticMediator {
 	private Date fechaHistoricaMaximaAnterior, fechaHistoricaMaximaNueva, ultimaFechaTendencia;
 	private DatoHistoricoDAO datoHistoricoDAO;
 	private TendenciaDAO tendenciaDAO;
-	private static final String sourceExportedHistoryDataPath = "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\exported";
-	private static final String processedExportedHistoryDataPath = "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\processed";
-	private static final String exportePropertyFileName = "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\Export.properties";
-	private static final String sourceEstrategiasPath = "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\estrategias\\live";
+	private ParametroDAO parametroDAO;
+	private static String sourceExportedHistoryDataPath;// =
+														// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\exported";
+	private static String processedExportedHistoryDataPath;// =
+															// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\processed";
+	private static String exportedPropertyFileName;// =
+													// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\Export.properties";
+	private static String sourceEstrategiasPath;// =
+												// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\estrategias\\live";
 
 	@Override
 	public void init() throws ClassNotFoundException, SQLException {
 		this.connection = JDBCUtil.getConnection();
 		this.datoHistoricoDAO = new DatoHistoricoDAO(connection);
 		this.tendenciaDAO = new TendenciaDAO(connection);
+		this.parametroDAO = new ParametroDAO(connection);
+
+		PointToPointMediator.sourceExportedHistoryDataPath = parametroDAO
+				.getValorParametro("SOURCE_EXPORTED_HISTORY_DATA_PATH");
+		PointToPointMediator.processedExportedHistoryDataPath = parametroDAO
+				.getValorParametro("PROCESSED_EXPORTED_HISTORY_DATA_PATH");
+		PointToPointMediator.exportedPropertyFileName = parametroDAO.getValorParametro("EXPORTED_PROPERTY_FILE_NAME");
+		PointToPointMediator.sourceEstrategiasPath = parametroDAO.getValorParametro("SOURCE_ESTRATEGIAS_PATH");
 	}
 
 	@Override
@@ -89,7 +102,7 @@ public class PointToPointMediator extends GeneticMediator {
 		logTime("Init Exportar Datos Historicos", 1);
 		Date fechaExport = DateUtil.adicionarMinutos(this.fechaHistoricaMaximaNueva, 1);
 		String fechaExportString = DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaExport);
-		FileUtil.save(exportePropertyFileName, "FECHA_INICIO=" + fechaExportString + ",FECHA_FIN=");
+		FileUtil.save(exportedPropertyFileName, "FECHA_INICIO=" + fechaExportString + ",FECHA_FIN=");
 		logTime("End Exportar Datos Historicos=" + fechaExportString, 1);
 	}
 
