@@ -10,9 +10,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
+import forex.genetic.dao.helper.TendenciaHelper;
+import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.entities.TendenciaParaOperar;
+import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -135,4 +139,24 @@ public class TendenciaParaOperarDAO {
 		}
 		return exists;
 	}
+	
+	public List<TendenciaParaOperar> consultarTendenciasParaOperar() throws SQLException {
+		List<Tendencia> list = null;
+		String sql = "SELECT * FROM TENDENCIA_PARA_OPERAR TPO";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			resultado = stmtConsulta.executeQuery();
+
+			list = TendenciaHelper.createTendencia(resultado);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+
+		return list;
+	}
+	
 }
