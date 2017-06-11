@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.TendenciaParaOperarDAO;
+import forex.genetic.delegate.GeneticDelegate;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
@@ -14,7 +15,6 @@ import forex.genetic.entities.Regresion;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
 import forex.genetic.util.Constants.OperationType;
-import forex.genetic.util.jdbc.JDBCUtil;
 
 public class AgrupadorTendenciaManager {
 
@@ -38,9 +38,11 @@ public class AgrupadorTendenciaManager {
 		this.listaTendencias.add(paraProcesar);
 	}
 
-	public void procesar() {
-		double maximoMaximo = Double.NEGATIVE_INFINITY, minimoMinimo = Double.POSITIVE_INFINITY;
-		double maximoMinimo = Double.POSITIVE_INFINITY, minimoMaximo = Double.NEGATIVE_INFINITY;
+	public void procesar() throws SQLException {
+		// double maximoMaximo = Double.NEGATIVE_INFINITY, minimoMinimo =
+		// Double.POSITIVE_INFINITY;
+		// double maximoMinimo = Double.POSITIVE_INFINITY, minimoMaximo =
+		// Double.NEGATIVE_INFINITY;
 		double maximoMaximoFiltrada = Double.NEGATIVE_INFINITY, minimoMinimoFiltrada = Double.POSITIVE_INFINITY;
 		double maximoMinimoFiltrada = Double.POSITIVE_INFINITY, minimoMaximoFiltrada = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < listaTendencias.size(); i++) {
@@ -58,7 +60,7 @@ public class AgrupadorTendenciaManager {
 		procesarExtremos(extremos, extremosIntermedios);
 	}
 
-	public void procesarExtremos(DoubleInterval extremos, DoubleInterval extremosIntermedios) {
+	public void procesarExtremos(DoubleInterval extremos, DoubleInterval extremosIntermedios) throws SQLException {
 		int lastIndex = listaTendencias.size() - 1;
 		TendenciaParaOperarMaxMin buy = null;
 		TendenciaParaOperarMaxMin sell = null;
@@ -82,12 +84,20 @@ public class AgrupadorTendenciaManager {
 				}
 			}
 		}
+		processDelete();
 		if (buy != null) {
 			this.tendenciasResultado.add(buy);
 		}
 		if (sell != null) {
 			this.tendenciasResultado.add(sell);
 		}
+	}
+
+	protected void processDelete() throws SQLException {
+		TendenciaParaOperarMaxMin tpo = new TendenciaParaOperarMaxMin();		
+		tpo.setFechaBase(fechaBase);
+		tendenciaParaOperarDAO.deleteTendenciaParaProcesar(tpo);
+		conn.commit();
 	}
 
 	private boolean validarRegresion(int index) {
@@ -104,9 +114,9 @@ public class AgrupadorTendenciaManager {
 						* procesoIndex.getRegresionFiltrada().getPendiente() > 0));
 	}
 
-	private boolean validarRegresion(Regresion regresion) {
-		return ((regresion != null) && (regresion.isRegresionValida()));
-	}
+	// private boolean validarRegresion(Regresion regresion) {
+	// return ((regresion != null) && (regresion.isRegresionValida()));
+	// }
 
 	private TendenciaParaOperarMaxMin crearTendenciaParaOperarMaxMin(DoubleInterval extremos,
 			DoubleInterval extremosIntermedios, ProcesoTendenciaBuySell procesoIndex) {

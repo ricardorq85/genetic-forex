@@ -102,4 +102,13 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 		}
 		Files.write(path, sb.toString().getBytes());
 	}
+
+	public List<TendenciaParaOperarMaxMin> getTendenciasResultado() {
+		return tendenciasResultado;
+	}
+
+	public void setTendenciasResultado(List<TendenciaParaOperarMaxMin> tendenciasResultado) {
+		this.tendenciasResultado = tendenciasResultado;
+	}
+
 }
