@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.TendenciaParaOperarDAO;
-import forex.genetic.delegate.GeneticDelegate;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
@@ -22,16 +22,20 @@ public class AgrupadorTendenciaManager {
 	private List<TendenciaParaOperarMaxMin> tendenciasResultado;
 	private Connection conn;
 	private TendenciaParaOperarDAO tendenciaParaOperarDAO;
+	private ParametroDAO parametroDAO;
 
 	private Date fechaBase;
+	private boolean deleteTPO;
 
-	public AgrupadorTendenciaManager(Date fechaBase, Connection conn) {
+	public AgrupadorTendenciaManager(Date fechaBase, Connection conn) throws SQLException {
 		super();
 		this.conn = conn;
 		this.tendenciaParaOperarDAO = new TendenciaParaOperarDAO(conn);
+		this.parametroDAO = new ParametroDAO(conn);
 		this.listaTendencias = new ArrayList<>();
 		this.tendenciasResultado = new ArrayList<>();
 		this.setFechaBase(fechaBase);
+		this.deleteTPO = this.parametroDAO.getBooleanValorParametro("DELETE_TENDENCIA_PARA_OPERAR");
 	}
 
 	public void add(ProcesoTendenciaFiltradaBuySell paraProcesar) {
@@ -94,10 +98,12 @@ public class AgrupadorTendenciaManager {
 	}
 
 	protected void processDelete() throws SQLException {
-		TendenciaParaOperarMaxMin tpo = new TendenciaParaOperarMaxMin();		
-		tpo.setFechaBase(fechaBase);
-		tendenciaParaOperarDAO.deleteTendenciaParaProcesar(tpo);
-		conn.commit();
+		if (deleteTPO) {
+			TendenciaParaOperarMaxMin tpo = new TendenciaParaOperarMaxMin();
+			tpo.setFechaBase(fechaBase);
+			tendenciaParaOperarDAO.deleteTendenciaParaProcesar(tpo);
+			conn.commit();
+		}
 	}
 
 	private boolean validarRegresion(int index) {

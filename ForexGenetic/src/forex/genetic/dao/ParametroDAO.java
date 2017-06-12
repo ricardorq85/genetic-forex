@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import forex.genetic.manager.io.FileProperties;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -48,6 +49,11 @@ public class ParametroDAO {
 		return (Float.parseFloat(valor));
 	}
 
+	public boolean getBooleanValorParametro(String nombre) throws SQLException {
+		String valor = getValorParametro(nombre);
+		return Boolean.parseBoolean(valor);
+	}
+
 	/**
 	 *
 	 * @param nombre
@@ -72,13 +78,12 @@ public class ParametroDAO {
 		}
 		return valor;
 	}
-	
+
 	public String[] getArrayStringParametro(String nombre) throws SQLException {
 		String valor = this.getValorParametro(nombre);
 		String[] arrayString = valor.split(",", 0);
 		return arrayString;
 	}
-
 
 	/**
 	 *
