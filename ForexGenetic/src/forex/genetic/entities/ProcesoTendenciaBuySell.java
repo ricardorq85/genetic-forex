@@ -105,5 +105,9 @@ public class ProcesoTendenciaBuySell {
 	public boolean isRegresionValida() {
 		return ((this.regresion != null) && (this.regresion.isRegresionValida()));
 	}
+	
+	public boolean isValidacionRegresionValida() {
+		return ((this.regresion != null) && (this.regresion.isValidacionRegresionValida()));
+	}	
 
 }

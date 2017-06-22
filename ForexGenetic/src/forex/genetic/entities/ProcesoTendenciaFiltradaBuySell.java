@@ -5,9 +5,6 @@
 package forex.genetic.entities;
 
 import java.util.Date;
-import java.util.List;
-
-import forex.genetic.util.Constants.OperationType;
 
 /**
  *
@@ -33,6 +30,28 @@ public class ProcesoTendenciaFiltradaBuySell extends ProcesoTendenciaBuySell {
 	public boolean isRegresionValida() {
 		return ((super.isRegresionValida()) && (this.regresionFiltrada != null)
 				&& (this.regresionFiltrada.isRegresionValida()));
+	}
+
+	public boolean isValidacionRegresionValida() {
+		return ((super.isValidacionRegresionValida()) && (this.regresionFiltrada != null)
+				&& (this.regresionFiltrada.isValidacionRegresionValida()));
+	}
+
+	public boolean isCantidadMinimaValida() {
+		if (super.getRegresion() == null) {
+			return false;
+		}
+		if (super.getRegresion().getCantidad() == 0) {
+			return false;
+		}
+		if (this.regresionFiltrada == null) {
+			return false;
+		}
+		float cantidadRegresion = super.getRegresion().getCantidad();
+		float cantidadRegresionFiltrada = this.regresionFiltrada.getCantidad();
+		float valorCantidad = (cantidadRegresionFiltrada / cantidadRegresion);
+
+		return (valorCantidad > 0.5);
 	}
 
 }

@@ -56,7 +56,7 @@ public class ExportarTendenciaFiltradaManager extends ExportarTendenciaManager {
 			regresion.setMaximoR2(MAX_R2);
 			regresion.setMinimoPendiente(MIN_PENDIENTE);
 			regresion.setMaximoPendiente(MAX_PENDIENTE);
-			regresion.setMinimoPorcetnajeCantidadRegresion(MIN_PORCENTAJE_CANTIDAD_REGRESION);
+			regresion.setMinimoPorcentajeCantidadRegresion(MIN_PORCENTAJE_CANTIDAD_REGRESION);
 			regresion.setMaximoDesviacion(MAX_DESVIACION);
 		}
 	}

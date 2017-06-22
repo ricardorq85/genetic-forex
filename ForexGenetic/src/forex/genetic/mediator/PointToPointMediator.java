@@ -162,6 +162,7 @@ public class PointToPointMediator extends GeneticMediator {
 		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
 		tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia);
 		while (fechaBaseFinal.after(ultimaFechaTendencia)) {
+			parametroStepTendencia *= 2;
 			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1);
 			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, -parametroStepTendencia);
 			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="

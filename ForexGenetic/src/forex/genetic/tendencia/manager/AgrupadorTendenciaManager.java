@@ -107,22 +107,18 @@ public class AgrupadorTendenciaManager {
 	}
 
 	private boolean validarRegresion(int index) {
-		// ProcesoTendenciaBuySell procesoLastIndex = listaTendencias.get(index
-		// - 1);
 		ProcesoTendenciaFiltradaBuySell procesoIndex = listaTendencias.get(index);
-		ProcesoTendenciaFiltradaBuySell procesoNextIndex = listaTendencias.get(index + 1);
-
-		// return (validarRegresion(procesoLastIndex.getRegresion()) &&
-		// validarRegresion(procesoIndex.getRegresion())
-		// && validarRegresion(procesoNextIndex.getRegresion()));
-		return (procesoIndex.isRegresionValida() && procesoNextIndex.isRegresionValida()
-				&& (procesoIndex.getRegresion().getPendiente()
-						* procesoIndex.getRegresionFiltrada().getPendiente() > 0));
+		boolean valida = false;
+		for (int i = index + 1; !valida && i < listaTendencias.size(); i++) {
+			ProcesoTendenciaFiltradaBuySell procesoNextIndex = listaTendencias.get(index + 1);
+			valida = (procesoNextIndex.isValidacionRegresionValida()
+					&& (procesoNextIndex.getRegresionFiltrada().getPendiente()
+							* procesoIndex.getRegresionFiltrada().getPendiente() > 0));
+		}
+		valida = (valida) && (procesoIndex.isRegresionValida() && (procesoIndex.getRegresion().getPendiente()
+				* procesoIndex.getRegresionFiltrada().getPendiente() > 0));
+		return valida;
 	}
-
-	// private boolean validarRegresion(Regresion regresion) {
-	// return ((regresion != null) && (regresion.isRegresionValida()));
-	// }
 
 	private TendenciaParaOperarMaxMin crearTendenciaParaOperarMaxMin(DoubleInterval extremos,
 			DoubleInterval extremosIntermedios, ProcesoTendenciaBuySell procesoIndex) {

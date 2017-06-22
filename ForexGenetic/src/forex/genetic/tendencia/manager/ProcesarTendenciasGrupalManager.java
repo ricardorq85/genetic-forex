@@ -57,18 +57,20 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 				Date fechaBase = tendenciaDAO.nextFechaBase(fechaProceso);
 				AgrupadorTendenciaManager agrupador = new AgrupadorTendenciaManager(fechaBase, conn);
 				if (fechaBase != null) {
-					for (int i = 0; i < dias.length; i++) {
-						float tiempoTendencia = dias[i];
-						String periodo = tiempoTendencia + "D";
-						double tiempoTendenciaMinutos = (tiempoTendencia) * 24 * 60;
-						ProcesoTendenciaFiltradaBuySell procesoTendencia = new ProcesoTendenciaFiltradaBuySell(periodo,
-								super.tipoTendencia, tiempoTendenciaMinutos, fechaBase);
-						agrupador.add((ProcesoTendenciaFiltradaBuySell) procesarExporter(procesoTendencia)
-								.getProcesoTendencia());
+					LogUtil.logTime("Fecha base=" + DateUtil.getDateString(fechaBase), 1);
+					ProcesoTendenciaFiltradaBuySell procesoFromExporterLastIndex = procesarExporter(
+							dias[dias.length - 1], fechaBase);
+					boolean cantidadMinimaValida = validarCantidadMinima(procesoFromExporterLastIndex);
+					if (cantidadMinimaValida) {
+						for (int i = 0; i < dias.length - 1; i++) {
+							ProcesoTendenciaFiltradaBuySell procesoFromExporter = procesarExporter(dias[i], fechaBase);
+							agrupador.add(procesoFromExporter);
+						}
+						agrupador.add(procesoFromExporterLastIndex);
+						agrupador.procesar();
+						agrupador.export();
+						this.tendenciasResultado.addAll(agrupador.getTendenciasResultado());
 					}
-					agrupador.procesar();
-					agrupador.export();
-					this.tendenciasResultado.addAll(agrupador.getTendenciasResultado());
 					fechaProceso = DateUtil.calcularFechaXDuracion(parametroStep, fechaBase);
 				} else {
 					LogUtil.logTime("Fecha base NULL", 1);
@@ -78,6 +80,23 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 		} finally {
 			JDBCUtil.close(conn);
 		}
+	}
+
+	protected ProcesoTendenciaFiltradaBuySell procesarExporter(float tiempoTendencia, Date fechaBase)
+			throws ClassNotFoundException, SQLException, NoSuchMethodException, InstantiationException,
+			IllegalAccessException, InvocationTargetException {
+		String periodo = tiempoTendencia + "D";
+		double tiempoTendenciaMinutos = (tiempoTendencia) * 24 * 60;
+		ProcesoTendenciaFiltradaBuySell procesoTendencia = new ProcesoTendenciaFiltradaBuySell(periodo,
+				super.tipoTendencia, tiempoTendenciaMinutos, fechaBase);
+		ProcesoTendenciaFiltradaBuySell procesoFromExporter = (ProcesoTendenciaFiltradaBuySell) procesarExporter(
+				procesoTendencia).getProcesoTendencia();
+		return procesoFromExporter;
+	}
+
+	private boolean validarCantidadMinima(ProcesoTendenciaFiltradaBuySell procesoIndex) {
+		boolean valida = procesoIndex.isCantidadMinimaValida();
+		return valida;
 	}
 
 	@Override
@@ -93,7 +112,10 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 			tendencias.stream().forEach((ten) -> {
 				// System.out.println("INDEX=" + (index)+ "," + ten.toString());
 				try {
-					sb.append(ten.toString());
+					String tpoString = ten.toString();
+					LogUtil.logAvance(tpoString, 1);
+					LogUtil.logEnter(1);
+					sb.append(tpoString);
 					sb.append("\n");
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -14,10 +14,18 @@ public class Regresion {
 	private Date maxFechaTendencia;
 	private double minimoR2;
 	private double maximoR2;
-	private double minimoPendiente;
+	private double minimoPendiente, minimoValidacionPendiente;
 	private double maximoPendiente;
 	private double minimoPorcentajeCantidadRegresion;
 	private double maximoDesviacion;
+
+	public boolean isRegresionValida() {
+		return isR2Valido() && isPendienteValida() && isCantidadValida() && isDesviacionValida();
+	}
+
+	public boolean isValidacionRegresionValida() {
+		return isR2Valido() && isValidacionPendienteValida() && isCantidadValida() && isDesviacionValida();
+	}
 
 	protected boolean isR2Valido() {
 		return (this.getR2() > minimoR2 && this.getR2() < maximoR2);
@@ -27,12 +35,13 @@ public class Regresion {
 		return (Math.abs(this.getPendiente()) > minimoPendiente && Math.abs(this.getPendiente()) < maximoPendiente);
 	}
 
-	private int getCantidadMinimaRegresion() {
-		return (int) (((this.getTiempoTendencia() / 60.0D)) * minimoPorcentajeCantidadRegresion);
+	protected boolean isValidacionPendienteValida() {
+		return (Math.abs(this.getPendiente()) > minimoValidacionPendiente
+				&& Math.abs(this.getPendiente()) < maximoPendiente);
 	}
 
-	public boolean isRegresionValida() {
-		return isR2Valido() && isPendienteValida() && isCantidadValida() && isDesviacionValida();
+	private int getCantidadMinimaRegresion() {
+		return (int) (((this.getTiempoTendencia() / 60.0D)) * minimoPorcentajeCantidadRegresion);
 	}
 
 	public boolean isRegresionValidaMaximoMinimo() {
@@ -131,13 +140,14 @@ public class Regresion {
 
 	public void setMinimoPendiente(double minPendiente) {
 		this.minimoPendiente = minPendiente;
+		this.minimoValidacionPendiente = minPendiente / 10.0D;
 	}
 
 	public void setMaximoPendiente(double maxPendiente) {
 		this.maximoPendiente = maxPendiente;
 	}
 
-	public void setMinimoPorcetnajeCantidadRegresion(double minPorcentajeCantidadRegresion) {
+	public void setMinimoPorcentajeCantidadRegresion(double minPorcentajeCantidadRegresion) {
 		this.minimoPorcentajeCantidadRegresion = minPorcentajeCantidadRegresion;
 	}
 

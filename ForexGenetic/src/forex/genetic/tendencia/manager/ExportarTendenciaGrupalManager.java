@@ -15,7 +15,7 @@ public class ExportarTendenciaGrupalManager extends ExportarTendenciaManager {
 
 	private static final double MIN_R2 = 0.5D;
 	private static final double MAX_R2 = 1.1D;
-	private static final double MIN_PENDIENTE = 0.0001;
+	private static final double MIN_PENDIENTE = 0.001;
 	private static final double MAX_PENDIENTE = 1.1D;
 	private static final double MIN_PORCENTAJE_CANTIDAD_REGRESION = 0.5D;
 	private static final double MAX_DESVIACION = 10000.0D;
@@ -64,7 +64,7 @@ public class ExportarTendenciaGrupalManager extends ExportarTendenciaManager {
 			regresion.setMaximoR2(MAX_R2);
 			regresion.setMinimoPendiente(MIN_PENDIENTE);
 			regresion.setMaximoPendiente(MAX_PENDIENTE);
-			regresion.setMinimoPorcetnajeCantidadRegresion(MIN_PORCENTAJE_CANTIDAD_REGRESION);
+			regresion.setMinimoPorcentajeCantidadRegresion(MIN_PORCENTAJE_CANTIDAD_REGRESION);
 			regresion.setMaximoDesviacion(MAX_DESVIACION);
 		}
 	}
