@@ -27,6 +27,7 @@ public class ExportarTendenciaGrupalManager extends ExportarTendenciaManager {
 	public ExportarTendenciaGrupalManager(Connection c) {
 		super(c);
 		super.dao = new TendenciaProcesoFiltradaDAO(c);
+		//super.dao = new TendenciaProcesoFiltradaFechaCierreDAO(c);
 	}
 
 	protected void procesarRegresion(Regresion regresion, Regresion regresionFiltrada) throws SQLException {

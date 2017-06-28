@@ -30,7 +30,8 @@ public class OperacionesTendenciaDAO extends OperacionesDAO {
 				+ " AND OPER.FECHA_APERTURA>?-15 "
 				+ " AND NOT EXISTS (SELECT 1 FROM TENDENCIA T WHERE T.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
 				+ " AND T.FECHA_BASE=? AND T.TIPO_TENDENCIA=?) "
-				+ " ORDER BY DBMS_RANDOM.VALUE) "
+				//+ " ORDER BY DBMS_RANDOM.VALUE) "
+				+ " ORDER BY OPER.FECHA_APERTURA ASC) "
 				+ " WHERE ROWNUM<? ";
 		return sql;
 	}

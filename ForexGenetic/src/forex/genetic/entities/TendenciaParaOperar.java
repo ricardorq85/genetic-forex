@@ -239,9 +239,10 @@ public class TendenciaParaOperar {
 				+ NumberUtil.round(sl) + ",FECHA_TENDENCIA="
 				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaTendencia) + ",VIGENCIALOWER="
 				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", vigenciaLower) + ",VIGENCIAHIGHER="
-				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", vigenciaHigher) + ",R2=" + regresion.getR2()
-				+ ",CANTIDAD=" + regresion.getCantidad() + ",PENDIENTE=" + regresion.getPendiente() + ",LOTE="
-				+ NumberUtil.round(lote) + ",NAME=" + GeneticDelegate.getId() + ",FECHA_BASE="
-				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaBase);
+				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", vigenciaHigher) + ",R2="
+				+ ((regresion != null) ? regresion.getR2() : 1) + ",CANTIDAD="
+				+ ((regresion != null) ? regresion.getCantidad() : 1) + ",PENDIENTE="
+				+ ((regresion != null) ? regresion.getPendiente() : 1) + ",LOTE=" + NumberUtil.round(lote) + ",NAME="
+				+ GeneticDelegate.getId() + ",FECHA_BASE=" + DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaBase);
 	}
 }

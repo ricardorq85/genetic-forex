@@ -57,10 +57,10 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 				Date fechaBase = tendenciaDAO.nextFechaBase(fechaProceso);
 				AgrupadorTendenciaManager agrupador = new AgrupadorTendenciaManager(fechaBase, conn);
 				if (fechaBase != null) {
-					LogUtil.logTime("Fecha base=" + DateUtil.getDateString(fechaBase), 1);
+					LogUtil.logTime("Fecha base=" + DateUtil.getDateString(fechaBase), 2);
 					ProcesoTendenciaFiltradaBuySell procesoFromExporterLastIndex = procesarExporter(
 							dias[dias.length - 1], fechaBase);
-					boolean cantidadMinimaValida = validarCantidadMinima(procesoFromExporterLastIndex);
+					boolean cantidadMinimaValida = true; //validarCantidadMinima(procesoFromExporterLastIndex);
 					if (cantidadMinimaValida) {
 						for (int i = 0; i < dias.length - 1; i++) {
 							ProcesoTendenciaFiltradaBuySell procesoFromExporter = procesarExporter(dias[i], fechaBase);

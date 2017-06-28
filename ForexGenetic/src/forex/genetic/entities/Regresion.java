@@ -7,8 +7,8 @@ public class Regresion {
 	private double r2;
 	private double pendiente;
 	private double desviacion;
-	private double minPrecio;
-	private double maxPrecio;
+	private double minPrecio, minPrecioExtremo;
+	private double maxPrecio, maxPrecioExtremo;
 	private int cantidad;
 	private Date minFechaTendencia;
 	private Date maxFechaTendencia;
@@ -153,6 +153,54 @@ public class Regresion {
 
 	public void setMaximoDesviacion(double maxDesviacion) {
 		this.maximoDesviacion = maxDesviacion;
+	}
+
+	public double getMinPrecioExtremo() {
+		return minPrecioExtremo;
+	}
+
+	public void setMinPrecioExtremo(double minPrecioExtremo) {
+		this.minPrecioExtremo = minPrecioExtremo;
+	}
+
+	public double getMaxPrecioExtremo() {
+		return maxPrecioExtremo;
+	}
+
+	public void setMaxPrecioExtremo(double maxPrecioExtremo) {
+		this.maxPrecioExtremo = maxPrecioExtremo;
+	}
+
+	public double getMinimoValidacionPendiente() {
+		return minimoValidacionPendiente;
+	}
+
+	public void setMinimoValidacionPendiente(double minimoValidacionPendiente) {
+		this.minimoValidacionPendiente = minimoValidacionPendiente;
+	}
+
+	public double getMinimoR2() {
+		return minimoR2;
+	}
+
+	public double getMaximoR2() {
+		return maximoR2;
+	}
+
+	public double getMinimoPendiente() {
+		return minimoPendiente;
+	}
+
+	public double getMaximoPendiente() {
+		return maximoPendiente;
+	}
+
+	public double getMinimoPorcentajeCantidadRegresion() {
+		return minimoPorcentajeCantidadRegresion;
+	}
+
+	public double getMaximoDesviacion() {
+		return maximoDesviacion;
 	}
 
 }

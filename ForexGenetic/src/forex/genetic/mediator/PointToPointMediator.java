@@ -35,6 +35,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
 
 public class PointToPointMediator extends GeneticMediator {
 
+	private int count = 1;
 	private Connection connection;
 	private Date fechaHistoricaMaximaAnterior, fechaHistoricaMaximaNueva, ultimaFechaTendencia;
 	private DatoHistoricoDAO datoHistoricoDAO;
@@ -68,7 +69,6 @@ public class PointToPointMediator extends GeneticMediator {
 	public void start()
 			throws SQLException, IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException,
 			IllegalAccessException, InvocationTargetException, ParseException, GeneticException {
-		int count = 1;
 		while (true) {
 			this.fechaHistoricaMaximaAnterior = datoHistoricoDAO.getFechaHistoricaMaxima();
 			int imported = this.importarDatosHistoricos();
@@ -160,7 +160,9 @@ public class PointToPointMediator extends GeneticMediator {
 		int parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
 		Date fechaBaseFinal = fechaHistoricaMaximaNueva;
 		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
-		tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia);
+		if (count > 1) {
+			tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia * 2);
+		}
 		while (fechaBaseFinal.after(ultimaFechaTendencia)) {
 			parametroStepTendencia *= 2;
 			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1);
