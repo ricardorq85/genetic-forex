@@ -67,10 +67,12 @@ public class AgrupadorTendenciaManager {
 				}
 			}
 			if (regresionIndex != null) {
-				maximoExtremo = Math.max(maximoExtremo, regresionIndex.getMaxPrecioExtremo());
-				minimoExtremo = Math.min(minimoExtremo, regresionIndex.getMinPrecioExtremo());
-				maximoSinFiltrar = Math.max(maximoSinFiltrar, regresionIndex.getMaxPrecio());
-				minimoSinFiltrar = Math.min(minimoSinFiltrar, regresionIndex.getMinPrecio());
+				if (regresionIndex.isRegresionValidaMaximoMinimo()) {
+					maximoExtremo = Math.max(maximoExtremo, regresionIndex.getMaxPrecioExtremo());
+					minimoExtremo = Math.min(minimoExtremo, regresionIndex.getMinPrecioExtremo());
+					maximoSinFiltrar = Math.max(maximoSinFiltrar, regresionIndex.getMaxPrecio());
+					minimoSinFiltrar = Math.min(minimoSinFiltrar, regresionIndex.getMinPrecio());
+				}
 			}
 		}
 		DoubleInterval extremosFiltrada = new DoubleInterval((minimoMinimoFiltrada), (maximoMaximoFiltrada));
