@@ -120,7 +120,7 @@ public class TendenciaParaOperarDAO {
 	public boolean exists(TendenciaParaOperar tpo) throws SQLException {
 		boolean exists = false;
 		String sql = "SELECT COUNT(*) FROM TENDENCIA_PARA_OPERAR "
-				+ " WHERE TIPO_EXPORTACION=? AND PERIODO=? AND FECHA_BASE=?";
+				+ " WHERE TIPO_EXPORTACION=? AND PERIODO=? AND FECHA_BASE=? AND TIPO_OPERACION=?";
 		PreparedStatement statement = null;
 		ResultSet resultado = null;
 
@@ -130,6 +130,7 @@ public class TendenciaParaOperarDAO {
 			statement.setString(index++, tpo.getTipoExportacion());
 			statement.setString(index++, tpo.getPeriod());
 			statement.setTimestamp(index++, new Timestamp(tpo.getFechaBase().getTime()));
+			statement.setString(index++, tpo.getTipoOperacion().name());
 
 			resultado = statement.executeQuery();
 
