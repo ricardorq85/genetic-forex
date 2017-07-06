@@ -37,7 +37,7 @@ public class PointToPointMediator extends GeneticMediator {
 
 	private int count = 1;
 	private Connection connection;
-	private Date fechaHistoricaMaximaAnterior, fechaHistoricaMaximaNueva, ultimaFechaTendencia;
+	private Date fechaHistoricaMaximaAnterior, fechaHistoricaMaximaNueva, ultimaFechaBaseTendencia;
 	private DatoHistoricoDAO datoHistoricoDAO;
 	private TendenciaDAO tendenciaDAO;
 	private ParametroDAO parametroDAO;
@@ -75,7 +75,7 @@ public class PointToPointMediator extends GeneticMediator {
 			this.fechaHistoricaMaximaNueva = datoHistoricoDAO.getFechaHistoricaMaxima();
 			this.exportarDatosHistoricos();
 			this.setUltimaFechaTendencia(count);
-			LogUtil.logTime("ultimaFechaTendencia=" + DateUtil.getDateString(this.ultimaFechaTendencia)
+			LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
 					+ ",fechaHistoricaMaximaAnterior=" + DateUtil.getDateString(this.fechaHistoricaMaximaAnterior)
 					+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva), 1);
 			this.procesarIndividuos();
@@ -91,10 +91,10 @@ public class PointToPointMediator extends GeneticMediator {
 	}
 
 	protected void setUltimaFechaTendencia(int count) throws SQLException {
-		this.ultimaFechaTendencia = tendenciaDAO.maxFechaBaseTendencia();
-		if (fechaHistoricaMaximaNueva.equals(ultimaFechaTendencia)) {
+		this.ultimaFechaBaseTendencia = tendenciaDAO.maxFechaBaseTendencia();
+		if (fechaHistoricaMaximaNueva.equals(ultimaFechaBaseTendencia)) {
 			int minutos = (int) (-(1440 * 0.5 * count));
-			this.ultimaFechaTendencia = DateUtil.adicionarMinutos(fechaHistoricaMaximaNueva, minutos);
+			this.ultimaFechaBaseTendencia = DateUtil.adicionarMinutos(fechaHistoricaMaximaNueva, minutos);
 		}
 	}
 
@@ -163,13 +163,13 @@ public class PointToPointMediator extends GeneticMediator {
 		if (count == 1) {
 			tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia * 2);
 		}
-		int diasDiferencia = (int) (DateUtil.calcularDuracionMillis(ultimaFechaTendencia, fechaBaseFinal) / 1000 / 60
+		int diasDiferencia = (int) (DateUtil.calcularDuracionMillis(ultimaFechaBaseTendencia, fechaBaseFinal) / 1000 / 60
 				/ 60 / 24) + 1;
-		int factorStep = (int) ((DateUtil.calcularDuracionMillis(ultimaFechaTendencia, fechaBaseFinal)) / 1000 / 60
+		int factorStep = (int) ((DateUtil.calcularDuracionMillis(ultimaFechaBaseTendencia, fechaBaseFinal)) / 1000 / 60
 				/ diasDiferencia / count);
 		parametroStepTendencia = Math.max(factorStep, parametroStepTendencia);
 		parametroFilasTendencia = Math.max((1440 / 2000 / diasDiferencia / count), parametroFilasTendencia);
-		while (fechaBaseFinal.after(ultimaFechaTendencia)) {
+		while (fechaBaseFinal.after(ultimaFechaBaseTendencia)) {
 			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1);
 			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, -parametroStepTendencia);
 			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
@@ -189,7 +189,7 @@ public class PointToPointMediator extends GeneticMediator {
 			String fileName = sourceEstrategiasPath + "\\Tendencia" + IndividuoManager.nextId() + ".csv";
 			Path filePath = FileSystems.getDefault().getPath(fileName);
 			ProcesarTendenciasBuySellManager manager = ProcesarTendenciasFactory.createManager();
-			manager.setParametroFechaInicio(ultimaFechaTendencia);
+			manager.setParametroFechaInicio(ultimaFechaBaseTendencia);
 			manager.setParametroFechaFin(fechaHistoricaMaximaNueva);
 			manager.procesarTendencias();
 			manager.export(filePath);
