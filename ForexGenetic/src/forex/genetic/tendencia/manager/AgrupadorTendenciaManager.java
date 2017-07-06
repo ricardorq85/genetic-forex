@@ -112,13 +112,15 @@ public class AgrupadorTendenciaManager {
 		extremos.setMaximaRegresionFiltrada(maximaRegresionValida);
 		TendenciaParaOperarMaxMin[] tendenciaExtremos = crearTendenciaParaOperarMaxMinExtremo(extremos,
 				listaTendencias.get(lastIndex));
-		if (tendenciaExtremos != null) {
-			this.tendenciasResultado.addAll(Arrays.asList(tendenciaExtremos));
-		}
+		//if (tendenciaExtremos != null) {
+			//this.tendenciasResultado.addAll(Arrays.asList(tendenciaExtremos));
+		//}
 		if (buy != null) {
+			this.tendenciasResultado.add(tendenciaExtremos[0]);
 			this.tendenciasResultado.add(buy);
 		}
 		if (sell != null) {
+			this.tendenciasResultado.add(tendenciaExtremos[1]);
 			this.tendenciasResultado.add(sell);
 		}
 	}
