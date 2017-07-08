@@ -50,35 +50,39 @@ public class AgrupadorTendenciaManager {
 	}
 
 	protected Extremos encontrarExtremos() {
-		double maximoExtremo = Double.NEGATIVE_INFINITY, minimoExtremo = Double.POSITIVE_INFINITY;
-		double maximoSinFiltrar = Double.NEGATIVE_INFINITY, minimoSinFiltrar = Double.POSITIVE_INFINITY;
-		double maximoMaximoFiltrada = Double.NEGATIVE_INFINITY, minimoMinimoFiltrada = Double.POSITIVE_INFINITY;
-		double maximoMinimoFiltrada = Double.POSITIVE_INFINITY, minimoMaximoFiltrada = Double.NEGATIVE_INFINITY;
+		double valorMaximoDeLosMaximosExtremo = Double.NEGATIVE_INFINITY, 
+				valorMinimoDeLosMinimosExtremo = Double.POSITIVE_INFINITY;
+		double valorMaximoDeLosMaximosSinFiltrar = Double.NEGATIVE_INFINITY, 
+				valorMinimoDeLosMinimosSinFiltrar = Double.POSITIVE_INFINITY;
+		double valorMaximoDeLosMaximosFiltrada = Double.NEGATIVE_INFINITY, 
+				valorMinimoDeLosMinimosFiltrada = Double.POSITIVE_INFINITY;
+		double valorMinimoDeLosMaximosFiltrada = Double.POSITIVE_INFINITY, 
+				valorMaximoDeLosMinimosFiltrada = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < listaTendencias.size(); i++) {
 			ProcesoTendenciaFiltradaBuySell procesoIndex = listaTendencias.get(i);
 			Regresion regresionFiltradaIndex = procesoIndex.getRegresionFiltrada();
 			Regresion regresionIndex = procesoIndex.getRegresion();
 			if (regresionFiltradaIndex != null) {
 				if (regresionFiltradaIndex.isRegresionValidaMaximoMinimo()) {
-					maximoMaximoFiltrada = Math.max(maximoMaximoFiltrada, regresionFiltradaIndex.getMaxPrecio());
-					minimoMinimoFiltrada = Math.min(minimoMinimoFiltrada, regresionFiltradaIndex.getMinPrecio());
-					maximoMinimoFiltrada = Math.min(maximoMinimoFiltrada, regresionFiltradaIndex.getMaxPrecio());
-					minimoMaximoFiltrada = Math.max(minimoMaximoFiltrada, regresionFiltradaIndex.getMinPrecio());
+					valorMaximoDeLosMaximosFiltrada = Math.max(valorMaximoDeLosMaximosFiltrada, regresionFiltradaIndex.getMaxPrecio());
+					valorMinimoDeLosMinimosFiltrada = Math.min(valorMinimoDeLosMinimosFiltrada, regresionFiltradaIndex.getMinPrecio());
+					valorMinimoDeLosMaximosFiltrada = Math.min(valorMinimoDeLosMaximosFiltrada, regresionFiltradaIndex.getMaxPrecio());
+					valorMaximoDeLosMinimosFiltrada = Math.max(valorMaximoDeLosMinimosFiltrada, regresionFiltradaIndex.getMinPrecio());
 				}
 			}
 			if (regresionIndex != null) {
 				if (regresionIndex.isRegresionValidaMaximoMinimo()) {
-					maximoExtremo = Math.max(maximoExtremo, regresionIndex.getMaxPrecioExtremo());
-					minimoExtremo = Math.min(minimoExtremo, regresionIndex.getMinPrecioExtremo());
-					maximoSinFiltrar = Math.max(maximoSinFiltrar, regresionIndex.getMaxPrecio());
-					minimoSinFiltrar = Math.min(minimoSinFiltrar, regresionIndex.getMinPrecio());
+					valorMaximoDeLosMaximosExtremo = Math.max(valorMaximoDeLosMaximosExtremo, regresionIndex.getMaxPrecioExtremo());
+					valorMinimoDeLosMinimosExtremo = Math.min(valorMinimoDeLosMinimosExtremo, regresionIndex.getMinPrecioExtremo());
+					valorMaximoDeLosMaximosSinFiltrar = Math.max(valorMaximoDeLosMaximosSinFiltrar, regresionIndex.getMaxPrecio());
+					valorMinimoDeLosMinimosSinFiltrar = Math.min(valorMinimoDeLosMinimosSinFiltrar, regresionIndex.getMinPrecio());
 				}
 			}
 		}
-		DoubleInterval extremosFiltrada = new DoubleInterval((minimoMinimoFiltrada), (maximoMaximoFiltrada));
-		DoubleInterval extremosIntermedios = new DoubleInterval((minimoMaximoFiltrada), (maximoMinimoFiltrada));
-		DoubleInterval extremosExtremo = new DoubleInterval((minimoExtremo), (maximoExtremo));
-		DoubleInterval extremosSinFiltrar = new DoubleInterval((minimoSinFiltrar), (maximoSinFiltrar));
+		DoubleInterval extremosFiltrada = new DoubleInterval((valorMinimoDeLosMinimosFiltrada), (valorMaximoDeLosMaximosFiltrada));
+		DoubleInterval extremosIntermedios = new DoubleInterval((valorMaximoDeLosMinimosFiltrada), (valorMinimoDeLosMaximosFiltrada));
+		DoubleInterval extremosExtremo = new DoubleInterval((valorMinimoDeLosMinimosExtremo), (valorMaximoDeLosMaximosExtremo));
+		DoubleInterval extremosSinFiltrar = new DoubleInterval((valorMinimoDeLosMinimosSinFiltrar), (valorMaximoDeLosMaximosSinFiltrar));
 		Extremos extremos = new Extremos(extremosFiltrada, extremosIntermedios, extremosExtremo, extremosSinFiltrar);
 		return extremos;
 	}
