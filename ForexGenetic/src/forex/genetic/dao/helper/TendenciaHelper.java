@@ -137,4 +137,14 @@ public class TendenciaHelper {
         }
         return obj;
     }
+
+	public static List<Date> createFechasTendencia(ResultSet resultado) throws SQLException {
+		List<Date> fechas = new ArrayList<>();
+		while (resultado.next()) {
+			if (resultado.getObject(1) != null) {
+				fechas.add(new Date(resultado.getTimestamp(1).getTime()));
+			}
+		}
+		return fechas;
+	}
 }

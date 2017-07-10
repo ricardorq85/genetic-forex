@@ -442,4 +442,25 @@ public class TendenciaDAO {
 
 		return procesoTendenciaList;
 	}
+
+	public List<Date> consultarXCantidadFechaBase(Date fechaInicio) throws SQLException {
+		String sql = "SELECT TRUNC(TEN.FECHA_BASE) FROM TENDENCIA TEN WHERE TEN.FECHA_BASE<? "
+				+ " GROUP BY TRUNC(TEN.FECHA_BASE) " + " ORDER BY COUNT(*) ASC";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		int count = 1;
+		List<Date> fechas = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setTimestamp(count++, new Timestamp(fechaInicio.getTime()));
+
+			resultado = stmtConsulta.executeQuery();
+
+			fechas = TendenciaHelper.createFechasTendencia(resultado);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+		return fechas;
+	}
 }
