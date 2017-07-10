@@ -24,6 +24,7 @@ public class TendenciaFacade implements IGeneticFacade {
 	public TendenciaFacade() throws ClassNotFoundException, SQLException {
 		conn = JDBCUtil.getConnection();
 		parametroDAO = new ParametroDAO(conn);
+		tendenciaDAO = new TendenciaDAO(conn);				
 		parametroFechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_TENDENCIA");
 		parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
 		parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
