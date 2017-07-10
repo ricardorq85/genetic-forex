@@ -17,6 +17,7 @@ import forex.genetic.entities.ParametroTendenciaGenetica;
 import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.manager.PropertiesManager;
+import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
@@ -444,7 +445,7 @@ public class TendenciaDAO {
 	}
 
 	public List<Date> consultarXCantidadFechaBase(Date fechaInicio) throws SQLException {
-		String sql = "SELECT TRUNC(TEN.FECHA_BASE) FROM TENDENCIA TEN WHERE TEN.FECHA_BASE<? "
+		String sql = "SELECT TRUNC(TEN.FECHA_BASE) FROM TENDENCIA TEN " + " WHERE TEN.FECHA_BASE ? AND ? "
 				+ " GROUP BY TRUNC(TEN.FECHA_BASE) " + " ORDER BY COUNT(*) ASC";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
@@ -452,6 +453,7 @@ public class TendenciaDAO {
 		List<Date> fechas = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setTimestamp(count++, new Timestamp(DateUtil.adicionarMes(fechaInicio, -1).getTime()));
 			stmtConsulta.setTimestamp(count++, new Timestamp(fechaInicio.getTime()));
 
 			resultado = stmtConsulta.executeQuery();
