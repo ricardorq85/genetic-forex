@@ -145,9 +145,17 @@ public class IndividuoXIndicadorManager {
 
 	private void cruzarIndividuos(RangoOperacionIndividuo rangoOperacionIndividuo, Poblacion poblacionBase)
 			throws SQLException {
-		List<Individuo> individuosResumen = individuoDAO.consultarIndividuosResumenSemanal(
-				rangoOperacionIndividuo.getFechaFiltro(), rangoOperacionIndividuo.getFechaFiltro2());
+		List<Individuo> individuosResumen = null;
+		try {
+			individuosResumen = individuoDAO.consultarIndividuosResumenSemanal(rangoOperacionIndividuo.getFechaFiltro(),
+					rangoOperacionIndividuo.getFechaFiltro2());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
+		if (individuosResumen == null) {
+			return;
+		}
 		if (individuosResumen.isEmpty()) {
 			return;
 		}

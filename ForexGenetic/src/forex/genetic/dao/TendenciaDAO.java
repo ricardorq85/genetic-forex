@@ -454,7 +454,7 @@ public class TendenciaDAO {
 		List<Date> fechas = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setTimestamp(count++, new Timestamp(DateUtil.adicionarMes(fechaInicio, -1).getTime()));
+			stmtConsulta.setTimestamp(count++, new Timestamp(DateUtil.adicionarMes(fechaInicio, -3).getTime()));
 			stmtConsulta.setTimestamp(count++, new Timestamp(fechaInicio.getTime()));
 
 			resultado = stmtConsulta.executeQuery();
