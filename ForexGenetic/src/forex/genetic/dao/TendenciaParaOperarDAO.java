@@ -43,8 +43,8 @@ public class TendenciaParaOperarDAO {
 				+ " FECHA_BASE, FECHA_TENDENCIA, VIGENCIA_LOWER,"
 				+ " VIGENCIA_HIGHER, PRECIO_CALCULADO, TAKE_PROFIT, STOP_LOSS,"
 				+ " TIEMPO_TENDENCIA, R2, PENDIENTE, DESVIACION, MIN_PRECIO, MAX_PRECIO,"
-				+ " CANTIDAD, FECHA, ID_EJECUCION) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ " CANTIDAD, FECHA, ID_EJECUCION, ACTIVA) "
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		int index = 1;
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -68,6 +68,7 @@ public class TendenciaParaOperarDAO {
 			statement.setInt(index++, tpo.getRegresion().getCantidad());
 			statement.setTimestamp(index++, new Timestamp(new Date().getTime()));
 			statement.setString(index++, tpo.getIdEjecucion());
+			statement.setInt(index++, 1);
 			statement.executeUpdate();
 		} finally {
 			JDBCUtil.close(statement);
@@ -83,7 +84,8 @@ public class TendenciaParaOperarDAO {
 		String sql = "UPDATE TENDENCIA_PARA_OPERAR SET  " + " TIPO_OPERACION=?, FECHA_TENDENCIA=?, VIGENCIA_LOWER=?,"
 				+ " VIGENCIA_HIGHER=?, PRECIO_CALCULADO=?, TAKE_PROFIT=?, STOP_LOSS=?,"
 				+ " TIEMPO_TENDENCIA=?, R2=?, PENDIENTE=?, DESVIACION=?, MIN_PRECIO=?, MAX_PRECIO=?,"
-				+ " CANTIDAD=?, FECHA=?, ID_EJECUCION=? " + " WHERE TIPO_EXPORTACION=? AND PERIODO=? AND FECHA_BASE=?";
+				+ " CANTIDAD=?, FECHA=?, ID_EJECUCION=?, ACTIVA=? " 
+				+ " WHERE TIPO_EXPORTACION=? AND PERIODO=? AND FECHA_BASE=?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
 		int affected = 0;
@@ -105,6 +107,7 @@ public class TendenciaParaOperarDAO {
 			statement.setInt(index++, tpo.getRegresion().getCantidad());
 			statement.setTimestamp(index++, new Timestamp(new Date().getTime()));
 			statement.setString(index++, tpo.getIdEjecucion());
+			statement.setInt(index++, 1);
 
 			statement.setString(index++, tpo.getTipoExportacion());
 			statement.setString(index++, tpo.getPeriod());
@@ -146,7 +149,9 @@ public class TendenciaParaOperarDAO {
 
 	public List<TendenciaParaOperarMaxMin> consultarTendenciasParaOperar() throws SQLException {
 		List<TendenciaParaOperarMaxMin> list = null;
-		String sql = "SELECT * FROM TENDENCIA_PARA_OPERAR TPO ORDER BY TPO.FECHA_BASE ASC";
+		String sql = "SELECT * FROM TENDENCIA_PARA_OPERAR TPO "
+				+ " WHERE TPO.ACTIVA=1"
+				+ "ORDER BY TPO.FECHA_BASE ASC";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 

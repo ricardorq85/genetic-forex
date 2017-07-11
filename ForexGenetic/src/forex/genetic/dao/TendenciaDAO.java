@@ -445,7 +445,8 @@ public class TendenciaDAO {
 	}
 
 	public List<Date> consultarXCantidadFechaBase(Date fechaInicio) throws SQLException {
-		String sql = "SELECT TRUNC(TEN.FECHA_BASE) FROM TENDENCIA TEN " + " WHERE TEN.FECHA_BASE ? AND ? "
+		String sql = "SELECT TRUNC(TEN.FECHA_BASE) FROM TENDENCIA TEN " 
+	+ " WHERE TEN.FECHA_BASE BETWEEN ? AND ? "
 				+ " GROUP BY TRUNC(TEN.FECHA_BASE) " + " ORDER BY COUNT(*) ASC";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
