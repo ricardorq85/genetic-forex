@@ -44,15 +44,22 @@ public class TendenciaBuySellManager extends TendenciasManager {
 
 	public List<TendenciaEstadistica> calcularTendencias(Date fechaBaseInicial, Date fechaBaseFinal, int filas)
 			throws SQLException {
+		return this.calcularTendencias(1, fechaBaseInicial, fechaBaseFinal, filas);
+	}
+
+	public List<TendenciaEstadistica> calcularTendencias(int cantidadVeces, Date fechaBaseInicial, Date fechaBaseFinal, int filas) throws SQLException {
 		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
 		List<Point> pointsFechaTendencia = datoHistoricoDAO.consultarHistoricoOrderByPrecio(fechaBaseInicial,
 				fechaBaseFinal);
+		int c = cantidadVeces + 1;
 		if ((pointsFechaTendencia != null) && (!pointsFechaTendencia.isEmpty())) {
 			int size = pointsFechaTendencia.size();
 			int sizeLimit = (int) (size * 0.1);
-			int index = RandomUtil.nextInt(sizeLimit + 1);
-			listaTendencias.addAll(this.calcularTendencias(pointsFechaTendencia.get(index), filas));
-			listaTendencias.addAll(this.calcularTendencias(pointsFechaTendencia.get(size - index - 1), filas));
+			for (int i = 1; i < c; i++) {
+				int index = RandomUtil.nextInt(sizeLimit + 1);
+				listaTendencias.addAll(this.calcularTendencias(pointsFechaTendencia.get(index), filas));
+				listaTendencias.addAll(this.calcularTendencias(pointsFechaTendencia.get(size - index - 1), filas));
+			}
 		}
 		return listaTendencias;
 	}

@@ -40,20 +40,20 @@ public class TendenciaFacade implements IGeneticFacade {
 	}
 
 	private void procesarTendenciasXCantidad() throws ClassNotFoundException, SQLException {
-		Date fechaBaseFinal = parametroFechaInicio;		
+		Date fechaBaseFinal = parametroFechaInicio;
 		int minutosUnDia = 1 * 24 * 60;
 		for (Date fecha : fechasXCantidad) {
 			Date fechaBaseInicial = fecha;
 			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseInicial, minutosUnDia);
 			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
 					+ DateUtil.getDateString(fechaBaseFinal), 1);
-			tendenciaManager.calcularTendencias(fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
+			tendenciaManager.calcularTendencias(2, fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
 		}
 	}
 
 	private void procesarTendenciasXFecha() throws ClassNotFoundException, SQLException {
 		Date fechaBaseFinal = parametroFechaInicio;
-		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();		
+		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
 		while (fechaBaseFinal.after(DateUtil.adicionarDias(fechaBaseFinal, -30))) {
 			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1);
 			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, -parametroStepTendencia);
