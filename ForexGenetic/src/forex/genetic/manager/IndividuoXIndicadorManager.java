@@ -135,7 +135,7 @@ public class IndividuoXIndicadorManager {
 				poblacion.add(individuoBuy);
 				Poblacion mutados = mutarIndividuos(poblacion);
 				// poblacion.addAll(mutados);
-				cruzarIndividuos(rangoOperacionIndividuo, poblacion);
+				//cruzarIndividuos(rangoOperacionIndividuo, poblacion);
 			}
 		} else {
 			logTime("NO cumple con el rango valido.", 1);
