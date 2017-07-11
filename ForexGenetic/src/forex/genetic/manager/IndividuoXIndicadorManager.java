@@ -129,14 +129,14 @@ public class IndividuoXIndicadorManager {
 			IndividuoEstrategia individuoBuy = createIndividuo(rangoOperacionIndividuo, Constants.OperationType.BUY);
 			insertIndividuo(individuoSell);
 			insertIndividuo(individuoBuy);
-			if ((individuoSell != null) && (individuoBuy != null)) {
+			/*if ((individuoSell != null) && (individuoBuy != null)) {
 				Poblacion poblacion = new Poblacion();
 				poblacion.add(individuoSell);
 				poblacion.add(individuoBuy);
 				Poblacion mutados = mutarIndividuos(poblacion);
-				// poblacion.addAll(mutados);
+				poblacion.addAll(mutados);
 				//cruzarIndividuos(rangoOperacionIndividuo, poblacion);
-			}
+			}*/
 		} else {
 			logTime("NO cumple con el rango valido.", 1);
 		}
