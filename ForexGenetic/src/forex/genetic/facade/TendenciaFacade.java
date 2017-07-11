@@ -14,6 +14,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
 
 public class TendenciaFacade implements IGeneticFacade {
 
+	private TendenciaBuySellManager tendenciaManager;
 	private ParametroDAO parametroDAO;
 	private TendenciaDAO tendenciaDAO;
 	protected Connection conn = null;
@@ -23,8 +24,9 @@ public class TendenciaFacade implements IGeneticFacade {
 
 	public TendenciaFacade() throws ClassNotFoundException, SQLException {
 		conn = JDBCUtil.getConnection();
+		tendenciaManager = new TendenciaBuySellManager();
 		parametroDAO = new ParametroDAO(conn);
-		tendenciaDAO = new TendenciaDAO(conn);				
+		tendenciaDAO = new TendenciaDAO(conn);
 		parametroFechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_TENDENCIA");
 		parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
 		parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
@@ -32,9 +34,13 @@ public class TendenciaFacade implements IGeneticFacade {
 	}
 
 	public void procesarTendencias() throws ClassNotFoundException, SQLException {
-		Date fechaBaseFinal = parametroFechaInicio;
-		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
-		tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia);
+		this.tendenciaManager.calcularTendencias(parametroFechaInicio, parametroFilasTendencia);
+		this.procesarTendenciasXCantidad();
+		this.procesarTendenciasXFecha();
+	}
+
+	private void procesarTendenciasXCantidad() throws ClassNotFoundException, SQLException {
+		Date fechaBaseFinal = parametroFechaInicio;		
 		int minutosUnDia = 1 * 24 * 60;
 		for (Date fecha : fechasXCantidad) {
 			Date fechaBaseInicial = fecha;
@@ -45,10 +51,9 @@ public class TendenciaFacade implements IGeneticFacade {
 		}
 	}
 
-	public void procesarTendencias2() throws ClassNotFoundException, SQLException {
+	private void procesarTendenciasXFecha() throws ClassNotFoundException, SQLException {
 		Date fechaBaseFinal = parametroFechaInicio;
-		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
-		tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia);
+		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();		
 		while (fechaBaseFinal.after(DateUtil.adicionarDias(fechaBaseFinal, -30))) {
 			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1);
 			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, -parametroStepTendencia);
