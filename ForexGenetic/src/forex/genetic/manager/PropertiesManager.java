@@ -533,6 +533,18 @@ public class PropertiesManager {
         fileId = value;
         FileProperties.setProperty(Constants.FILE_ID, value);
     }
+    
+    public static void setProperty(String name, String value) {
+        try {
+            if (FileProperties.getProperties().isEmpty()) {
+                t.join();
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        FileProperties.setProperty(name, value);
+    }
+          
 
     /**
      *

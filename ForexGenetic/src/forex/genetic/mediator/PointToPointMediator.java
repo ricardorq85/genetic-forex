@@ -28,6 +28,7 @@ import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.io.CopyFileVisitor;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
 import forex.genetic.tendencia.manager.TendenciaBuySellManager;
+import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.FileUtil;
 import forex.genetic.util.LogUtil;
@@ -115,11 +116,10 @@ public class PointToPointMediator extends GeneticMediator {
 		return files.size();
 	}
 
-	private String getFileId(String fileName) {
+	private String[] getFileParameters(String fileName) {
 		String fileId = null;
 		String[] spt = fileName.split("-");
-		fileId = spt[1];
-		return fileId;
+		return spt;
 	}
 
 	private void ejecutarCarga(List<Path> files) throws FileNotFoundException, IOException {
@@ -132,9 +132,15 @@ public class PointToPointMediator extends GeneticMediator {
 		}
 	}
 
-	private void actualizarProperty(Path file) {
-		String fileId = getFileId(file.getFileName().toFile().getName());
+	private void actualizarProperty(Path file) {		
+		String fileName = file.getFileName().toFile().getName();
+		logTime("File:" + fileName, 1);
+		String[] fileParameters = getFileParameters(fileName);
+		String fileId = fileParameters[1];		
 		PropertiesManager.setFileId(fileId);
+		String fileNumber = fileParameters[2].split("\\.")[0];
+		PropertiesManager.setProperty(Constants.INITIAL_POBLACION, fileNumber);
+		PropertiesManager.setProperty(Constants.END_POBLACION, fileNumber);
 	}
 
 	private List<Path> copiarArchivosARuta() throws IOException {
