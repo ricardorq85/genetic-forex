@@ -135,7 +135,7 @@ public class DatoHistoricoDAO {
 		}
 		return fechaHistorica;
 	}
-	
+
 	public Date getFechaHistoricaMaxima(Date fecha) throws SQLException {
 		Date fechaHistorica = null;
 		String sql = "SELECT MAX(FECHA) FECHA_MAXIMA_HISTORIA FROM DATOHISTORICO " + " WHERE FECHA<?";
@@ -155,7 +155,7 @@ public class DatoHistoricoDAO {
 			JDBCUtil.close(stmtConsulta);
 		}
 		return fechaHistorica;
-	}	
+	}
 
 	/**
 	 *
@@ -230,8 +230,7 @@ public class DatoHistoricoDAO {
 				+ " RSI84, BOLLINGER_UPPER240, BOLLINGER_LOWER240, MOMENTUM1200, ICHIMOKUTENKANSEN6, "
 				+ " ICHIMOKUKIJUNSEN6, ICHIMOKUSENKOUSPANA6, ICHIMOKUSENKOUSPANB6, ICHIMOKUCHINKOUSPAN6 "
 				+ " FROM DATOHISTORICO WHERE " + " FECHA >= ? AND FECHA<=? "
-				+ " ORDER BY ((HIGH+LOW+OPEN+CLOSE)/4) DESC, "
-				+ " FECHA ASC";
+				+ " ORDER BY ((HIGH+LOW+OPEN+CLOSE)/4) DESC, " + " FECHA ASC";
 
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
@@ -248,7 +247,7 @@ public class DatoHistoricoDAO {
 		}
 
 		return points;
-	}	
+	}
 
 	public boolean existHistorico(Point point) throws SQLException {
 		String sql = "SELECT 1 FROM DATOHISTORICO WHERE FECHA=? AND PAR=? AND MINUTOS=?";
@@ -562,7 +561,13 @@ public class DatoHistoricoDAO {
 	}
 
 	public void updateDatoHistorico(Point point) throws SQLException {
-		String sql = "UPDATE DATOHISTORICO SET SAR1200=?, ADX_VALUE168=?, ADX_PLUS168=?, ADX_MINUS168=?, "
+		String sql = "UPDATE DATOHISTORICO SET PAR_COMPARE=?, "
+				+ " OPEN=?, LOW=?, HIGH=?, CLOSE=?, VOLUME=?, SPREAD=?, AVERAGE=?, MACD_VALUE=?, MACD_SIGNAL=?, "
+				+ " COMPARE_VALUE=?, AVERAGE_COMPARE=?, SAR=?, ADX_VALUE=?, ADX_PLUS=?, ADX_MINUS=?, "
+				+ " RSI=?, BOLLINGER_UPPER=?, BOLLINGER_LOWER=?, MOMENTUM=?, ICHIMOKUTENKANSEN=?, "
+				+ " ICHIMOKUKIJUNSEN=?, ICHIMOKUSENKOUSPANA=?, ICHIMOKUSENKOUSPANB=?, ICHIMOKUCHINKOUSPAN=?, "
+				+ " MA1200=?, MACD20X_VALUE=?, MACD20X_SIGNAL=?, AVERAGE_COMPARE1200=?, "
+				+ " SAR1200=?, ADX_VALUE168=?, ADX_PLUS168=?, ADX_MINUS168=?, "
 				+ " RSI84=?, BOLLINGER_UPPER240=?, BOLLINGER_LOWER240=?, MOMENTUM1200=?, ICHIMOKUTENKANSEN6=?, "
 				+ " ICHIMOKUKIJUNSEN6=?, ICHIMOKUSENKOUSPANA6=?, ICHIMOKUSENKOUSPANB6=?, ICHIMOKUCHINKOUSPAN6=?, FECHA_REGISTRO=? "
 				+ " WHERE PAR=? AND MINUTOS=? AND FECHA=?";
@@ -573,7 +578,147 @@ public class DatoHistoricoDAO {
 		try {
 			statement = connection.prepareStatement(sql);
 
-			double d;
+			statement.setString(i++, point.getMonedaComparacion());
+			statement.setDouble(i++, point.getOpen());
+			statement.setDouble(i++, point.getLow());
+			statement.setDouble(i++, point.getHigh());
+			statement.setDouble(i++, point.getClose());
+			statement.setDouble(i++, point.getVolume());
+			statement.setDouble(i++, point.getSpread());
+			double d = 0.0;
+			d = ((Average) point.getIndicators().get(0)).getAverage();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Macd) point.getIndicators().get(1)).getMacdValue();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Macd) point.getIndicators().get(1)).getMacdSignal();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = point.getCloseCompare();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Average) point.getIndicators().get(2)).getAverage();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+
+			d = ((Sar) point.getIndicators().get(3)).getSar();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Adx) point.getIndicators().get(4)).getAdxValue();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Adx) point.getIndicators().get(4)).getAdxPlus();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Adx) point.getIndicators().get(4)).getAdxMinus();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Rsi) point.getIndicators().get(5)).getRsi();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Bollinger) point.getIndicators().get(6)).getUpper();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Bollinger) point.getIndicators().get(6)).getLower();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Momentum) point.getIndicators().get(7)).getMomentum();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Ichimoku) point.getIndicators().get(8)).getTenkanSen();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Ichimoku) point.getIndicators().get(8)).getKijunSen();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Ichimoku) point.getIndicators().get(8)).getSenkouSpanA();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Ichimoku) point.getIndicators().get(9)).getSenkouSpanB();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Ichimoku) point.getIndicators().get(9)).getChinkouSpan();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Average) point.getIndicators().get(10)).getAverage();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Macd) point.getIndicators().get(11)).getMacdValue();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Macd) point.getIndicators().get(11)).getMacdSignal();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
+			d = ((Average) point.getIndicators().get(12)).getAverage();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				statement.setNull(i++, java.sql.Types.DOUBLE);
+			} else {
+				statement.setDouble(i++, d);
+			}
 			d = ((Sar) point.getIndicators().get(13)).getSar();
 			if (Double.isInfinite(d) || Double.isNaN(d)) {
 				statement.setNull(i++, java.sql.Types.DOUBLE);
@@ -654,6 +799,7 @@ public class DatoHistoricoDAO {
 			}
 
 			statement.setTimestamp(i++, new java.sql.Timestamp(new Date().getTime()));
+
 			statement.setString(i++, point.getMoneda());
 			statement.setInt(i++, point.getPeriodo());
 			statement.setTimestamp(i++, new java.sql.Timestamp(point.getDate().getTime()));
