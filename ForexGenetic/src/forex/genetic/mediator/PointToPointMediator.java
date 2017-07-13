@@ -170,15 +170,15 @@ public class PointToPointMediator extends GeneticMediator {
 		}
 		long durMillis = DateUtil.calcularDuracionMillis(ultimaFechaBaseTendencia, fechaBaseFinal);
 		int diasDiferencia = (int) ((durMillis / (1000 * 60 * 60 * 24)) + 1);
-		int factorStep = (int) ((durMillis) / ((1000 * 60 * diasDiferencia / count) + 1));
-		parametroStepTendencia = Math.max(factorStep, parametroStepTendencia);
+		int minutosFactorStep = (int) ((diasDiferencia / 6) * 24 * 60);
+		parametroStepTendencia = Math.max(minutosFactorStep, parametroStepTendencia);
 		parametroFilasTendencia = Math.max((1440 / 2000 / (diasDiferencia / count + 1)), parametroFilasTendencia);
 		LogUtil.logTime("ultimaFechaBaseTendencia:" + DateUtil.getDateString(ultimaFechaBaseTendencia), 3);
 		LogUtil.logTime("ultimaFechaBaseTendencia:" + DateUtil.getDateString(fechaBaseFinal), 3);
 		LogUtil.logTime("durMillis:" + durMillis, 3);
 		LogUtil.logTime("count:" + count, 3);
 		LogUtil.logTime("diasDiferencia:" + diasDiferencia, 3);
-		LogUtil.logTime("factorStep:" + factorStep, 3);
+		LogUtil.logTime("factorStep:" + minutosFactorStep, 3);
 		LogUtil.logTime("parametroStepTendencia:" + parametroStepTendencia, 3);
 		LogUtil.logTime("parametroFilasTendencia:" + parametroFilasTendencia, 3);
 		while (fechaBaseFinal.after(ultimaFechaBaseTendencia)) {
