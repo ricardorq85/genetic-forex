@@ -93,7 +93,7 @@ public class PointToPointMediator extends GeneticMediator {
 
 	protected void setUltimaFechaTendencia(int count) throws SQLException {
 		this.ultimaFechaBaseTendencia = tendenciaDAO.maxFechaBaseTendencia();
-		if (fechaHistoricaMaximaNueva.equals(ultimaFechaBaseTendencia)) {
+		if ((this.ultimaFechaBaseTendencia == null) || (fechaHistoricaMaximaNueva.equals(ultimaFechaBaseTendencia))) {
 			int minutos = (int) (-(1440 * 0.5 * count));
 			this.ultimaFechaBaseTendencia = DateUtil.adicionarMinutos(fechaHistoricaMaximaNueva, minutos);
 		}
@@ -117,7 +117,6 @@ public class PointToPointMediator extends GeneticMediator {
 	}
 
 	private String[] getFileParameters(String fileName) {
-		String fileId = null;
 		String[] spt = fileName.split("-");
 		return spt;
 	}
@@ -132,11 +131,11 @@ public class PointToPointMediator extends GeneticMediator {
 		}
 	}
 
-	private void actualizarProperty(Path file) {		
+	private void actualizarProperty(Path file) {
 		String fileName = file.getFileName().toFile().getName();
 		logTime("File:" + fileName, 1);
 		String[] fileParameters = getFileParameters(fileName);
-		String fileId = fileParameters[1];		
+		String fileId = fileParameters[1];
 		PropertiesManager.setFileId(fileId);
 		String fileNumber = fileParameters[2].split("\\.")[0];
 		PropertiesManager.setProperty(Constants.INITIAL_POBLACION, fileNumber);
