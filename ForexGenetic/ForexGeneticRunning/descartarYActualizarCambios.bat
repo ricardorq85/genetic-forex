@@ -1,4 +1,4 @@
 git checkout .
 git clean -f
 git pull
-CopyJar.bat
+ForexGeneticRunning\CopyJar.bat
