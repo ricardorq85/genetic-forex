@@ -20,7 +20,7 @@ public class TendenciaFacade implements IGeneticFacade {
 	protected Connection conn = null;
 	private List<Date> fechasXCantidad;
 	private Date parametroFechaInicio;
-	private int parametroStepTendencia, parametroFilasTendencia;
+	private int parametroStepTendencia, parametroFilasTendencia, parametroMesesTendencia;
 
 	public TendenciaFacade() throws ClassNotFoundException, SQLException {
 		conn = JDBCUtil.getConnection();
@@ -30,7 +30,12 @@ public class TendenciaFacade implements IGeneticFacade {
 		parametroFechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_TENDENCIA");
 		parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
 		parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
-		fechasXCantidad = tendenciaDAO.consultarXCantidadFechaBase(parametroFechaInicio);
+		try {
+			parametroMesesTendencia = parametroDAO.getIntValorParametro("MESES_TENDENCIA");
+		} catch (NumberFormatException ex) {
+			parametroMesesTendencia = 3;
+		}
+		fechasXCantidad = tendenciaDAO.consultarXCantidadFechaBase(parametroFechaInicio, parametroMesesTendencia);
 	}
 
 	public void procesarTendencias() throws ClassNotFoundException, SQLException {

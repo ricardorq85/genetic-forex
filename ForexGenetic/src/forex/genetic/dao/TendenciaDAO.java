@@ -444,17 +444,22 @@ public class TendenciaDAO {
 		return procesoTendenciaList;
 	}
 
-	public List<Date> consultarXCantidadFechaBase(Date fechaInicio) throws SQLException {
-		String sql = "SELECT TRUNC(TEN.FECHA_BASE) FROM TENDENCIA TEN " 
-	+ " WHERE TEN.FECHA_BASE BETWEEN ? AND ? "
-				+ " GROUP BY TRUNC(TEN.FECHA_BASE) " + " ORDER BY COUNT(*) ASC";
+	public List<Date> consultarXCantidadFechaBase(Date fechaInicio, int parametroMesesTendencia) throws SQLException {
+		String sql = "WITH	PARAMETROS AS ("
+				+ "	SELECT ? FE1, ? FE2 FROM DUAL),"
+				+ "	DIAS AS (SELECT TRUNC(DH.FECHA) FECHA FROM PARAMETROS P, DATOHISTORICO DH"
+				+ " WHERE DH.FECHA BETWEEN P.FE1 AND P.FE2 GROUP BY TRUNC(DH.FECHA)),"
+				+ "	COUNT_DIAS AS (SELECT D.FECHA, COUNT(TEN.FECHA_BASE) CANTIDAD FROM DIAS D LEFT JOIN TENDENCIA TEN ON D.FECHA=TRUNC(TEN.FECHA_BASE)"
+				+ "	GROUP BY D.FECHA"
+				+ " ORDER BY CANTIDAD aSC, D.FECHA deSC)"
+				+ " SELECT FECHA FROM COUNT_DIAS";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 		int count = 1;
 		List<Date> fechas = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setTimestamp(count++, new Timestamp(DateUtil.adicionarMes(fechaInicio, -3).getTime()));
+			stmtConsulta.setTimestamp(count++, new Timestamp(DateUtil.adicionarMes(fechaInicio, -parametroMesesTendencia).getTime()));
 			stmtConsulta.setTimestamp(count++, new Timestamp(fechaInicio.getTime()));
 
 			resultado = stmtConsulta.executeQuery();
