@@ -66,6 +66,8 @@ public class IndividuoXIndicadorManager {
 		indicadorDAO = new IndicatorDAO(conn);
 		parametroDAO = new ParametroDAO(conn);
 		operacionesDAO = new OperacionesDAO(conn);
+		this.fechaMinima = fechaMinima;
+		this.fechaMaxima = fechaMaxima;
 		if (fechaMinima == null) {
 			this.fechaMinima = parametroDAO.getDateValorParametro("FECHA_MINIMA_CREAR_INDIVIDUO");
 		}
@@ -81,7 +83,7 @@ public class IndividuoXIndicadorManager {
 	}
 
 	public void crearIndividuos() throws SQLException, ClassNotFoundException {		
-		this.configurarAmbiente();
+		//this.configurarAmbiente();
 		try {
 			Date fechaFiltroFinal = new Date(fechaMaxima.getTime());
 			while (fechaFiltroFinal.after(fechaMinima)) {
