@@ -50,20 +50,29 @@ public class IndividuoXIndicadorManager {
 	private ParametroDAO parametroDAO;
 	private Date fechaMinima, fechaMaxima;
 	private int parametroMeses, parametroRetroceso, parametroPips, parametroCantidadMutar, parametroCantidadCruzar;
+	private int maximoMeses;
 
 	private final IndicadorController indicadorController = ControllerFactory
 			.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 
 	public IndividuoXIndicadorManager() throws ClassNotFoundException, SQLException {
+		this(null, null, 12);
+	}
+
+	public IndividuoXIndicadorManager(Date fechaMinima, Date fechaMaxima, int maximoMeses) throws ClassNotFoundException, SQLException {
 		conn = JDBCUtil.getConnection();
 		individuoDAO = new IndividuoDAO(conn);
 		dhDAO = new DatoHistoricoDAO(conn);
 		indicadorDAO = new IndicatorDAO(conn);
 		parametroDAO = new ParametroDAO(conn);
 		operacionesDAO = new OperacionesDAO(conn);
-		fechaMinima = parametroDAO.getDateValorParametro("FECHA_MINIMA_CREAR_INDIVIDUO");
-		fechaMaxima = parametroDAO.getDateValorParametro("FECHA_MAXIMA_CREAR_INDIVIDUO");
-
+		if (fechaMinima == null) {
+			this.fechaMinima = parametroDAO.getDateValorParametro("FECHA_MINIMA_CREAR_INDIVIDUO");
+		}
+		if (fechaMaxima == null) {
+			this.fechaMaxima = parametroDAO.getDateValorParametro("FECHA_MAXIMA_CREAR_INDIVIDUO");
+		}
+		this.maximoMeses = maximoMeses;
 		parametroMeses = parametroDAO.getIntValorParametro("MESES_RANGOOPERACIONINDICADOR");
 		parametroRetroceso = parametroDAO.getIntValorParametro("RETROCESO_RANGOOPERACIONINDICADOR");
 		parametroPips = parametroDAO.getIntValorParametro("PIPS_RANGOOPERACIONINDICADOR");
@@ -71,13 +80,13 @@ public class IndividuoXIndicadorManager {
 		parametroCantidadCruzar = parametroDAO.getIntValorParametro("CANTIDAD_CRUZAR");
 	}
 
-	public void crearIndividuos() throws SQLException, ClassNotFoundException {
+	public void crearIndividuos() throws SQLException, ClassNotFoundException {		
 		this.configurarAmbiente();
 		try {
 			Date fechaFiltroFinal = new Date(fechaMaxima.getTime());
 			while (fechaFiltroFinal.after(fechaMinima)) {
 				int meses = parametroMeses;
-				while (meses < 13) {
+				while (meses <= maximoMeses) {
 					logTime("Meses: " + meses, 1);
 					DateInterval dateInterval = new DateInterval();
 					dateInterval.setLowInterval(DateUtil.adicionarMes(fechaFiltroFinal, -meses));
@@ -129,14 +138,14 @@ public class IndividuoXIndicadorManager {
 			IndividuoEstrategia individuoBuy = createIndividuo(rangoOperacionIndividuo, Constants.OperationType.BUY);
 			insertIndividuo(individuoSell);
 			insertIndividuo(individuoBuy);
-			/*if ((individuoSell != null) && (individuoBuy != null)) {
-				Poblacion poblacion = new Poblacion();
-				poblacion.add(individuoSell);
-				poblacion.add(individuoBuy);
-				Poblacion mutados = mutarIndividuos(poblacion);
-				poblacion.addAll(mutados);
-				//cruzarIndividuos(rangoOperacionIndividuo, poblacion);
-			}*/
+			/*
+			 * if ((individuoSell != null) && (individuoBuy != null)) {
+			 * Poblacion poblacion = new Poblacion();
+			 * poblacion.add(individuoSell); poblacion.add(individuoBuy);
+			 * Poblacion mutados = mutarIndividuos(poblacion);
+			 * poblacion.addAll(mutados);
+			 * //cruzarIndividuos(rangoOperacionIndividuo, poblacion); }
+			 */
 		} else {
 			logTime("NO cumple con el rango valido.", 1);
 		}
