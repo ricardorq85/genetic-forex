@@ -33,11 +33,10 @@ import forex.genetic.util.jdbc.JDBCUtil;
 public class ProcesarIndividuoThreadBD extends Thread {
 
 	private List<Individuo> individuos = null;
-	private Connection conn = null;
+	private Connection conn = null, connDDL = null;
 	private DatoHistoricoDAO daoHistorico;
 	private OperacionesDAO daoOperaciones;
-	private OperacionSemanalDAO daoOperacionSemanal;
-	private IndividuoDAO daoIndividuo;
+	private IndividuoDAO daoIndividuo, daoIndividuoDDL;
 	private ProcesoPoblacionDAO daoProceso;
 	private Date maxFechaHistorico = null;
 	private Date minFechaHistorico = null;
@@ -57,11 +56,13 @@ public class ProcesarIndividuoThreadBD extends Thread {
 		try {
 			LogUtil.logTime("Inicia proceso para " + super.getName(), 1);
 			conn = JDBCUtil.getConnection();
+			connDDL = JDBCUtil.getConnection();
 			daoHistorico = new DatoHistoricoDAO(conn);
 			daoOperaciones = new OperacionesDAO(conn);
-			daoIndividuo = new IndividuoDAO(conn);
+			daoIndividuo = new IndividuoDAO(conn);			
 			daoProceso = new ProcesoPoblacionDAO(conn);
-			daoOperacionSemanal = new OperacionSemanalDAO(conn);
+			
+			daoIndividuoDDL = new IndividuoDAO(connDDL);
 			for (Individuo individuo : individuos) {
 				runIndividuo(individuo);
 			}
@@ -74,8 +75,8 @@ public class ProcesarIndividuoThreadBD extends Thread {
 
 	protected void runIndividuo(Individuo individuo) throws ClassNotFoundException {
 		try {
-			daoIndividuo.insertarIndividuoIndicadoresColumnas(individuo.getId());
-			conn.commit();
+			daoIndividuoDDL.insertarIndividuoIndicadoresColumnas(individuo.getId());
+			connDDL.commit();
 			if (!validarYBorrarIndividuoInvalido(individuo)) {
 				Date fechaMayorQue = (individuo.getFechaHistorico() == null) ? this.minFechaHistorico
 						: individuo.getFechaHistorico();
@@ -85,9 +86,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
 				while (processed && !fechaMenorOIgualQue.after(this.maxFechaHistorico)
 						&& fechaMenorOIgualQue.after(fechaMayorQue)) {
 					DateInterval intervaloFechasIndividuo = new DateInterval(fechaMayorQue, fechaMenorOIgualQue);
-
 					Date lastProcessedDate = procesarIndividuo(individuo, intervaloFechasIndividuo);
-
 					processed = (lastProcessedDate != null);
 					if (processed) {
 						fechaMayorQue = lastProcessedDate;
@@ -96,7 +95,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
 					}
 				}
 				if (processed && !validarYBorrarIndividuoInvalido(individuo)) {
-					//this.actualizarOperacionSemanal(individuo);
+					// this.actualizarOperacionSemanal(individuo);
 				}
 			}
 		} catch (SQLException ex) {
@@ -121,47 +120,6 @@ public class ProcesarIndividuoThreadBD extends Thread {
 			e.printStackTrace();
 		}
 		return borrado;
-	}
-
-	private void actualizarOperacionSemanal(Individuo individuo) throws SQLException {
-		// Semana
-		int cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACION_X_SEMANA");
-		int cInsert = daoOperacionSemanal.insertOperacionesSemana(individuo);
-		conn.commit();
-		LogUtil.logTime(individuo.getId() + ". Borrados OPERACION_X_SEMANA: " + cDelete, 2);
-		LogUtil.logTime(individuo.getId() + ". Insertados OPERACION_X_SEMANA: " + cInsert, 2);
-		// TODO: hacerlo por las semanas de OPERACION x individuo, no de
-		// OPERACION_X_SEMANA
-		cInsert = daoOperacionSemanal.insertSemanas(individuo);
-		conn.commit();
-		LogUtil.logTime("Insertados SEMANAS: " + cInsert, 1);
-		// Mes
-		cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACIONES_ACUM_SEMANA_MES");
-		cInsert = daoOperacionSemanal.insertOperacionesSemanaAcumuladas(individuo, "OPERACIONES_ACUM_SEMANA_MES",
-				-10000, 1);
-		conn.commit();
-		LogUtil.logTime(individuo.getId() + ". Borrados OPERACIONES_ACUM_SEMANA_MES: " + cDelete, 2);
-		LogUtil.logTime(individuo.getId() + ". Insertados OPERACIONES_ACUM_SEMANA_MES: " + cInsert, 2);
-		// Anyo
-		cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACIONES_ACUM_SEMANA_ANYO");
-		cInsert = daoOperacionSemanal.insertOperacionesSemanaAcumuladas(individuo, "OPERACIONES_ACUM_SEMANA_ANYO",
-				-20000, 12);
-		conn.commit();
-		LogUtil.logTime(individuo.getId() + ". Borrados OPERACIONES_ACUM_SEMANA_ANYO: " + cDelete, 2);
-		LogUtil.logTime(individuo.getId() + ". Insertados OPERACIONES_ACUM_SEMANA_ANYO: " + cInsert, 2);
-		// Consolidado
-		cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "OPERACIONES_ACUM_SEMANA_CONSOL");
-		cInsert = daoOperacionSemanal.insertOperacionesSemanaAcumuladas(individuo, "OPERACIONES_ACUM_SEMANA_CONSOL",
-				-30000, 240);
-		conn.commit();
-		LogUtil.logTime(individuo.getId() + ". Borrados OPERACIONES_ACUM_SEMANA_CONSOL: " + cDelete, 2);
-		LogUtil.logTime(individuo.getId() + ". Insertados OPERACIONES_ACUM_SEMANA_CONSOL: " + cInsert, 2);
-		// Previo
-		cDelete = daoOperacionSemanal.deleteOperacionesSemana(individuo, "PREVIO_TOFILESTRING");
-		cInsert = daoOperacionSemanal.insertOperacionesSemanaPrevio(individuo);
-		conn.commit();
-		LogUtil.logTime(individuo.getId() + ". Borrados PREVIO_TOFILESTRING: " + cDelete, 2);
-		LogUtil.logTime(individuo.getId() + ". Insertados PREVIO_TOFILESTRING: " + cInsert, 2);
 	}
 
 	private int proximaFechaApertura(List<Date> fechas, Date fechaInicial, int index) {
