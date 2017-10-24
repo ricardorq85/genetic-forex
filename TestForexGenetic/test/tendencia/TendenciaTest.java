@@ -438,4 +438,16 @@ public class TendenciaTest extends GeneticTest {
 		TendenciaEstadistica tendencia = this.testIndividuo(fechaBase, idIndividuo);
 		Assert.assertNull("Tendencia no null", tendencia);
 	}
+	
+	@Test
+	public final void tendenciaParaElIndividuo1484511934277p466()
+			throws ClassNotFoundException, SQLException, ParseException, CloneNotSupportedException {
+		String idIndividuo = "1484511934277.466";
+		Date fechaBase = DateUtil.obtenerFecha("2017/08/24 23:31");
+		//tendenciaManager.borrarTendencia(idIndividuo, fechaBase);
+		Constants.TIPO_TENDENCIA="TEST";
+		TendenciaEstadistica tendencia = this.testIndividuo(fechaBase, idIndividuo);
+		Assert.assertNotNull("Tendencia no null", tendencia);
+	}
+
 }

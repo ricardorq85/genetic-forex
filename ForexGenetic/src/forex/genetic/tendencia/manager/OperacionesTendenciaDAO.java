@@ -40,7 +40,7 @@ public class OperacionesTendenciaDAO extends OperacionesDAO {
 	public Individuo consultarIndividuoOperacionActiva(String idIndividuo, Date fechaBase, int filas)
 			throws SQLException {
 		Individuo individuo = null;
-		String sql = this.getQuery() + " AND OPER.ID_INDIVIDUO=?";
+		String sql = this.getQuery() + " AND ID_INDIVIDUO=?";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 		try {
