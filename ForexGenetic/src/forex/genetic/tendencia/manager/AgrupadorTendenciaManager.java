@@ -49,13 +49,13 @@ public class AgrupadorTendenciaManager {
 	}
 
 	protected Extremos encontrarExtremos() {
-		double valorMaximoDeLosMaximosExtremo = Double.NEGATIVE_INFINITY, 
+		double valorMaximoDeLosMaximosExtremo = Double.NEGATIVE_INFINITY,
 				valorMinimoDeLosMinimosExtremo = Double.POSITIVE_INFINITY;
-		double valorMaximoDeLosMaximosSinFiltrar = Double.NEGATIVE_INFINITY, 
+		double valorMaximoDeLosMaximosSinFiltrar = Double.NEGATIVE_INFINITY,
 				valorMinimoDeLosMinimosSinFiltrar = Double.POSITIVE_INFINITY;
-		double valorMaximoDeLosMaximosFiltrada = Double.NEGATIVE_INFINITY, 
+		double valorMaximoDeLosMaximosFiltrada = Double.NEGATIVE_INFINITY,
 				valorMinimoDeLosMinimosFiltrada = Double.POSITIVE_INFINITY;
-		double valorMinimoDeLosMaximosFiltrada = Double.POSITIVE_INFINITY, 
+		double valorMinimoDeLosMaximosFiltrada = Double.POSITIVE_INFINITY,
 				valorMaximoDeLosMinimosFiltrada = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < listaTendencias.size(); i++) {
 			ProcesoTendenciaFiltradaBuySell procesoIndex = listaTendencias.get(i);
@@ -63,25 +63,37 @@ public class AgrupadorTendenciaManager {
 			Regresion regresionIndex = procesoIndex.getRegresion();
 			if (regresionFiltradaIndex != null) {
 				if (regresionFiltradaIndex.isRegresionValidaMaximoMinimo()) {
-					valorMaximoDeLosMaximosFiltrada = Math.max(valorMaximoDeLosMaximosFiltrada, regresionFiltradaIndex.getMaxPrecio());
-					valorMinimoDeLosMinimosFiltrada = Math.min(valorMinimoDeLosMinimosFiltrada, regresionFiltradaIndex.getMinPrecio());
-					valorMinimoDeLosMaximosFiltrada = Math.min(valorMinimoDeLosMaximosFiltrada, regresionFiltradaIndex.getMaxPrecio());
-					valorMaximoDeLosMinimosFiltrada = Math.max(valorMaximoDeLosMinimosFiltrada, regresionFiltradaIndex.getMinPrecio());
+					valorMaximoDeLosMaximosFiltrada = Math.max(valorMaximoDeLosMaximosFiltrada,
+							regresionFiltradaIndex.getMaxPrecio());
+					valorMinimoDeLosMinimosFiltrada = Math.min(valorMinimoDeLosMinimosFiltrada,
+							regresionFiltradaIndex.getMinPrecio());
+					valorMinimoDeLosMaximosFiltrada = Math.min(valorMinimoDeLosMaximosFiltrada,
+							regresionFiltradaIndex.getMaxPrecio());
+					valorMaximoDeLosMinimosFiltrada = Math.max(valorMaximoDeLosMinimosFiltrada,
+							regresionFiltradaIndex.getMinPrecio());
 				}
 			}
 			if (regresionIndex != null) {
 				if (regresionIndex.isRegresionValidaMaximoMinimo()) {
-					valorMaximoDeLosMaximosExtremo = Math.max(valorMaximoDeLosMaximosExtremo, regresionIndex.getMaxPrecioExtremo());
-					valorMinimoDeLosMinimosExtremo = Math.min(valorMinimoDeLosMinimosExtremo, regresionIndex.getMinPrecioExtremo());
-					valorMaximoDeLosMaximosSinFiltrar = Math.max(valorMaximoDeLosMaximosSinFiltrar, regresionIndex.getMaxPrecio());
-					valorMinimoDeLosMinimosSinFiltrar = Math.min(valorMinimoDeLosMinimosSinFiltrar, regresionIndex.getMinPrecio());
+					valorMaximoDeLosMaximosExtremo = Math.max(valorMaximoDeLosMaximosExtremo,
+							regresionIndex.getMaxPrecioExtremo());
+					valorMinimoDeLosMinimosExtremo = Math.min(valorMinimoDeLosMinimosExtremo,
+							regresionIndex.getMinPrecioExtremo());
+					valorMaximoDeLosMaximosSinFiltrar = Math.max(valorMaximoDeLosMaximosSinFiltrar,
+							regresionIndex.getMaxPrecio());
+					valorMinimoDeLosMinimosSinFiltrar = Math.min(valorMinimoDeLosMinimosSinFiltrar,
+							regresionIndex.getMinPrecio());
 				}
 			}
 		}
-		DoubleInterval extremosFiltrada = new DoubleInterval((valorMinimoDeLosMinimosFiltrada), (valorMaximoDeLosMaximosFiltrada));
-		DoubleInterval extremosIntermedios = new DoubleInterval((valorMaximoDeLosMinimosFiltrada), (valorMinimoDeLosMaximosFiltrada));
-		DoubleInterval extremosExtremo = new DoubleInterval((valorMinimoDeLosMinimosExtremo), (valorMaximoDeLosMaximosExtremo));
-		DoubleInterval extremosSinFiltrar = new DoubleInterval((valorMinimoDeLosMinimosSinFiltrar), (valorMaximoDeLosMaximosSinFiltrar));
+		DoubleInterval extremosFiltrada = new DoubleInterval((valorMinimoDeLosMinimosFiltrada),
+				(valorMaximoDeLosMaximosFiltrada));
+		DoubleInterval extremosIntermedios = new DoubleInterval((valorMaximoDeLosMinimosFiltrada),
+				(valorMinimoDeLosMaximosFiltrada));
+		DoubleInterval extremosExtremo = new DoubleInterval((valorMinimoDeLosMinimosExtremo),
+				(valorMaximoDeLosMaximosExtremo));
+		DoubleInterval extremosSinFiltrar = new DoubleInterval((valorMinimoDeLosMinimosSinFiltrar),
+				(valorMaximoDeLosMaximosSinFiltrar));
 		Extremos extremos = new Extremos(extremosFiltrada, extremosIntermedios, extremosExtremo, extremosSinFiltrar);
 		return extremos;
 	}
@@ -90,37 +102,40 @@ public class AgrupadorTendenciaManager {
 		int lastIndex = listaTendencias.size() - 1;
 		TendenciaParaOperarMaxMin buy = null;
 		TendenciaParaOperarMaxMin sell = null;
-		Regresion maximaRegresionValida = null;
+		Regresion maximaRegresionValidaBuy = null;
+		Regresion maximaRegresionValidaSell = null;
 		for (int i = 1; i < lastIndex; i++) {
 			boolean regresionValida = this.validarRegresion(i);
 			if (regresionValida) {
 				ProcesoTendenciaBuySell procesoIndex = listaTendencias.get(i);
-				maximaRegresionValida = procesoIndex.getRegresion();
 				TendenciaParaOperarMaxMin resultadoParaOperar = crearTendenciaParaOperarMaxMin(extremos, procesoIndex);
 				if (resultadoParaOperar != null) {
 					if (OperationType.BUY.equals(resultadoParaOperar.getTipoOperacion())) {
 						if ((buy == null) || (resultadoParaOperar.getVigenciaHigher().after(buy.getVigenciaHigher()))) {
 							buy = resultadoParaOperar;
+							maximaRegresionValidaBuy = procesoIndex.getRegresion();
 						}
 					} else {
 						if ((sell == null)
 								|| (resultadoParaOperar.getVigenciaHigher().after(sell.getVigenciaHigher()))) {
 							sell = resultadoParaOperar;
+							maximaRegresionValidaSell = procesoIndex.getRegresion();
 						}
 					}
 				}
 			}
 		}
 		processDelete();
-		extremos.setMaximaRegresionFiltrada(maximaRegresionValida);
+		extremos.setMaximaRegresionFiltradaBuy(maximaRegresionValidaBuy);
+		extremos.setMaximaRegresionFiltradaSell(maximaRegresionValidaSell);
 		TendenciaParaOperarMaxMin[] tendenciaExtremos = crearTendenciaParaOperarMaxMinExtremo(extremos,
 				listaTendencias.get(lastIndex));
 		TendenciaParaOperarMaxMin[] tendenciaExtremosSinFiltrar = crearTendenciaParaOperarMaxMinSinFiltrar(extremos,
 				listaTendencias.get(lastIndex));
-		
-		//if (tendenciaExtremos != null) {
-			//this.tendenciasResultado.addAll(Arrays.asList(tendenciaExtremos));
-		//}
+
+		// if (tendenciaExtremos != null) {
+		// this.tendenciasResultado.addAll(Arrays.asList(tendenciaExtremos));
+		// }
 		if (buy != null) {
 			this.tendenciasResultado.add(tendenciaExtremos[0]);
 			this.tendenciasResultado.add(tendenciaExtremosSinFiltrar[0]);
@@ -178,7 +193,7 @@ public class AgrupadorTendenciaManager {
 
 	private TendenciaParaOperarMaxMin[] crearTendenciaParaOperarMaxMinExtremo(Extremos extremos,
 			ProcesoTendenciaBuySell procesoIndex) {
-		if (extremos.getMaximaRegresionFiltrada() == null) {
+		if ((extremos.getMaximaRegresionFiltradaBuy() == null) && (extremos.getMaximaRegresionFiltradaBuy() == null)) {
 			return null;
 		}
 		TendenciaParaOperarMaxMin tendenciaBuy = new TendenciaParaOperarMaxMin();
@@ -193,15 +208,15 @@ public class AgrupadorTendenciaManager {
 		tpSell = extremos.getExtremos().getHighInterval();
 
 		tendenciaBuy = crearTendenciaParaOperar(procesoIndex, OperationType.BUY, precioBuy, tpBuy, slBuy, "EXTREMO",
-				extremos.getMaximaRegresionFiltrada());
+				extremos.getMaximaRegresionFiltradaBuy());
 		tendenciaSell = crearTendenciaParaOperar(procesoIndex, OperationType.SELL, precioSell, tpSell, slSell,
-				"EXTREMO", extremos.getMaximaRegresionFiltrada());
+				"EXTREMO", extremos.getMaximaRegresionFiltradaSell());
 		return new TendenciaParaOperarMaxMin[] { tendenciaBuy, tendenciaSell };
 	}
-	
+
 	private TendenciaParaOperarMaxMin[] crearTendenciaParaOperarMaxMinSinFiltrar(Extremos extremos,
 			ProcesoTendenciaBuySell procesoIndex) {
-		if (extremos.getMaximaRegresionFiltrada() == null) {
+		if ((extremos.getMaximaRegresionFiltradaBuy() == null)&&(extremos.getMaximaRegresionFiltradaBuy() == null)) {
 			return null;
 		}
 		TendenciaParaOperarMaxMin tendenciaBuy = new TendenciaParaOperarMaxMin();
@@ -215,12 +230,12 @@ public class AgrupadorTendenciaManager {
 		slSell = precioSell;
 		tpSell = extremos.getExtremosFiltrados().getHighInterval();
 
-		tendenciaBuy = crearTendenciaParaOperar(procesoIndex, OperationType.BUY, precioBuy, tpBuy, slBuy, "EXTREMO_SINFILTRAR",
-				extremos.getMaximaRegresionFiltrada());
+		tendenciaBuy = crearTendenciaParaOperar(procesoIndex, OperationType.BUY, precioBuy, tpBuy, slBuy,
+				"EXTREMO_SINFILTRAR", extremos.getMaximaRegresionFiltradaBuy());
 		tendenciaSell = crearTendenciaParaOperar(procesoIndex, OperationType.SELL, precioSell, tpSell, slSell,
-				"EXTREMO_SINFILTRAR", extremos.getMaximaRegresionFiltrada());
+				"EXTREMO_SINFILTRAR", extremos.getMaximaRegresionFiltradaSell());
 		return new TendenciaParaOperarMaxMin[] { tendenciaBuy, tendenciaSell };
-	}	
+	}
 
 	private TendenciaParaOperarMaxMin crearTendenciaParaOperar(ProcesoTendenciaBuySell procesoIndex,
 			OperationType tipoOperacion, double precio, double tp, double sl, String periodo) {

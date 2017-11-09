@@ -5,7 +5,7 @@ public class Extremos {
 	private DoubleInterval extremosIntermedios;
 	private DoubleInterval extremosExtremo;
 	private DoubleInterval extremos;
-	private Regresion maximaRegresionFiltrada;
+	private Regresion maximaRegresionFiltradaBuy, maximaRegresionFiltradaSell;
 
 	public Extremos(DoubleInterval extremos, DoubleInterval extremosIntermedios, DoubleInterval extremosExtremo,
 			DoubleInterval extremosSinFiltrar) {
@@ -48,12 +48,20 @@ public class Extremos {
 		this.extremosExtremo = extremosExtremo;
 	}
 
-	public Regresion getMaximaRegresionFiltrada() {
-		return maximaRegresionFiltrada;
+	public Regresion getMaximaRegresionFiltradaBuy() {
+		return maximaRegresionFiltradaBuy;
 	}
 
-	public void setMaximaRegresionFiltrada(Regresion maximaRegresionFiltrada) {
-		this.maximaRegresionFiltrada = maximaRegresionFiltrada;
+	public void setMaximaRegresionFiltradaBuy(Regresion maximaRegresionFiltradaBuy) {
+		this.maximaRegresionFiltradaBuy = maximaRegresionFiltradaBuy;
+	}
+
+	public Regresion getMaximaRegresionFiltradaSell() {
+		return maximaRegresionFiltradaSell;
+	}
+
+	public void setMaximaRegresionFiltradaSell(Regresion maximaRegresionFiltradaSell) {
+		this.maximaRegresionFiltradaSell = maximaRegresionFiltradaSell;
 	}
 
 }
