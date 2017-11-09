@@ -24,6 +24,7 @@ import forex.genetic.delegate.PoblacionDelegate;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.ProcesarTendenciasFactory;
 import forex.genetic.manager.IndividuoManager;
+import forex.genetic.manager.IndividuoXIndicadorManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.io.CopyFileVisitor;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
@@ -82,7 +83,7 @@ public class PointToPointMediator extends GeneticMediator {
 			this.procesarIndividuos();
 			this.procesarTendencias();
 			this.exportarIndividuos();
-			this.crearOrdenes();
+			this.crearNuevosIndividuos();
 			if (imported == 0) {
 				count++;
 			} else {
@@ -217,8 +218,11 @@ public class PointToPointMediator extends GeneticMediator {
 		return (countFile > 0);
 	}
 
-	private void crearOrdenes() {
-
+	private void crearNuevosIndividuos() throws ClassNotFoundException, SQLException {
+		logTime("Init Crear individuos x indicador", 1);
+		IndividuoXIndicadorManager manager = new IndividuoXIndicadorManager(ultimaFechaBaseTendencia, fechaHistoricaMaximaNueva, 6);
+		manager.crearIndividuos();
+		logTime("End Crear individuos x indicador", 1);
 	}
 
 }
