@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.helper.TendenciaParaOperarHelper;
+import forex.genetic.entities.DatoAdicionalTPO;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -75,23 +76,65 @@ public class TendenciaParaOperarDAO {
 		}
 	}
 
+	public void insertDatosAdicionalesTPO(DatoAdicionalTPO datoAdicional) throws SQLException {
+		String sql = "INSERT INTO DATO_ADICIONAL_TPO (" 
+				+ " FECHA_BASE, FECHA, "
+				+ " R2_PROMEDIO, PENDIENTE_PROMEDIO, PROBABILIDAD_PROMEDIO) "
+				+ " VALUES (?, ?, ?, ?, ?)";
+
+		int index = 1;
+		PreparedStatement statement = connection.prepareStatement(sql);
+		try {
+			statement.setTimestamp(index++, new Timestamp(datoAdicional.getFechaBase().getTime()));
+			statement.setTimestamp(index++, new Timestamp(new Date().getTime()));
+			statement.setDouble(index++, datoAdicional.getR2Promedio());
+			statement.setDouble(index++, datoAdicional.getPendientePromedio());
+			statement.setDouble(index++, datoAdicional.getProbabilidadPromedio());
+			statement.executeUpdate();
+		} finally {
+			JDBCUtil.close(statement);
+		}
+	}
+	
+	public int updateDatoAdicionalTPO(DatoAdicionalTPO datoAdicional) throws SQLException {
+		String sql = "UPDATE DATO_ADICIONAL_TPO SET  " 
+				+ " R2_PROMEDIO=?, PENDIENTE_PROMEDIO=?, PROBABILIDAD_PROMEDIO=?, FECHA=? "
+				+ " WHERE FECHA_BASE=?";
+
+		PreparedStatement statement = connection.prepareStatement(sql);
+		int affected = 0;
+		try {
+			int index = 1;
+			statement.setDouble(index++, datoAdicional.getR2Promedio());
+			statement.setDouble(index++, datoAdicional.getPendientePromedio());
+			statement.setDouble(index++, datoAdicional.getProbabilidadPromedio());
+			statement.setTimestamp(index++, new Timestamp(new Date().getTime()));
+			statement.setTimestamp(index++, new Timestamp(datoAdicional.getFechaBase().getTime()));
+
+			affected = statement.executeUpdate();
+		} finally {
+			JDBCUtil.close(statement);
+		}
+		return affected;
+	}
+
 	/**
 	 *
 	 * @param tpo
 	 * @throws SQLException
 	 */
 	public int updateTendenciaParaProcesar(TendenciaParaOperar tpo) throws SQLException {
-		String sql = "UPDATE TENDENCIA_PARA_OPERAR SET  " + " TIPO_OPERACION=?, FECHA_TENDENCIA=?, VIGENCIA_LOWER=?,"
+		String sql = "UPDATE TENDENCIA_PARA_OPERAR SET  " 
+				+ " FECHA_TENDENCIA=?, VIGENCIA_LOWER=?,"
 				+ " VIGENCIA_HIGHER=?, PRECIO_CALCULADO=?, TAKE_PROFIT=?, STOP_LOSS=?,"
 				+ " TIEMPO_TENDENCIA=?, R2=?, PENDIENTE=?, DESVIACION=?, MIN_PRECIO=?, MAX_PRECIO=?,"
-				+ " CANTIDAD=?, FECHA=?, ID_EJECUCION=?, ACTIVA=? " 
-				+ " WHERE TIPO_EXPORTACION=? AND PERIODO=? AND FECHA_BASE=?";
+				+ " CANTIDAD=?, FECHA=?, ID_EJECUCION=?, ACTIVA=? "
+				+ " WHERE TIPO_OPERACION=? AND TIPO_EXPORTACION=? AND PERIODO=? AND FECHA_BASE=?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
 		int affected = 0;
 		try {
-			int index = 1;
-			statement.setString(index++, tpo.getTipoOperacion().name());
+			int index = 1;			
 			statement.setTimestamp(index++, new Timestamp(tpo.getFechaTendencia().getTime()));
 			statement.setTimestamp(index++, new Timestamp(tpo.getVigenciaLower().getTime()));
 			statement.setTimestamp(index++, new Timestamp(tpo.getVigenciaHigher().getTime()));
@@ -109,6 +152,7 @@ public class TendenciaParaOperarDAO {
 			statement.setString(index++, tpo.getIdEjecucion());
 			statement.setInt(index++, 1);
 
+			statement.setString(index++, tpo.getTipoOperacion().name());
 			statement.setString(index++, tpo.getTipoExportacion());
 			statement.setString(index++, tpo.getPeriod());
 			statement.setTimestamp(index++, new Timestamp(tpo.getFechaBase().getTime()));
@@ -146,12 +190,34 @@ public class TendenciaParaOperarDAO {
 		}
 		return exists;
 	}
+	
+	public boolean existsDatoAdicional(DatoAdicionalTPO datoAdicional) throws SQLException {
+		boolean exists = false;
+		String sql = "SELECT COUNT(*) FROM DATO_ADICIONAL_TPO "
+				+ " WHERE FECHA_BASE=? ";
+		PreparedStatement statement = null;
+		ResultSet resultado = null;
+
+		try {
+			int index = 1;
+			statement = this.connection.prepareStatement(sql);
+			statement.setTimestamp(index++, new Timestamp(datoAdicional.getFechaBase().getTime()));
+
+			resultado = statement.executeQuery();
+
+			if (resultado.next()) {
+				exists = (resultado.getInt(1) > 0);
+			}
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(statement);
+		}
+		return exists;
+	}	
 
 	public List<TendenciaParaOperarMaxMin> consultarTendenciasParaOperar() throws SQLException {
 		List<TendenciaParaOperarMaxMin> list = null;
-		String sql = "SELECT * FROM TENDENCIA_PARA_OPERAR TPO "
-				+ " WHERE TPO.ACTIVA=1"
-				+ "ORDER BY TPO.FECHA_BASE ASC";
+		String sql = "SELECT * FROM TENDENCIA_PARA_OPERAR TPO " + " WHERE TPO.ACTIVA=1" + "ORDER BY TPO.FECHA_BASE ASC";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 
@@ -170,8 +236,7 @@ public class TendenciaParaOperarDAO {
 
 	public int deleteTendenciaParaProcesar(TendenciaParaOperar tpo) throws SQLException {
 		String sql = "DELETE FROM TENDENCIA_PARA_OPERAR "
-				+ " WHERE TIPO_EXPORTACION=? AND TRUNC(FECHA_BASE,'HH24')=TRUNC(?,'HH24')" 
-				+ " AND ID_EJECUCION<>?";
+				+ " WHERE TIPO_EXPORTACION=? AND TRUNC(FECHA_BASE,'HH24')=TRUNC(?,'HH24')" + " AND ID_EJECUCION<>?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
 		int affected = 0;

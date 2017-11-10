@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.TendenciaDAO;
 import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
@@ -55,17 +56,18 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 			while (fechaProceso.before(parametroFechaFin)) {
 				// System.out.println(DateUtil.getDateString(fechaProceso));
 				Date fechaBase = tendenciaDAO.nextFechaBase(fechaProceso);
-				AgrupadorTendenciaManager agrupador = new AgrupadorTendenciaManager(fechaBase, conn);
+				AgrupadorTendenciaManager agrupador = new AgrupadorTendenciaManager(fechaBase, conn);				
 				if (fechaBase != null) {
 					LogUtil.logTime("Fecha base=" + DateUtil.getDateString(fechaBase), 2);
 					ProcesoTendenciaFiltradaBuySell procesoFromExporterLastIndex = procesarExporter(
 							dias[dias.length - 1], fechaBase);
-					boolean cantidadMinimaValida = true; //validarCantidadMinima(procesoFromExporterLastIndex);
+					boolean cantidadMinimaValida = true; // validarCantidadMinima(procesoFromExporterLastIndex);
 					if (cantidadMinimaValida) {
 						for (int i = 0; i < dias.length - 1; i++) {
 							ProcesoTendenciaFiltradaBuySell procesoFromExporter = procesarExporter(dias[i], fechaBase);
 							agrupador.add(procesoFromExporter);
 						}
+						//procesoFromExporterLastIndex.getTendencias().get(0).getPrecioCalculado()
 						agrupador.add(procesoFromExporterLastIndex);
 						agrupador.procesar();
 						agrupador.export();

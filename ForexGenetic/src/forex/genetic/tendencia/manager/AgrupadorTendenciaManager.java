@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.TendenciaParaOperarDAO;
+import forex.genetic.entities.DatoAdicionalTPO;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Extremos;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
@@ -23,9 +25,14 @@ public class AgrupadorTendenciaManager {
 	private List<TendenciaParaOperarMaxMin> tendenciasResultado;
 	private Connection conn;
 	private TendenciaParaOperarDAO tendenciaParaOperarDAO;
+	private DatoHistoricoDAO datoHistoricoDAO;
 	private ParametroDAO parametroDAO;
 
 	private Date fechaBase;
+	private int cantidadDatosAdicionales;
+	private double precioPonderado;
+	private double sumaR2, sumaPendiente, sumaProbabilidad, sumaPrecio;
+	private DatoAdicionalTPO adicionalTPO;
 	private boolean deleteTPO;
 
 	public AgrupadorTendenciaManager(Date fechaBase, Connection conn) throws SQLException {
@@ -37,15 +44,34 @@ public class AgrupadorTendenciaManager {
 		this.tendenciasResultado = new ArrayList<>();
 		this.setFechaBase(fechaBase);
 		this.deleteTPO = this.parametroDAO.getBooleanValorParametro("DELETE_TENDENCIA_PARA_OPERAR");
+		this.datoHistoricoDAO = new DatoHistoricoDAO(conn);
+		this.precioPonderado = datoHistoricoDAO.consultarPrecioPonderado(fechaBase);
 	}
 
 	public void add(ProcesoTendenciaFiltradaBuySell paraProcesar) {
 		this.listaTendencias.add(paraProcesar);
+		this.cantidadDatosAdicionales++;
+		this.sumaR2 += paraProcesar.getRegresion().getR2();
+		this.sumaPendiente += paraProcesar.getRegresion().getPendiente();
+		this.sumaProbabilidad += paraProcesar.getRegresion().getProbabilidad();
+		if ((paraProcesar.getTendencias() != null) && (paraProcesar.getTendencias().size() > 0)) {
+			this.sumaPrecio += paraProcesar.getTendencias().get(0).getPrecioCalculado();
+		}
 	}
 
 	public void procesar() throws SQLException {
+		createDatoAdicional();
 		Extremos extremos = encontrarExtremos();
 		procesarExtremos(extremos);
+	}
+
+	protected void createDatoAdicional() {
+		this.adicionalTPO = new DatoAdicionalTPO();
+		this.adicionalTPO.setFechaBase(fechaBase);
+		this.adicionalTPO.setR2Promedio(sumaR2 / cantidadDatosAdicionales);
+		this.adicionalTPO.setPendientePromedio(sumaPendiente / cantidadDatosAdicionales);
+		this.adicionalTPO.setProbabilidadPromedio(sumaProbabilidad / cantidadDatosAdicionales);
+		this.adicionalTPO.setDiferenciaPrecioPromedio((sumaPrecio / cantidadDatosAdicionales) - precioPonderado);
 	}
 
 	protected Extremos encontrarExtremos() {
@@ -193,7 +219,7 @@ public class AgrupadorTendenciaManager {
 
 	private TendenciaParaOperarMaxMin[] crearTendenciaParaOperarMaxMinExtremo(Extremos extremos,
 			ProcesoTendenciaBuySell procesoIndex) {
-		if ((extremos.getMaximaRegresionFiltradaBuy() == null) && (extremos.getMaximaRegresionFiltradaBuy() == null)) {
+		if ((extremos.getMaximaRegresionFiltradaBuy() == null) && (extremos.getMaximaRegresionFiltradaSell() == null)) {
 			return null;
 		}
 		TendenciaParaOperarMaxMin tendenciaBuy = new TendenciaParaOperarMaxMin();
@@ -216,7 +242,7 @@ public class AgrupadorTendenciaManager {
 
 	private TendenciaParaOperarMaxMin[] crearTendenciaParaOperarMaxMinSinFiltrar(Extremos extremos,
 			ProcesoTendenciaBuySell procesoIndex) {
-		if ((extremos.getMaximaRegresionFiltradaBuy() == null)&&(extremos.getMaximaRegresionFiltradaBuy() == null)) {
+		if ((extremos.getMaximaRegresionFiltradaBuy() == null) && (extremos.getMaximaRegresionFiltradaSell() == null)) {
 			return null;
 		}
 		TendenciaParaOperarMaxMin tendenciaBuy = new TendenciaParaOperarMaxMin();
@@ -262,14 +288,6 @@ public class AgrupadorTendenciaManager {
 		return tpo;
 	}
 
-	public Date getFechaBase() {
-		return fechaBase;
-	}
-
-	public void setFechaBase(Date fechaBase) {
-		this.fechaBase = fechaBase;
-	}
-
 	private void saveTendenciaParaOperar(TendenciaParaOperar ten) throws SQLException {
 		boolean exists = tendenciaParaOperarDAO.exists(ten);
 		if (exists) {
@@ -279,7 +297,18 @@ public class AgrupadorTendenciaManager {
 		}
 	}
 
+	public void saveDatosAdicionalesTPO(DatoAdicionalTPO datoAdicional) throws SQLException {
+		boolean exists = tendenciaParaOperarDAO.existsDatoAdicional(datoAdicional);
+		if (exists) {
+			tendenciaParaOperarDAO.updateDatoAdicionalTPO(datoAdicional);
+		} else {
+			tendenciaParaOperarDAO.insertDatosAdicionalesTPO(datoAdicional);
+		}
+	}
+
 	public void export() throws SQLException {
+		this.saveDatosAdicionalesTPO(this.adicionalTPO);
+		conn.commit();
 		List<TendenciaParaOperarMaxMin> tendencias = this.tendenciasResultado;
 		if (tendencias != null) {
 			tendencias.stream().forEach((ten) -> {
@@ -301,6 +330,14 @@ public class AgrupadorTendenciaManager {
 
 	public void setTendenciasResultado(List<TendenciaParaOperarMaxMin> tendenciasResultado) {
 		this.tendenciasResultado = tendenciasResultado;
+	}
+
+	public Date getFechaBase() {
+		return fechaBase;
+	}
+
+	public void setFechaBase(Date fechaBase) {
+		this.fechaBase = fechaBase;
 	}
 
 }

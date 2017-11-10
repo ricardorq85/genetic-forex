@@ -996,4 +996,24 @@ public class DatoHistoricoDAO {
 		}
 		return maximaDiferencia;
 	}
+
+	public double consultarPrecioPonderado(Date fecha) throws SQLException {
+		String sql = "SELECT ((DH.OPEN+DH.LOW+DH.CLOSE+DH.CLOSE)/4) PRECIO " + "  FROM DATOHISTORICO DH "
+				+ "  WHERE DH.FECHA=? ";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		double precio = 0.0D;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setTimestamp(1, new Timestamp(fecha.getTime()));
+			resultado = stmtConsulta.executeQuery();
+			if (resultado.next()) {
+				precio = resultado.getDouble("PRECIO");
+			}
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+		return precio;
+	}
 }

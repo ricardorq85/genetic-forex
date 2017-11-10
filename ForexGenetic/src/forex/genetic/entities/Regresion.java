@@ -7,6 +7,7 @@ public class Regresion {
 	private double r2;
 	private double pendiente;
 	private double desviacion;
+	private double probabilidad;
 	private double minPrecio, minPrecioExtremo;
 	private double maxPrecio, maxPrecioExtremo;
 	private int cantidad;
@@ -201,6 +202,14 @@ public class Regresion {
 
 	public double getMaximoDesviacion() {
 		return maximoDesviacion;
+	}
+
+	public double getProbabilidad() {
+		return probabilidad;
+	}
+
+	public void setProbabilidad(double probabilidad) {
+		this.probabilidad = probabilidad;
 	}
 
 }

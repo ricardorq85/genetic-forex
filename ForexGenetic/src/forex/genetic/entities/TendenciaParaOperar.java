@@ -245,4 +245,5 @@ public class TendenciaParaOperar {
 				+ ((regresion != null) ? regresion.getPendiente() : 1) + ",LOTE=" + NumberUtil.round(lote) + ",NAME="
 				+ GeneticDelegate.getId() + ",FECHA_BASE=" + DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaBase);
 	}
+
 }
