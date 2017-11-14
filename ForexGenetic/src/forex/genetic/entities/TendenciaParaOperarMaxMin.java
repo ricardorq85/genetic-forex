@@ -4,9 +4,9 @@ import forex.genetic.delegate.GeneticDelegate;
 import forex.genetic.util.NumberUtil;
 
 public class TendenciaParaOperarMaxMin extends TendenciaParaOperar {
-	
+
 	public TendenciaParaOperarMaxMin() {
-		super(1.0F, 1.0F, 200, 800);
+		super(1.0F, 1.0F, 200, 200);
 		this.setIdEjecucion(GeneticDelegate.getId());
 	}
 
@@ -17,4 +17,5 @@ public class TendenciaParaOperarMaxMin extends TendenciaParaOperar {
 		double pipsValueConFactor = NumberUtil.round(this.precioCalculado + pipsConFactor);
 		this.tp = pipsValueConFactor;
 	}
+
 }

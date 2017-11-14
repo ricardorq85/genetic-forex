@@ -17,6 +17,8 @@ import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
 import forex.genetic.entities.Regresion;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
+import forex.genetic.manager.PropertiesManager;
+import forex.genetic.util.NumberUtil;
 import forex.genetic.util.Constants.OperationType;
 
 public class AgrupadorTendenciaManager {
@@ -29,11 +31,13 @@ public class AgrupadorTendenciaManager {
 	private ParametroDAO parametroDAO;
 
 	private Date fechaBase;
-	private int cantidadDatosAdicionales;
+	private int numeroTendencias, cantidadTotalTendencias, numeroPendientesPositivas, numeroPendientesNegativas;
 	private double precioPonderado;
-	private double sumaR2, sumaPendiente, sumaProbabilidad, sumaPrecio;
+	private double sumaR2, sumaPendiente, sumaProbabilidad;
 	private DatoAdicionalTPO adicionalTPO;
 	private boolean deleteTPO;
+	private double stepLote = 0.01D;
+	private double maxLote = 0.1D;
 
 	public AgrupadorTendenciaManager(Date fechaBase, Connection conn) throws SQLException {
 		super();
@@ -48,30 +52,38 @@ public class AgrupadorTendenciaManager {
 		this.precioPonderado = datoHistoricoDAO.consultarPrecioPonderado(fechaBase);
 	}
 
+	protected void createDatoAdicional(Extremos extremos) {
+		this.adicionalTPO = new DatoAdicionalTPO();
+		this.adicionalTPO.setFechaBase(fechaBase);
+		this.adicionalTPO.setNumeroTendencias(numeroTendencias);
+		this.adicionalTPO.setR2Promedio(sumaR2 / numeroTendencias);
+		this.adicionalTPO.setPendientePromedio(sumaPendiente / numeroTendencias);
+		this.adicionalTPO.setProbabilidadPromedio(sumaProbabilidad / numeroTendencias);
+		this.adicionalTPO.setCantidadTotalTendencias(cantidadTotalTendencias);
+		this.adicionalTPO.setNumeroPendientesPositivas(numeroPendientesPositivas);
+		this.adicionalTPO.setNumeroPendientesNegativas(numeroPendientesNegativas);
+		this.adicionalTPO
+				.setDiferenciaPrecioSuperior(extremos.getExtremosFiltrados().getHighInterval() - this.precioPonderado);
+		this.adicionalTPO
+				.setDiferenciaPrecioInferior(this.precioPonderado - extremos.getExtremosFiltrados().getLowInterval());
+	}
+
 	public void add(ProcesoTendenciaFiltradaBuySell paraProcesar) {
 		this.listaTendencias.add(paraProcesar);
-		this.cantidadDatosAdicionales++;
+		this.numeroTendencias++;
 		this.sumaR2 += paraProcesar.getRegresion().getR2();
-		this.sumaPendiente += paraProcesar.getRegresion().getPendiente();
+		double pendiente = paraProcesar.getRegresion().getPendiente();
+		this.sumaPendiente += pendiente;
 		this.sumaProbabilidad += paraProcesar.getRegresion().getProbabilidad();
-		if ((paraProcesar.getTendencias() != null) && (paraProcesar.getTendencias().size() > 0)) {
-			this.sumaPrecio += paraProcesar.getTendencias().get(0).getPrecioCalculado();
-		}
+		this.cantidadTotalTendencias += paraProcesar.getRegresion().getCantidadTotal();
+		this.numeroPendientesPositivas += (pendiente > 0 ? 1 : 0);
+		this.numeroPendientesNegativas += (pendiente < 0 ? 1 : 0);
 	}
 
 	public void procesar() throws SQLException {
-		createDatoAdicional();
 		Extremos extremos = encontrarExtremos();
+		createDatoAdicional(extremos);
 		procesarExtremos(extremos);
-	}
-
-	protected void createDatoAdicional() {
-		this.adicionalTPO = new DatoAdicionalTPO();
-		this.adicionalTPO.setFechaBase(fechaBase);
-		this.adicionalTPO.setR2Promedio(sumaR2 / cantidadDatosAdicionales);
-		this.adicionalTPO.setPendientePromedio(sumaPendiente / cantidadDatosAdicionales);
-		this.adicionalTPO.setProbabilidadPromedio(sumaProbabilidad / cantidadDatosAdicionales);
-		this.adicionalTPO.setDiferenciaPrecioPromedio((sumaPrecio / cantidadDatosAdicionales) - precioPonderado);
 	}
 
 	protected Extremos encontrarExtremos() {
@@ -199,21 +211,21 @@ public class AgrupadorTendenciaManager {
 
 	private TendenciaParaOperarMaxMin crearTendenciaParaOperarMaxMin(Extremos extremos,
 			ProcesoTendenciaBuySell procesoIndex) {
-		double precio = 0.0D, sl = 0.0D, tp = 0.0D;
+		double precio = 0.0D, slPips = 0.0D, tp = 0.0D;
 		if (OperationType.BUY.equals(procesoIndex.getTipoOperacion())) {
 			precio = extremos.getExtremosFiltrados().getLowInterval();
-			sl = precio;
+			slPips = extremos.getExtremosFiltrados().getHighInterval() - this.precioPonderado;
 			tp = extremos.getExtremosIntermedios().getHighInterval();
 			// tp = extremos.getHighInterval();
 		} else if (OperationType.SELL.equals(procesoIndex.getTipoOperacion())) {
 			precio = extremos.getExtremosFiltrados().getHighInterval();
-			sl = precio;
+			slPips = -(this.precioPonderado - extremos.getExtremosFiltrados().getLowInterval());
 			tp = extremos.getExtremosIntermedios().getLowInterval();
 			// tp = extremos.getLowInterval();
 		}
 
 		TendenciaParaOperarMaxMin tendencia = crearTendenciaParaOperar(procesoIndex, procesoIndex.getTipoOperacion(),
-				precio, tp, sl, procesoIndex.getPeriodo());
+				precio, tp, slPips, procesoIndex.getPeriodo());
 		return tendencia;
 	}
 
@@ -224,18 +236,18 @@ public class AgrupadorTendenciaManager {
 		}
 		TendenciaParaOperarMaxMin tendenciaBuy = new TendenciaParaOperarMaxMin();
 		TendenciaParaOperarMaxMin tendenciaSell = new TendenciaParaOperarMaxMin();
-		double precioBuy = 0.0D, precioSell = 0.0D, slBuy = 0.0D, slSell = 0.0D, tpBuy = 0.0D, tpSell = 0.0D;
+		double precioBuy = 0.0D, precioSell = 0.0D, slPipsBuy = 0.0D, slPipsSell = 0.0D, tpBuy = 0.0D, tpSell = 0.0D;
 		precioBuy = extremos.getExtremosExtremo().getLowInterval();
-		slBuy = precioBuy;
+		slPipsBuy = extremos.getExtremosFiltrados().getHighInterval() - this.precioPonderado;
 		tpBuy = extremos.getExtremos().getLowInterval();
 
 		precioSell = extremos.getExtremosExtremo().getHighInterval();
-		slSell = precioSell;
+		slPipsSell = this.precioPonderado - extremos.getExtremosFiltrados().getLowInterval();
 		tpSell = extremos.getExtremos().getHighInterval();
 
-		tendenciaBuy = crearTendenciaParaOperar(procesoIndex, OperationType.BUY, precioBuy, tpBuy, slBuy, "EXTREMO",
+		tendenciaBuy = crearTendenciaParaOperar(procesoIndex, OperationType.BUY, precioBuy, tpBuy, slPipsBuy, "EXTREMO",
 				extremos.getMaximaRegresionFiltradaBuy());
-		tendenciaSell = crearTendenciaParaOperar(procesoIndex, OperationType.SELL, precioSell, tpSell, slSell,
+		tendenciaSell = crearTendenciaParaOperar(procesoIndex, OperationType.SELL, precioSell, tpSell, slPipsSell,
 				"EXTREMO", extremos.getMaximaRegresionFiltradaSell());
 		return new TendenciaParaOperarMaxMin[] { tendenciaBuy, tendenciaSell };
 	}
@@ -249,11 +261,11 @@ public class AgrupadorTendenciaManager {
 		TendenciaParaOperarMaxMin tendenciaSell = new TendenciaParaOperarMaxMin();
 		double precioBuy = 0.0D, precioSell = 0.0D, slBuy = 0.0D, slSell = 0.0D, tpBuy = 0.0D, tpSell = 0.0D;
 		precioBuy = extremos.getExtremos().getLowInterval();
-		slBuy = precioBuy;
+		slBuy = extremos.getExtremosFiltrados().getHighInterval() - this.precioPonderado;
 		tpBuy = extremos.getExtremosFiltrados().getLowInterval();
 
 		precioSell = extremos.getExtremos().getHighInterval();
-		slSell = precioSell;
+		slSell = this.precioPonderado - extremos.getExtremosFiltrados().getLowInterval();
 		tpSell = extremos.getExtremosFiltrados().getHighInterval();
 
 		tendenciaBuy = crearTendenciaParaOperar(procesoIndex, OperationType.BUY, precioBuy, tpBuy, slBuy,
@@ -269,7 +281,7 @@ public class AgrupadorTendenciaManager {
 	}
 
 	private TendenciaParaOperarMaxMin crearTendenciaParaOperar(ProcesoTendenciaBuySell procesoIndex,
-			OperationType tipoOperacion, double precio, double tp, double sl, String periodo, Regresion regresion) {
+			OperationType tipoOperacion, double precio, double tp, double slPips, String periodo, Regresion regresion) {
 		TendenciaParaOperarMaxMin tpo = new TendenciaParaOperarMaxMin();
 		Regresion regresionIndex = regresion;
 		if (regresion == null) {
@@ -283,9 +295,42 @@ public class AgrupadorTendenciaManager {
 		tpo.setFechaTendencia(procesoIndex.getFechaBase());
 		tpo.setPeriodo(periodo);
 		tpo.setPrecioCalculado(precio);
-		tpo.setSl(sl);
+		tpo.setSlXPips(slPips);
 		tpo.setTp(tp);
+		double lote = this.calcularLote(tpo);
+		tpo.setLoteCalculado(lote);
 		return tpo;
+	}
+
+	private double calcularLote(TendenciaParaOperarMaxMin tpo) {
+		int lotScaleRounding = PropertiesManager.getLotScaleRounding();
+		double lote = stepLote;
+		double pendiente = this.adicionalTPO.getPendientePromedio();
+		if (OperationType.BUY.equals(tpo.getTipoOperacion())) {
+			if (pendiente > 0) {
+				lote += stepLote;
+				lote += Math.abs(pendiente);
+			} else {
+				lote -= stepLote;
+				lote -= Math.abs(pendiente);
+			}
+			lote += stepLote * (this.adicionalTPO.getNumeroPendientesPositivas()
+					- this.adicionalTPO.getNumeroPendientesNegativas()) / 2;
+		} else if (OperationType.SELL.equals(tpo.getTipoOperacion())) {
+			if (pendiente < 0) {
+				lote += stepLote;
+				lote += Math.abs(pendiente);
+			} else {
+				lote -= stepLote;
+				lote -= Math.abs(pendiente);
+			}
+			lote += stepLote * (this.adicionalTPO.getNumeroPendientesNegativas()
+					- this.adicionalTPO.getNumeroPendientesPositivas()) / 2;
+		}
+		lote = Math.max(stepLote, lote);
+		lote = Math.min(maxLote, lote);
+		lote = NumberUtil.round(lote, lotScaleRounding);
+		return lote;
 	}
 
 	private void saveTendenciaParaOperar(TendenciaParaOperar ten) throws SQLException {

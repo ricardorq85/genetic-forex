@@ -10,7 +10,7 @@ public class Regresion {
 	private double probabilidad;
 	private double minPrecio, minPrecioExtremo;
 	private double maxPrecio, maxPrecioExtremo;
-	private int cantidad;
+	private int cantidad, cantidadTotal;
 	private Date minFechaTendencia;
 	private Date maxFechaTendencia;
 	private double minimoR2;
@@ -210,6 +210,14 @@ public class Regresion {
 
 	public void setProbabilidad(double probabilidad) {
 		this.probabilidad = probabilidad;
+	}
+
+	public int getCantidadTotal() {
+		return cantidadTotal;
+	}
+
+	public void setCantidadTotal(int cantidadTotal) {
+		this.cantidadTotal = cantidadTotal;
 	}
 
 }

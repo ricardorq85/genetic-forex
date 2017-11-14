@@ -2,13 +2,14 @@ package forex.genetic.entities;
 
 import java.util.Date;
 
-import forex.genetic.util.Constants.OperationType;
-
 public class DatoAdicionalTPO {
 
 	private Date fechaBase = null;
 
-	private double r2Promedio, pendientePromedio, probabilidadPromedio, diferenciaPrecioPromedio;
+	private double r2Promedio, pendientePromedio, probabilidadPromedio, diferenciaPrecioSuperior,
+			diferenciaPrecioInferior;
+
+	private int numeroTendencias, cantidadTotalTendencias, numeroPendientesPositivas, numeroPendientesNegativas;
 
 	public Date getFechaBase() {
 		return fechaBase;
@@ -42,12 +43,52 @@ public class DatoAdicionalTPO {
 		this.r2Promedio = r2Promedio;
 	}
 
-	public double getDiferenciaPrecioPromedio() {
-		return diferenciaPrecioPromedio;
+	public int getCantidadTotalTendencias() {
+		return cantidadTotalTendencias;
 	}
 
-	public void setDiferenciaPrecioPromedio(double diferenciaPrecioPromedio) {
-		this.diferenciaPrecioPromedio = diferenciaPrecioPromedio;
+	public void setCantidadTotalTendencias(int cantidadTotalTendencias) {
+		this.cantidadTotalTendencias = cantidadTotalTendencias;
+	}
+
+	public int getNumeroTendencias() {
+		return numeroTendencias;
+	}
+
+	public void setNumeroTendencias(int numeroTendencias) {
+		this.numeroTendencias = numeroTendencias;
+	}
+
+	public int getNumeroPendientesPositivas() {
+		return numeroPendientesPositivas;
+	}
+
+	public void setNumeroPendientesPositivas(int numeroPendientesPositivas) {
+		this.numeroPendientesPositivas = numeroPendientesPositivas;
+	}
+
+	public int getNumeroPendientesNegativas() {
+		return numeroPendientesNegativas;
+	}
+
+	public void setNumeroPendientesNegativas(int numeroPendientesNegativas) {
+		this.numeroPendientesNegativas = numeroPendientesNegativas;
+	}
+
+	public double getDiferenciaPrecioSuperior() {
+		return diferenciaPrecioSuperior;
+	}
+
+	public void setDiferenciaPrecioSuperior(double diferenciaPrecioSuperior) {
+		this.diferenciaPrecioSuperior = diferenciaPrecioSuperior;
+	}
+
+	public double getDiferenciaPrecioInferior() {
+		return diferenciaPrecioInferior;
+	}
+
+	public void setDiferenciaPrecioInferior(double diferenciaPrecioInferior) {
+		this.diferenciaPrecioInferior = diferenciaPrecioInferior;
 	}
 
 }

@@ -53,6 +53,8 @@ public class TendenciaParaOperarHelper {
 			tpo.setPrecioCalculado(resultado.getDouble("PRECIO_CALCULADO"));
 			tpo.setTp(resultado.getDouble("TAKE_PROFIT"));
 			tpo.setSl(resultado.getDouble("STOP_LOSS"));
+			tpo.setLote(resultado.getDouble("LOTE"));
+			tpo.setLoteCalculado(resultado.getDouble("LOTE_CALCULADO"));
 			ts = resultado.getTimestamp("FECHA");
 			if (ts != null) {
 				tpo.setFecha(new Date(ts.getTime()));

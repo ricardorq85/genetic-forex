@@ -25,7 +25,7 @@ public class TendenciaParaOperar {
 	private Regresion regresion;
 	private double puntosDiferenciaInicial;
 
-	private double lote = 0.01F;
+	private double lote = 0.01D, loteCalculado = 0.01D;
 	protected float factorTP = 0.5F;
 	protected float factorSL = 1.0F;
 	protected int minPipsTP = 200;
@@ -158,6 +158,10 @@ public class TendenciaParaOperar {
 
 	public void setSl(double sl) {
 		double pips = this.getPips(sl);
+		this.setSlXPips(pips);
+	}
+
+	public void setSlXPips(double pips) {
 		double pipsConFactor = (pips * factorSL);
 		double pipsMinimosSL = this.getPipsMinimos(minPipsSL, OperationType.SELL);
 		if (this.getTipoOperacion().equals(OperationType.BUY)) {
@@ -232,18 +236,34 @@ public class TendenciaParaOperar {
 		this.idEjecucion = id;
 	}
 
+	public double getLote() {
+		return lote;
+	}
+
+	public void setLote(double lote) {
+		this.lote = lote;
+	}
+	
+	public double getLoteCalculado() {
+		return loteCalculado;
+	}
+
+	public void setLoteCalculado(double loteCalculado) {
+		this.loteCalculado = loteCalculado;
+	}
+
 	@Override
 	public String toString() {
 		return "PERIOD=" + period + ",TIPO_OPERACION=" + tipoOperacion.toString() + ",PRECIO_CALCULADO="
 				+ NumberUtil.round(precioCalculado) + ",TAKE_PROFIT=" + NumberUtil.round(tp) + ",STOP_LOSS="
 				+ NumberUtil.round(sl) + ",FECHA_TENDENCIA="
-				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaTendencia) + ",VIGENCIALOWER="
-				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", vigenciaLower) + ",VIGENCIAHIGHER="
-				+ DateUtil.getDateString("yyyy.MM.dd HH:mm", vigenciaHigher) + ",R2="
+				+ DateUtil.getDateString(fechaTendencia) + ",VIGENCIALOWER="
+				+ DateUtil.getDateString(vigenciaLower) + ",VIGENCIAHIGHER="
+				+ DateUtil.getDateString(vigenciaHigher) + ",R2="
 				+ ((regresion != null) ? regresion.getR2() : 1) + ",CANTIDAD="
 				+ ((regresion != null) ? regresion.getCantidad() : 1) + ",PENDIENTE="
 				+ ((regresion != null) ? regresion.getPendiente() : 1) + ",LOTE=" + NumberUtil.round(lote) + ",NAME="
-				+ GeneticDelegate.getId() + ",FECHA_BASE=" + DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaBase);
+				+ GeneticDelegate.getId() + ",FECHA_BASE=" + DateUtil.getDateString(fechaBase);
 	}
 
 }

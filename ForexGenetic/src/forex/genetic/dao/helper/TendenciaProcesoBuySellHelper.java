@@ -19,12 +19,13 @@ public class TendenciaProcesoBuySellHelper {
 			regresion.setR2(resultado.getDouble("R2"));
 			regresion.setPendiente(resultado.getDouble("PENDIENTE"));
 			regresion.setDesviacion(resultado.getDouble("DESV"));
-			regresion.setProbabilidad(resultado.getDouble("PROBABILIDAD"));
+			regresion.setProbabilidad(resultado.getDouble("PROBABILIDAD"));			
 			regresion.setMinPrecio(resultado.getDouble("MINPRECIO"));
 			regresion.setMaxPrecio(resultado.getDouble("MAXPRECIO"));
 			regresion.setMinPrecioExtremo(resultado.getDouble("MINPRECIO_EXTREMO"));
 			regresion.setMaxPrecioExtremo(resultado.getDouble("MAXPRECIO_EXTREMO"));
 			regresion.setCantidad(resultado.getInt("CANTIDAD_TENDENCIAS"));
+			regresion.setCantidadTotal(resultado.getInt("CANTIDAD_TOTAL"));
 			regresion.setMinFechaTendencia(resultado.getTimestamp("MINFETENDENCIA"));
 			regresion.setMaxFechaTendencia(resultado.getTimestamp("MAXFETENDENCIA"));
 		}
