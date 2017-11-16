@@ -30,6 +30,7 @@ public class TendenciaParaOperar {
 	protected float factorSL = 1.0F;
 	protected int minPipsTP = 200;
 	protected int minPipsSL = 800;
+	protected int activa = 1;
 
 	public TendenciaParaOperar() {
 
@@ -243,7 +244,7 @@ public class TendenciaParaOperar {
 	public void setLote(double lote) {
 		this.lote = lote;
 	}
-	
+
 	public double getLoteCalculado() {
 		return loteCalculado;
 	}
@@ -252,16 +253,23 @@ public class TendenciaParaOperar {
 		this.loteCalculado = loteCalculado;
 	}
 
+	public int getActiva() {
+		return activa;
+	}
+
+	public void setActiva(int activa) {
+		this.activa = activa;
+	}
+
 	@Override
 	public String toString() {
-		return "PERIOD=" + period + ",TIPO_OPERACION=" + tipoOperacion.toString() + ",PRECIO_CALCULADO="
-				+ NumberUtil.round(precioCalculado) + ",TAKE_PROFIT=" + NumberUtil.round(tp) + ",STOP_LOSS="
-				+ NumberUtil.round(sl) + ",FECHA_TENDENCIA="
-				+ DateUtil.getDateString(fechaTendencia) + ",VIGENCIALOWER="
-				+ DateUtil.getDateString(vigenciaLower) + ",VIGENCIAHIGHER="
-				+ DateUtil.getDateString(vigenciaHigher) + ",R2="
-				+ ((regresion != null) ? regresion.getR2() : 1) + ",CANTIDAD="
-				+ ((regresion != null) ? regresion.getCantidad() : 1) + ",PENDIENTE="
+		return "PAIR=" + PropertiesManager.getPair() + ",PERIOD=" + period + ",TIPO_OPERACION="
+				+ tipoOperacion.toString() + ",PRECIO_CALCULADO=" + NumberUtil.round(precioCalculado) + ",TAKE_PROFIT="
+				+ NumberUtil.round(tp) + ",STOP_LOSS=" + NumberUtil.round(sl) + ",FECHA_TENDENCIA="
+				+ DateUtil.getDateString(fechaTendencia) + ",VIGENCIALOWER=" + DateUtil.getDateString(vigenciaLower)
+				+ ",VIGENCIAHIGHER=" + DateUtil.getDateString(vigenciaHigher) + ",R2="
+				+ ((regresion != null) ? regresion.getR2() : 1) + ",ACTIVA=" + ((regresion != null) ? this.activa : 1)
+				+ ",CANTIDAD=" + ((regresion != null) ? regresion.getCantidad() : 1) + ",PENDIENTE="
 				+ ((regresion != null) ? regresion.getPendiente() : 1) + ",LOTE=" + NumberUtil.round(lote) + ",NAME="
 				+ GeneticDelegate.getId() + ",FECHA_BASE=" + DateUtil.getDateString(fechaBase);
 	}

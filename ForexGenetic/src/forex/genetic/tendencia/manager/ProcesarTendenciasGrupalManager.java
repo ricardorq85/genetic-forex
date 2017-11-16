@@ -60,18 +60,15 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 					LogUtil.logTime("Fecha base=" + DateUtil.getDateString(fechaBase), 2);
 					ProcesoTendenciaFiltradaBuySell procesoFromExporterLastIndex = procesarExporter(
 							dias[dias.length - 1], fechaBase);
-					boolean cantidadMinimaValida = true; // validarCantidadMinima(procesoFromExporterLastIndex);
-					if (cantidadMinimaValida) {
-						for (int i = 0; i < dias.length - 1; i++) {
-							ProcesoTendenciaFiltradaBuySell procesoFromExporter = procesarExporter(dias[i], fechaBase);
-							agrupador.add(procesoFromExporter);
-						}
-						// procesoFromExporterLastIndex.getTendencias().get(0).getPrecioCalculado()
-						agrupador.add(procesoFromExporterLastIndex);
-						agrupador.procesar();
-						agrupador.export();
-						this.tendenciasResultado.addAll(agrupador.getTendenciasResultado());
+					for (int i = 0; i < dias.length - 1; i++) {
+						ProcesoTendenciaFiltradaBuySell procesoFromExporter = procesarExporter(dias[i], fechaBase);
+						agrupador.add(procesoFromExporter);
 					}
+					// procesoFromExporterLastIndex.getTendencias().get(0).getPrecioCalculado()
+					agrupador.add(procesoFromExporterLastIndex);
+					agrupador.procesar();
+					agrupador.export();
+					this.tendenciasResultado.addAll(agrupador.getTendenciasResultado());
 					fechaProceso = DateUtil.calcularFechaXDuracion(parametroStep, fechaBase);
 				} else {
 					LogUtil.logTime("Fecha base NULL", 1);

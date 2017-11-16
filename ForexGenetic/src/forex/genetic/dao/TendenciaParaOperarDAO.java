@@ -71,7 +71,7 @@ public class TendenciaParaOperarDAO {
 			statement.setInt(index++, tpo.getRegresion().getCantidad());
 			statement.setTimestamp(index++, new Timestamp(new Date().getTime()));
 			statement.setString(index++, tpo.getIdEjecucion());
-			statement.setInt(index++, 1);
+			statement.setInt(index++, tpo.getActiva());
 			statement.executeUpdate();
 		} finally {
 			JDBCUtil.close(statement);
@@ -113,7 +113,7 @@ public class TendenciaParaOperarDAO {
 			statement.setInt(index++, tpo.getRegresion().getCantidad());
 			statement.setTimestamp(index++, new Timestamp(new Date().getTime()));
 			statement.setString(index++, tpo.getIdEjecucion());
-			statement.setInt(index++, 1);			
+			statement.setInt(index++, tpo.getActiva());
 
 			statement.setString(index++, tpo.getTipoOperacion().name());
 			statement.setString(index++, tpo.getTipoExportacion());

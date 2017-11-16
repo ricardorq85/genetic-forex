@@ -21,6 +21,7 @@ public class ProcesoTendenciaBuySell {
 	private double tiempoTendencia = 0.0D;
 	private Regresion regresion = null;
 	private Date fechaBase = null;
+	private int valida = 1;
 	private OperationType tipoOperacion = null;
 	private List<TendenciaParaOperar> tendencias;
 
@@ -105,9 +106,17 @@ public class ProcesoTendenciaBuySell {
 	public boolean isRegresionValida() {
 		return ((this.regresion != null) && (this.regresion.isRegresionValida()));
 	}
-	
+
 	public boolean isValidacionRegresionValida() {
 		return ((this.regresion != null) && (this.regresion.isValidacionRegresionValida()));
-	}	
+	}
+
+	public int getValida() {
+		return valida;
+	}
+
+	public void setValida(int valida) {
+		this.valida = valida;
+	}
 
 }

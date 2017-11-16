@@ -27,20 +27,24 @@ public class ExportarTendenciaGrupalManager extends ExportarTendenciaManager {
 	public ExportarTendenciaGrupalManager(Connection c) {
 		super(c);
 		super.dao = new TendenciaProcesoFiltradaDAO(c);
-		//super.dao = new TendenciaProcesoFiltradaFechaCierreDAO(c);
+		// super.dao = new TendenciaProcesoFiltradaFechaCierreDAO(c);
 	}
 
 	protected void procesarRegresion(Regresion regresion, Regresion regresionFiltrada) throws SQLException {
 		procesoTendencia.setRegresion(regresion);
 		((ProcesoTendenciaFiltradaBuySell) procesoTendencia).setRegresionFiltrada(regresionFiltrada);
+		if (procesoTendencia.getRegresion().getPendiente() < 0) {
+			procesoTendencia.setTipoOperacion(OperationType.SELL);
+		} else if (procesoTendencia.getRegresion().getPendiente() > 0) {
+			procesoTendencia.setTipoOperacion(OperationType.BUY);
+		}
 		if ((procesoTendencia.isRegresionValida())
 				&& (regresion.getPendiente() * regresionFiltrada.getPendiente() > 0)) {
-			if (procesoTendencia.getRegresion().getPendiente() < 0) {
-				procesoTendencia.setTipoOperacion(OperationType.SELL);
-			} else if (procesoTendencia.getRegresion().getPendiente() > 0) {
-				procesoTendencia.setTipoOperacion(OperationType.BUY);
-			}
+			procesoTendencia.setValida(1);
+		} else {
+			procesoTendencia.setValida(0);
 		}
+
 	}
 
 	@Override

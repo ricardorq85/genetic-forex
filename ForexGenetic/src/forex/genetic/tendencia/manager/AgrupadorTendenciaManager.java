@@ -84,6 +84,33 @@ public class AgrupadorTendenciaManager {
 		Extremos extremos = encontrarExtremos();
 		createDatoAdicional(extremos);
 		procesarExtremos(extremos);
+		this.inactivarInvalidas();
+	}
+
+	private void inactivarInvalidas() {
+		List<TendenciaParaOperarMaxMin> tendencias = this.tendenciasResultado;
+		if (tendencias != null) {
+			tendencias.stream().forEach((tpo) -> {
+				try {
+					if (!tpo.getRegresion().isRegresionValida()) {
+						tpo.setActiva(0);
+					} else {
+						double pendiente = this.adicionalTPO.getPendientePromedio();
+						if (OperationType.BUY.equals(tpo.getTipoOperacion())) {
+							if (pendiente < 0) {
+								tpo.setActiva(0);
+							}
+						} else if (OperationType.SELL.equals(tpo.getTipoOperacion())) {
+							if (pendiente > 0) {
+								tpo.setActiva(0);
+							}
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		}
 	}
 
 	protected Extremos encontrarExtremos() {
