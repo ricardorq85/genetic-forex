@@ -33,14 +33,18 @@ public class TendenciaFacade implements IGeneticFacade {
 		try {
 			parametroMesesTendencia = parametroDAO.getIntValorParametro("MESES_TENDENCIA");
 		} catch (NumberFormatException ex) {
-			parametroMesesTendencia = 3;
+			parametroMesesTendencia = 0;
 		}
-		fechasXCantidad = tendenciaDAO.consultarXCantidadFechaBase(parametroFechaInicio, parametroMesesTendencia);
+		if (parametroMesesTendencia > 0) {
+			fechasXCantidad = tendenciaDAO.consultarXCantidadFechaBase(parametroFechaInicio, parametroMesesTendencia);
+		}
 	}
 
 	public void procesarTendencias() throws ClassNotFoundException, SQLException {
 		this.tendenciaManager.calcularTendencias(parametroFechaInicio, parametroFilasTendencia);
-		this.procesarTendenciasXCantidad();
+		if (parametroMesesTendencia > 0) {
+			this.procesarTendenciasXCantidad();
+		}
 		this.procesarTendenciasXFecha();
 	}
 

@@ -86,8 +86,8 @@ public class TendenciaBuySellManager extends TendenciasManager {
 					LogUtil.logTime("Calculando..." + individuo.getId(), 2);
 					tendencia = this.calcularTendencia(puntoTendencia, individuo);
 					if (tendencia != null) {
-						LogUtil.logTime(tendencia.toString(), 1);
 						LogUtil.logTime("Guardando..." + individuo.getId(), 4);
+						LogUtil.logTime(tendencia.toString(), 1);						
 						this.guardarTendencia(tendencia);
 						listaTendencias.add(tendencia);
 					}
@@ -142,8 +142,9 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		if (individuo != null) {
 			LogUtil.logTime("Cargando orden actual...", 5);
 			Order ordenActual = this.getOrdenActual(pointFecha, individuo, fechaBase);
-			LogUtil.logTime("Procesando reprocesos...", 5);
-			operacionManager.procesarMaximosRetroceso(individuo, individuo.getFechaApertura());
+			//LogUtil.logTime("Procesando reprocesos...", 5);
+			LogUtil.logTime("Se suponen reprocesos procesados...", 5);
+			//operacionManager.procesarMaximosRetroceso(individuo, individuo.getFechaApertura());
 			ParametroConsultaEstadistica parametroConsultaEstadisticaFiltrada = new ParametroConsultaEstadistica(
 					fechaBase, ordenActual.getPips(), ordenActual.getDuracionMinutos(), individuo);
 			LogUtil.logTime("Consultando estadística filtrada...", 5);

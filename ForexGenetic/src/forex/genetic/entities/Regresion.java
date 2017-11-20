@@ -37,8 +37,7 @@ public class Regresion {
 	}
 
 	protected boolean isValidacionPendienteValida() {
-		return (Math.abs(this.getPendiente()) > minimoValidacionPendiente
-				&& Math.abs(this.getPendiente()) < maximoPendiente);
+		return (Math.abs(this.getPendiente()) > minimoValidacionPendiente && Math.abs(this.getPendiente()) < maximoPendiente);
 	}
 
 	private int getCantidadMinimaRegresion() {

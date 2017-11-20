@@ -220,7 +220,7 @@ public class PointToPointMediator extends GeneticMediator {
 
 	private void crearNuevosIndividuos() throws ClassNotFoundException, SQLException {
 		logTime("Init Crear individuos x indicador", 1);
-		IndividuoXIndicadorManager manager = new IndividuoXIndicadorManager(ultimaFechaBaseTendencia, fechaHistoricaMaximaNueva, 6);
+		IndividuoXIndicadorManager manager = new IndividuoXIndicadorManager(ultimaFechaBaseTendencia, fechaHistoricaMaximaNueva, 12);
 		manager.crearIndividuos();
 		logTime("End Crear individuos x indicador", 1);
 	}

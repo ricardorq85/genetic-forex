@@ -22,7 +22,7 @@ public class TendenciaParaOperar {
 	protected double precioCalculado = 0.0D;
 	protected double tp = 0.0D;
 	protected double sl = 0.0D;
-	private Regresion regresion;
+	private Regresion regresion, regresionFiltrada;
 	private double puntosDiferenciaInicial;
 
 	private double lote = 0.01D, loteCalculado = 0.01D;
@@ -221,6 +221,14 @@ public class TendenciaParaOperar {
 		this.regresion = regresion;
 	}
 
+	public Regresion getRegresionFiltrada() {
+		return regresionFiltrada;
+	}
+
+	public void setRegresionFiltrada(Regresion regresionFiltrada) {
+		this.regresionFiltrada = regresionFiltrada;
+	}
+
 	public String getTipoExportacion() {
 		return tipoExportacion;
 	}
@@ -268,7 +276,8 @@ public class TendenciaParaOperar {
 				+ NumberUtil.round(tp) + ",STOP_LOSS=" + NumberUtil.round(sl) + ",FECHA_TENDENCIA="
 				+ DateUtil.getDateString(fechaTendencia) + ",VIGENCIALOWER=" + DateUtil.getDateString(vigenciaLower)
 				+ ",VIGENCIAHIGHER=" + DateUtil.getDateString(vigenciaHigher) + ",R2="
-				+ ((regresion != null) ? regresion.getR2() : 1) + ",ACTIVA=" + ((regresion != null) ? this.activa : 1)
+				+ ((regresion != null) ? regresion.getR2() : 1) 
+				+ ",ACTIVA=" + (this.activa)
 				+ ",CANTIDAD=" + ((regresion != null) ? regresion.getCantidad() : 1) + ",PENDIENTE="
 				+ ((regresion != null) ? regresion.getPendiente() : 1) + ",LOTE=" + NumberUtil.round(lote) + ",NAME="
 				+ GeneticDelegate.getId() + ",FECHA_BASE=" + DateUtil.getDateString(fechaBase);
