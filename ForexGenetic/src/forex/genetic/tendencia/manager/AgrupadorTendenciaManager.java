@@ -100,11 +100,11 @@ public class AgrupadorTendenciaManager {
 						double pendiente = this.adicionalTPO.getPendientePromedio();
 						if (OperationType.BUY.equals(tpo.getTipoOperacion())) {
 							if (pendiente < 0) {
-								tpo.setActiva(0);
+								// tpo.setActiva(0);
 							}
 						} else if (OperationType.SELL.equals(tpo.getTipoOperacion())) {
 							if (pendiente > 0) {
-								tpo.setActiva(0);
+								// tpo.setActiva(0);
 							}
 						}
 					}
