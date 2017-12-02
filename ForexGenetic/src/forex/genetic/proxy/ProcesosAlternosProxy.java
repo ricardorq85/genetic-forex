@@ -57,7 +57,7 @@ public class ProcesosAlternosProxy {
 		PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
 		setOut(out);
 		setErr(out);
-		logTime("Init Procesos alternos", 1);
+		logTime("Init Procesos alternos", 2);
 		while (!managers.isEmpty()) {
 			int index = 0; // random.nextInt(managers.size());
 			BorradoManager manager = managers.get(index);

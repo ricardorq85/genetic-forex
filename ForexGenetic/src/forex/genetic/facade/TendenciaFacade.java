@@ -54,6 +54,7 @@ public class TendenciaFacade implements IGeneticFacade {
 		for (Date fecha : fechasXCantidad) {
 			Date fechaBaseInicial = fecha;
 			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseInicial, minutosUnDia);
+			//LogUtil.logEnter(1);
 			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
 					+ DateUtil.getDateString(fechaBaseFinal), 1);
 			tendenciaManager.calcularTendencias(2, fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
@@ -66,6 +67,7 @@ public class TendenciaFacade implements IGeneticFacade {
 		while (fechaBaseFinal.after(DateUtil.adicionarDias(fechaBaseFinal, -30))) {
 			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1);
 			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, -parametroStepTendencia);
+			//LogUtil.logEnter(1);
 			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
 					+ DateUtil.getDateString(fechaBaseFinal), 1);
 			tendenciaManager.calcularTendencias(fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);

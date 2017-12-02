@@ -147,7 +147,7 @@ public class IndividuosPeriodoManager {
 		if (param.isResultadoValido()) {
 			int id = estrategiaOperacionPeriodoDAO.insert(param);
 			param.setId(id);
-			logEnter(1);
+			//logEnter(1);
 			logTime(param.getId() + ": " + param.getTipoOperacion() + ", Cantidad=" + param.getCantidad()
 					+ ", Pips totales=" + param.getPipsTotales() + ", Pips paralelas=" + param.getPipsParalelas(), 1);
 			for (Individuo ind : ordenesCreadas) {

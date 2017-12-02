@@ -29,28 +29,31 @@ import forex.genetic.mediator.PointToPointMediator;
  */
 public class ForexPointToPoint {
 
-    /**
-     * @param args the command line arguments
-     * @throws java.lang.InterruptedException
-     */
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, ParseException, NoSuchMethodException {
-        long id = currentTimeMillis();
-        load().join();
-        logTime("ForexPointToPoint: " + id, 1);
-        String name = getPropertyString(LOG_PATH)
-                + "ForexPointToPoint" + id + ".log";
-        PrintStream out = new PrintStream(name, Charset.defaultCharset().name());
-        setOut(out);
-        setErr(out);
-        logTime("Inicio: " + id, 1);
-        setId(Long.toString(id));
-        try {
-        	PointToPointMediator mediator = new PointToPointMediator();
-        	mediator.init();
-        	mediator.start();
-        } catch (SQLException | InstantiationException | IllegalAccessException | InvocationTargetException | GeneticException ex) {
-            ex.printStackTrace();
-        }
-        logTime("Fin: " + id, 1);
-    }
+	/**
+	 * @param args
+	 *            the command line arguments
+	 * @throws java.lang.InterruptedException
+	 */
+	public static void main(String[] args)
+			throws IOException, ClassNotFoundException, InterruptedException, ParseException, NoSuchMethodException {
+		long id = currentTimeMillis();
+		load().join();
+		String prefix = "PointToPoint";
+		logTime(prefix + ": " + id, 1);
+		String name = getPropertyString(LOG_PATH) + prefix + id + ".log";
+		PrintStream out = new PrintStream(name, Charset.defaultCharset().name());
+		setOut(out);
+		setErr(out);
+		logTime("Inicio: " + id, 1);
+		setId(Long.toString(id));
+		try {
+			PointToPointMediator mediator = new PointToPointMediator();
+			mediator.init();
+			mediator.start();
+		} catch (SQLException | InstantiationException | IllegalAccessException | InvocationTargetException
+				| GeneticException ex) {
+			ex.printStackTrace();
+		}
+		logTime("Fin: " + id, 1);
+	}
 }

@@ -133,7 +133,7 @@ public class IndividuoXIndicadorManager {
 	private boolean crearIndividuos(RangoOperacionIndividuo rangoOperacionIndividuo) throws SQLException {
 		boolean rangoValido = rangoOperacionIndividuo.isRangoValido();
 		boolean found_any = false;
-		logTime(rangoOperacionIndividuo.toString(), 1);
+		logTime(rangoOperacionIndividuo.toString(), 2);
 		if (rangoValido) {
 			found_any = true;
 			IndividuoEstrategia individuoSell = createIndividuo(rangoOperacionIndividuo, Constants.OperationType.SELL);
@@ -149,7 +149,7 @@ public class IndividuoXIndicadorManager {
 			 * //cruzarIndividuos(rangoOperacionIndividuo, poblacion); }
 			 */
 		} else {
-			logTime("NO cumple con el rango valido.", 1);
+			logTime("NO cumple con el rango valido.", 2);
 		}
 		return found_any;
 	}

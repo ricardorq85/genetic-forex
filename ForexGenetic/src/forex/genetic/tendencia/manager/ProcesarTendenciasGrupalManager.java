@@ -57,7 +57,7 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 				Date fechaBase = tendenciaDAO.nextFechaBase(fechaProceso);
 				if (fechaBase != null) {
 					AgrupadorTendenciaManager agrupador = new AgrupadorTendenciaManager(fechaBase, conn);
-					LogUtil.logTime("Fecha base=" + DateUtil.getDateString(fechaBase), 2);
+					LogUtil.logTime("Fecha base=" + DateUtil.getDateString(fechaBase), 1);
 					ProcesoTendenciaFiltradaBuySell procesoFromExporterLastIndex = procesarExporter(
 							dias[dias.length - 1], fechaBase);
 					for (int i = 0; i < dias.length - 1; i++) {
@@ -112,9 +112,11 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 				try {
 					String tpoString = ten.toString();
 					LogUtil.logAvance(tpoString, 1);
-					LogUtil.logEnter(1);
-					sb.append(tpoString);
-					sb.append("\n");
+					//LogUtil.logEnter(1);
+					if (ten.getActiva() == 1) {
+						sb.append(tpoString);
+						sb.append("\n");
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

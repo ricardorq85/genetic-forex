@@ -185,6 +185,7 @@ public class PointToPointMediator extends GeneticMediator {
 		while (fechaBaseFinal.after(ultimaFechaBaseTendencia)) {
 			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1);
 			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, -parametroStepTendencia);
+			//LogUtil.logEnter(1);
 			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
 					+ DateUtil.getDateString(fechaBaseFinal), 1);
 			tendenciaManager.calcularTendencias(fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
@@ -204,8 +205,11 @@ public class PointToPointMediator extends GeneticMediator {
 			ProcesarTendenciasBuySellManager manager = ProcesarTendenciasFactory.createManager();
 			manager.setParametroFechaInicio(ultimaFechaBaseTendencia);
 			manager.setParametroFechaFin(fechaHistoricaMaximaNueva);
-			manager.procesarTendencias();
-			manager.export(filePath);
+			ExportThread exportThread = new ExportThread(filePath, manager);
+			logTime("Lanzando hilo para exportacion", 1);
+			exportThread.start();
+			//manager.procesarTendencias();
+			//manager.export(filePath);
 		} else {
 			logTime("No existen nuevos datos. No se procesara la exportacion", 1);
 		}
@@ -220,9 +224,30 @@ public class PointToPointMediator extends GeneticMediator {
 
 	private void crearNuevosIndividuos() throws ClassNotFoundException, SQLException {
 		logTime("Init Crear individuos x indicador", 1);
-		IndividuoXIndicadorManager manager = new IndividuoXIndicadorManager(ultimaFechaBaseTendencia, fechaHistoricaMaximaNueva, 12);
+		IndividuoXIndicadorManager manager = new IndividuoXIndicadorManager(ultimaFechaBaseTendencia,
+				fechaHistoricaMaximaNueva, 12);
 		manager.crearIndividuos();
 		logTime("End Crear individuos x indicador", 1);
 	}
 
+	class ExportThread extends Thread {
+		Path path;
+		ProcesarTendenciasBuySellManager manager;
+
+		ExportThread(Path path, ProcesarTendenciasBuySellManager manager) {
+			this.path = path;
+			this.manager = manager;
+		}
+
+		public void run() {
+			try {
+				manager.procesarTendencias();
+				manager.export(path);
+			} catch (IOException | ClassNotFoundException | NoSuchMethodException | InstantiationException
+					| IllegalAccessException | InvocationTargetException | SQLException | ParseException
+					| GeneticException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

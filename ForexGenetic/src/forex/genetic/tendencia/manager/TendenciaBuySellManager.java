@@ -76,6 +76,7 @@ public class TendenciaBuySellManager extends TendenciasManager {
 	public List<TendenciaEstadistica> calcularTendencias(Point puntoTendencia, int filas) throws SQLException {
 		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
 		if ((puntoTendencia != null)) {
+			//LogUtil.logEnter(1);
 			LogUtil.logTime("Fecha base=" + DateUtil.getDateString(puntoTendencia.getDate()), 1);
 			List<Individuo> individuos = operacionesDAO.consultarIndividuoOperacionActiva(puntoTendencia.getDate(),
 					filas);
@@ -87,7 +88,8 @@ public class TendenciaBuySellManager extends TendenciasManager {
 					tendencia = this.calcularTendencia(puntoTendencia, individuo);
 					if (tendencia != null) {
 						LogUtil.logTime("Guardando..." + individuo.getId(), 4);
-						LogUtil.logTime(tendencia.toString(), 1);						
+						LogUtil.logTime(tendencia.toString(), 2);
+						LogUtil.logAvance(1);
 						this.guardarTendencia(tendencia);
 						listaTendencias.add(tendencia);
 					}
