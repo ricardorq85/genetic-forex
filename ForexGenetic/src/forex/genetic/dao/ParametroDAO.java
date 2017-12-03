@@ -101,7 +101,9 @@ public class ParametroDAO {
 			stmtConsulta.setString(1, nombre);
 			resultado = stmtConsulta.executeQuery();
 			if (resultado.next()) {
-				valor = new Date(resultado.getTimestamp("VALOR").getTime());
+				if (!(resultado.getObject("VALOR") == null)) {
+					valor = new Date(resultado.getTimestamp("VALOR").getTime());
+				}
 			}
 		} finally {
 			JDBCUtil.close(resultado);

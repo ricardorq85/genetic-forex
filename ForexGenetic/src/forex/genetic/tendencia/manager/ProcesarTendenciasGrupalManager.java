@@ -112,7 +112,7 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 				try {
 					String tpoString = ten.toString();
 					LogUtil.logAvance(tpoString, 1);
-					//LogUtil.logEnter(1);
+					LogUtil.logEnter(1);
 					if (ten.getActiva() == 1) {
 						sb.append(tpoString);
 						sb.append("\n");

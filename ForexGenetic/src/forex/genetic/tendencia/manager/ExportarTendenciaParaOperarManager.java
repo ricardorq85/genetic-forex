@@ -5,6 +5,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.ParametroDAO;
@@ -18,6 +19,8 @@ public class ExportarTendenciaParaOperarManager {
 
 	private TendenciaParaOperarDAO tendenciaParaOperarDAO;
 	private ParametroDAO parametroDAO;
+
+	private Date fechaInicio;
 	private static String sourceEstrategiasPath;
 
 	public ExportarTendenciaParaOperarManager() throws SQLException, ClassNotFoundException {
@@ -26,10 +29,11 @@ public class ExportarTendenciaParaOperarManager {
 		this.parametroDAO = new ParametroDAO(connection);
 		ExportarTendenciaParaOperarManager.sourceEstrategiasPath = parametroDAO
 				.getValorParametro("SOURCE_ESTRATEGIAS_PATH");
+		this.fechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_EXPORTACION");
 	}
 
 	public void exportar() throws SQLException, ClassNotFoundException, IOException {
-		List<TendenciaParaOperarMaxMin> list = this.tendenciaParaOperarDAO.consultarTendenciasParaOperar();
+		List<TendenciaParaOperarMaxMin> list = this.tendenciaParaOperarDAO.consultarTendenciasParaOperar(this.fechaInicio);
 		ProcesarTendenciasGrupalManager grupalManager = new ProcesarTendenciasGrupalManager();
 		grupalManager.setTendenciasResultado(list);
 

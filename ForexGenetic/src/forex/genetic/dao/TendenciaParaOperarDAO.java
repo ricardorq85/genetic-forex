@@ -44,9 +44,8 @@ public class TendenciaParaOperarDAO {
 				+ " FECHA_BASE, FECHA_TENDENCIA, VIGENCIA_LOWER,"
 				+ " VIGENCIA_HIGHER, PRECIO_CALCULADO, TAKE_PROFIT, STOP_LOSS, LOTE, LOTE_CALCULADO, "
 				+ " TIEMPO_TENDENCIA, " + " R2, PENDIENTE, DESVIACION, "
-				+ " R2_FILTRADA, PENDIENTE_FILTRADA, DESVIACION_FILTRADA, CANTIDAD_FILTRADA, " 
-				+ " MIN_PRECIO, MAX_PRECIO,"
-				+ " CANTIDAD, FECHA, ID_EJECUCION, ACTIVA) "
+				+ " R2_FILTRADA, PENDIENTE_FILTRADA, DESVIACION_FILTRADA, CANTIDAD_FILTRADA, "
+				+ " MIN_PRECIO, MAX_PRECIO," + " CANTIDAD, FECHA, ID_EJECUCION, ACTIVA) "
 				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		int index = 1;
@@ -92,11 +91,9 @@ public class TendenciaParaOperarDAO {
 	public int updateTendenciaParaProcesar(TendenciaParaOperar tpo) throws SQLException {
 		String sql = "UPDATE TENDENCIA_PARA_OPERAR SET  " + " FECHA_TENDENCIA=?, VIGENCIA_LOWER=?,"
 				+ " VIGENCIA_HIGHER=?, PRECIO_CALCULADO=?, TAKE_PROFIT=?, STOP_LOSS=?, " + " LOTE=?, LOTE_CALCULADO=?, "
-				+ " TIEMPO_TENDENCIA=?, "
-				+ " R2=?, PENDIENTE=?, DESVIACION=?, "
+				+ " TIEMPO_TENDENCIA=?, " + " R2=?, PENDIENTE=?, DESVIACION=?, "
 				+ " R2_FILTRADA=?, PENDIENTE_FILTRADA=?, DESVIACION_FILTRADA=?, CANTIDAD_FILTRADA=?, "
-				+ " MIN_PRECIO=?, MAX_PRECIO=?,"
-				+ " CANTIDAD=?, FECHA=?, ID_EJECUCION=?, ACTIVA=? "
+				+ " MIN_PRECIO=?, MAX_PRECIO=?," + " CANTIDAD=?, FECHA=?, ID_EJECUCION=?, ACTIVA=? "
 				+ " WHERE TIPO_OPERACION=? AND TIPO_EXPORTACION=? AND PERIODO=? AND FECHA_BASE=?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -188,14 +185,23 @@ public class TendenciaParaOperarDAO {
 		return exists;
 	}
 
-	public List<TendenciaParaOperarMaxMin> consultarTendenciasParaOperar() throws SQLException {
+	public List<TendenciaParaOperarMaxMin> consultarTendenciasParaOperar(Date fechaInicio) throws SQLException {
 		List<TendenciaParaOperarMaxMin> list = null;
-		String sql = "SELECT * FROM TENDENCIA_PARA_OPERAR TPO " + " WHERE TPO.ACTIVA=1" + "ORDER BY TPO.FECHA_BASE ASC";
+		String sql = "SELECT * FROM TENDENCIA_PARA_OPERAR TPO ";
+		if (fechaInicio != null) {
+			sql += " WHERE TPO.FECHA_BASE>=? AND ";
+		} else {
+			sql += " WHERE ";
+		}
+		sql += " TPO.ACTIVA=1 " + " ORDER BY TPO.FECHA_BASE ASC";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
+			if (fechaInicio != null) {
+				stmtConsulta.setTimestamp(1, new Timestamp(fechaInicio.getTime()));
+			}
 			resultado = stmtConsulta.executeQuery();
 
 			list = TendenciaParaOperarHelper.create(resultado);
