@@ -998,7 +998,7 @@ public class DatoHistoricoDAO {
 	}
 
 	public double consultarPrecioPonderado(Date fecha) throws SQLException {
-		String sql = "SELECT ((DH.OPEN+DH.LOW+DH.CLOSE+DH.CLOSE)/4) PRECIO " + "  FROM DATOHISTORICO DH "
+		String sql = "SELECT ((DH.OPEN+DH.LOW+DH.HIGH+DH.CLOSE)/4) PRECIO " + "  FROM DATOHISTORICO DH "
 				+ "  WHERE DH.FECHA=? ";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;

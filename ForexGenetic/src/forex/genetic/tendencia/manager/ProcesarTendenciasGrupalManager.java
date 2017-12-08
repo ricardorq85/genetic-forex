@@ -41,23 +41,19 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 	public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, GeneticException,
 			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		try {
-			LogUtil.logTime("Step=" + (parametroStep), 1);
-			LogUtil.logTime(
-					DateUtil.getDateString(parametroFechaInicio) + " - " + DateUtil.getDateString(parametroFechaFin),
-					1);
+			LogUtil.logTime("Step exportacion=" + (parametroStep), 1);
+			LogUtil.logTime("Periodo exportacion=" + DateUtil.getDateString(parametroFechaInicio) + " - "
+					+ DateUtil.getDateString(parametroFechaFin), 1);
 			Date fechaProceso = parametroFechaInicio;
 			float[] dias = parametroDiasTendencia;
-			// { 0.25F / 2.0F, 0.25F, 0.5F, 1.0F, 2.0F, 3.0F, 4.0F, 5.0F, 6.0F,
-			// 7.0F, 8.0F, 9.0F, 10.0F };
 
 			Arrays.sort(dias);
-			LogUtil.logTime("Dias=" + Arrays.toString(dias), 1);
+			LogUtil.logTime("Dias exportacion=" + Arrays.toString(dias), 1);
 			while (fechaProceso.before(parametroFechaFin)) {
-				// System.out.println(DateUtil.getDateString(fechaProceso));
 				Date fechaBase = tendenciaDAO.nextFechaBase(fechaProceso);
 				if (fechaBase != null) {
 					AgrupadorTendenciaManager agrupador = new AgrupadorTendenciaManager(fechaBase, conn);
-					LogUtil.logTime("Fecha base=" + DateUtil.getDateString(fechaBase), 1);
+					LogUtil.logTime("Fecha base exportacion=" + DateUtil.getDateString(fechaBase), 1);
 					ProcesoTendenciaFiltradaBuySell procesoFromExporterLastIndex = procesarExporter(
 							dias[dias.length - 1], fechaBase);
 					for (int i = 0; i < dias.length - 1; i++) {
@@ -71,7 +67,7 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 					this.tendenciasResultado.addAll(agrupador.getTendenciasResultado());
 					fechaProceso = DateUtil.calcularFechaXDuracion(parametroStep, fechaBase);
 				} else {
-					LogUtil.logTime("Fecha base NULL", 1);
+					LogUtil.logTime("NO existen mas Fecha base tendencia para exportacion", 1);
 					fechaProceso = parametroFechaFin;
 				}
 			}

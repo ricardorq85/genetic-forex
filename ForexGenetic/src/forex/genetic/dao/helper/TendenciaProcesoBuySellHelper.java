@@ -16,6 +16,7 @@ public class TendenciaProcesoBuySellHelper {
 		if (resultado.next()) {
 			regresion = new Regresion();
 			regresion.setTiempoTendencia(procesoTendencia.getTiempoTendencia());
+			regresion.setPrimeraTendencia(resultado.getDouble("PRIMERA_TENDENCIA"));
 			regresion.setR2(resultado.getDouble("R2"));
 			regresion.setPendiente(resultado.getDouble("PENDIENTE"));
 			regresion.setDesviacion(resultado.getDouble("DESV"));

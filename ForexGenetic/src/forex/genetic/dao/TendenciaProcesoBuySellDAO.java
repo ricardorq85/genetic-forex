@@ -73,7 +73,7 @@ public abstract class TendenciaProcesoBuySellDAO extends TendenciaDAO {
 	}
 	
 	public Regresion consultarRegresion(ProcesoTendenciaBuySell procesoTendencia) throws SQLException {
-		String sqlRegresion = "SELECT PARAM.PERIODO PERIODO, REG.*  FROM PARAMETROS PARAM, REGRESION REG";
+		String sqlRegresion = "SELECT PARAM.PERIODO PERIODO, PRITEN.PRECIO_CALCULADO PRIMERA_TENDENCIA, REG.*  FROM PARAMETROS PARAM, PRIMERA_TENDENCIA PRITEN, REGRESION_FILTRADA REG";
 		return this.consultarRegresion(procesoTendencia, sqlRegresion);
 	}
 

@@ -82,7 +82,7 @@ public class ProcesosAlternosProxy {
 			managers.add(new BorradoCantidadOperacionesExageradasManager(conn));
 			// managers.add(new BorradoDuplicadoOperacionesManager(conn));
 
-			logTime("Init Procesos alternos:" + individuo.getId(), 1);
+			logTime("Init Procesos alternos:" + individuo.getId(), 2);
 			int index = 0;
 			while (!managers.isEmpty()) {
 				// int index = random.nextInt(managers.size());

@@ -23,6 +23,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
 
 public class TendenciaBuySellManager extends TendenciasManager {
 
+	private static final double FACTOR_NUMERO_RANDOM_TENDENCIAS = 0.3;
 	private ParametroDAO parametroDAO;
 	private OperacionesManager operacionManager;
 	private OperacionesTendenciaDAO operacionesDAO;
@@ -54,11 +55,11 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		int c = cantidadVeces + 1;
 		if ((pointsFechaTendencia != null) && (!pointsFechaTendencia.isEmpty())) {
 			int size = pointsFechaTendencia.size();
-			int sizeLimit = (int) (size * 0.1);
+			int sizeLimit = (int) (size * FACTOR_NUMERO_RANDOM_TENDENCIAS);
 			for (int i = 1; i < c; i++) {
-				int index = RandomUtil.nextInt(sizeLimit + 1);
-				listaTendencias.addAll(this.calcularTendencias(pointsFechaTendencia.get(index), filas));
-				listaTendencias.addAll(this.calcularTendencias(pointsFechaTendencia.get(size - index - 1), filas));
+				int randomIndex = RandomUtil.nextInt(sizeLimit + 1);
+				listaTendencias.addAll(this.calcularTendencias(pointsFechaTendencia.get(randomIndex), filas));
+				listaTendencias.addAll(this.calcularTendencias(pointsFechaTendencia.get(size - randomIndex - 1), filas));
 			}
 		}
 		return listaTendencias;

@@ -33,7 +33,7 @@ public class AgrupadorTendenciaManager {
 	private Date fechaBase;
 	private int numeroTendencias, cantidadTotalTendencias, numeroPendientesPositivas, numeroPendientesNegativas;
 	private double precioPonderado;
-	private double sumaR2, sumaPendiente, sumaProbabilidad;
+	private double sumaR2, sumaPendiente, sumaProbabilidad, sumaPrimeraTendencia;
 	private DatoAdicionalTPO adicionalTPO;
 	private boolean deleteTPO;
 	private double stepLote = 0.01D;
@@ -66,6 +66,9 @@ public class AgrupadorTendenciaManager {
 				.setDiferenciaPrecioSuperior(extremos.getExtremosFiltrados().getHighInterval() - this.precioPonderado);
 		this.adicionalTPO
 				.setDiferenciaPrecioInferior(this.precioPonderado - extremos.getExtremosFiltrados().getLowInterval());
+		this.adicionalTPO.setMinPrimeraTendencia(extremos.getExtremosPrimeraTendencia().getLowInterval());
+		this.adicionalTPO.setMaxPrimeraTendencia(extremos.getExtremosPrimeraTendencia().getHighInterval());
+		this.adicionalTPO.setAvgPrimeraTendencia(sumaPrimeraTendencia / numeroTendencias);
 	}
 
 	public void add(ProcesoTendenciaFiltradaBuySell paraProcesar) {
@@ -78,6 +81,7 @@ public class AgrupadorTendenciaManager {
 		this.cantidadTotalTendencias += paraProcesar.getRegresion().getCantidadTotal();
 		this.numeroPendientesPositivas += (pendiente > 0 ? 1 : 0);
 		this.numeroPendientesNegativas += (pendiente < 0 ? 1 : 0);
+		this.sumaPrimeraTendencia += paraProcesar.getRegresion().getPrimeraTendencia();
 	}
 
 	public void procesar() throws SQLException {
@@ -124,6 +128,9 @@ public class AgrupadorTendenciaManager {
 				valorMinimoDeLosMinimosFiltrada = Double.POSITIVE_INFINITY;
 		double valorMinimoDeLosMaximosFiltrada = Double.POSITIVE_INFINITY,
 				valorMaximoDeLosMinimosFiltrada = Double.NEGATIVE_INFINITY;
+		double valorMinimoPrimeraTendenciaFiltrada = Double.POSITIVE_INFINITY,
+				valorMaximoPrimeraTendenciaFiltrada = Double.NEGATIVE_INFINITY;
+
 		for (int i = 0; i < listaTendencias.size(); i++) {
 			ProcesoTendenciaFiltradaBuySell procesoIndex = listaTendencias.get(i);
 			Regresion regresionFiltradaIndex = procesoIndex.getRegresionFiltrada();
@@ -150,6 +157,11 @@ public class AgrupadorTendenciaManager {
 							regresionIndex.getMaxPrecio());
 					valorMinimoDeLosMinimosSinFiltrar = Math.min(valorMinimoDeLosMinimosSinFiltrar,
 							regresionIndex.getMinPrecio());
+
+					valorMinimoPrimeraTendenciaFiltrada = Math.min(valorMinimoPrimeraTendenciaFiltrada,
+							regresionIndex.getPrimeraTendencia());
+					valorMaximoPrimeraTendenciaFiltrada = Math.max(valorMaximoPrimeraTendenciaFiltrada,
+							regresionIndex.getPrimeraTendencia());
 				}
 			}
 		}
@@ -161,74 +173,15 @@ public class AgrupadorTendenciaManager {
 				(valorMaximoDeLosMaximosExtremo));
 		DoubleInterval extremosSinFiltrar = new DoubleInterval((valorMinimoDeLosMinimosSinFiltrar),
 				(valorMaximoDeLosMaximosSinFiltrar));
+		DoubleInterval extremosPrimeraTendencia = new DoubleInterval((valorMinimoPrimeraTendenciaFiltrada),
+				(valorMaximoPrimeraTendenciaFiltrada));
 		Extremos extremos = null;
 		if (!(extremosFiltrada.getLowInterval().isInfinite() && extremosFiltrada.getHighInterval().isInfinite())) {
 			extremos = new Extremos(extremosFiltrada, extremosIntermedios, extremosExtremo, extremosSinFiltrar);
+			extremos.setExtremosPrimeraTendencia(extremosPrimeraTendencia);
 		}
 		return extremos;
 	}
-
-	// public void procesarExtremos(Extremos extremos) throws SQLException {
-	// int lastIndex = listaTendencias.size() - 1;
-	// TendenciaParaOperarMaxMin buy = null;
-	// TendenciaParaOperarMaxMin sell = null;
-	// Regresion maximaRegresionValidaBuy = null;
-	// Regresion maximaRegresionValidaSell = null;
-	// for (int i = 1; i < lastIndex; i++) {
-	// boolean regresionValida = this.validarRegresion(i);
-	// // if (regresionValida) {
-	// ProcesoTendenciaBuySell procesoIndex = listaTendencias.get(i);
-	// TendenciaParaOperarMaxMin resultadoParaOperar =
-	// crearTendenciaParaOperarMaxMin(extremos, procesoIndex);
-	// if (resultadoParaOperar != null) {
-	// if (regresionValida) {
-	// resultadoParaOperar.setActiva(1);
-	// } else {
-	// resultadoParaOperar.setActiva(0);
-	// }
-	// this.tendenciasResultado.add(resultadoParaOperar);
-	// if (OperationType.BUY.equals(resultadoParaOperar.getTipoOperacion())) {
-	// if ((buy == null) ||
-	// (resultadoParaOperar.getVigenciaHigher().after(buy.getVigenciaHigher())))
-	// {
-	// buy = resultadoParaOperar;
-	// maximaRegresionValidaBuy = procesoIndex.getRegresion();
-	// }
-	// } else {
-	// if ((sell == null) ||
-	// (resultadoParaOperar.getVigenciaHigher().after(sell.getVigenciaHigher())))
-	// {
-	// sell = resultadoParaOperar;
-	// maximaRegresionValidaSell = procesoIndex.getRegresion();
-	// }
-	// }
-	// }
-	// // }
-	// }
-	// processDelete();
-	// extremos.setMaximaRegresionFiltradaBuy(maximaRegresionValidaBuy);
-	// extremos.setMaximaRegresionFiltradaSell(maximaRegresionValidaSell);
-	// TendenciaParaOperarMaxMin[] tendenciaExtremos =
-	// crearTendenciaParaOperarMaxMinExtremo(extremos,
-	// listaTendencias.get(lastIndex));
-	// TendenciaParaOperarMaxMin[] tendenciaExtremosSinFiltrar =
-	// crearTendenciaParaOperarMaxMinSinFiltrar(extremos,
-	// listaTendencias.get(lastIndex));
-	//
-	// // if (tendenciaExtremos != null) {
-	// // this.tendenciasResultado.addAll(Arrays.asList(tendenciaExtremos));
-	// // }
-	// if (buy != null) {
-	// this.tendenciasResultado.add(tendenciaExtremos[0]);
-	// this.tendenciasResultado.add(tendenciaExtremosSinFiltrar[0]);
-	// // this.tendenciasResultado.add(buy);
-	// }
-	// if (sell != null) {
-	// this.tendenciasResultado.add(tendenciaExtremos[1]);
-	// this.tendenciasResultado.add(tendenciaExtremosSinFiltrar[1]);
-	// // this.tendenciasResultado.add(sell);
-	// }
-	// }
 
 	public void procesarExtremos(Extremos extremos) throws SQLException {
 		int lastIndex = listaTendencias.size() - 1;

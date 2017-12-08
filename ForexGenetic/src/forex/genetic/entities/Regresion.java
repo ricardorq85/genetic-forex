@@ -19,6 +19,7 @@ public class Regresion {
 	private double maximoPendiente;
 	private double minimoPorcentajeCantidadRegresion;
 	private double maximoDesviacion;
+	private double primeraTendencia;
 
 	public boolean isRegresionValida() {
 		return isR2Valido() && isPendienteValida() && isCantidadValida() && isDesviacionValida();
@@ -217,6 +218,14 @@ public class Regresion {
 
 	public void setCantidadTotal(int cantidadTotal) {
 		this.cantidadTotal = cantidadTotal;
+	}
+
+	public void setPrimeraTendencia(double ten0) {
+		this.primeraTendencia = ten0;		
+	}
+
+	public double getPrimeraTendencia() {
+		return primeraTendencia;
 	}
 
 }

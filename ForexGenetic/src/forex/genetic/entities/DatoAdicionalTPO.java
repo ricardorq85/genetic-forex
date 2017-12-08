@@ -7,7 +7,7 @@ public class DatoAdicionalTPO {
 	private Date fechaBase = null;
 
 	private double r2Promedio, pendientePromedio, probabilidadPromedio, diferenciaPrecioSuperior,
-			diferenciaPrecioInferior;
+			diferenciaPrecioInferior, minPrimeraTendencia, maxPrimeraTendencia, avgPrimeraTendencia;
 
 	private int numeroTendencias, cantidadTotalTendencias, numeroPendientesPositivas, numeroPendientesNegativas;
 
@@ -89,6 +89,30 @@ public class DatoAdicionalTPO {
 
 	public void setDiferenciaPrecioInferior(double diferenciaPrecioInferior) {
 		this.diferenciaPrecioInferior = diferenciaPrecioInferior;
+	}
+
+	public double getMinPrimeraTendencia() {
+		return minPrimeraTendencia;
+	}
+
+	public void setMinPrimeraTendencia(double minPrimeraTendencia) {
+		this.minPrimeraTendencia = minPrimeraTendencia;
+	}
+
+	public double getMaxPrimeraTendencia() {
+		return maxPrimeraTendencia;
+	}
+
+	public void setMaxPrimeraTendencia(double maxPrimeraTendencia) {
+		this.maxPrimeraTendencia = maxPrimeraTendencia;
+	}
+
+	public double getAvgPrimeraTendencia() {
+		return avgPrimeraTendencia;
+	}
+
+	public void setAvgPrimeraTendencia(double avgPrimeraTendencia) {
+		this.avgPrimeraTendencia = avgPrimeraTendencia;
 	}
 
 }

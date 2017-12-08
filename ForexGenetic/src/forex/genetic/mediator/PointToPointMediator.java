@@ -185,7 +185,7 @@ public class PointToPointMediator extends GeneticMediator {
 		while (fechaBaseFinal.after(ultimaFechaBaseTendencia)) {
 			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1);
 			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, -parametroStepTendencia);
-			//LogUtil.logEnter(1);
+			// LogUtil.logEnter(1);
 			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
 					+ DateUtil.getDateString(fechaBaseFinal), 1);
 			tendenciaManager.calcularTendencias(fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
@@ -206,10 +206,12 @@ public class PointToPointMediator extends GeneticMediator {
 			manager.setParametroFechaInicio(ultimaFechaBaseTendencia);
 			manager.setParametroFechaFin(fechaHistoricaMaximaNueva);
 			ExportThread exportThread = new ExportThread(filePath, manager);
-			logTime("Lanzando hilo para exportacion", 1);
-			exportThread.start();
-			//manager.procesarTendencias();
-			//manager.export(filePath);
+			logTime("Lanzando exportacion", 1);
+			exportThread.runExport();
+			//logTime("Lanzando hilo para exportacion", 1);
+			//exportThread.start();
+			// manager.procesarTendencias();
+			// manager.export(filePath);
 		} else {
 			logTime("No existen nuevos datos. No se procesara la exportacion", 1);
 		}
@@ -241,13 +243,19 @@ public class PointToPointMediator extends GeneticMediator {
 
 		public void run() {
 			try {
-				manager.procesarTendencias();
-				manager.export(path);
+				runExport();
 			} catch (IOException | ClassNotFoundException | NoSuchMethodException | InstantiationException
 					| IllegalAccessException | InvocationTargetException | SQLException | ParseException
 					| GeneticException e) {
 				e.printStackTrace();
 			}
+		}
+
+		public void runExport()
+				throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
+				InvocationTargetException, SQLException, ParseException, GeneticException, IOException {
+			manager.procesarTendencias();
+			manager.export(path);
 		}
 	}
 }

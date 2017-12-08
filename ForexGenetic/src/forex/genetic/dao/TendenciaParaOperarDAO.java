@@ -237,8 +237,9 @@ public class TendenciaParaOperarDAO {
 				+ " R2_PROMEDIO, PENDIENTE_PROMEDIO, PROBABILIDAD_PROMEDIO, "
 				+ " NUMERO_TENDENCIAS, CANTIDAD_TOTAL_TENDENCIAS, "
 				+ "	NUM_PENDIENTES_POSITIVAS, NUM_PENDIENTES_NEGATIVAS,"
-				+ "	DIFF_PRECIO_EXTREMO_SUPERIOR, DIFF_PRECIO_EXTREMO_INFERIOR) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "	DIFF_PRECIO_EXTREMO_SUPERIOR, DIFF_PRECIO_EXTREMO_INFERIOR, "
+				+ " MIN_PRIMERA_TENDENCIA, MAX_PRIMERA_TENDENCIA, AVG_PRIMERA_TENDENCIA) "
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		int index = 1;
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -254,6 +255,9 @@ public class TendenciaParaOperarDAO {
 			statement.setInt(index++, datoAdicional.getNumeroPendientesNegativas());
 			statement.setDouble(index++, datoAdicional.getDiferenciaPrecioSuperior());
 			statement.setDouble(index++, datoAdicional.getDiferenciaPrecioInferior());
+			statement.setDouble(index++, datoAdicional.getMinPrimeraTendencia());
+			statement.setDouble(index++, datoAdicional.getMaxPrimeraTendencia());
+			statement.setDouble(index++, datoAdicional.getAvgPrimeraTendencia());
 
 			statement.executeUpdate();
 		} finally {
@@ -265,7 +269,9 @@ public class TendenciaParaOperarDAO {
 		String sql = "UPDATE DATO_ADICIONAL_TPO SET FECHA=?, " + " R2_PROMEDIO=?, PENDIENTE_PROMEDIO=?, "
 				+ "	PROBABILIDAD_PROMEDIO=?, NUMERO_TENDENCIAS=?, CANTIDAD_TOTAL_TENDENCIAS=?,"
 				+ "	NUM_PENDIENTES_POSITIVAS=?, NUM_PENDIENTES_NEGATIVAS=?,"
-				+ "	DIFF_PRECIO_EXTREMO_SUPERIOR=?, DIFF_PRECIO_EXTREMO_INFERIOR=? " + " WHERE FECHA_BASE=?";
+				+ "	DIFF_PRECIO_EXTREMO_SUPERIOR=?, DIFF_PRECIO_EXTREMO_INFERIOR=?,"
+				+ " MIN_PRIMERA_TENDENCIA=?, MAX_PRIMERA_TENDENCIA=?, AVG_PRIMERA_TENDENCIA=? " 
+				+ " WHERE FECHA_BASE=?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
 		int affected = 0;
@@ -281,6 +287,9 @@ public class TendenciaParaOperarDAO {
 			statement.setInt(index++, datoAdicional.getNumeroPendientesNegativas());
 			statement.setDouble(index++, datoAdicional.getDiferenciaPrecioSuperior());
 			statement.setDouble(index++, datoAdicional.getDiferenciaPrecioInferior());
+			statement.setDouble(index++, datoAdicional.getMinPrimeraTendencia());
+			statement.setDouble(index++, datoAdicional.getMaxPrimeraTendencia());
+			statement.setDouble(index++, datoAdicional.getAvgPrimeraTendencia());
 
 			statement.setTimestamp(index++, new Timestamp(datoAdicional.getFechaBase().getTime()));
 

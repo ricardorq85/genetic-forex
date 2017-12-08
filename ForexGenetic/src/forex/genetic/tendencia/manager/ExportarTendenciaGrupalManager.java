@@ -13,7 +13,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
 
 public class ExportarTendenciaGrupalManager extends ExportarTendenciaManager {
 
-	private static final double MIN_R2 = 0.1D; //0.5D;
+	private static final double MIN_R2 = 0.1D; // 0.5D;
 	private static final double MAX_R2 = 1.1D;
 	private static final double MIN_PENDIENTE = 0.0001D;
 	private static final double MAX_PENDIENTE = 1.1D;
@@ -33,17 +33,19 @@ public class ExportarTendenciaGrupalManager extends ExportarTendenciaManager {
 	protected void procesarRegresion(Regresion regresion, Regresion regresionFiltrada) throws SQLException {
 		procesoTendencia.setRegresion(regresion);
 		procesoTendencia.setRegresionFiltrada(regresionFiltrada);
-		((ProcesoTendenciaFiltradaBuySell) procesoTendencia).setRegresionFiltrada(regresionFiltrada);
-		if (procesoTendencia.getRegresion().getPendiente() < 0) {
-			procesoTendencia.setTipoOperacion(OperationType.SELL);
-		} else if (procesoTendencia.getRegresion().getPendiente() > 0) {
-			procesoTendencia.setTipoOperacion(OperationType.BUY);
-		}
-		if ((procesoTendencia.isRegresionValida())
-				&& (regresion.getPendiente() * regresionFiltrada.getPendiente() > 0)) {
-			procesoTendencia.setValida(1);
-		} else {
-			procesoTendencia.setValida(0);
+		if (regresion != null) {
+			((ProcesoTendenciaFiltradaBuySell) procesoTendencia).setRegresionFiltrada(regresionFiltrada);
+			if (procesoTendencia.getRegresion().getPendiente() < 0) {
+				procesoTendencia.setTipoOperacion(OperationType.SELL);
+			} else if (procesoTendencia.getRegresion().getPendiente() > 0) {
+				procesoTendencia.setTipoOperacion(OperationType.BUY);
+			}
+			if ((procesoTendencia.isRegresionValida())
+					&& (regresion.getPendiente() * regresionFiltrada.getPendiente() > 0)) {
+				procesoTendencia.setValida(1);
+			} else {
+				procesoTendencia.setValida(0);
+			}
 		}
 
 	}
@@ -52,7 +54,7 @@ public class ExportarTendenciaGrupalManager extends ExportarTendenciaManager {
 	protected void procesarRegresion() throws SQLException {
 		Regresion regresion = dao.consultarRegresion(procesoTendencia);
 		this.setParametrosRegresion(regresion);
-		String sqlRegresion = "SELECT PARAM.PERIODO PERIODO, REG.*  FROM PARAMETROS PARAM, REGRESION_FILTRADA REG";
+		String sqlRegresion = "SELECT PARAM.PERIODO PERIODO, PRITEN.PRECIO_CALCULADO PRIMERA_TENDENCIA, REG.*  FROM PARAMETROS PARAM, PRIMERA_TENDENCIA PRITEN, REGRESION_FILTRADA REG";
 		Regresion regresionFiltrada = dao.consultarRegresion(procesoTendencia, sqlRegresion);
 		this.setParametrosRegresion(regresionFiltrada);
 		this.procesarRegresion(regresion, regresionFiltrada);
