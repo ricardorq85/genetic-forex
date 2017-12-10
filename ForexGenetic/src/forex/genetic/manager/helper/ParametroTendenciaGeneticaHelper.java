@@ -4,11 +4,12 @@
  */
 package forex.genetic.manager.helper;
 
+import java.sql.SQLException;
+import java.util.List;
+
 import forex.genetic.entities.ParametroTendenciaGenetica;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
-import java.sql.SQLException;
-import java.util.List;
 
 /**
  *

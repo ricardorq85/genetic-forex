@@ -21,7 +21,7 @@ import java.text.ParseException;
 import java.util.logging.Logger;
 
 import forex.genetic.exception.GeneticException;
-import forex.genetic.manager.ProcesarTendenciasMaxMinManager;
+import forex.genetic.tendencia.manager.ProcesarTendenciasMaxMinManager;
 
 /**
  *

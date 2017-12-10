@@ -4,6 +4,11 @@
  */
 package forex.genetic.manager;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.indicator.Indicator;
@@ -11,10 +16,6 @@ import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.util.Constants.IndividuoType;
 import forex.genetic.util.LogUtil;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 
 /**
  *
@@ -95,4 +96,11 @@ public class CrossoverIndividuoTendenciaManager extends CrossoverManager {
 
         return poblacionArray;
     }
+
+	@Override
+	public Poblacion[] crossover(int generacion, Poblacion poblacionBase, Poblacion poblacionParaCruzar,
+			int percentValue) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

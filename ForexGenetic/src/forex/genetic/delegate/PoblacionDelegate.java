@@ -4,6 +4,9 @@
  */
 package forex.genetic.delegate;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import forex.genetic.entities.Poblacion;
 import forex.genetic.facade.DatoHistoricoFacade;
 import forex.genetic.facade.PoblacionFacade;
@@ -13,8 +16,6 @@ import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 /**
  *

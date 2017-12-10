@@ -1,12 +1,14 @@
 package forex.genetic.util.jdbc;
 
-import forex.genetic.manager.PropertiesManager;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import forex.genetic.manager.PropertiesManager;
 
 /**
  *
@@ -100,7 +102,30 @@ public class JDBCUtil {
                     conn.rollback();
                 }
             } catch (SQLException e) {
+            	e.printStackTrace();
             }
         }
     }
+    
+	public static void refreshMaterializedView(Connection conn, String viewName) throws SQLException {
+		refreshMaterializedView(conn, viewName, "F");
+	}
+	
+	public static void refreshMaterializedView(Connection conn, String viewName, String refreshType) throws SQLException {
+		CallableStatement cstmt = null;
+		try {
+			cstmt = conn.prepareCall("{call DBMS_SNAPSHOT.REFRESH(?,?)}");
+			cstmt.setString(1, viewName);
+			cstmt.setString(2, refreshType);
+			cstmt.execute();
+		} finally {
+			JDBCUtil.close(cstmt);
+		}
+	}
+
+	public static void refreshMaterializedViews(Connection conn, String[] vistas) throws SQLException {
+		for (String viewName : vistas) {
+			JDBCUtil.refreshMaterializedView(conn, viewName, "F");
+		}		
+	}
 }

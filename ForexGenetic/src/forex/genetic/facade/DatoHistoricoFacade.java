@@ -4,19 +4,20 @@
  */
 package forex.genetic.facade;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
 import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.entities.Point;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
 
 /**
  *
  * @author ricardorq85
  */
-public class DatoHistoricoFacade {
+public class DatoHistoricoFacade implements IGeneticFacade{
 
     /**
      *
@@ -30,12 +31,18 @@ public class DatoHistoricoFacade {
             int countError = 0;
 
             for (int i = 0; i < points.size(); i++) {
-                Point point = points.get(i);
+                Point point = points.get(i);                
                 try {
-                    if (dao.existHistorico(point))  {
+                    if (dao.existHistorico(point))  {                    
                         dao.updateDatoHistorico(point);
+                        System.out.print("*");
                     } else {
                         dao.insertDatoHistorico(point);
+                        System.out.print(".");
+                    }
+                    if ((i % 3000)==0){
+                    	conn.commit();
+                    	System.out.println("");
                     }
                 } catch (SQLException ex) {
                     ex.printStackTrace();

@@ -20,7 +20,7 @@ public class PipsAgrupado {
 		if (order == null) {
 			throw new IllegalArgumentException("Order cannot be null");
 		}
-		String strDate = dateFormat.format(order.getOpenDate());
+		String strDate = dateFormat.format(order.getCloseDate());
 		if (strDate.equals(currentValue)) {
 			tempCount++;
 			tempPips += order.getPips();

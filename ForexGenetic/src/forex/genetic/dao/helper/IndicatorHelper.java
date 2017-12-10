@@ -5,6 +5,9 @@
  */
 package forex.genetic.dao.helper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.RangoOperacionIndividuo;
@@ -13,8 +16,6 @@ import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  *

@@ -1,5 +1,7 @@
 package forex.genetic.manager;
 
+import static forex.genetic.util.LogUtil.logAvance;
+import static forex.genetic.util.LogUtil.logEnter;
 import static forex.genetic.util.LogUtil.logTime;
 
 import java.sql.Connection;
@@ -27,115 +29,140 @@ import forex.genetic.util.jdbc.JDBCUtil;
 public class IndividuosPeriodoManager {
 
 	private Connection conn = null;
+	private InclusionesManager inclusionesManager;
 	private ParametroDAO parametroDAO;
 	private OperacionesDAO operacionesDAO;
 	private EstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO;
-	private static final String[] ORDERS = { "OPER_SEMANA.PIPS", "OPER_MES.PIPS", "OPER_ANYO.PIPS", "OPER.PIPS" };
-	private static final Constants.OperationType[] TIPO_OPERACION = { Constants.OperationType.SELL,
-			Constants.OperationType.BUY };
+	private static final String[] ORDERS = { "NVL(PIPS_SEMANA,0)", "NVL(PIPS_MES,0)", "NVL(PIPS_ANYO,0)",
+			"PIPS_TOTALES" };
+	// Para filtrar las operaciones por la cantidad de órdenes que podría
+	// obtener
+	private static final int MESES_CONSULTA = 3;
 	private Random random = new Random();
-	private static final int INCREMENTO_SEMANA = 500, INCREMENTO_MES = 800, INCREMENTO_ANYO = 1200,
-			INCREMENTO_TOTALES = 1500;
-	private static final int MINIMO_SEMANA = -1000, MINIMO_MES = -1000, MINIMO_ANYO = -2000, MINIMO_TOTALES = -3000;
-	private static final int MAXIMO_SEMANA = 4000, MAXIMO_MES = 6000, MAXIMO_ANYO = 15000, MAXIMO_TOTALES = 20000;
 
 	private Date parametroFechaInicioProceso, parametroFechaFinProceso;
-	private int mesesProceso;
+	private int parametroDiasProceso, parametroDiasRotacion;
+	private String[] parametroTiposOperacion;
+	private String[] vistas = { "FILTERED_PTFS", "FILTERED_EOP", "FILTERED_PARA_OPERAR_SELL",
+			"FILTERED_PARA_OPERAR_BUY" };
 
 	public IndividuosPeriodoManager() throws ClassNotFoundException, SQLException {
 		super();
+		inclusionesManager = new InclusionesManager();
 		conn = JDBCUtil.getConnection();
 		parametroDAO = new ParametroDAO(conn);
 		operacionesDAO = new OperacionesDAO(conn);
 		estrategiaOperacionPeriodoDAO = new EstrategiaOperacionPeriodoDAO(conn);
+		this.inclusionesManager.setEstrategiaOperacionPeriodoDAO(estrategiaOperacionPeriodoDAO);
 
 		parametroFechaInicioProceso = parametroDAO.getDateValorParametro("FECHA_INDIVIDUO_PERIODO");
 		parametroFechaFinProceso = parametroDAO.getDateValorParametro("FECHA_FIN_INDIVIDUO_PERIODO");
-		mesesProceso = parametroDAO.getIntValorParametro("MESES_INDIVIDUO_PERIODO");
-
-		/*
-		 * SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd"); try {
-		 * fechaHistoricaMaxima = sdf.parse("2011/01/11"); } catch
-		 * (ParseException e) { e.printStackTrace(); }
-		 */
+		parametroDiasProceso = parametroDAO.getIntValorParametro("DIAS_INDIVIDUO_PERIODO");
+		parametroDiasRotacion = parametroDAO.getIntValorParametro("DIAS_ROTACION_INDIVIDUO_PERIODO");
+		parametroTiposOperacion = parametroDAO.getArrayStringParametro("TIPOS_OPERACION");
 	}
 
-	public void procesarIndividuosXPeriodo() throws SQLException {
-		ParametroOperacionPeriodo paramBase = null;// estrategiaOperacionPeriodoDAO
-		// .consultarUltimaEjecucion(this.parametroFechaInicioProceso);
-
-		Date fechaFinProceso = parametroFechaFinProceso;
-		Date fechaInicioProceso = DateUtil.adicionarMes(fechaFinProceso, -mesesProceso);
-		logTime("Fecha Inicio Proceso:" + DateUtil.getDateString(fechaInicioProceso) +
-				"; Fecha Fin Proceso:" +  DateUtil.getDateString(fechaFinProceso), 1);
-		while (fechaInicioProceso.after(this.parametroFechaInicioProceso)) {
-			int filtroPipsTotales = (paramBase == null) ? MINIMO_TOTALES : (paramBase.getFiltroPipsTotales());
-			while (filtroPipsTotales < MAXIMO_TOTALES) {
-				int filtroPipsXAnyo = (paramBase == null) ? MINIMO_ANYO : (paramBase.getFiltroPipsXAnyo());
-				while (filtroPipsXAnyo < MAXIMO_ANYO) {
-					int filtroPipsXMes = (paramBase == null) ? MINIMO_MES : (paramBase.getFiltroPipsXMes());
-					while (filtroPipsXMes < MAXIMO_MES) {
-						int filtroPipsXSemana = (paramBase == null) ? MINIMO_SEMANA
-								: (paramBase.getFiltroPipsXSemana() + INCREMENTO_SEMANA);
-						while (filtroPipsXSemana < MAXIMO_SEMANA) {
-							for (int i = 0; i < TIPO_OPERACION.length; i++) {
-								ParametroOperacionPeriodo param = new ParametroOperacionPeriodo(filtroPipsXSemana,
-										filtroPipsXMes, filtroPipsXAnyo, filtroPipsTotales,
-										ORDERS[random.nextInt(ORDERS.length)], ORDERS[random.nextInt(ORDERS.length)]);
-								param.setFechaInicial(fechaInicioProceso);
-								param.setFechaFinal(fechaFinProceso);
-								param.setTipoOperacion(TIPO_OPERACION[i]);
-								logTime(param.toString(), 1);
-								if (param.isFiltroValido()) {
-									this.procesarIndividuosXPeriodo(param);
-									logTime(param.toString(), 1);
-								} else {
-									logTime("Filtros no válidos", 1);
-								}
-							}
-							filtroPipsXSemana += INCREMENTO_SEMANA;
+	public int procesarIndividuosXPeriodo() throws SQLException {
+		int inclusionesAcumuladas = 0;
+		int diasProceso = parametroDiasProceso;
+		this.configurarAmbiente();
+		while (diasProceso > 0) {
+			logTime("Dias proceso: " + diasProceso, 1);
+			Date fechaFinProceso = parametroFechaFinProceso;
+			Date fechaInicioProceso = DateUtil.adicionarDias(fechaFinProceso, -diasProceso);
+			while (fechaFinProceso.after(this.parametroFechaInicioProceso)) {
+				logTime("Fecha Proceso:" + DateUtil.getDateString(fechaInicioProceso) + " - "
+						+ DateUtil.getDateString(fechaFinProceso), 1);
+				int contadorParametrosYaProcesados = 0;
+				for (int i = 0; i < parametroTiposOperacion.length; i++) {
+					List<ParametroOperacionPeriodo> inclusiones = inclusionesManager
+							.consultarInclusiones(fechaInicioProceso, parametroTiposOperacion[i]);
+					logTime("Inclusiones:" + inclusiones.size(), 1);
+					for (ParametroOperacionPeriodo paramBase : inclusiones) {
+						ParametroOperacionPeriodo param;
+						try {
+							param = paramBase.clone();
+						} catch (CloneNotSupportedException e) {
+							e.printStackTrace();
+							param = null;
 						}
-						paramBase = null;
-						filtroPipsXMes += INCREMENTO_MES;
+						param.setFirstOrder(ORDERS[random.nextInt(ORDERS.length)]);
+						param.setSecondOrder(ORDERS[random.nextInt(ORDERS.length)]);
+						param.setFecha(new Date());
+						param.setFechaInicial(fechaInicioProceso);
+						param.setFechaFinal(fechaFinProceso);
+						param.setTipoOperacion(Constants.getOperationType(parametroTiposOperacion[i]));
+						if (param.isFiltroValido()) {
+							logTime(param.toString(), 2);
+							contadorParametrosYaProcesados += this.procesarIndividuosXPeriodo(param);
+						} else {
+							logAvance("F", 1);
+						}
 					}
-					paramBase = null;
-					filtroPipsXAnyo += INCREMENTO_ANYO;
+					inclusionesAcumuladas += inclusiones.size();
 				}
-				paramBase = null;
-				filtroPipsTotales += INCREMENTO_TOTALES;
+				this.consolidarEstrategias();
+				logTime("Parametros ya procesados: " + contadorParametrosYaProcesados, 1);
+				fechaFinProceso = DateUtil.adicionarDias(fechaFinProceso, -parametroDiasRotacion);
+				fechaInicioProceso = DateUtil.adicionarDias(fechaFinProceso, -diasProceso);
 			}
-			fechaFinProceso = DateUtil.adicionarMes(fechaFinProceso, -1);
-			fechaInicioProceso = DateUtil.adicionarMes(fechaFinProceso, -mesesProceso);
+			diasProceso -= 7;
 		}
+		return inclusionesAcumuladas;
 	}
 
-	public void procesarIndividuosXPeriodo(ParametroOperacionPeriodo param) throws SQLException {
+	private void configurarAmbiente() throws SQLException {
+		JDBCUtil.refreshMaterializedViews(conn, vistas);
+	}
+
+	private void consolidarEstrategias() throws SQLException {
+		JDBCUtil.refreshMaterializedViews(conn, vistas);
+	}
+
+	public int procesarIndividuosXPeriodo(ParametroOperacionPeriodo param) throws SQLException {
 		if (estrategiaOperacionPeriodoDAO.existe(param)) {
-			logTime("Parametros repetidos: " + param.toString(), 1);
+			logTime("Ya procesado:" + param.toString(), 3);
+			logAvance(1);
+			return 1;
 		} else {
 			operacionesDAO.cleanOperacionesPeriodo();
-			logTime("Registros borrados.", 1);
+			logTime("Registros borrados.", 2);
 
 			int insertados = operacionesDAO.insertOperacionesPeriodo(param);
 			conn.commit();
-			logTime("Registro insertados: " + insertados, 1);
+			logTime(param.getTipoOperacion() + ". Registro insertados TMP_TOFILESTRING: " + insertados, 1);
 
-			// this.setPipsXAgrupacion(param);
-			// logTime("Pips por agrupacion consultados", 1);
+			if (insertados > 0) {
+				procesarIndividuoYOperaciones(param, insertados);
+			} else {
+				logAvance("Z", 1);
+			}
 
-			List<Individuo> ordenesCreadas = this.ejecutarIndividuosXPeriodo(param);
+			return 0;
+		}
+	}
+
+	private void procesarIndividuoYOperaciones(ParametroOperacionPeriodo param, int insertados) throws SQLException {
+		List<Individuo> ordenesCreadas = this.ejecutarIndividuosXPeriodo(param, insertados);
+		if (param.isResultadoValido()) {
 			int id = estrategiaOperacionPeriodoDAO.insert(param);
 			param.setId(id);
-
+			//logEnter(1);
+			logTime(param.getId() + ": " + param.getTipoOperacion() + ", Cantidad=" + param.getCantidad()
+					+ ", Pips totales=" + param.getPipsTotales() + ", Pips paralelas=" + param.getPipsParalelas(), 1);
 			for (Individuo ind : ordenesCreadas) {
 				estrategiaOperacionPeriodoDAO.insertOperacionesPeriodo(param, ind, ind.getOrdenes());
 			}
 			conn.commit();
+			logTime(param.toString(), 2);
+		} else {
+			logAvance("C", 1);
 		}
 	}
 
-	public List<Individuo> ejecutarIndividuosXPeriodo(ParametroOperacionPeriodo param) throws SQLException {
-		Date fechaPeriodo = this.parametroFechaInicioProceso;
+	public List<Individuo> ejecutarIndividuosXPeriodo(ParametroOperacionPeriodo param, int insertados)
+			throws SQLException {
+		Date fechaPeriodo = param.getFechaInicial();
 		List<Individuo> ordenesCreadas = new ArrayList<>();
 		double pips = 0.0D;
 		double pipsParalelas = 0.0D;
@@ -145,27 +172,42 @@ public class IndividuosPeriodoManager {
 		PipsAgrupado agrupadoDias = new PipsAgrupado("yyyy/MM/dd");
 
 		Date fechaInicial = fechaPeriodo;
-		while (parametroFechaFinProceso.after(fechaInicial)) {
-			Date fechaFinal = DateUtil.obtenerFechaMinima(parametroFechaFinProceso,
-					DateUtil.adicionarMes(fechaInicial, 3));
-			List<Individuo> ordenes = operacionesDAO.consultarOperacionesXPeriodo(fechaInicial, fechaFinal);
-			for (Individuo individuo : ordenes) {
-				Order order = individuo.getCurrentOrder();
-				pipsParalelas += order.getPips();
-				if (order.getOpenDate().after(fechaPeriodo)) {
-					ordenesCreadas.add(individuo);
-					logTime("Individuo=" + individuo.getId() + ",Orden=" + order, 2);
-					pips += order.getPips();
-					fechaPeriodo = order.getCloseDate();
-					logTime("Fecha=" + DateUtil.getDateString(fechaPeriodo) + ",Pips=" + pips, 1);
-					c++;
+		Date maxFechaCierre = null;
+		List<String> individuosExcluyente = new ArrayList<>();
+		if (insertados > 0) {
+			// Se hace incremental porque podría consultar muchas operaciones y
+			// generaría error
+			while (param.getFechaFinal().after(fechaInicial)) {
+				Date fechaFinal = DateUtil.obtenerFechaMinima(param.getFechaFinal(),
+						DateUtil.adicionarMes(fechaInicial, MESES_CONSULTA));
+				// Date fechaFinal = param.getFechaFinal();
+				List<Individuo> ordenes = operacionesDAO.consultarOperacionesXPeriodo(fechaInicial, fechaFinal);
+				for (Individuo individuo : ordenes) {
+					Order order = individuo.getCurrentOrder();
+					pipsParalelas += order.getPips();
+					if (maxFechaCierre == null) {
+						maxFechaCierre = new Date(order.getCloseDate().getTime());
+					} else if (order.getCloseDate().after(maxFechaCierre)) {
+						maxFechaCierre = new Date(order.getCloseDate().getTime());
+					}
+					if (order.getOpenDate().after(fechaPeriodo)) {
+						ordenesCreadas.add(individuo);
+						if (!individuosExcluyente.contains(individuo.getId())) {
+							individuosExcluyente.add(individuo.getId());
+						}
+						logTime("Individuo=" + individuo.getId() + ",Orden=" + order, 2);
+						pips += order.getPips();
+						fechaPeriodo = order.getCloseDate();
+						logTime("Fecha=" + DateUtil.getDateString(fechaPeriodo) + ",Pips=" + pips, 2);
+						c++;
+					}
+					agrupadoMinutos.addOrder(order);
+					agrupadoHoras.addOrder(order);
+					agrupadoDias.addOrder(order);
 				}
-				agrupadoMinutos.addOrder(order);
-				agrupadoHoras.addOrder(order);
-				agrupadoDias.addOrder(order);
+				cantidadParalelas += ordenes.size();
+				fechaInicial = fechaFinal;
 			}
-			cantidadParalelas += ordenes.size();
-			fechaInicial = fechaFinal;
 		}
 		agrupadoMinutos.finish();
 		agrupadoHoras.finish();
@@ -178,17 +220,18 @@ public class IndividuosPeriodoManager {
 		param.setPipsAgrupadoMinutos(agrupadoMinutos.getPips());
 		param.setPipsAgrupadoHoras(agrupadoHoras.getPips());
 		param.setPipsAgrupadoDias(agrupadoDias.getPips());
-		logTime("Cantidad operaciones=" + c + ", Pips totales=" + pips + ", Pips paralelas=" + pipsParalelas, 1);
+		param.setCantidadIndividuos(individuosExcluyente.size());
+		param.setMaxFechaCierre(maxFechaCierre);
 		return ordenesCreadas;
 	}
 
-	private void setPipsXAgrupacion(ParametroOperacionPeriodo param) throws SQLException {
-		double pipsAgrupadoMinutos = operacionesDAO.consultarPipsXAgrupacion("YYYYMMDD HH24:MI");
-		double pipsAgrupadoHoras = operacionesDAO.consultarPipsXAgrupacion("YYYYMMDD HH24");
-		double pipsAgrupadoDias = operacionesDAO.consultarPipsXAgrupacion("YYYYMMDD");
-
-		param.setPipsAgrupadoMinutos(pipsAgrupadoMinutos);
-		param.setPipsAgrupadoHoras(pipsAgrupadoHoras);
-		param.setPipsAgrupadoDias(pipsAgrupadoDias);
+	public EstrategiaOperacionPeriodoDAO getEstrategiaOperacionPeriodoDAO() {
+		return estrategiaOperacionPeriodoDAO;
 	}
+
+	public void setEstrategiaOperacionPeriodoDAO(EstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO) {
+		this.estrategiaOperacionPeriodoDAO = estrategiaOperacionPeriodoDAO;
+		this.inclusionesManager.setEstrategiaOperacionPeriodoDAO(estrategiaOperacionPeriodoDAO);
+	}
+
 }

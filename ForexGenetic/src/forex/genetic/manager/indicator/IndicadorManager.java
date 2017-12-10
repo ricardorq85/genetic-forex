@@ -4,10 +4,11 @@
  */
 package forex.genetic.manager.indicator;
 
+import java.util.List;
+
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Indicator;
-import java.util.List;
 
 /**
  *

@@ -4,8 +4,9 @@
  */
 package forex.genetic.util;
 
-import forex.genetic.manager.PropertiesManager;
 import java.math.BigDecimal;
+
+import forex.genetic.manager.PropertiesManager;
 
 /**
  *

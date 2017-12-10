@@ -4,11 +4,6 @@
  */
 package forex.genetic.dao;
 
-import forex.genetic.dao.helper.IndividuoHelper;
-import forex.genetic.entities.Individuo;
-import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.manager.PropertiesManager;
-import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,6 +13,12 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+
+import forex.genetic.dao.helper.IndividuoHelper;
+import forex.genetic.entities.Individuo;
+import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.manager.PropertiesManager;
+import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *
@@ -302,15 +303,16 @@ public class ProcesoPoblacionDAO {
      * @return
      * @throws SQLException
      */
-    public List<Individuo> getIndividuos(String filtroAdicional) throws SQLException {
+    public List<Individuo> getIndividuos(String filtroAdicional, Date fechaHistorico) throws SQLException {
         List<Individuo> individuos = null;
         String sql = PropertiesManager.getQueryIndividuos().replaceAll("<FILTRO_ADICIONAL>", filtroAdicional);
-        Statement stmtConsulta = null;
+        PreparedStatement stmtConsulta = null;
         ResultSet resultado = null;
 
         try {
-            stmtConsulta = this.connection.createStatement();
-            resultado = stmtConsulta.executeQuery(sql);
+            stmtConsulta = this.connection.prepareStatement(sql);
+            stmtConsulta.setTimestamp(1, new Timestamp(fechaHistorico.getTime()));
+            resultado = stmtConsulta.executeQuery();
             individuos = IndividuoHelper.createIndividuos(resultado);
         } finally {
             JDBCUtil.close(resultado);

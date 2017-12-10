@@ -48,7 +48,7 @@ public class ForexIndividuosPeriodo {
 		setId(Long.toString(id));
 		try {
 			IndividuosPeriodoManager manager = new IndividuosPeriodoManager();
-			manager.ejecutarIndividuosXPeriodo(new ParametroOperacionPeriodo());
+			manager.ejecutarIndividuosXPeriodo(new ParametroOperacionPeriodo(), 0);
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}

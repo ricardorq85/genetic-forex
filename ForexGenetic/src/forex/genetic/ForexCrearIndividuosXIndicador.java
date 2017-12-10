@@ -17,9 +17,9 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.util.logging.Logger;
 
 import forex.genetic.manager.IndividuoXIndicadorManager;
+import forex.genetic.proxy.ProcesosAlternosProxy;
 
 /**
  *
@@ -27,25 +27,32 @@ import forex.genetic.manager.IndividuoXIndicadorManager;
  */
 public class ForexCrearIndividuosXIndicador {
 
-    /**
-     * @param args the command line arguments
-     * @throws java.io.IOException
-     * @throws java.sql.SQLException
-     */
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, SQLException {
-        long id = currentTimeMillis();
-        load().join();
-        logTime("ForexCrearIndividuosXIndicador.java: " + id, 1);
-        String name = getPropertyString(LOG_PATH)
-                + "CrearIndividuosXIndicador_"
-                + id + ".log";
-        PrintStream out = new PrintStream(name, Charset.defaultCharset().name());
-        setOut(out);
-        setErr(out);
-        logTime("Inicio: " + id, 1);
-        setId(Long.toString(id));
-        IndividuoXIndicadorManager manager = new IndividuoXIndicadorManager();
-        manager.crearIndividuos();
-        logTime("Fin: " + id, 1);
-    }
+	/**
+	 * @param args
+	 *            the command line arguments
+	 * @throws java.io.IOException
+	 * @throws java.sql.SQLException
+	 */
+	public static void main(String[] args)
+			throws IOException, ClassNotFoundException, InterruptedException, SQLException {
+		long id = currentTimeMillis();
+		load().join();
+		logTime("ForexCrearIndividuosXIndicador.java: " + id, 1);
+		String name = getPropertyString(LOG_PATH) + "CrearIndividuosXIndicador_" + id + ".log";
+		PrintStream out = new PrintStream(name, Charset.defaultCharset().name());
+		setOut(out);
+		setErr(out);
+		logTime("Inicio: " + id, 1);
+		setId(Long.toString(id));
+		IndividuoXIndicadorManager manager = new IndividuoXIndicadorManager();
+		manager.crearIndividuos();
+		logTime("Fin: " + id, 1);
+		logTime("Lanzando Procesos alternos...", 1);
+		ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(id);
+		try {
+			alternosManager.procesar();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }

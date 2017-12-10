@@ -8,7 +8,6 @@ import forex.genetic.manager.io.FileProperties;
 import forex.genetic.util.Constants;
 import forex.genetic.util.Constants.FortalezaType;
 import forex.genetic.util.Constants.OperationType;
-import forex.genetic.util.LogUtil;
 
 /**
  *
@@ -58,9 +57,6 @@ public class PropertiesManager {
     private static String urlDB = null;
     private static String userDB = null;
     private static String pwdDB = null;
-    private static int initialPipsRangoOperacionIndicador=0;
-    private static int initialRetrocesoRangoOperacionIndicador=0;
-    private static int initialMesesRangoOperacionIndicador=0;
 
     /**
      *
@@ -77,7 +73,7 @@ public class PropertiesManager {
             @Override
             public void run() {
                 FileProperties.load();
-                LogUtil.logTime(FileProperties.propertiesString(), 1);
+                //LogUtil.logTime(FileProperties.propertiesString(), 1);
                 operationType = getOwnOperationType();
                 fortalezaType = getOwnFortalezaType();
                 pair = PropertiesManager.getPropertyString(Constants.PAIR);
@@ -116,9 +112,6 @@ public class PropertiesManager {
                 queryProcesarTendenciasValorProbableBase = PropertiesManager.getPropertyString(Constants.QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE_BASE);
                 queryProcesarTendenciasValorProbableDetalle = PropertiesManager.getPropertyString(Constants.QUERY_PROCESAR_TENDENCIAS_VALOR_PROBABLE_DETALLE);
                 queryTendenciaGenetica = PropertiesManager.getPropertyString(Constants.QUERY_TENDENCIA_GENETICA);
-                initialPipsRangoOperacionIndicador= PropertiesManager.getPropertyInt(Constants.INITIAL_PIPS_RANGOOPERACIONINDICADOR);
-                initialRetrocesoRangoOperacionIndicador= PropertiesManager.getPropertyInt(Constants.INITIAL_RETROCESO_RANGOOPERACIONINDICADOR);
-                initialMesesRangoOperacionIndicador= PropertiesManager.getPropertyInt(Constants.INITIAL_MESES_RANGOOPERACIONINDICADOR);
 
                 urlDB = PropertiesManager.getPropertyString(Constants.URL_DB);
                 userDB = PropertiesManager.getPropertyString(Constants.USER_DB);
@@ -449,18 +442,6 @@ public class PropertiesManager {
         return minTP;
     }
 
-    public static int getInitialPipsRangoOperacionIndicador() {
-        return initialPipsRangoOperacionIndicador;
-    }
-
-    public static int getInitialRetrocesoRangoOperacionIndicador() {
-        return initialRetrocesoRangoOperacionIndicador;
-    }
-
-    public static int getInitialMesesRangoOperacionIndicador() {
-        return initialMesesRangoOperacionIndicador;
-    }
-
     /**
      *
      * @return
@@ -517,7 +498,7 @@ public class PropertiesManager {
         String s = getPropertyString(Constants.POINTS_CONTROL);
         if (s.contains("Integer.MAX_VALUE")) {
             points = Integer.MAX_VALUE;
-        } else if (s.contains("Integer.MAX_VALUE")) {
+        } else if (s.contains("Integer.MIN_VALUE")) {
             points = Integer.MIN_VALUE;
         } else {
             points = getPropertyInt(Constants.POINTS_CONTROL);
@@ -540,6 +521,30 @@ public class PropertiesManager {
         }
         return FileProperties.getPropertyString(key);
     }
+    
+    public static void setFileId(String value) {
+        try {
+            if (FileProperties.getProperties().isEmpty()) {
+                t.join();
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        fileId = value;
+        FileProperties.setProperty(Constants.FILE_ID, value);
+    }
+    
+    public static void setProperty(String name, String value) {
+        try {
+            if (FileProperties.getProperties().isEmpty()) {
+                t.join();
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        FileProperties.setProperty(name, value);
+    }
+          
 
     /**
      *

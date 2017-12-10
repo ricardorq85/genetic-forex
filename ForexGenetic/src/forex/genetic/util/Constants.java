@@ -28,7 +28,7 @@ public class Constants {
     /**
      *
      */
-    public static final String TIPO_TENDENCIA = "ESTADISTICAS_MAXMIN_23";
+    public static String TIPO_TENDENCIA = "BUY_SELL_20170204-2";
 
     /**
      *
@@ -464,6 +464,11 @@ public class Constants {
 
         BUY,
         SELL;
+    }
+    
+    public static OperationType getOperationType(String operationTypeName) {
+        return ("SELL".equalsIgnoreCase(operationTypeName)
+                ? Constants.OperationType.SELL : Constants.OperationType.BUY);
     }
 
     public enum FortalezaType {

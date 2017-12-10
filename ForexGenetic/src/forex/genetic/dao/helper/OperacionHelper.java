@@ -4,17 +4,18 @@
  */
 package forex.genetic.dao.helper;
 
-import forex.genetic.entities.DateInterval;
-import forex.genetic.entities.Estadistica;
-import forex.genetic.entities.Individuo;
-import forex.genetic.entities.Order;
-import forex.genetic.util.Constants;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import forex.genetic.entities.DateInterval;
+import forex.genetic.entities.Estadistica;
+import forex.genetic.entities.Individuo;
+import forex.genetic.entities.Order;
+import forex.genetic.util.Constants;
 
 /**
  *
@@ -94,28 +95,44 @@ public class OperacionHelper {
 	public static List<Individuo> individuosOperacionActiva(ResultSet resultado) throws SQLException {
 		List<Individuo> list = new ArrayList<Individuo>();
 		while (resultado.next()) {
-			Individuo ind = new Individuo();
-			ind.setId(resultado.getString("ID_INDIVIDUO"));
-			ind.setFechaApertura(new Date(resultado.getTimestamp("FECHA_APERTURA").getTime()));
-
-			Order order = new Order();
-			order.setLot(resultado.getDouble("LOTE"));
-			order.setOpenDate(ind.getFechaApertura());
-			if (resultado.getObject("FECHA_CIERRE") != null) {
-				order.setCloseDate(new Date(resultado.getTimestamp("FECHA_CIERRE").getTime()));
-			}
-			order.setOpenOperationValue(resultado.getDouble("OPEN_PRICE"));
-			order.setOpenSpread(resultado.getDouble("SPREAD"));
-			order.setPips(resultado.getDouble("PIPS"));
-			order.setTipo("SELL".equalsIgnoreCase(resultado.getString("TIPO")) ? Constants.OperationType.SELL
-					: Constants.OperationType.BUY);
-			order.setTakeProfit(ind.getTakeProfit());
-			order.setStopLoss(ind.getStopLoss());
-			ind.setCurrentOrder(order);
-
+			Individuo ind = OperacionHelper.helpIndividuoOperacionActiva(resultado);
 			list.add(ind);
 		}
 		return list;
+	}
+	
+	public static Individuo individuoOperacionActiva(ResultSet resultado) throws SQLException {
+		Individuo ind = null;
+		if (resultado.next()) {
+			ind = OperacionHelper.helpIndividuoOperacionActiva(resultado);
+		}
+		return ind;
+	}
+
+	private static Individuo helpIndividuoOperacionActiva(ResultSet resultado) throws SQLException {
+		Individuo ind = new Individuo();
+		ind.setId(resultado.getString("ID_INDIVIDUO"));
+		ind.setTipoOperacion(Constants.getOperationType(resultado.getString("TIPO_OPERACION")));
+		ind.setFechaApertura(new Date(resultado.getTimestamp("FECHA_APERTURA").getTime()));
+		ind.setTakeProfit(resultado.getInt("TAKE_PROFIT"));
+		ind.setStopLoss(resultado.getInt("STOP_LOSS"));
+
+		Order order = new Order();
+		order.setLot(resultado.getDouble("LOTE"));
+		order.setOpenDate(ind.getFechaApertura());
+		if (resultado.getObject("FECHA_CIERRE") != null) {
+			order.setCloseDate(new Date(resultado.getTimestamp("FECHA_CIERRE").getTime()));
+		}
+		order.setOpenOperationValue(resultado.getDouble("OPEN_PRICE"));
+		order.setOpenSpread(resultado.getDouble("SPREAD"));
+		order.setPips(resultado.getDouble("PIPS"));
+		order.setTipo("SELL".equalsIgnoreCase(resultado.getString("TIPO")) ? Constants.OperationType.SELL
+				: Constants.OperationType.BUY);
+		order.setTakeProfit(ind.getTakeProfit());
+		order.setStopLoss(ind.getStopLoss());
+		ind.setCurrentOrder(order);
+
+		return ind;
 	}
 
 	/**

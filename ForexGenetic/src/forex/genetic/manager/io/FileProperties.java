@@ -86,4 +86,8 @@ public class FileProperties {
         return properties.toString();
     }
     
+    public static void setProperty(String key, String value) {
+    	properties.setProperty(key, value);
+    }
+    
 }

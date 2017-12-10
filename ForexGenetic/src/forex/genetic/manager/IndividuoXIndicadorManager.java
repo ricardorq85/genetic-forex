@@ -5,8 +5,6 @@
  */
 package forex.genetic.manager;
 
-import static forex.genetic.manager.PropertiesManager.getInitialPipsRangoOperacionIndicador;
-import static forex.genetic.manager.PropertiesManager.getInitialRetrocesoRangoOperacionIndicador;
 import static forex.genetic.util.LogUtil.logTime;
 
 import java.sql.Connection;
@@ -18,9 +16,14 @@ import java.util.List;
 import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.IndicatorDAO;
 import forex.genetic.dao.IndividuoDAO;
+import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.ParametroDAO;
+import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
+import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.Poblacion;
+import forex.genetic.entities.RangoCierreOperacionIndividuo;
 import forex.genetic.entities.RangoOperacionIndividuo;
 import forex.genetic.entities.RangoOperacionIndividuoIndicador;
 import forex.genetic.entities.indicator.Indicator;
@@ -30,6 +33,7 @@ import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
+import forex.genetic.util.RandomUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -42,101 +46,195 @@ public class IndividuoXIndicadorManager {
 	private final IndividuoDAO individuoDAO;
 	private final DatoHistoricoDAO dhDAO;
 	private final IndicatorDAO indicadorDAO;
+	private final OperacionesDAO operacionesDAO;
 	private ParametroDAO parametroDAO;
-	private final int puntosHistoria;
 	private Date fechaMinima, fechaMaxima;
+	private int parametroMeses, parametroRetroceso, parametroPips, parametroCantidadMutar, parametroCantidadCruzar;
+	private int maximoMeses;
 
 	private final IndicadorController indicadorController = ControllerFactory
 			.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 
 	public IndividuoXIndicadorManager() throws ClassNotFoundException, SQLException {
+		this(null, null, 12);
+	}
+
+	public IndividuoXIndicadorManager(Date fechaMinima, Date fechaMaxima, int maximoMeses) throws ClassNotFoundException, SQLException {
 		conn = JDBCUtil.getConnection();
 		individuoDAO = new IndividuoDAO(conn);
 		dhDAO = new DatoHistoricoDAO(conn);
 		indicadorDAO = new IndicatorDAO(conn);
 		parametroDAO = new ParametroDAO(conn);
-		fechaMinima = parametroDAO.getDateValorParametro("FECHA_MINIMA_CREAR_INDIVIDUO");
-		fechaMaxima = parametroDAO.getDateValorParametro("FECHA_MAXIMA_CREAR_INDIVIDUO");
-		puntosHistoria = dhDAO.consultarCantidadPuntos();
+		operacionesDAO = new OperacionesDAO(conn);
+		this.fechaMinima = fechaMinima;
+		this.fechaMaxima = fechaMaxima;
+		if (fechaMinima == null) {
+			this.fechaMinima = parametroDAO.getDateValorParametro("FECHA_MINIMA_CREAR_INDIVIDUO");
+		}
+		if (fechaMaxima == null) {
+			this.fechaMaxima = parametroDAO.getDateValorParametro("FECHA_MAXIMA_CREAR_INDIVIDUO");
+		}
+		this.maximoMeses = maximoMeses;
+		parametroMeses = parametroDAO.getIntValorParametro("MESES_RANGOOPERACIONINDICADOR");
+		parametroRetroceso = parametroDAO.getIntValorParametro("RETROCESO_RANGOOPERACIONINDICADOR");
+		parametroPips = parametroDAO.getIntValorParametro("PIPS_RANGOOPERACIONINDICADOR");
+		parametroCantidadMutar = parametroDAO.getIntValorParametro("CANTIDAD_MUTAR");
+		parametroCantidadCruzar = parametroDAO.getIntValorParametro("CANTIDAD_CRUZAR");
 	}
 
-	public void crearIndividuos() throws SQLException, ClassNotFoundException {
+	public void crearIndividuos() throws SQLException, ClassNotFoundException {		
+		//this.configurarAmbiente();
 		try {
-			int meses = PropertiesManager.getInitialMesesRangoOperacionIndicador();
-			while (meses <= 12) {
-				logTime("Meses: " + meses, 1);
-				Date fechaFiltro = DateUtil.adicionarMes(fechaMinima, 0);
-				while (fechaFiltro.before(fechaMaxima)) {
-					logTime("Fecha filtro: " + DateUtil.getDateString(fechaFiltro), 1);
-					boolean found_any;
-					int c_pips = getInitialPipsRangoOperacionIndicador();
-					int c_retroceso = getInitialRetrocesoRangoOperacionIndicador();
-					do {
-						found_any = (c_pips == getInitialPipsRangoOperacionIndicador());
-						int retroceso = (-1000 + (200 * c_retroceso));
-						boolean rangoValido;
-						do {
-							RangoOperacionIndividuo rangoPositivas = new RangoOperacionIndividuo(c_pips, retroceso,
-									fechaFiltro, meses, true);
-							RangoOperacionIndividuo rangoNegativas = new RangoOperacionIndividuo(-c_pips, -retroceso,
-									fechaFiltro, meses, false);
-							rangoPositivas.setRangoCierre(rangoNegativas);
-							rangoNegativas.setRangoCierre(rangoPositivas);
+			Date fechaFiltroFinal = new Date(fechaMaxima.getTime());
+			while (fechaFiltroFinal.after(fechaMinima)) {
+				int meses = parametroMeses;
+				while (meses <= maximoMeses) {
+					logTime("Meses: " + meses, 1);
+					DateInterval dateInterval = new DateInterval();
+					dateInterval.setLowInterval(DateUtil.adicionarMes(fechaFiltroFinal, -meses));
+					dateInterval.setHighInterval(fechaFiltroFinal);
+					int cantidadPuntos = dhDAO.consultarCantidadPuntos(dateInterval);
+					logTime("Fecha filtro: " + DateUtil.getDateString(dateInterval.getLowInterval()) + " - "
+							+ DateUtil.getDateString(dateInterval.getHighInterval()), 1);
+					int repeat = RandomUtil.nextInt(meses) + 1;
+					for (int i = 0; i < repeat; i++) {
+						int pips = RandomUtil.nextInt(this.parametroPips);
+						int retroceso = RandomUtil.nextInt(this.parametroRetroceso);
+						RangoOperacionIndividuo rangoPositivas = new RangoOperacionIndividuo(pips, retroceso,
+								dateInterval, true);
+						RangoOperacionIndividuo rangoNegativas = new RangoOperacionIndividuo(-pips, -retroceso,
+								dateInterval, false);
+						rangoPositivas.setRangoCierre(new RangoCierreOperacionIndividuo(rangoNegativas));
+						rangoNegativas.setRangoCierre(new RangoCierreOperacionIndividuo(rangoPositivas));
 
-							this.procesarRangoOperacionIndicadores(rangoPositivas);
-							this.procesarRangoOperacionIndicadores(rangoNegativas);
-							boolean foundAnyPositivas = this.crearIndividuos(rangoPositivas);
-							boolean foundAnyNegativas = this.crearIndividuos(rangoNegativas);
-
-							found_any = (foundAnyPositivas || foundAnyNegativas);
-							rangoValido = rangoPositivas.isRangoValido() || rangoNegativas.isRangoValido();
-							c_retroceso++;
-							if (retroceso < -400) {
-								retroceso += (300);
-							} else if (retroceso < -200) {
-								retroceso += (200);
-							} else {
-								retroceso += (100);
-							}
-						} while (rangoValido);
-						c_retroceso = 0;
-						c_pips++;
-					} while (found_any);
-					fechaFiltro = DateUtil.adicionarMes(fechaFiltro, 1);
+						this.procesarRangoOperacionIndicadores(rangoPositivas, cantidadPuntos);
+						this.procesarRangoOperacionIndicadores(rangoNegativas, cantidadPuntos);
+						this.crearIndividuos(rangoPositivas);
+						this.crearIndividuos(rangoNegativas);
+					}
+					meses++;
 				}
-				meses++;
+				fechaFiltroFinal = DateUtil.adicionarMes(fechaFiltroFinal, -1);
 			}
 		} finally {
 			JDBCUtil.close(conn);
 		}
 	}
 
+	private void configurarAmbiente() throws SQLException {
+		this.configurarOperacionPositivasYNegativas();
+	}
+
+	private void configurarOperacionPositivasYNegativas() throws SQLException {
+		logTime("Configurando operaciones positivas y negativas", 1);
+		operacionesDAO.actualizarOperacionesPositivasYNegativas();
+	}
+
 	private boolean crearIndividuos(RangoOperacionIndividuo rangoOperacionIndividuo) throws SQLException {
 		boolean rangoValido = rangoOperacionIndividuo.isRangoValido();
 		boolean found_any = false;
-		logTime(rangoOperacionIndividuo.toString(), 1);
+		logTime(rangoOperacionIndividuo.toString(), 2);
 		if (rangoValido) {
 			found_any = true;
 			IndividuoEstrategia individuoSell = createIndividuo(rangoOperacionIndividuo, Constants.OperationType.SELL);
 			IndividuoEstrategia individuoBuy = createIndividuo(rangoOperacionIndividuo, Constants.OperationType.BUY);
 			insertIndividuo(individuoSell);
 			insertIndividuo(individuoBuy);
+			/*
+			 * if ((individuoSell != null) && (individuoBuy != null)) {
+			 * Poblacion poblacion = new Poblacion();
+			 * poblacion.add(individuoSell); poblacion.add(individuoBuy);
+			 * Poblacion mutados = mutarIndividuos(poblacion);
+			 * poblacion.addAll(mutados);
+			 * //cruzarIndividuos(rangoOperacionIndividuo, poblacion); }
+			 */
 		} else {
-			logTime("NO cumple con el rango valido.", 1);
+			logTime("NO cumple con el rango valido.", 2);
 		}
 		return found_any;
+	}
+
+	private void cruzarIndividuos(RangoOperacionIndividuo rangoOperacionIndividuo, Poblacion poblacionBase)
+			throws SQLException {
+		List<Individuo> individuosResumen = null;
+		try {
+			individuosResumen = individuoDAO.consultarIndividuosResumenSemanal(rangoOperacionIndividuo.getFechaFiltro(),
+					rangoOperacionIndividuo.getFechaFiltro2());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		if (individuosResumen == null) {
+			return;
+		}
+		if (individuosResumen.isEmpty()) {
+			return;
+		}
+
+		IndicadorController indicadorController = ControllerFactory
+				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+		List<IndividuoEstrategia> individuosParaCruzar = new ArrayList<>(individuosResumen);
+		individuosParaCruzar.stream().forEach((individuoParaCruzar) -> {
+			try {
+				individuoDAO.consultarDetalleIndividuo(indicadorController, (Individuo) individuoParaCruzar);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		});
+
+		Poblacion poblacionParaCruzar = new Poblacion();
+		poblacionParaCruzar.setIndividuos(individuosParaCruzar);
+
+		CrossoverIndividuoManager crossover = new CrossoverIndividuoManager();
+		Poblacion[] cruce = crossover.crossover(0, poblacionBase, poblacionParaCruzar, parametroCantidadCruzar);
+
+		if ((cruce != null) && (cruce.length > 0)) {
+			List<IndividuoEstrategia> cruzados = cruce[1].getIndividuos();
+			cruzados.stream().forEach((individuoCruzado) -> {
+				try {
+					insertIndividuo(individuoCruzado);
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new RuntimeException(e);
+				}
+			});
+		}
+	}
+
+	private Poblacion mutarIndividuos(Poblacion poblacion) {
+		// TODO: verificar mutacion cuando el indicador es NULL. Deberia generar
+		// valor y no ser siempre NULL
+		Poblacion poblacionMutados = new Poblacion();
+		List<IndividuoEstrategia> mutados = null;
+		MutationIndividuoManager mutator = new MutationIndividuoManager();
+		Poblacion[] mutacion = mutator.mutate(1, poblacion, parametroCantidadMutar);
+		if ((mutacion != null) && (mutacion.length > 0)) {
+			mutados = mutacion[1].getIndividuos();
+			mutados.stream().forEach((individuoMutado) -> {
+				try {
+					insertIndividuo(individuoMutado);
+					poblacionMutados.add(individuoMutado);
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new RuntimeException(e);
+				}
+			});
+		}
+		return poblacionMutados;
 	}
 
 	private void insertIndividuo(IndividuoEstrategia individuo) throws SQLException {
 		if (individuo != null) {
 			individuoDAO.insertIndividuo(individuo);
 			individuoDAO.insertIndicadorIndividuo(indicadorController, individuo);
+			individuoDAO.insertarIndividuoIndicadoresColumnas(individuo.getId());
 			conn.commit();
 			logTime("Individuo insertado a BD:" + individuo.getId(), 1);
 		}
 	}
 
-	private void procesarRangoOperacionIndicadores(RangoOperacionIndividuo rangoOperacionIndividuo)
+	private void procesarRangoOperacionIndicadores(RangoOperacionIndividuo rangoOperacionIndividuo, int cantidadPuntos)
 			throws SQLException {
 		StringBuilder fields = new StringBuilder();
 		StringBuilder filters = new StringBuilder();
@@ -160,12 +258,12 @@ public class IndividuoXIndicadorManager {
 
 		indicadorDAO.consultarRangoOperacionIndicador(rangoOperacionIndividuo);
 		if (rangoOperacionIndividuo.getIndicadores() != null) {
-			asignarIntervaloXPorcentajeCumplimiento(rangoOperacionIndividuo);
+			asignarIntervaloXPorcentajeCumplimiento(rangoOperacionIndividuo, cantidadPuntos);
 		}
 	}
 
-	private void asignarIntervaloXPorcentajeCumplimiento(RangoOperacionIndividuo rangoOperacionIndividuo)
-			throws SQLException {
+	private void asignarIntervaloXPorcentajeCumplimiento(RangoOperacionIndividuo rangoOperacionIndividuo,
+			int cantidadPuntos) throws SQLException {
 		int num_indicadores = indicadorController.getIndicatorNumber();
 		for (int i = 0; i < num_indicadores; i++) {
 			IntervalIndicatorManager<?> indManager = (IntervalIndicatorManager<?>) indicadorController
@@ -173,19 +271,20 @@ public class IndividuoXIndicadorManager {
 			RangoOperacionIndividuoIndicador rangoIndicador = rangoOperacionIndividuo.getIndicadores().get(i);
 			IntervalIndicator intervalIndicator = ((IntervalIndicator) rangoIndicador.getIndicator());
 			DoubleInterval interval = (DoubleInterval) intervalIndicator.getInterval();
-			double porcCumplimiento = porcentajeCumplimiento(indManager, intervalIndicator, null, null);
+			double porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager, intervalIndicator,
+					null, null, cantidadPuntos);
 			rangoIndicador.setPorcentajeCumplimiento(porcCumplimiento);
 			if (!rangoIndicador.cumplePorcentajeIndicador()) {
 				double temporal;
 				if ((rangoIndicador.getPromedio() - interval.getLowInterval()) < (interval.getHighInterval()
 						- rangoIndicador.getPromedio())) {
 					temporal = interval.getHighInterval();
-					porcCumplimiento = porcentajeCumplimiento(indManager, intervalIndicator, interval.getLowInterval(),
-							rangoIndicador.getPromedio());
+					porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager, intervalIndicator,
+							interval.getLowInterval(), rangoIndicador.getPromedio(), cantidadPuntos);
 				} else {
 					temporal = interval.getLowInterval();
-					porcCumplimiento = porcentajeCumplimiento(indManager, intervalIndicator,
-							rangoIndicador.getPromedio(), interval.getHighInterval());
+					porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager, intervalIndicator,
+							rangoIndicador.getPromedio(), interval.getHighInterval(), cantidadPuntos);
 				}
 				rangoIndicador.setPorcentajeCumplimiento(porcCumplimiento);
 				if (!rangoIndicador.cumplePorcentajeIndicador()) {
@@ -193,13 +292,13 @@ public class IndividuoXIndicadorManager {
 							- rangoIndicador.getPromedio())) {
 						double temporal2 = temporal;
 						temporal = interval.getLowInterval();
-						porcCumplimiento = porcentajeCumplimiento(indManager, intervalIndicator,
-								rangoIndicador.getPromedio(), temporal2);
+						porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager,
+								intervalIndicator, rangoIndicador.getPromedio(), temporal2, cantidadPuntos);
 					} else {
 						double temporal2 = temporal;
 						temporal = interval.getHighInterval();
-						porcCumplimiento = porcentajeCumplimiento(indManager, intervalIndicator, temporal2,
-								rangoIndicador.getPromedio());
+						porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager,
+								intervalIndicator, temporal2, rangoIndicador.getPromedio(), cantidadPuntos);
 					}
 					rangoIndicador.setPorcentajeCumplimiento(porcCumplimiento);
 					if (!rangoIndicador.cumplePorcentajeIndicador()) {
@@ -215,16 +314,30 @@ public class IndividuoXIndicadorManager {
 		}
 	}
 
-	private double porcentajeCumplimiento(IntervalIndicatorManager<?> indManager, IntervalIndicator intervalIndicator,
-			Double i1, Double i2) throws SQLException {
+	private double porcentajeCumplimiento(RangoOperacionIndividuo r, IntervalIndicatorManager<?> indManager,
+			IntervalIndicator intervalIndicator, Double i1, Double i2, int cantidadPuntos) throws SQLException {
 		DoubleInterval interval = (DoubleInterval) intervalIndicator.getInterval();
 		if (i1 != null && i2 != null) {
 			interval.setLowInterval(i1);
 			interval.setHighInterval(i2);
 		}
-		double porcCumplimiento = indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager, intervalIndicator,
-				puntosHistoria);
-		return porcCumplimiento;
+		DateInterval dateInterval = new DateInterval(r.getFechaFiltro(), r.getFechaFiltro2());
+		double sumaPorcCumplimiento = indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager,
+				intervalIndicator, dateInterval);
+		/*
+		 * DateInterval di = DateUtil.obtenerIntervaloAnyo(minFechaHistorico);
+		 * while (di.getLowInterval().before(maxFechaHistorico)) {
+		 * sumaPorcCumplimiento +=
+		 * indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager,
+		 * intervalIndicator, di); di =
+		 * DateUtil.obtenerIntervaloAnyo(di.getHighInterval()); }
+		 */
+		return (sumaPorcCumplimiento / cantidadPuntos);
+	}
+
+	private double porcentajeCumplimientoDummy(IntervalIndicatorManager<?> indManager,
+			IntervalIndicator intervalIndicator, Double i1, Double i2) throws SQLException {
+		return 0.7;
 	}
 
 	private IndividuoEstrategia createIndividuo(RangoOperacionIndividuo rango, Constants.OperationType tipoOperacion) {
@@ -233,6 +346,7 @@ public class IndividuoXIndicadorManager {
 		int tp = rango.getTakeProfit();
 		int sl = rango.getStopLoss();
 		int counter = 0;
+		int countCierre = 0;
 		RangoOperacionIndividuo rangoCierre = rango.getRangoCierre();
 		for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
 			IntervalIndicatorManager<?> indManager = (IntervalIndicatorManager<?>) indicadorController
@@ -252,6 +366,7 @@ public class IndividuoXIndicadorManager {
 				double porcentajeCumplimientoCierre = rangoIndicadorCierre.getPorcentajeCumplimiento();
 				if (rangoIndicadorCierre.cumplePorcentajeIndicador()) {
 					closeIndicators.add(rangoIndicadorCierre.getIndicator());
+					countCierre++;
 				} else {
 					closeIndicators.add(null);
 					logTime("NO cumple porcentaje indicador de cierre. " + indManager.getId() + "="
@@ -261,7 +376,7 @@ public class IndividuoXIndicadorManager {
 		}
 
 		IndividuoEstrategia ind = null;
-		if (counter > 0) {
+		if (counter > 4) {
 			ind = new IndividuoEstrategia(Constants.IndividuoType.INDICADOR_GANADOR);
 			ind.setTipoOperacion(tipoOperacion);
 			ind.setLot(0.1);
@@ -269,9 +384,10 @@ public class IndividuoXIndicadorManager {
 			ind.setTakeProfit(tp);
 			ind.setStopLoss(sl);
 			ind.setOpenIndicators(openIndicators);
-			ind.setCloseIndicators(closeIndicators);
+			ind.setCloseIndicators(
+					(countCierre > 4) ? closeIndicators : new ArrayList<>(indicadorController.getIndicatorNumber()));
 		} else {
-			logTime("Ningun indicator cumple con las caracteristicas necesarias. Individuo NO creado ", 1);
+			logTime("No tiene suficientes indicadores con las caracteristicas necesarias. Individuo NO creado ", 1);
 		}
 		return (ind);
 	}

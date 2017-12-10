@@ -163,6 +163,12 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 		this.id = id;
 		this.generacion = generacion;
 		this.parent1 = parent1;
+		if (parent1 != null) {
+			this.idParent1 = parent1.getId();
+		}
+		if (parent2 != null) {
+			this.idParent2 = parent2.getId();
+		}
 		this.parent2 = parent2;
 		this.individuoType = individuoType;
 		this.creationDate = new Date();
@@ -930,7 +936,8 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 						&& (((this.closeIndicators == null) && (objIndividuo.closeIndicators == null))
 								|| ((this.closeIndicators != null) && (objIndividuo.closeIndicators != null)
 										&& (this.closeIndicators.equals(objIndividuo.closeIndicators))))
-						&& (this.takeProfit == objIndividuo.takeProfit) && (this.stopLoss == objIndividuo.stopLoss));
+						&& (this.takeProfit == objIndividuo.takeProfit) && (this.stopLoss == objIndividuo.stopLoss)
+						&& (this.tipoOperacion.equals(objIndividuo.getTipoOperacion())));
 			}
 			return value;
 		} else {

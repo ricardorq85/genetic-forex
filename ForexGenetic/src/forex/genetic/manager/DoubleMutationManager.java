@@ -4,9 +4,10 @@
  */
 package forex.genetic.manager;
 
-import forex.genetic.util.NumberUtil;
 import java.math.BigInteger;
 import java.util.Random;
+
+import forex.genetic.util.NumberUtil;
 
 /**
  *

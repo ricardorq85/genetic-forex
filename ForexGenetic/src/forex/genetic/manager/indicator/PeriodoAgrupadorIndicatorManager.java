@@ -4,6 +4,8 @@
  */
 package forex.genetic.manager.indicator;
 
+import java.util.Random;
+
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
@@ -11,7 +13,6 @@ import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.entities.indicator.PeriodoAgrupador;
 import forex.genetic.manager.EqualIntervalManager;
-import java.util.Random;
 
 /**
  *

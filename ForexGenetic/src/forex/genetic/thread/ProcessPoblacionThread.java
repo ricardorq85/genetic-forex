@@ -1,5 +1,7 @@
 package forex.genetic.thread;
 
+import java.util.List;
+
 import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.Point;
 import forex.genetic.manager.FuncionFortalezaManager;
@@ -7,7 +9,6 @@ import forex.genetic.manager.PatternManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
-import java.util.List;
 
 /**
  *

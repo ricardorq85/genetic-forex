@@ -4,6 +4,12 @@
  */
 package forex.genetic.manager;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.Vector;
+
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Learning;
@@ -15,11 +21,6 @@ import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.NumberUtil;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.Vector;
 
 /**
  *

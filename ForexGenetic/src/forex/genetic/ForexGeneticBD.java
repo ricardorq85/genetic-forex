@@ -16,9 +16,10 @@ import static java.lang.System.setOut;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
-import java.util.logging.Logger;
+import java.sql.SQLException;
 
 import forex.genetic.delegate.GeneticDelegateBD;
+import forex.genetic.proxy.ProcesosAlternosProxy;
 
 /**
  *
@@ -44,9 +45,15 @@ public class ForexGeneticBD {
 		setId(Long.toString(id));
 		GeneticDelegateBD delegate = new GeneticDelegateBD();
 		delegate.process();
-		delegate.getFileOutManager().close();
 		logTime("Fin: " + id, 1);
+		logTime("Lanzando Procesos alternos...", 1);
+		try {
+			ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(id);
+			alternosManager.procesar();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		delegate.getFileOutManager().close();
+		logTime("Fin Proceso alternos", 1);
 	}
-
-	private static final Logger LOG = Logger.getLogger(ForexGeneticBD.class.getName());
 }

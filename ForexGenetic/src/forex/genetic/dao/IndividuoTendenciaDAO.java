@@ -4,14 +4,15 @@
  */
 package forex.genetic.dao;
 
-import forex.genetic.dao.helper.IndividuoHelper;
-import forex.genetic.entities.Individuo;
-import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import forex.genetic.dao.helper.IndividuoHelper;
+import forex.genetic.entities.Individuo;
+import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *
@@ -36,13 +37,13 @@ public class IndividuoTendenciaDAO extends IndividuoDAO {
     public List<Individuo> consultarIndividuosTendencia(int cantidad) throws SQLException {
         List<Individuo> list = null;
         String sql = "SELECT * FROM ( "
-                + "  SELECT OPER.ID_INDIVIDUO, SUM (PIPS) PIPS "
+                + "  SELECT OPER.ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE, SUM (PIPS) PIPS "
                 + "  FROM OPERACION OPER "
                 + "  WHERE EXISTS "
                 + "    (SELECT 1  FROM INDICADOR_INDIVIDUO_TENDENCIAS IIT "
                 + "    WHERE OPER.ID_INDIVIDUO=IIT.ID_INDIVIDUO "
                 + "    ) "
-                + " AND OPER.ID_INDIVIDUO='1422733861735.1037'"
+                //+ " AND OPER.ID_INDIVIDUO='1422733861735.1037'"
                 + "  GROUP BY OPER.ID_INDIVIDUO "
                 + "  ORDER BY SUM(OPER.PIPS) DESC) "
                 + " WHERE PIPS>0";

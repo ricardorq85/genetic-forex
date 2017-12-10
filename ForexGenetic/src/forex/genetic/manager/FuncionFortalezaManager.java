@@ -1,5 +1,12 @@
 package forex.genetic.manager;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
 import forex.genetic.entities.Fortaleza;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
@@ -10,12 +17,6 @@ import forex.genetic.manager.statistic.EstadisticaManager;
 import forex.genetic.util.CollectionUtil;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
 
 /**
  *

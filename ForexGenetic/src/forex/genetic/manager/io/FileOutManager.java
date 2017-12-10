@@ -4,18 +4,19 @@
  */
 package forex.genetic.manager.io;
 
-import forex.genetic.delegate.GeneticDelegate;
-import forex.genetic.entities.DateInterval;
-import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.entities.Poblacion;
-import forex.genetic.manager.PropertiesManager;
-import forex.genetic.util.Constants;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
+
+import forex.genetic.delegate.GeneticDelegate;
+import forex.genetic.entities.DateInterval;
+import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.Poblacion;
+import forex.genetic.manager.PropertiesManager;
+import forex.genetic.util.Constants;
 
 /**
  *

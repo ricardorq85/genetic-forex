@@ -19,6 +19,7 @@ import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.ParametroOperacionPeriodo;
 import forex.genetic.util.Constants;
+import forex.genetic.util.DateUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -37,7 +38,7 @@ public class OperacionesDAO {
 		List<DateInterval> vigencias;
 		String sql = "SELECT DISTINCT VIGENCIA1, VIGENCIA2 FROM TMP_TOFILESTRING " + " WHERE VIGENCIA1>? "
 				+ " ORDER BY VIGENCIA1 ASC, VIGENCIA2 ASC ";
-		
+
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 
@@ -56,21 +57,21 @@ public class OperacionesDAO {
 		return vigencias;
 	}
 
-	public List<Individuo> consultarOperacionesXPeriodo(Date fechaPeriodo, Date fechaFinal) throws SQLException {
+	public List<Individuo> consultarOperacionesXPeriodo(Date fechaInicial, Date fechaFinal) throws SQLException {
 		List<Individuo> ordenes;
 		String sql = "SELECT OPER.* FROM OPERACION OPER "
 				+ " INNER JOIN TMP_TOFILESTRING TFS ON TFS.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
 				+ " AND OPER.FECHA_APERTURA BETWEEN VIGENCIA1 AND VIGENCIA2 "
-				+ " WHERE OPER.FECHA_APERTURA>? AND OPER.FECHA_APERTURA<=? "
-				+ " AND OPER.FECHA_CIERRE IS NOT NULL "
-				+ " ORDER BY OPER.FECHA_APERTURA ASC, TFS.CRITERIO_ORDER1 DESC, TFS.CRITERIO_ORDER2 DESC";
+				+ " WHERE OPER.FECHA_APERTURA>? AND OPER.FECHA_APERTURA<=? AND OPER.FECHA_CIERRE IS NOT NULL "
+				+ " ORDER BY OPER.FECHA_APERTURA ASC, " + " TFS.CRITERIO_ORDER1 DESC, " + " TFS.CRITERIO_ORDER2 DESC, "
+				+ " TRUNC(TFS.FECHA_ORDER1) DESC, " + " TRUNC(TFS.FECHA_ORDER2) DESC ";
 
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setTimestamp(1, new Timestamp(fechaPeriodo.getTime()));
+			stmtConsulta.setTimestamp(1, new Timestamp(fechaInicial.getTime()));
 			stmtConsulta.setTimestamp(2, new Timestamp(fechaFinal.getTime()));
 			resultado = stmtConsulta.executeQuery();
 
@@ -174,7 +175,8 @@ public class OperacionesDAO {
 				+ "     INNER JOIN PROCESO PROC ON PROC.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
 				+ "     AND (PROC.FECHA_HISTORICO>=?) "
 				+ " WHERE OPER.FECHA_APERTURA<? AND (OPER.FECHA_CIERRE IS NULL OR OPER.FECHA_CIERRE>?)"
-				+ " AND OPER.FECHA_APERTURA>?-30" + " AND OPER.TIPO = 'SELL'"
+				+ " AND OPER.FECHA_APERTURA>?-30" 
+				//+ " AND OPER.TIPO = 'SELL'"
 				+ " AND OPER.ID_INDIVIDUO NOT IN (SELECT ID_INDIVIDUO FROM TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
 				// + " AND OPER.ID_INDIVIDUO IN (SELECT ID_INDIVIDUO FROM
 				// TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
@@ -190,7 +192,8 @@ public class OperacionesDAO {
 		 * "SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.OPEN_PRICE, OPER.SPREAD, OPER.LOTE, OPER.PIPS, OPER.TIPO "
 		 * + " FROM OPERACION OPER" + " WHERE " + "  SYSDATE>=? " +
 		 * " AND OPER.FECHA_APERTURA<? AND (OPER.FECHA_CIERRE IS NULL OR OPER.FECHA_CIERRE>?)"
-		 * + " AND OPER.FECHA_APERTURA>?-30" + " AND OPER.TIPO = 'SELL'" +
+		 * + " AND OPER.FECHA_APERTURA>?-30" 
+		 //* + " AND OPER.TIPO = 'SELL'" +
 		 * " AND (OPER.ID_INDIVIDUO NOT IN (SELECT ID_INDIVIDUO FROM TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO"
 		 * + " AND TEND.FECHA_BASE=? AND (TIPO_TENDENCIA=? OR 1=1)) " +
 		 * " OR 1=1)" + " AND OPER.ID_INDIVIDUO='1341461434490.61685'" +
@@ -343,10 +346,12 @@ public class OperacionesDAO {
 	public Individuo consultarOperacionesIndividuoRetroceso(Individuo ind, Date fechaMaximo) throws SQLException {
 		List<Order> list = null;
 		String sql = "SELECT OPER.ID_INDIVIDUO, OPER.TAKE_PROFIT, OPER.STOP_LOSS, "
-				+ " OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.SPREAD, OPER.OPEN_PRICE, OPER.LOTE, OPER.PIPS, "
+					+ " OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.SPREAD, OPER.OPEN_PRICE, OPER.LOTE, OPER.PIPS, "
 				+ " OPER.TIPO, OPER.MAX_PIPS_RETROCESO, OPER.MAX_VALUE_RETROCESO, OPER.MAX_FECHA_RETROCESO "
 				+ " FROM OPERACION OPER "
-				+ " WHERE OPER.TIPO='SELL' AND ID_INDIVIDUO=? AND FECHA_APERTURA<=? AND MAX_PIPS_RETROCESO IS NULL";
+				+ " WHERE "
+				//+ " OPER.TIPO='SELL' AND "
+				+ " ID_INDIVIDUO=? AND FECHA_APERTURA<=? AND MAX_PIPS_RETROCESO IS NULL";
 
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
@@ -378,7 +383,7 @@ public class OperacionesDAO {
 				+ " OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.SPREAD, OPER.OPEN_PRICE, OPER.LOTE, OPER.PIPS, "
 				+ " OPER.TIPO, OPER.MAX_PIPS_RETROCESO, OPER.MAX_VALUE_RETROCESO, OPER.MAX_FECHA_RETROCESO "
 				+ " FROM OPERACION OPER "
-				+ " WHERE OPER.TIPO='SELL' AND FECHA_APERTURA<=? AND MAX_PIPS_RETROCESO IS NULL AND ROWNUM<1000";
+				+ " WHERE OPER.TIPO='BUY' AND FECHA_APERTURA<=? AND MAX_PIPS_RETROCESO IS NULL AND ROWNUM<1000";
 
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
@@ -408,36 +413,123 @@ public class OperacionesDAO {
 		}
 	}
 
+	private String temporal(ParametroOperacionPeriodo param) throws SQLException {
+		String sql = " SELECT PRE.ID_INDIVIDUO, SUM(" + param.getFirstOrder() + "), " + " SUM(" + param.getSecondOrder()
+				+ "), " + "  PRE.FECHA_SEMANA, PRE.FECHA_SEMANA+7 " + " FROM PREVIO_TOFILESTRING PRE "
+				+ " WHERE PRE.TIPO_OPERACION='" + param.getTipoOperacion().name() + "'"
+				+ " AND (NVL(PRE.PIPS_SEMANA,0)> " + param.getFiltroPipsXSemana() + " AND PRE.PIPS_MES> "
+				+ param.getFiltroPipsXMes() + " AND PRE.PIPS_ANYO> " + param.getFiltroPipsXAnyo()
+				+ " AND PRE.PIPS_TOTALES>" + param.getFiltroPipsTotales() + " ) " + " AND (NVL(PRE.R2_SEMANA,0)> "
+				+ param.getFiltroR2Semana() + " AND PRE.R2_MES> " + param.getFiltroR2Mes() + " AND PRE.R2_ANYO>"
+				+ param.getFiltroR2Anyo() + " AND PRE.R2_CONSOL>" + param.getFiltroR2Totales() + " ) "
+				+ " AND (NVL(PRE.PENDIENTE_SEMANA,0)>" + param.getFiltroPendienteSemana() + " AND PRE.PENDIENTE_MES>"
+				+ param.getFiltroPendienteMes() + " AND PRE.PENDIENTE_ANYO>" + param.getFiltroPendienteAnyo()
+				+ " AND PRE.PENDIENTE_CONSOL>" + param.getFiltroPendienteTotales() + ") "
+				+ " AND PRE.FECHA_SEMANA > TO_DATE('" + DateUtil.getDateString(param.getFechaInicial())
+				+ "','YYYY/MM/DD HH24:MI.SS')" + " AND PRE.FECHA_SEMANA+7 <= TO_DATE('"
+				+ DateUtil.getDateString(param.getFechaFinal()) + "','YYYY/MM/DD HH24:MI.SS')"
+				+ " GROUP BY PRE.ID_INDIVIDUO, PRE.FECHA_SEMANA;";
+		return sql;
+	}
+
 	public int insertOperacionesPeriodo(ParametroOperacionPeriodo param) throws SQLException {
-		String sql = "INSERT INTO TMP_TOFILESTRING (ID_INDIVIDUO, CRITERIO_ORDER1, CRITERIO_ORDER2, VIGENCIA1, VIGENCIA2) "
-				+ " SELECT OPER_SEMANA.ID_INDIVIDUO, SUM(" + param.getFirstOrder() + "), " + " SUM("
-				+ param.getSecondOrder() + "), " + "  SEMANAS.FECHA_SEMANA, SEMANAS.FECHA_SEMANA+7"
-				+ " FROM SEMANAS "
-				+ " LEFT JOIN OPERACION_X_SEMANA OPER_SEMANA "
-				+ " ON OPER_SEMANA.FECHA_SEMANA=(SEMANAS.FECHA_SEMANA-7) AND OPER_SEMANA.TIPO_OPERACION=? "
-				+ " INNER JOIN OPERACIONES_ACUM_SEMANA_MES OPER_MES "
-				+ " ON OPER_MES.ID_INDIVIDUO=OPER_SEMANA.ID_INDIVIDUO "
-				+ " AND OPER_MES.FECHA_SEMANA=SEMANAS.FECHA_SEMANA-7 "
-				+ " INNER JOIN OPERACIONES_ACUM_SEMANA_ANYO OPER_ANYO  "
-				+ " ON OPER_ANYO.ID_INDIVIDUO=OPER_SEMANA.ID_INDIVIDUO "
-				+ " AND OPER_ANYO.FECHA_SEMANA=SEMANAS.FECHA_SEMANA-7 "
-				+ " INNER JOIN OPERACIONES_ACUM_SEMANA_CONSOL OPER "
-				+ " ON OPER_SEMANA.ID_INDIVIDUO=OPER.ID_INDIVIDUO  " 
-				+ " AND OPER.FECHA_SEMANA=SEMANAS.FECHA_SEMANA-7 "
-				+ " WHERE (( NVL(OPER_SEMANA.PIPS,0)>? AND OPER_MES.PIPS>? AND OPER_ANYO.PIPS>? AND OPER.PIPS>?)) "
-				+ " AND SEMANAS.FECHA_SEMANA > ? "
-				+ " GROUP BY OPER_SEMANA.ID_INDIVIDUO, SEMANAS.FECHA_SEMANA";
+		String sql = "INSERT INTO TMP_TOFILESTRING (ID_INDIVIDUO, CRITERIO_ORDER1, CRITERIO_ORDER2, VIGENCIA1, VIGENCIA2, FECHA_ORDER1, FECHA_ORDER2) "
+				+ " SELECT PRE.ID_INDIVIDUO, SUM(" + param.getFirstOrder() + "), " + " SUM(" + param.getSecondOrder()
+				+ "), " + "  PRE.FECHA_SEMANA, PRE.FECHA_SEMANA+7, ?, ? " + " FROM PREVIO_TOFILESTRING PRE "
+				+ " WHERE PRE.TIPO_OPERACION=?"
+				+ " AND (NVL(PRE.PIPS_SEMANA,0)>? AND NVL(PRE.PIPS_MES,0)>? AND NVL(PRE.PIPS_ANYO,0)>? AND PRE.PIPS_TOTALES>?) "
+				+ " AND (NVL(PRE.R2_SEMANA,0)>? AND NVL(PRE.R2_MES,0)>? AND NVL(PRE.R2_ANYO,0)>? AND PRE.R2_CONSOL>?) "
+				+ " AND (NVL(PRE.PENDIENTE_SEMANA,0)>? AND NVL(PRE.PENDIENTE_MES,0)>? AND NVL(PRE.PENDIENTE_ANYO,0)>? AND PRE.PENDIENTE_CONSOL>?) "
+				+ " AND PRE.FECHA_SEMANA > ? AND PRE.FECHA_SEMANA <= ? "
+				+ " GROUP BY PRE.ID_INDIVIDUO, PRE.FECHA_SEMANA";
+		PreparedStatement stmtConsulta = null;
+		try {
+			// String t = temporal(param);
+			int index = 0;
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setDate(++index, new java.sql.Date(param.getFecha().getTime()));
+			stmtConsulta.setDate(++index, new java.sql.Date(param.getFechaFinal().getTime()));
+
+			stmtConsulta.setString(++index, param.getTipoOperacion().name());
+			stmtConsulta.setInt(++index, param.getFiltroPipsXSemana());
+			stmtConsulta.setInt(++index, param.getFiltroPipsXMes());
+			stmtConsulta.setInt(++index, param.getFiltroPipsXAnyo());
+			stmtConsulta.setInt(++index, param.getFiltroPipsTotales());
+
+			stmtConsulta.setDouble(++index, param.getFiltroR2Semana());
+			stmtConsulta.setDouble(++index, param.getFiltroR2Mes());
+			stmtConsulta.setDouble(++index, param.getFiltroR2Anyo());
+			stmtConsulta.setDouble(++index, param.getFiltroR2Totales());
+
+			stmtConsulta.setDouble(++index, param.getFiltroPendienteSemana());
+			stmtConsulta.setDouble(++index, param.getFiltroPendienteMes());
+			stmtConsulta.setDouble(++index, param.getFiltroPendienteAnyo());
+			stmtConsulta.setDouble(++index, param.getFiltroPendienteTotales());
+
+			stmtConsulta.setDate(++index, new java.sql.Date(param.getFechaInicial().getTime()));
+			stmtConsulta.setDate(++index, new java.sql.Date(param.getFechaFinal().getTime()));
+
+			return stmtConsulta.executeUpdate();
+		} finally {
+			JDBCUtil.close(stmtConsulta);
+		}
+	}
+
+	public void actualizarOperacionesPositivasYNegativas() throws SQLException {
+		try {
+			JDBCUtil.refreshMaterializedView(this.connection, "OPERACION_POSITIVAS", "C");
+			JDBCUtil.refreshMaterializedView(this.connection, "OPERACION_NEGATIVAS", "C");
+			//this.dropVistaMaterializada("OPERACION_POSITIVAS");
+			//this.dropVistaMaterializada("OPERACION_NEGATIVAS");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		//this.actualizarOperacionesPositivas();
+		//this.actualizarOperacionesNegativas();
+	}
+
+	private void actualizarOperacionesNegativas() throws SQLException {
+		this.crearVistaMaterializadaNegativas();
+	}
+
+	private void actualizarOperacionesPositivas() throws SQLException {
+		this.crearVistaMaterializadaPositivas();
+	}
+
+	private void crearVistaMaterializadaPositivas() throws SQLException {
+		String sql = "CREATE MATERIALIZED VIEW OPERACION_POSITIVAS AS "
+				+ " SELECT OPER.TAKE_PROFIT, OPER.STOP_LOSS, OPER.FECHA_APERTURA, OPER.PIPS, OPER.MAX_PIPS_RETROCESO, OPER.OPEN_PRICE"
+				+ " FROM OPERACION OPER" + "  WHERE OPER.PIPS>=200 AND OPER.FECHA_CIERRE IS NOT NULL"
+				+ "  AND OPER.FECHA_APERTURA BETWEEN TO_DATE('20130101', 'YYYYMMDD') AND TO_DATE('21000101', 'YYYYMMDD')";
 		PreparedStatement stmtConsulta = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setString(1, param.getTipoOperacion().name());
-			stmtConsulta.setInt(2, param.getFiltroPipsXSemana());
-			stmtConsulta.setInt(3, param.getFiltroPipsXMes());
-			stmtConsulta.setInt(4, param.getFiltroPipsXAnyo());
-			stmtConsulta.setInt(5, param.getFiltroPipsTotales());
-			stmtConsulta.setDate(6, new java.sql.Date(param.getFechaInicial().getTime()));
+			stmtConsulta.executeUpdate();
+		} finally {
+			JDBCUtil.close(stmtConsulta);
+		}
+	}
 
-			return stmtConsulta.executeUpdate();
+	private void crearVistaMaterializadaNegativas() throws SQLException {
+		String sql = "CREATE MATERIALIZED VIEW OPERACION_NEGATIVAS AS "
+				+ " SELECT OPER.TAKE_PROFIT, OPER.STOP_LOSS, OPER.FECHA_APERTURA, OPER.PIPS, OPER.MAX_PIPS_RETROCESO, OPER.OPEN_PRICE "
+				+ " FROM OPERACION OPER " + "  WHERE OPER.PIPS<=-200 AND OPER.FECHA_CIERRE IS NOT NULL "
+				+ " AND OPER.FECHA_APERTURA BETWEEN TO_DATE('20130101', 'YYYYMMDD') AND TO_DATE('21000101', 'YYYYMMDD')";
+		PreparedStatement stmtConsulta = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.executeUpdate();
+		} finally {
+			JDBCUtil.close(stmtConsulta);
+		}
+	}
+
+	private void dropVistaMaterializada(String name) throws SQLException {
+		String sql = "DROP MATERIALIZED VIEW " + name;
+		PreparedStatement stmtConsulta = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.executeUpdate();
 		} finally {
 			JDBCUtil.close(stmtConsulta);
 		}

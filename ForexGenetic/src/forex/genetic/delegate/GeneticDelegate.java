@@ -4,6 +4,14 @@
  */
 package forex.genetic.delegate;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Learning;
 import forex.genetic.entities.Poblacion;
@@ -24,13 +32,6 @@ import forex.genetic.thread.SerializationReadAllThread;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.ThreadUtil;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 /**
  *

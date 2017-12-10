@@ -4,18 +4,19 @@
  */
 package forex.genetic.dao.helper;
 
-import forex.genetic.entities.DateInterval;
-import forex.genetic.entities.DoubleInterval;
-import forex.genetic.entities.Individuo;
-import forex.genetic.entities.Interval;
-import forex.genetic.entities.ProcesoTendencia;
-import forex.genetic.entities.Tendencia;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import forex.genetic.entities.DateInterval;
+import forex.genetic.entities.DoubleInterval;
+import forex.genetic.entities.Individuo;
+import forex.genetic.entities.Interval;
+import forex.genetic.entities.ProcesoTendencia;
+import forex.genetic.entities.Tendencia;
 
 /**
  *
@@ -136,4 +137,14 @@ public class TendenciaHelper {
         }
         return obj;
     }
+
+	public static List<Date> createFechasTendencia(ResultSet resultado) throws SQLException {
+		List<Date> fechas = new ArrayList<>();
+		while (resultado.next()) {
+			if (resultado.getObject(1) != null) {
+				fechas.add(new Date(resultado.getTimestamp(1).getTime()));
+			}
+		}
+		return fechas;
+	}
 }

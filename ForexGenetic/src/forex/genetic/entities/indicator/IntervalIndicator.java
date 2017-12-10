@@ -4,8 +4,9 @@
  */
 package forex.genetic.entities.indicator;
 
-import forex.genetic.entities.Interval;
 import java.io.Serializable;
+
+import forex.genetic.entities.Interval;
 
 /**
  *

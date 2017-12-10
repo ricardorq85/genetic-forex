@@ -100,4 +100,12 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 		s[0] = " ((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_MINUS)) BETWEEN ? AND ?) ";
 		return s;
 	}
+
+	@Override
+	public Indicator mutate(Adx obj) {
+		// TODO Auto-generated method stub
+		return super.mutate(obj);
+	}
+	
+	
 }

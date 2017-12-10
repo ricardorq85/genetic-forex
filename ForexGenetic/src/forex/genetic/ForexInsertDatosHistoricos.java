@@ -18,9 +18,10 @@ import static java.lang.System.setOut;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
-import java.util.logging.Logger;
+import java.sql.SQLException;
 
 import forex.genetic.delegate.PoblacionDelegate;
+import forex.genetic.proxy.ProcesosAlternosProxy;
 
 /**
  *
@@ -28,28 +29,37 @@ import forex.genetic.delegate.PoblacionDelegate;
  */
 public class ForexInsertDatosHistoricos {
 
-    /**
-     *
-     * @param args
-     * @throws IOException
-     * @throws ClassNotFoundException
-     * @throws InterruptedException
-     */
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-        long id = currentTimeMillis();
-        load().join();
-        logTime("ForexInsertDatosHistoricos: " + id, 1);
-        setId("" + id);
-        StringBuilder name = new StringBuilder();
-        name.append(getPropertyString(LOG_PATH)).append("InsertDatosHistoricos_");
-        name.append(getOperationType()).append(getPair()).append(id).append(".log");
-        PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
-        setOut(out);
-        setErr(out);
-        PoblacionDelegate delegate = new PoblacionDelegate();
-        logTime("Init Insert Datos Historicos", 1);
-        delegate.cargarDatosHistoricos();
-        logTime("End Insert Datos Historicos", 1);
-    }
-    private static final Logger LOG = Logger.getLogger(ForexInsertDatosHistoricos.class.getName());
+	/**
+	 *
+	 * @param args
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 * @throws InterruptedException
+	 */
+	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+		long id = currentTimeMillis();
+		load().join();
+		logTime("ForexInsertDatosHistoricos: " + id, 1);
+		setId("" + id);
+		StringBuilder name = new StringBuilder();
+		name.append(getPropertyString(LOG_PATH)).append("InsertDatosHistoricos_");
+		name.append(getOperationType()).append(getPair()).append(id).append(".log");
+		PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
+		setOut(out);
+		setErr(out);
+		
+		PoblacionDelegate delegate = new PoblacionDelegate();
+		logTime("Init Insert Datos Historicos", 1);
+		delegate.cargarDatosHistoricos();
+		logTime("End Insert Datos Historicos", 1);
+		
+		logTime("Lanzando Procesos alternos...", 1);
+		try {
+			ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(id);
+			alternosManager.procesar();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		logTime("End Proceso alternos", 1);
+	}
 }

@@ -4,13 +4,14 @@
  */
 package forex.genetic.dao;
 
-import forex.genetic.entities.ProcesoTendencia;
-import forex.genetic.util.jdbc.JDBCUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+
+import forex.genetic.entities.ProcesoTendencia;
+import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *
@@ -67,7 +68,7 @@ public class TendenciaProcesadaDAO {
      * @param procesoTendencia
      * @throws SQLException
      */
-    public void updateTendencia(ProcesoTendencia procesoTendencia) throws SQLException {
+    public void updateTendenciaProcesada(ProcesoTendencia procesoTendencia) throws SQLException {
         String sql = "UPDATE TENDENCIA_PROCESADA SET VALOR_PROBABLE=?, FECHA_BASE_FIN=?, "
                 + " PRECIO_MINIMO=?, PRECIO_MAXIMO=?, CANTIDAD=?, "
                 + " FECHA_MINIMA=?, FECHA_MAXIMA=?, PRECIO_BASE_PROMEDIO=?, "
@@ -100,7 +101,7 @@ public class TendenciaProcesadaDAO {
      * @param procesoTendencia
      * @throws SQLException
      */
-    public void deleteTendencia(ProcesoTendencia procesoTendencia) throws SQLException {
+    public void deleteTendenciaProcesada(ProcesoTendencia procesoTendencia) throws SQLException {
         String sql = "DELETE FROM TENDENCIA_PROCESADA WHERE FECHA_BASE=? AND TIPO=?";
         PreparedStatement statement = null;
         try {
