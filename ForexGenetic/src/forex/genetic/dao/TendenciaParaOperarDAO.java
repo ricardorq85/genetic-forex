@@ -213,9 +213,11 @@ public class TendenciaParaOperarDAO {
 		return list;
 	}
 
-	public int deleteTendenciaParaProcesar(TendenciaParaOperar tpo) throws SQLException {
+	public int deleteTendenciaParaProcesar(TendenciaParaOperar tpo, Date fechaReferencia) throws SQLException {
 		String sql = "DELETE FROM TENDENCIA_PARA_OPERAR "
-				+ " WHERE TIPO_EXPORTACION=? AND TRUNC(FECHA_BASE,'HH24')=TRUNC(?,'HH24')" + " AND ID_EJECUCION<>?";
+				+ " WHERE TIPO_EXPORTACION=? AND TRUNC(FECHA_BASE,'HH24')=TRUNC(?,'HH24')" 
+				+ " AND ID_EJECUCION<>?"
+				+ " AND FECHA<?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
 		int affected = 0;
@@ -224,6 +226,7 @@ public class TendenciaParaOperarDAO {
 			statement.setString(index++, tpo.getTipoExportacion());
 			statement.setTimestamp(index++, new Timestamp(tpo.getFechaBase().getTime()));
 			statement.setString(index++, tpo.getIdEjecucion());
+			statement.setTimestamp(index++, new Timestamp(fechaReferencia.getTime()));
 
 			affected = statement.executeUpdate();
 		} finally {
@@ -238,7 +241,7 @@ public class TendenciaParaOperarDAO {
 				+ " NUMERO_TENDENCIAS, CANTIDAD_TOTAL_TENDENCIAS, "
 				+ "	NUM_PENDIENTES_POSITIVAS, NUM_PENDIENTES_NEGATIVAS,"
 				+ "	DIFF_PRECIO_EXTREMO_SUPERIOR, DIFF_PRECIO_EXTREMO_INFERIOR, "
-				+ " MIN_PRIMERA_TENDENCIA, MAX_PRIMERA_TENDENCIA, AVG_PRIMERA_TENDENCIA) "
+				+ " DIFF_MIN_PRIMERA_TENDENCIA, DIFF_MAX_PRIMERA_TENDENCIA, DIFF_AVG_PRIMERA_TENDENCIA) "
 				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		int index = 1;
@@ -270,7 +273,7 @@ public class TendenciaParaOperarDAO {
 				+ "	PROBABILIDAD_PROMEDIO=?, NUMERO_TENDENCIAS=?, CANTIDAD_TOTAL_TENDENCIAS=?,"
 				+ "	NUM_PENDIENTES_POSITIVAS=?, NUM_PENDIENTES_NEGATIVAS=?,"
 				+ "	DIFF_PRECIO_EXTREMO_SUPERIOR=?, DIFF_PRECIO_EXTREMO_INFERIOR=?,"
-				+ " MIN_PRIMERA_TENDENCIA=?, MAX_PRIMERA_TENDENCIA=?, AVG_PRIMERA_TENDENCIA=? " 
+				+ " DIFF_MIN_PRIMERA_TENDENCIA=?, DIFF_MAX_PRIMERA_TENDENCIA=?, DIFF_AVG_PRIMERA_TENDENCIA=? " 
 				+ " WHERE FECHA_BASE=?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);

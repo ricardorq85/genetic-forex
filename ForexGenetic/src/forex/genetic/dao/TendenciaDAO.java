@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.helper.TendenciaHelper;
+import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.ParametroTendenciaGenetica;
 import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.Tendencia;
@@ -253,6 +254,29 @@ public class TendenciaDAO {
 
 		return obj;
 	}
+	
+	public Date maxFechaProcesoTendencia(DateInterval intervaloFechaBase) throws SQLException {
+		Date obj = null;
+		String sql = "SELECT MAX(FECHA) FROM TENDENCIA WHERE FECHA_BASE BETWEEN ? AND ?";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setTimestamp(1, new Timestamp(intervaloFechaBase.getLowInterval().getTime()));
+			stmtConsulta.setTimestamp(2, new Timestamp(intervaloFechaBase.getHighInterval().getTime()));
+			resultado = stmtConsulta.executeQuery();
+			if (resultado.next()) {
+				if (resultado.getObject(1) != null) {
+					obj = new Date(resultado.getTimestamp(1).getTime());
+				}
+			}
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+
+		return obj;
+	}	
 
 	/**
 	 *

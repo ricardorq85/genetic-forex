@@ -54,7 +54,8 @@ public class ExportarTendenciaGrupalManager extends ExportarTendenciaManager {
 	protected void procesarRegresion() throws SQLException {
 		Regresion regresion = dao.consultarRegresion(procesoTendencia);
 		this.setParametrosRegresion(regresion);
-		String sqlRegresion = "SELECT PARAM.PERIODO PERIODO, PRITEN.PRECIO_CALCULADO PRIMERA_TENDENCIA, REG.*  FROM PARAMETROS PARAM, PRIMERA_TENDENCIA PRITEN, REGRESION_FILTRADA REG";
+		String sqlRegresion = "SELECT PARAM.PERIODO PERIODO, PRITEN.PRECIO_CALCULADO PRIMERA_TENDENCIA, REG.*  FROM PARAMETROS PARAM, REGRESION_FILTRADA REG"
+				+ " LEFT JOIN PRIMERA_TENDENCIA PRITEN ON 1=1";
 		Regresion regresionFiltrada = dao.consultarRegresion(procesoTendencia, sqlRegresion);
 		this.setParametrosRegresion(regresionFiltrada);
 		this.procesarRegresion(regresion, regresionFiltrada);

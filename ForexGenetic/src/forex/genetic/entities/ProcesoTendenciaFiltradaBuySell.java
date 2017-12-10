@@ -12,29 +12,19 @@ import java.util.Date;
  */
 public class ProcesoTendenciaFiltradaBuySell extends ProcesoTendenciaBuySell {
 
-	private Regresion regresionFiltrada;
-
 	public ProcesoTendenciaFiltradaBuySell(String periodo2, String tipoTendencia2, double tiempoTendencia2,
 			Date fechaBase2) {
 		super(periodo2, tipoTendencia2, tiempoTendencia2, fechaBase2);
 	}
 
-	public Regresion getRegresionFiltrada() {
-		return regresionFiltrada;
-	}
-
-	public void setRegresionFiltrada(Regresion regresionFiltrada) {
-		this.regresionFiltrada = regresionFiltrada;
-	}
-
 	public boolean isRegresionValida() {
-		return ((super.isRegresionValida()) && (this.regresionFiltrada != null)
-				&& (this.regresionFiltrada.isRegresionValida()));
+		return ((super.isRegresionValida()) && (super.getRegresionFiltrada() != null)
+				&& (super.getRegresionFiltrada().isRegresionValida()));
 	}
 
 	public boolean isValidacionRegresionValida() {
-		return ((super.isValidacionRegresionValida()) && (this.regresionFiltrada != null)
-				&& (this.regresionFiltrada.isValidacionRegresionValida()));
+		return ((super.isValidacionRegresionValida()) && (super.getRegresionFiltrada() != null)
+				&& (super.getRegresionFiltrada().isValidacionRegresionValida()));
 	}
 
 	public boolean isCantidadMinimaValida() {
@@ -44,11 +34,11 @@ public class ProcesoTendenciaFiltradaBuySell extends ProcesoTendenciaBuySell {
 		if (super.getRegresion().getCantidad() == 0) {
 			return false;
 		}
-		if (this.regresionFiltrada == null) {
+		if (super.getRegresionFiltrada() == null) {
 			return false;
 		}
 		float cantidadRegresion = super.getRegresion().getCantidad();
-		float cantidadRegresionFiltrada = this.regresionFiltrada.getCantidad();
+		float cantidadRegresionFiltrada = super.getRegresionFiltrada().getCantidad();
 		float valorCantidad = (cantidadRegresionFiltrada / cantidadRegresion);
 
 		return (valorCantidad > 0.5);
