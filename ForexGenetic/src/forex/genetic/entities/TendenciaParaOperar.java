@@ -20,6 +20,7 @@ public class TendenciaParaOperar {
 	private Date vigenciaLower = null;
 	private Date vigenciaHigher = null;
 	protected double precioCalculado = 0.0D;
+	protected double stopApertura = 0.0D;
 	protected double tp = 0.0D;
 	protected double sl = 0.0D;
 	private Regresion regresion, regresionFiltrada;
@@ -112,6 +113,14 @@ public class TendenciaParaOperar {
 
 	public void setPrecioCalculado(double precioCalculado) {
 		this.precioCalculado = precioCalculado;
+	}
+
+	public double getStopApertura() {
+		return stopApertura;
+	}
+
+	public void setStopApertura(double stopApertura) {
+		this.stopApertura = stopApertura;
 	}
 
 	public double getTp() {
@@ -273,12 +282,14 @@ public class TendenciaParaOperar {
 	public String toString() {
 		return "PAIR=" + PropertiesManager.getPair() + ",PERIOD=" + period + ",TIPO_OPERACION="
 				+ tipoOperacion.toString() + ",PRECIO_CALCULADO=" + NumberUtil.round(precioCalculado) + ",TAKE_PROFIT="
-				+ NumberUtil.round(tp) + ",STOP_LOSS=" + NumberUtil.round(sl) + ",FECHA_TENDENCIA="
+				+ NumberUtil.round(tp) 
+				+ ",STOP_LOSS=" + NumberUtil.round(sl)
+				+ ",STOP_APERTURA=" + NumberUtil.round(stopApertura)
+				+ ",FECHA_TENDENCIA="
 				+ DateUtil.getDateString(fechaTendencia) + ",VIGENCIALOWER=" + DateUtil.getDateString(vigenciaLower)
 				+ ",VIGENCIAHIGHER=" + DateUtil.getDateString(vigenciaHigher) + ",R2="
-				+ ((regresion != null) ? regresion.getR2() : 1) 
-				+ ",ACTIVA=" + (this.activa)
-				+ ",CANTIDAD=" + ((regresion != null) ? regresion.getCantidad() : 1) + ",PENDIENTE="
+				+ ((regresion != null) ? regresion.getR2() : 1) + ",ACTIVA=" + (this.activa) + ",CANTIDAD="
+				+ ((regresion != null) ? regresion.getCantidad() : 1) + ",PENDIENTE="
 				+ ((regresion != null) ? regresion.getPendiente() : 1) + ",LOTE=" + NumberUtil.round(lote) + ",NAME="
 				+ GeneticDelegate.getId() + ",FECHA_BASE=" + DateUtil.getDateString(fechaBase);
 	}

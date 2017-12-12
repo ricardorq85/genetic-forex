@@ -8,10 +8,10 @@ public class Extremos {
 	private DoubleInterval extremosPrimeraTendencia;
 	private Regresion maximaRegresionFiltradaBuy, maximaRegresionFiltradaSell;
 
-	public Extremos(DoubleInterval extremos, DoubleInterval extremosIntermedios, DoubleInterval extremosExtremo,
+	public Extremos(DoubleInterval extremosFiltrados, DoubleInterval extremosIntermedios, DoubleInterval extremosExtremo,
 			DoubleInterval extremosSinFiltrar) {
 		super();
-		this.extremosFiltrados = extremos;
+		this.extremosFiltrados = extremosFiltrados;
 		this.extremosIntermedios = extremosIntermedios;
 		this.extremosExtremo = extremosExtremo;
 		this.extremos = extremosSinFiltrar;
