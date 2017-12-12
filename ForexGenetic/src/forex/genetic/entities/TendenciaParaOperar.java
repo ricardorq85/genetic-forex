@@ -21,6 +21,7 @@ public class TendenciaParaOperar {
 	private Date vigenciaHigher = null;
 	protected double precioCalculado = 0.0D;
 	protected double stopApertura = 0.0D;
+	protected double limitApertura = 0.0D;
 	protected double tp = 0.0D;
 	protected double sl = 0.0D;
 	private Regresion regresion, regresionFiltrada;
@@ -121,6 +122,14 @@ public class TendenciaParaOperar {
 
 	public void setStopApertura(double stopApertura) {
 		this.stopApertura = stopApertura;
+	}
+
+	public double getLimitApertura() {
+		return limitApertura;
+	}
+
+	public void setLimitApertura(double limitApertura) {
+		this.limitApertura = limitApertura;
 	}
 
 	public double getTp() {
@@ -285,6 +294,7 @@ public class TendenciaParaOperar {
 				+ NumberUtil.round(tp) 
 				+ ",STOP_LOSS=" + NumberUtil.round(sl)
 				+ ",STOP_APERTURA=" + NumberUtil.round(stopApertura)
+				+ ",LIMIT_APERTURA=" + NumberUtil.round(limitApertura)
 				+ ",FECHA_TENDENCIA="
 				+ DateUtil.getDateString(fechaTendencia) + ",VIGENCIALOWER=" + DateUtil.getDateString(vigenciaLower)
 				+ ",VIGENCIAHIGHER=" + DateUtil.getDateString(vigenciaHigher) + ",R2="

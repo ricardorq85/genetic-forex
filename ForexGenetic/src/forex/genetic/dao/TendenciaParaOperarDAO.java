@@ -42,11 +42,12 @@ public class TendenciaParaOperarDAO {
 	public void insertTendenciaParaOperar(TendenciaParaOperar tpo) throws SQLException {
 		String sql = "INSERT INTO TENDENCIA_PARA_OPERAR (" + " TIPO_EXPORTACION, PERIODO, TIPO_OPERACION, "
 				+ " FECHA_BASE, FECHA_TENDENCIA, VIGENCIA_LOWER,"
-				+ " VIGENCIA_HIGHER, PRECIO_CALCULADO, STOP_APERTURA, TAKE_PROFIT, STOP_LOSS, LOTE, LOTE_CALCULADO, "
+				+ " VIGENCIA_HIGHER, PRECIO_CALCULADO, STOP_APERTURA, LIMIT_APERTURA, "
+				+ " TAKE_PROFIT, STOP_LOSS, LOTE, LOTE_CALCULADO, "
 				+ " TIEMPO_TENDENCIA, " + " R2, PENDIENTE, DESVIACION, "
 				+ " R2_FILTRADA, PENDIENTE_FILTRADA, DESVIACION_FILTRADA, CANTIDAD_FILTRADA, "
 				+ " MIN_PRECIO, MAX_PRECIO," + " CANTIDAD, FECHA, ID_EJECUCION, ACTIVA) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		int index = 1;
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -60,6 +61,7 @@ public class TendenciaParaOperarDAO {
 			statement.setTimestamp(index++, new Timestamp(tpo.getVigenciaHigher().getTime()));
 			statement.setDouble(index++, tpo.getPrecioCalculado());
 			statement.setDouble(index++, tpo.getStopApertura());
+			statement.setDouble(index++, tpo.getLimitApertura());
 			statement.setDouble(index++, tpo.getTp());
 			statement.setDouble(index++, tpo.getSl());
 			statement.setDouble(index++, tpo.getLote());
@@ -91,7 +93,8 @@ public class TendenciaParaOperarDAO {
 	 */
 	public int updateTendenciaParaProcesar(TendenciaParaOperar tpo) throws SQLException {
 		String sql = "UPDATE TENDENCIA_PARA_OPERAR SET  " + " FECHA_TENDENCIA=?, VIGENCIA_LOWER=?,"
-				+ " VIGENCIA_HIGHER=?, PRECIO_CALCULADO=?, STOP_APERTURA=?, TAKE_PROFIT=?, STOP_LOSS=?, " + " LOTE=?, LOTE_CALCULADO=?, "
+				+ " VIGENCIA_HIGHER=?, PRECIO_CALCULADO=?, STOP_APERTURA=?, LIMIT_APERTURA=?, "
+				+ " TAKE_PROFIT=?, STOP_LOSS=?, " + " LOTE=?, LOTE_CALCULADO=?, "
 				+ " TIEMPO_TENDENCIA=?, " + " R2=?, PENDIENTE=?, DESVIACION=?, "
 				+ " R2_FILTRADA=?, PENDIENTE_FILTRADA=?, DESVIACION_FILTRADA=?, CANTIDAD_FILTRADA=?, "
 				+ " MIN_PRECIO=?, MAX_PRECIO=?," + " CANTIDAD=?, FECHA=?, ID_EJECUCION=?, ACTIVA=? "
@@ -106,6 +109,7 @@ public class TendenciaParaOperarDAO {
 			statement.setTimestamp(index++, new Timestamp(tpo.getVigenciaHigher().getTime()));
 			statement.setDouble(index++, tpo.getPrecioCalculado());
 			statement.setDouble(index++, tpo.getStopApertura());
+			statement.setDouble(index++, tpo.getLimitApertura());
 			statement.setDouble(index++, tpo.getTp());
 			statement.setDouble(index++, tpo.getSl());
 			statement.setDouble(index++, tpo.getLote());

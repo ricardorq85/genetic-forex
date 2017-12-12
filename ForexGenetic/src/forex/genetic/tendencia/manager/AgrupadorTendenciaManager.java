@@ -268,23 +268,26 @@ public class AgrupadorTendenciaManager {
 
 	private TendenciaParaOperarMaxMin crearTendenciaParaOperarMaxMin(Extremos extremos,
 			ProcesoTendenciaBuySell procesoIndex) {
-		double precio = 0.0D, slPips = 0.0D, tp = 0.0D, stopApertura = 0.0D;
+		double precio = 0.0D, slPips = 0.0D, tp = 0.0D;
+		double stopApertura = 0.0D, limitApertura=0.0D;
 		if (OperationType.BUY.equals(procesoIndex.getTipoOperacion())) {
 			precio = extremos.getExtremosFiltrados().getLowInterval();
 			stopApertura = extremos.getExtremosFiltrados().getHighInterval();
+			limitApertura = extremos.getExtremos().getLowInterval();
 			slPips = extremos.getExtremosFiltrados().getHighInterval() - this.precioPonderado;
 			tp = extremos.getExtremosIntermedios().getHighInterval();
 			// tp = extremos.getHighInterval();
 		} else if (OperationType.SELL.equals(procesoIndex.getTipoOperacion())) {
 			precio = extremos.getExtremosFiltrados().getHighInterval();
 			stopApertura = extremos.getExtremosFiltrados().getLowInterval();
+			limitApertura = extremos.getExtremos().getHighInterval();
 			slPips = -(this.precioPonderado - extremos.getExtremosFiltrados().getLowInterval());
 			tp = extremos.getExtremosIntermedios().getLowInterval();
 			// tp = extremos.getLowInterval();
 		}
 
 		TendenciaParaOperarMaxMin tendencia = crearTendenciaParaOperar(procesoIndex, procesoIndex.getTipoOperacion(),
-				precio, tp, slPips, stopApertura, procesoIndex.getPeriodo());
+				precio, tp, slPips, stopApertura, limitApertura, procesoIndex.getPeriodo());
 		return tendencia;
 	}
 
@@ -299,19 +302,22 @@ public class AgrupadorTendenciaManager {
 		double slPipsBuy = 0.0D, slPipsSell = 0.0D;
 		double tpBuy = 0.0D, tpSell = 0.0D;
 		double stopAperturaBuy = 0.0D, stopAperturaSell = 0.0D;
+		double limitAperturaBuy = 0.0D, limitAperturaSell = 0.0D;
 		precioBuy = extremos.getExtremosExtremo().getLowInterval();
 		stopAperturaBuy = extremos.getExtremosFiltrados().getHighInterval();
+		limitAperturaBuy = extremos.getExtremosExtremo().getLowInterval();
 		tpBuy = extremos.getExtremos().getLowInterval();
 
 		precioSell = extremos.getExtremosExtremo().getHighInterval();
 		stopAperturaSell = extremos.getExtremosFiltrados().getLowInterval();
+		limitAperturaSell = extremos.getExtremosExtremo().getHighInterval();
 		slPipsSell = this.precioPonderado - extremos.getExtremosFiltrados().getLowInterval();
 		tpSell = extremos.getExtremos().getHighInterval();
 
 		tendenciaBuy = crearTendenciaParaOperar(procesoIndex, OperationType.BUY, precioBuy, tpBuy, slPipsBuy,
-				stopAperturaBuy, "EXTREMO_EXTREMO", extremos.getMaximaRegresionFiltradaBuy());
+				stopAperturaBuy, limitAperturaBuy, "EXTREMO_EXTREMO", extremos.getMaximaRegresionFiltradaBuy());
 		tendenciaSell = crearTendenciaParaOperar(procesoIndex, OperationType.SELL, precioSell, tpSell, slPipsSell,
-				stopAperturaSell, "EXTREMO_EXTREMO", extremos.getMaximaRegresionFiltradaSell());
+				stopAperturaSell, limitAperturaSell, "EXTREMO_EXTREMO", extremos.getMaximaRegresionFiltradaSell());
 		return new TendenciaParaOperarMaxMin[] { tendenciaBuy, tendenciaSell };
 	}
 
@@ -326,32 +332,36 @@ public class AgrupadorTendenciaManager {
 		double slBuy = 0.0D, slSell = 0.0D;
 		double tpBuy = 0.0D, tpSell = 0.0D;
 		double stopAperturaBuy = 0.0D, stopAperturaSell = 0.0D;
+		double limitAperturaBuy = 0.0D, limitAperturaSell = 0.0D;
 		precioBuy = extremos.getExtremos().getLowInterval();
 		stopAperturaBuy = extremos.getExtremosFiltrados().getHighInterval();
+		limitAperturaBuy = extremos.getExtremosExtremo().getLowInterval();
 		slBuy = extremos.getExtremosFiltrados().getHighInterval() - this.precioPonderado;
 		tpBuy = extremos.getExtremosFiltrados().getLowInterval();
 
 		precioSell = extremos.getExtremos().getHighInterval();
 		stopAperturaSell = extremos.getExtremosFiltrados().getLowInterval();
+		limitAperturaSell = extremos.getExtremosExtremo().getHighInterval();
 		slSell = this.precioPonderado - extremos.getExtremosFiltrados().getLowInterval();
 		tpSell = extremos.getExtremosFiltrados().getHighInterval();
 
 		tendenciaBuy = crearTendenciaParaOperar(procesoIndex, OperationType.BUY, precioBuy, tpBuy, slBuy,
-				stopAperturaBuy, "EXTREMO_SINFILTRAR", extremos.getMaximaRegresionFiltradaBuy());
+				stopAperturaBuy, limitAperturaBuy, "EXTREMO_SINFILTRAR", extremos.getMaximaRegresionFiltradaBuy());
 		tendenciaSell = crearTendenciaParaOperar(procesoIndex, OperationType.SELL, precioSell, tpSell, slSell,
-				stopAperturaSell, "EXTREMO_SINFILTRAR", extremos.getMaximaRegresionFiltradaSell());
+				stopAperturaSell, limitAperturaSell, "EXTREMO_SINFILTRAR", extremos.getMaximaRegresionFiltradaSell());
 		tendenciaBuy.setActiva(0);
 		tendenciaSell.setActiva(0);
 		return new TendenciaParaOperarMaxMin[] { tendenciaBuy, tendenciaSell };
 	}
 
 	private TendenciaParaOperarMaxMin crearTendenciaParaOperar(ProcesoTendenciaBuySell procesoIndex,
-			OperationType tipoOperacion, double precio, double tp, double sl, double stopApertura, String periodo) {
-		return this.crearTendenciaParaOperar(procesoIndex, tipoOperacion, precio, tp, sl, stopApertura, periodo, null);
+			OperationType tipoOperacion, double precio, double tp, double sl, 
+			double stopApertura, double limitApertura, String periodo) {
+		return this.crearTendenciaParaOperar(procesoIndex, tipoOperacion, precio, tp, sl, stopApertura, limitApertura, periodo, null);
 	}
 
 	private TendenciaParaOperarMaxMin crearTendenciaParaOperar(ProcesoTendenciaBuySell procesoIndex,
-			OperationType tipoOperacion, double precio, double tp, double slPips, double stopApertura, String periodo,
+			OperationType tipoOperacion, double precio, double tp, double slPips, double stopApertura, double limitApertura, String periodo,
 			Regresion regresion) {
 		TendenciaParaOperarMaxMin tpo = new TendenciaParaOperarMaxMin();
 		Regresion regresionIndex = regresion;
@@ -369,6 +379,7 @@ public class AgrupadorTendenciaManager {
 		tpo.setPrecioCalculado(precio);
 		tpo.setSlXPips(slPips);
 		tpo.setStopApertura(stopApertura);
+		tpo.setLimitApertura(limitApertura);
 		tpo.setTp(tp);
 		double lote = this.calcularLote(tpo);
 		tpo.setLoteCalculado(lote);

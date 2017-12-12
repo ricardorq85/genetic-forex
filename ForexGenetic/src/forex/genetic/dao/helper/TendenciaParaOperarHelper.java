@@ -52,6 +52,7 @@ public class TendenciaParaOperarHelper {
 			}
 			tpo.setPrecioCalculado(resultado.getDouble("PRECIO_CALCULADO"));
 			tpo.setStopApertura(resultado.getDouble("STOP_APERTURA"));
+			tpo.setLimitApertura(resultado.getDouble("LIMIT_APERTURA"));
 			tpo.setTp(resultado.getDouble("TAKE_PROFIT"));
 			tpo.setSl(resultado.getDouble("STOP_LOSS"));
 			tpo.setLote(resultado.getDouble("LOTE"));
