@@ -67,6 +67,7 @@ public class AgrupadorTendenciaManager {
 		this.adicionalTPO.setMaxPrimeraTendencia(
 				this.precioPonderado - extremos.getExtremosPrimeraTendencia().getHighInterval());
 		this.adicionalTPO.setAvgPrimeraTendencia(this.precioPonderado - (sumaPrimeraTendencia / numeroTendencias));
+		this.adicionalTPO.setExtremos(extremos);
 	}
 
 	public void add(ProcesoTendenciaFiltradaBuySell paraProcesar) {
@@ -273,14 +274,14 @@ public class AgrupadorTendenciaManager {
 		if (OperationType.BUY.equals(procesoIndex.getTipoOperacion())) {
 			precio = extremos.getExtremosFiltrados().getLowInterval();
 			stopApertura = extremos.getExtremosFiltrados().getHighInterval();
-			limitApertura = extremos.getExtremos().getLowInterval();
+			limitApertura = extremos.getExtremosSinFiltrar().getLowInterval();
 			slPips = extremos.getExtremosFiltrados().getHighInterval() - this.precioPonderado;
 			tp = extremos.getExtremosIntermedios().getHighInterval();
 			// tp = extremos.getHighInterval();
 		} else if (OperationType.SELL.equals(procesoIndex.getTipoOperacion())) {
 			precio = extremos.getExtremosFiltrados().getHighInterval();
 			stopApertura = extremos.getExtremosFiltrados().getLowInterval();
-			limitApertura = extremos.getExtremos().getHighInterval();
+			limitApertura = extremos.getExtremosSinFiltrar().getHighInterval();
 			slPips = -(this.precioPonderado - extremos.getExtremosFiltrados().getLowInterval());
 			tp = extremos.getExtremosIntermedios().getLowInterval();
 			// tp = extremos.getLowInterval();
@@ -306,13 +307,13 @@ public class AgrupadorTendenciaManager {
 		precioBuy = extremos.getExtremosExtremo().getLowInterval();
 		stopAperturaBuy = extremos.getExtremosFiltrados().getHighInterval();
 		limitAperturaBuy = extremos.getExtremosExtremo().getLowInterval();
-		tpBuy = extremos.getExtremos().getLowInterval();
+		tpBuy = extremos.getExtremosSinFiltrar().getLowInterval();
 
 		precioSell = extremos.getExtremosExtremo().getHighInterval();
 		stopAperturaSell = extremos.getExtremosFiltrados().getLowInterval();
 		limitAperturaSell = extremos.getExtremosExtremo().getHighInterval();
 		slPipsSell = this.precioPonderado - extremos.getExtremosFiltrados().getLowInterval();
-		tpSell = extremos.getExtremos().getHighInterval();
+		tpSell = extremos.getExtremosSinFiltrar().getHighInterval();
 
 		tendenciaBuy = crearTendenciaParaOperar(procesoIndex, OperationType.BUY, precioBuy, tpBuy, slPipsBuy,
 				stopAperturaBuy, limitAperturaBuy, "EXTREMO_EXTREMO", extremos.getMaximaRegresionFiltradaBuy());
@@ -333,13 +334,13 @@ public class AgrupadorTendenciaManager {
 		double tpBuy = 0.0D, tpSell = 0.0D;
 		double stopAperturaBuy = 0.0D, stopAperturaSell = 0.0D;
 		double limitAperturaBuy = 0.0D, limitAperturaSell = 0.0D;
-		precioBuy = extremos.getExtremos().getLowInterval();
+		precioBuy = extremos.getExtremosSinFiltrar().getLowInterval();
 		stopAperturaBuy = extremos.getExtremosFiltrados().getHighInterval();
 		limitAperturaBuy = extremos.getExtremosExtremo().getLowInterval();
 		slBuy = extremos.getExtremosFiltrados().getHighInterval() - this.precioPonderado;
 		tpBuy = extremos.getExtremosFiltrados().getLowInterval();
 
-		precioSell = extremos.getExtremos().getHighInterval();
+		precioSell = extremos.getExtremosSinFiltrar().getHighInterval();
 		stopAperturaSell = extremos.getExtremosFiltrados().getLowInterval();
 		limitAperturaSell = extremos.getExtremosExtremo().getHighInterval();
 		slSell = this.precioPonderado - extremos.getExtremosFiltrados().getLowInterval();

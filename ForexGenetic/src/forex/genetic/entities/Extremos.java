@@ -1,10 +1,10 @@
 package forex.genetic.entities;
 
 public class Extremos {
-	private DoubleInterval extremosFiltrados;
-	private DoubleInterval extremosIntermedios;
 	private DoubleInterval extremosExtremo;
-	private DoubleInterval extremos;
+	private DoubleInterval extremosFiltrados;
+	private DoubleInterval extremosIntermedios;	
+	private DoubleInterval extremosSinFiltrar;
 	private DoubleInterval extremosPrimeraTendencia;
 	private Regresion maximaRegresionFiltradaBuy, maximaRegresionFiltradaSell;
 
@@ -14,15 +14,15 @@ public class Extremos {
 		this.extremosFiltrados = extremosFiltrados;
 		this.extremosIntermedios = extremosIntermedios;
 		this.extremosExtremo = extremosExtremo;
-		this.extremos = extremosSinFiltrar;
+		this.extremosSinFiltrar = extremosSinFiltrar;
 	}
 
-	public DoubleInterval getExtremos() {
-		return extremos;
+	public DoubleInterval getExtremosSinFiltrar() {
+		return extremosSinFiltrar;
 	}
 
-	public void setExtremos(DoubleInterval extremos) {
-		this.extremos = extremos;
+	public void setExtremosSinFiltrar(DoubleInterval extremosSinFiltrar) {
+		this.extremosSinFiltrar = extremosSinFiltrar;
 	}
 
 	public DoubleInterval getExtremosFiltrados() {

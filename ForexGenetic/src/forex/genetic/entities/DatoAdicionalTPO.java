@@ -5,6 +5,7 @@ import java.util.Date;
 public class DatoAdicionalTPO {
 
 	private Date fechaBase = null;
+	private Extremos extremos;
 
 	private double r2Promedio, pendientePromedio, probabilidadPromedio, diferenciaPrecioSuperior,
 			diferenciaPrecioInferior, minPrimeraTendencia, maxPrimeraTendencia, avgPrimeraTendencia;
@@ -113,6 +114,14 @@ public class DatoAdicionalTPO {
 
 	public void setAvgPrimeraTendencia(double avgPrimeraTendencia) {
 		this.avgPrimeraTendencia = avgPrimeraTendencia;
+	}
+
+	public Extremos getExtremos() {
+		return extremos;
+	}
+
+	public void setExtremos(Extremos extremos) {
+		this.extremos = extremos;
 	}
 
 }

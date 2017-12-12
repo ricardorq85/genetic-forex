@@ -14,6 +14,7 @@ import java.util.List;
 
 import forex.genetic.dao.helper.TendenciaParaOperarHelper;
 import forex.genetic.entities.DatoAdicionalTPO;
+import forex.genetic.entities.Extremos;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -43,8 +44,8 @@ public class TendenciaParaOperarDAO {
 		String sql = "INSERT INTO TENDENCIA_PARA_OPERAR (" + " TIPO_EXPORTACION, PERIODO, TIPO_OPERACION, "
 				+ " FECHA_BASE, FECHA_TENDENCIA, VIGENCIA_LOWER,"
 				+ " VIGENCIA_HIGHER, PRECIO_CALCULADO, STOP_APERTURA, LIMIT_APERTURA, "
-				+ " TAKE_PROFIT, STOP_LOSS, LOTE, LOTE_CALCULADO, "
-				+ " TIEMPO_TENDENCIA, " + " R2, PENDIENTE, DESVIACION, "
+				+ " TAKE_PROFIT, STOP_LOSS, LOTE, LOTE_CALCULADO, " + " TIEMPO_TENDENCIA, "
+				+ " R2, PENDIENTE, DESVIACION, "
 				+ " R2_FILTRADA, PENDIENTE_FILTRADA, DESVIACION_FILTRADA, CANTIDAD_FILTRADA, "
 				+ " MIN_PRECIO, MAX_PRECIO," + " CANTIDAD, FECHA, ID_EJECUCION, ACTIVA) "
 				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -94,8 +95,8 @@ public class TendenciaParaOperarDAO {
 	public int updateTendenciaParaProcesar(TendenciaParaOperar tpo) throws SQLException {
 		String sql = "UPDATE TENDENCIA_PARA_OPERAR SET  " + " FECHA_TENDENCIA=?, VIGENCIA_LOWER=?,"
 				+ " VIGENCIA_HIGHER=?, PRECIO_CALCULADO=?, STOP_APERTURA=?, LIMIT_APERTURA=?, "
-				+ " TAKE_PROFIT=?, STOP_LOSS=?, " + " LOTE=?, LOTE_CALCULADO=?, "
-				+ " TIEMPO_TENDENCIA=?, " + " R2=?, PENDIENTE=?, DESVIACION=?, "
+				+ " TAKE_PROFIT=?, STOP_LOSS=?, " + " LOTE=?, LOTE_CALCULADO=?, " + " TIEMPO_TENDENCIA=?, "
+				+ " R2=?, PENDIENTE=?, DESVIACION=?, "
 				+ " R2_FILTRADA=?, PENDIENTE_FILTRADA=?, DESVIACION_FILTRADA=?, CANTIDAD_FILTRADA=?, "
 				+ " MIN_PRECIO=?, MAX_PRECIO=?," + " CANTIDAD=?, FECHA=?, ID_EJECUCION=?, ACTIVA=? "
 				+ " WHERE TIPO_OPERACION=? AND TIPO_EXPORTACION=? AND PERIODO=? AND FECHA_BASE=?";
@@ -221,8 +222,7 @@ public class TendenciaParaOperarDAO {
 
 	public int deleteTendenciaParaProcesar(TendenciaParaOperar tpo, Date fechaReferencia) throws SQLException {
 		String sql = "DELETE FROM TENDENCIA_PARA_OPERAR "
-				+ " WHERE TIPO_EXPORTACION=? AND TRUNC(FECHA_BASE,'HH24')=TRUNC(?,'HH24')" 
-				+ " AND ID_EJECUCION<>?"
+				+ " WHERE TIPO_EXPORTACION=? AND TRUNC(FECHA_BASE,'HH24')=TRUNC(?,'HH24')" + " AND ID_EJECUCION<>?"
 				+ " AND FECHA<?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -247,8 +247,10 @@ public class TendenciaParaOperarDAO {
 				+ " NUMERO_TENDENCIAS, CANTIDAD_TOTAL_TENDENCIAS, "
 				+ "	NUM_PENDIENTES_POSITIVAS, NUM_PENDIENTES_NEGATIVAS,"
 				+ "	DIFF_PRECIO_EXTREMO_SUPERIOR, DIFF_PRECIO_EXTREMO_INFERIOR, "
-				+ " DIFF_MIN_PRIMERA_TENDENCIA, DIFF_MAX_PRIMERA_TENDENCIA, DIFF_AVG_PRIMERA_TENDENCIA) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ " DIFF_MIN_PRIMERA_TENDENCIA, DIFF_MAX_PRIMERA_TENDENCIA, DIFF_AVG_PRIMERA_TENDENCIA, "
+				+ " MIN_EXTREMO_EXTREMO, MAX_EXTREMO_EXTREMO, MIN_EXTREMO_FILTRADO, MAX_EXTREMO_FILTRADO, "
+				+ " MIN_EXTREMO_INTERMEDIO, MAX_EXTREMO_INTERMEDIO, MIN_EXTREMO_SINFILTRAR, MAX_EXTREMO_SINFILTRAR "
+				+ ") " + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 
 		int index = 1;
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -268,6 +270,9 @@ public class TendenciaParaOperarDAO {
 			statement.setDouble(index++, datoAdicional.getMaxPrimeraTendencia());
 			statement.setDouble(index++, datoAdicional.getAvgPrimeraTendencia());
 
+			Extremos extremos = datoAdicional.getExtremos();
+			index = setExtremosToStatement(statement, extremos, index);
+
 			statement.executeUpdate();
 		} finally {
 			JDBCUtil.close(statement);
@@ -279,7 +284,9 @@ public class TendenciaParaOperarDAO {
 				+ "	PROBABILIDAD_PROMEDIO=?, NUMERO_TENDENCIAS=?, CANTIDAD_TOTAL_TENDENCIAS=?,"
 				+ "	NUM_PENDIENTES_POSITIVAS=?, NUM_PENDIENTES_NEGATIVAS=?,"
 				+ "	DIFF_PRECIO_EXTREMO_SUPERIOR=?, DIFF_PRECIO_EXTREMO_INFERIOR=?,"
-				+ " DIFF_MIN_PRIMERA_TENDENCIA=?, DIFF_MAX_PRIMERA_TENDENCIA=?, DIFF_AVG_PRIMERA_TENDENCIA=? " 
+				+ " DIFF_MIN_PRIMERA_TENDENCIA=?, DIFF_MAX_PRIMERA_TENDENCIA=?, DIFF_AVG_PRIMERA_TENDENCIA=?, "
+				+ " MIN_EXTREMO_EXTREMO=?, MAX_EXTREMO_EXTREMO=?, MIN_EXTREMO_FILTRADO=?, MAX_EXTREMO_FILTRADO=?, "
+				+ " MIN_EXTREMO_INTERMEDIO=?, MAX_EXTREMO_INTERMEDIO=?, MIN_EXTREMO_SINFILTRAR=?, MAX_EXTREMO_SINFILTRAR=? "
 				+ " WHERE FECHA_BASE=?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -299,6 +306,9 @@ public class TendenciaParaOperarDAO {
 			statement.setDouble(index++, datoAdicional.getMinPrimeraTendencia());
 			statement.setDouble(index++, datoAdicional.getMaxPrimeraTendencia());
 			statement.setDouble(index++, datoAdicional.getAvgPrimeraTendencia());
+			
+			Extremos extremos = datoAdicional.getExtremos();
+			index = setExtremosToStatement(statement, extremos, index);
 
 			statement.setTimestamp(index++, new Timestamp(datoAdicional.getFechaBase().getTime()));
 
@@ -309,4 +319,35 @@ public class TendenciaParaOperarDAO {
 		return affected;
 	}
 
+	private int setExtremosToStatement(PreparedStatement statement, Extremos extremos, int index) throws SQLException {
+		if ((extremos != null) && (extremos.getExtremosExtremo() != null)) {
+			statement.setDouble(index++, extremos.getExtremosExtremo().getLowInterval());
+			statement.setDouble(index++, extremos.getExtremosExtremo().getHighInterval());
+		} else {
+			statement.setNull(index++, java.sql.Types.DOUBLE);
+			statement.setNull(index++, java.sql.Types.DOUBLE);
+		}
+		if ((extremos != null) && (extremos.getExtremosFiltrados() != null)) {
+			statement.setDouble(index++, extremos.getExtremosFiltrados().getLowInterval());
+			statement.setDouble(index++, extremos.getExtremosFiltrados().getHighInterval());
+		} else {
+			statement.setNull(index++, java.sql.Types.DOUBLE);
+			statement.setNull(index++, java.sql.Types.DOUBLE);
+		}
+		if ((extremos != null) && (extremos.getExtremosIntermedios() != null)) {
+			statement.setDouble(index++, extremos.getExtremosIntermedios().getLowInterval());
+			statement.setDouble(index++, extremos.getExtremosIntermedios().getHighInterval());
+		} else {
+			statement.setNull(index++, java.sql.Types.DOUBLE);
+			statement.setNull(index++, java.sql.Types.DOUBLE);
+		}
+		if ((extremos != null) && (extremos.getExtremosSinFiltrar() != null)) {
+			statement.setDouble(index++, extremos.getExtremosSinFiltrar().getLowInterval());
+			statement.setDouble(index++, extremos.getExtremosSinFiltrar().getHighInterval());
+		} else {
+			statement.setNull(index++, java.sql.Types.DOUBLE);
+			statement.setNull(index++, java.sql.Types.DOUBLE);
+		}
+		return index;
+	}
 }
