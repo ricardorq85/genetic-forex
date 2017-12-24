@@ -13,6 +13,7 @@ public class TendenciaParaOperar {
 	private String idEjecucion;
 	private String tipoExportacion = "ProcesarTendenciasGrupalManager";
 	private String period = null;
+	private String tipoTendencia = null;
 	private OperationType tipoOperacion = null;
 	private Date fechaBase = null;
 	private Date fechaTendencia = null;
@@ -287,21 +288,25 @@ public class TendenciaParaOperar {
 		this.activa = activa;
 	}
 
+	public String getTipoTendencia() {
+		return tipoTendencia;
+	}
+
+	public void setTipoTendencia(String tipoTendencia) {
+		this.tipoTendencia = tipoTendencia;
+	}
+
 	@Override
 	public String toString() {
 		return "PAIR=" + PropertiesManager.getPair() + ",PERIOD=" + period + ",TIPO_OPERACION="
 				+ tipoOperacion.toString() + ",PRECIO_CALCULADO=" + NumberUtil.round(precioCalculado) + ",TAKE_PROFIT="
-				+ NumberUtil.round(tp) 
-				+ ",STOP_LOSS=" + NumberUtil.round(sl)
-				+ ",STOP_APERTURA=" + NumberUtil.round(stopApertura)
-				+ ",LIMIT_APERTURA=" + NumberUtil.round(limitApertura)
-				+ ",FECHA_TENDENCIA="
-				+ DateUtil.getDateString(fechaTendencia) + ",VIGENCIALOWER=" + DateUtil.getDateString(vigenciaLower)
-				+ ",VIGENCIAHIGHER=" + DateUtil.getDateString(vigenciaHigher) + ",R2="
-				+ ((regresion != null) ? regresion.getR2() : 1) + ",ACTIVA=" + (this.activa) + ",CANTIDAD="
+				+ NumberUtil.round(tp) + ",STOP_LOSS=" + NumberUtil.round(sl) + ",STOP_APERTURA="
+				+ NumberUtil.round(stopApertura) + ",LIMIT_APERTURA=" + NumberUtil.round(limitApertura)
+				+ ",FECHA_TENDENCIA=" + DateUtil.getDateString(fechaTendencia) + ",VIGENCIALOWER="
+				+ DateUtil.getDateString(vigenciaLower) + ",VIGENCIAHIGHER=" + DateUtil.getDateString(vigenciaHigher)
+				+ ",R2=" + ((regresion != null) ? regresion.getR2() : 1) + ",ACTIVA=" + (this.activa) + ",CANTIDAD="
 				+ ((regresion != null) ? regresion.getCantidad() : 1) + ",PENDIENTE="
 				+ ((regresion != null) ? regresion.getPendiente() : 1) + ",LOTE=" + NumberUtil.round(lote) + ",NAME="
 				+ GeneticDelegate.getId() + ",FECHA_BASE=" + DateUtil.getDateString(fechaBase);
 	}
-
 }

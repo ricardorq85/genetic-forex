@@ -28,6 +28,8 @@ import forex.genetic.util.jdbc.JDBCUtil;
  */
 public class TendenciaDAO {
 
+	private String tabla;
+
 	/**
 	 *
 	 */
@@ -38,7 +40,12 @@ public class TendenciaDAO {
 	 * @param connection
 	 */
 	public TendenciaDAO(Connection connection) {
+		this(connection, "TENDENCIA");
+	}
+
+	public TendenciaDAO(Connection connection, String t) {
 		this.connection = connection;
+		this.tabla = t;
 	}
 
 	/**
@@ -48,7 +55,7 @@ public class TendenciaDAO {
 	public void insertTendencia(Tendencia tendencia) {
 		PreparedStatement statement = null;
 		try {
-			String sql = "INSERT INTO TENDENCIA(FECHA_BASE, PRECIO_BASE, ID_INDIVIDUO, FECHA_TENDENCIA, PIPS, "
+			String sql = "INSERT INTO " + tabla + " (FECHA_BASE, PRECIO_BASE, ID_INDIVIDUO, FECHA_TENDENCIA, PIPS, "
 					+ " PRECIO_CALCULADO, TIPO_TENDENCIA, FECHA_APERTURA, OPEN_PRICE, "
 					+ " DURACION, PIPS_ACTUALES, DURACION_ACTUAL, "
 					+ " PROBABILIDAD_POSITIVOS, PROBABILIDAD_NEGATIVOS, PROBABILIDAD, "
@@ -96,7 +103,7 @@ public class TendenciaDAO {
 	public void updateTendencia(Tendencia tendencia) {
 		PreparedStatement statement = null;
 		try {
-			String sql = "UPDATE TENDENCIA SET PRECIO_BASE=?, FECHA_TENDENCIA=?, PIPS=?, "
+			String sql = "UPDATE " + tabla + " SET PRECIO_BASE=?, FECHA_TENDENCIA=?, PIPS=?, "
 					+ " PRECIO_CALCULADO=?, TIPO_TENDENCIA=?, FECHA_APERTURA=?, OPEN_PRICE=?, "
 					+ " DURACION=?, PIPS_ACTUALES=?, DURACION_ACTUAL=?, PROBABILIDAD_POSITIVOS=?, PROBABILIDAD_NEGATIVOS=?,"
 					+ " PROBABILIDAD=?, FECHA=?, FECHA_CIERRE=?, PIPS_REALES=? "
@@ -146,7 +153,7 @@ public class TendenciaDAO {
 	 * @throws SQLException
 	 */
 	public int deleteTendencia(String idIndividuo) throws SQLException {
-		String sql = "DELETE FROM TENDENCIA WHERE ID_INDIVIDUO=?";
+		String sql = "DELETE FROM " + tabla + " WHERE ID_INDIVIDUO=?";
 		PreparedStatement stmtConsulta = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
@@ -164,12 +171,24 @@ public class TendenciaDAO {
 	 * @throws SQLException
 	 */
 	public void deleteTendencia(String idIndividuo, Date fechaBase) throws SQLException {
-		String sql = "DELETE FROM TENDENCIA WHERE ID_INDIVIDUO=? AND FECHA_BASE=?";
+		String sql = "DELETE FROM " + tabla + " WHERE ID_INDIVIDUO=? AND FECHA_BASE=?";
 		PreparedStatement stmtConsulta = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
 			stmtConsulta.setString(1, idIndividuo);
 			stmtConsulta.setTimestamp(2, new Timestamp(fechaBase.getTime()));
+			stmtConsulta.executeUpdate();
+		} finally {
+			JDBCUtil.close(stmtConsulta);
+		}
+	}
+
+	public void deleteTendenciaMenorQue(Date fechaBase) throws SQLException {
+		String sql = "DELETE FROM " + tabla + " WHERE FECHA_BASE<?";
+		PreparedStatement stmtConsulta = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setTimestamp(1, new Timestamp(fechaBase.getTime()));
 			stmtConsulta.executeUpdate();
 		} finally {
 			JDBCUtil.close(stmtConsulta);
@@ -183,8 +202,8 @@ public class TendenciaDAO {
 	 */
 	public List<Tendencia> consultarTendenciasActualizar() throws SQLException {
 		List<Tendencia> list = null;
-		String sql = "SELECT * FROM (SELECT * FROM TENDENCIA "
-				// + " WHERE PROBABILIDAD IS NULL "
+		String sql = "SELECT * FROM (SELECT * FROM " + tabla
+		// + " WHERE PROBABILIDAD IS NULL "
 				+ " WHERE PROBABILIDAD>1 "
 				// + " AND ID_INDIVIDUO='1341548450906.1997'"
 				+ " ORDER BY FECHA_BASE ASC) WHERE ROWNUM<1000";
@@ -212,7 +231,7 @@ public class TendenciaDAO {
 	 */
 	public Date nextFechaBase(Date fecha) throws SQLException {
 		Date obj = null;
-		String sql = "SELECT MIN(FECHA_BASE) FROM TENDENCIA " + " WHERE FECHA_BASE>? ";
+		String sql = "SELECT MIN(FECHA_BASE) FROM " + tabla + " WHERE FECHA_BASE>? ";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 
@@ -236,7 +255,7 @@ public class TendenciaDAO {
 
 	public Date maxFechaBaseTendencia() throws SQLException {
 		Date obj = null;
-		String sql = "SELECT MAX(FECHA_BASE) FROM TENDENCIA ";
+		String sql = "SELECT MAX(FECHA_BASE) FROM " + tabla;
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 		try {
@@ -254,10 +273,10 @@ public class TendenciaDAO {
 
 		return obj;
 	}
-	
+
 	public Date maxFechaProcesoTendencia(DateInterval intervaloFechaBase) throws SQLException {
 		Date obj = null;
-		String sql = "SELECT MAX(FECHA) FROM TENDENCIA WHERE FECHA_BASE BETWEEN ? AND ?";
+		String sql = "SELECT MAX(FECHA) FROM " + tabla + " WHERE FECHA_BASE BETWEEN ? AND ?";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 		try {
@@ -276,7 +295,7 @@ public class TendenciaDAO {
 		}
 
 		return obj;
-	}	
+	}
 
 	/**
 	 *
@@ -286,7 +305,7 @@ public class TendenciaDAO {
 	 */
 	public boolean exists(Tendencia ten) throws SQLException {
 		boolean exists = false;
-		String sql = "SELECT COUNT(*) FROM TENDENCIA " + " WHERE ID_INDIVIDUO=? AND FECHA_BASE=? AND TIPO_CALCULO=?";
+		String sql = "SELECT COUNT(*) FROM " + tabla + " WHERE ID_INDIVIDUO=? AND FECHA_BASE=? AND TIPO_CALCULO=?";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 
@@ -315,7 +334,7 @@ public class TendenciaDAO {
 	 */
 	public int count(java.util.Date fecha) throws SQLException {
 		int cantidad = 0;
-		String sql = "SELECT COUNT(*) FROM TENDENCIA " + " WHERE FECHA_BASE=?";
+		String sql = "SELECT COUNT(*) FROM " + tabla + " WHERE FECHA_BASE=?";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 
@@ -469,21 +488,20 @@ public class TendenciaDAO {
 	}
 
 	public List<Date> consultarXCantidadFechaBase(Date fechaInicio, int parametroMesesTendencia) throws SQLException {
-		String sql = "WITH	PARAMETROS AS ("
-				+ "	SELECT ? FE1, ? FE2 FROM DUAL),"
+		String sql = "WITH	PARAMETROS AS (" + "	SELECT ? FE1, ? FE2 FROM DUAL),"
 				+ "	DIAS AS (SELECT TRUNC(DH.FECHA) FECHA FROM PARAMETROS P, DATOHISTORICO DH"
 				+ " WHERE DH.FECHA BETWEEN P.FE1 AND P.FE2 GROUP BY TRUNC(DH.FECHA)),"
-				+ "	COUNT_DIAS AS (SELECT D.FECHA, COUNT(TEN.FECHA_BASE) CANTIDAD FROM DIAS D LEFT JOIN TENDENCIA TEN ON D.FECHA=TRUNC(TEN.FECHA_BASE)"
-				+ "	GROUP BY D.FECHA"
-				+ " ORDER BY CANTIDAD aSC, D.FECHA deSC)"
-				+ " SELECT FECHA FROM COUNT_DIAS";
+				+ "	COUNT_DIAS AS (SELECT D.FECHA, COUNT(TEN.FECHA_BASE) CANTIDAD FROM DIAS D LEFT JOIN " + tabla
+				+ " TEN ON D.FECHA=TRUNC(TEN.FECHA_BASE)" + "	GROUP BY D.FECHA"
+				+ " ORDER BY CANTIDAD aSC, D.FECHA deSC)" + " SELECT FECHA FROM COUNT_DIAS";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 		int count = 1;
 		List<Date> fechas = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setTimestamp(count++, new Timestamp(DateUtil.adicionarMes(fechaInicio, -parametroMesesTendencia).getTime()));
+			stmtConsulta.setTimestamp(count++,
+					new Timestamp(DateUtil.adicionarMes(fechaInicio, -parametroMesesTendencia).getTime()));
 			stmtConsulta.setTimestamp(count++, new Timestamp(fechaInicio.getTime()));
 
 			resultado = stmtConsulta.executeQuery();
@@ -495,4 +513,34 @@ public class TendenciaDAO {
 		}
 		return fechas;
 	}
+
+	public Date dummyTendencia(Date fecha, int rownum) throws SQLException {
+		Date obj = null;
+		String sql = "SELECT * FROM " + tabla + " WHERE FECHA_BASE>?-20 AND ROWNUM<=? ";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setTimestamp(1, new Timestamp(fecha.getTime()));
+			stmtConsulta.setInt(2, rownum);
+			resultado = stmtConsulta.executeQuery();
+
+			TendenciaHelper.createTendencia(resultado);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+
+		return obj;
+	}
+
+	public String getTabla() {
+		return tabla;
+	}
+
+	public void setTabla(String tabla) {
+		this.tabla = tabla;
+	}
+
 }

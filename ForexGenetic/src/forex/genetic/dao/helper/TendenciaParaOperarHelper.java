@@ -33,6 +33,7 @@ public class TendenciaParaOperarHelper {
 			TendenciaParaOperarMaxMin tpo = new TendenciaParaOperarMaxMin();
 			tpo.setIdEjecucion(resultado.getString("ID_EJECUCION"));
 			tpo.setPeriodo(resultado.getString("PERIODO"));
+			tpo.setTipoTendencia(resultado.getString("TIPO_TENDENCIA"));
 			tpo.setTipoOperacion(Constants.getOperationType(resultado.getString("TIPO_OPERACION")));
 			Timestamp ts = resultado.getTimestamp("FECHA_BASE");
 			if (ts != null) {

@@ -69,7 +69,7 @@ public abstract class TendenciaProcesoBuySellDAO extends TendenciaDAO {
 		List<TendenciaParaOperar> tendencias = new ArrayList<>();
 		String sql = this.getSqlBase()
 				+ "SELECT PARAM.PERIODO PERIODO, TEN.*  FROM PARAMETROS PARAM, PROMEDIOS PROM, "
-				+ this.getTablaTendencia() + " TEN	"
+				+ this.getTablaTendenciaFiltrada() + " TEN	"
 				+ " WHERE TEN.CANTIDAD>=PROM.AVGCANTIDAD"
 				+ " ORDER BY TEN.FECHA_TENDENCIA ASC ";
 		ResultSet resultado = null;
@@ -86,7 +86,7 @@ public abstract class TendenciaProcesoBuySellDAO extends TendenciaDAO {
 		return tendencias;
 	}
 
-	protected String getTablaTendencia() {
+	protected String getTablaTendenciaFiltrada() {
 		return "TENDENCIA_CALCULADA";
 	}
 }

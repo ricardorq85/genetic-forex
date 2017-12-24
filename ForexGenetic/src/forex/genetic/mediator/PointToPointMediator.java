@@ -95,7 +95,7 @@ public class PointToPointMediator extends GeneticMediator {
 	protected void setUltimaFechaTendencia(int count) throws SQLException {
 		this.ultimaFechaBaseTendencia = tendenciaDAO.maxFechaBaseTendencia();
 		if ((this.ultimaFechaBaseTendencia == null) || (fechaHistoricaMaximaNueva.equals(ultimaFechaBaseTendencia))) {
-			int minutos = (int) (-(1440 * 0.5 * count));
+			int minutos = (int) (-(1440 * 0.7 * count));
 			this.ultimaFechaBaseTendencia = DateUtil.adicionarMinutos(fechaHistoricaMaximaNueva, minutos);
 		}
 	}
@@ -197,6 +197,7 @@ public class PointToPointMediator extends GeneticMediator {
 	private void exportarIndividuos()
 			throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
 			InvocationTargetException, SQLException, ParseException, GeneticException, IOException {
+		//this.refrescarDatosTendencia();
 		logTime("Init Exportar Individuos", 1);
 		boolean existNewData = this.existenNuevosDatosHistoricos();
 		if (existNewData) {
@@ -208,14 +209,20 @@ public class PointToPointMediator extends GeneticMediator {
 			ExportThread exportThread = new ExportThread(filePath, manager);
 			logTime("Lanzando exportacion", 1);
 			exportThread.runExport();
-			//logTime("Lanzando hilo para exportacion", 1);
-			//exportThread.start();
+			// logTime("Lanzando hilo para exportacion", 1);
+			// exportThread.start();
 			// manager.procesarTendencias();
 			// manager.export(filePath);
 		} else {
 			logTime("No existen nuevos datos. No se procesara la exportacion", 1);
 		}
 		logTime("End Exportar Individuos", 1);
+	}
+
+	private void refrescarDatosTendencia() throws SQLException {
+		String mv = "TENDENCIA_ULTIMOMES";
+		logTime("Refrescando vista materializada: " + mv, 1);
+		JDBCUtil.refreshMaterializedView(this.connection, mv, "C");
 	}
 
 	private boolean existenNuevosDatosHistoricos() throws IOException {

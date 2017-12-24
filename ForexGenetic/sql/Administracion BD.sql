@@ -2,6 +2,9 @@ SELECT * FROM DBA_BLOCKERS;
 SELECT * FROM DBA_DDL_LOCKS;
 SELECT * FROM DBA_DML_LOCKS;
 
+select * from V$DB_CACHE_ADVICE;
+select * from V$SYSSTAT;
+
 select s.sid, s.serial#, p.spid 
 from 
    v$session s, 

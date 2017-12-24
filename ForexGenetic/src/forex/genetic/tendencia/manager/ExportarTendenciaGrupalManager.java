@@ -2,12 +2,15 @@ package forex.genetic.tendencia.manager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.TendenciaProcesoFiltradaDAO;
+import forex.genetic.dao.TendenciaProcesoFiltradaUltimosDatosDAO;
 import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
 import forex.genetic.entities.Regresion;
 import forex.genetic.entities.TendenciaParaOperar;
+import forex.genetic.util.DateUtil;
 import forex.genetic.util.Constants.OperationType;
 import forex.genetic.util.jdbc.JDBCUtil;
 
@@ -21,13 +24,17 @@ public class ExportarTendenciaGrupalManager extends ExportarTendenciaManager {
 	private static final double MAX_DESVIACION = 10000.0D;
 
 	public ExportarTendenciaGrupalManager() throws ClassNotFoundException, SQLException {
-		super(JDBCUtil.getConnection());
+		this(JDBCUtil.getConnection(), null);
 	}
 
-	public ExportarTendenciaGrupalManager(Connection c) {
+	public ExportarTendenciaGrupalManager(Connection c, Date fechaBase) {
 		super(c);
-		super.dao = new TendenciaProcesoFiltradaDAO(c);
-		// super.dao = new TendenciaProcesoFiltradaFechaCierreDAO(c);
+		Date fechaComparacion = DateUtil.adicionarDias(new Date(), (-30 / 3));
+		if (fechaBase.after(fechaComparacion)) {
+			super.dao = new TendenciaProcesoFiltradaUltimosDatosDAO(c);
+		} else {
+			super.dao = new TendenciaProcesoFiltradaDAO(c);
+		}
 	}
 
 	protected void procesarRegresion(Regresion regresion, Regresion regresionFiltrada) throws SQLException {

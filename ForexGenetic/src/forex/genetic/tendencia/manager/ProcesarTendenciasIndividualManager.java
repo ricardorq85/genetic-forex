@@ -61,7 +61,7 @@ public class ProcesarTendenciasIndividualManager extends ProcesarTendenciasBuySe
 	}
 
 	@Override
-	protected ExportarTendenciaManager getExporter() {
+	protected ExportarTendenciaManager getExporter(Date fechaBase) {
 		return new ExportarTendenciaFiltradaManager(conn);
 		//return new ExportarTendenciaFiltroFechaTendenciaFechaBaseManager(conn);
 	}

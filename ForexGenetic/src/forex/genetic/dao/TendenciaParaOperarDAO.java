@@ -41,20 +41,22 @@ public class TendenciaParaOperarDAO {
 	 * @throws SQLException
 	 */
 	public void insertTendenciaParaOperar(TendenciaParaOperar tpo) throws SQLException {
-		String sql = "INSERT INTO TENDENCIA_PARA_OPERAR (" + " TIPO_EXPORTACION, PERIODO, TIPO_OPERACION, "
+		String sql = "INSERT INTO TENDENCIA_PARA_OPERAR (" + " TIPO_EXPORTACION, PERIODO, "
+				+ " TIPO_TENDENCIA, TIPO_OPERACION, "
 				+ " FECHA_BASE, FECHA_TENDENCIA, VIGENCIA_LOWER,"
 				+ " VIGENCIA_HIGHER, PRECIO_CALCULADO, STOP_APERTURA, LIMIT_APERTURA, "
 				+ " TAKE_PROFIT, STOP_LOSS, LOTE, LOTE_CALCULADO, " + " TIEMPO_TENDENCIA, "
 				+ " R2, PENDIENTE, DESVIACION, "
 				+ " R2_FILTRADA, PENDIENTE_FILTRADA, DESVIACION_FILTRADA, CANTIDAD_FILTRADA, "
 				+ " MIN_PRECIO, MAX_PRECIO," + " CANTIDAD, FECHA, ID_EJECUCION, ACTIVA) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		int index = 1;
 		PreparedStatement statement = connection.prepareStatement(sql);
 		try {
 			statement.setString(index++, tpo.getTipoExportacion());
 			statement.setString(index++, tpo.getPeriod());
+			statement.setString(index++, tpo.getTipoTendencia());
 			statement.setString(index++, tpo.getTipoOperacion().name());
 			statement.setTimestamp(index++, new Timestamp(tpo.getFechaBase().getTime()));
 			statement.setTimestamp(index++, new Timestamp(tpo.getFechaTendencia().getTime()));
@@ -98,7 +100,7 @@ public class TendenciaParaOperarDAO {
 				+ " TAKE_PROFIT=?, STOP_LOSS=?, " + " LOTE=?, LOTE_CALCULADO=?, " + " TIEMPO_TENDENCIA=?, "
 				+ " R2=?, PENDIENTE=?, DESVIACION=?, "
 				+ " R2_FILTRADA=?, PENDIENTE_FILTRADA=?, DESVIACION_FILTRADA=?, CANTIDAD_FILTRADA=?, "
-				+ " MIN_PRECIO=?, MAX_PRECIO=?," + " CANTIDAD=?, FECHA=?, ID_EJECUCION=?, ACTIVA=? "
+				+ " MIN_PRECIO=?, MAX_PRECIO=?," + " CANTIDAD=?, FECHA=?, ID_EJECUCION=?, ACTIVA=?, TIPO_TENDENCIA=? "
 				+ " WHERE TIPO_OPERACION=? AND TIPO_EXPORTACION=? AND PERIODO=? AND FECHA_BASE=?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -129,6 +131,7 @@ public class TendenciaParaOperarDAO {
 			statement.setTimestamp(index++, new Timestamp(new Date().getTime()));
 			statement.setString(index++, tpo.getIdEjecucion());
 			statement.setInt(index++, tpo.getActiva());
+			statement.setString(index++, tpo.getTipoTendencia());
 
 			statement.setString(index++, tpo.getTipoOperacion().name());
 			statement.setString(index++, tpo.getTipoExportacion());

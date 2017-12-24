@@ -72,9 +72,7 @@ public class TendenciaProcesoFiltradaFechaCierreDAO extends TendenciaProcesoFilt
 	}
 	
 	@Override
-	protected String getTablaTendencia() {
+	protected String getTablaTendenciaFiltrada() {
 		return "TENDENCIA_CALCULADA";
 	}
-
-	
 }

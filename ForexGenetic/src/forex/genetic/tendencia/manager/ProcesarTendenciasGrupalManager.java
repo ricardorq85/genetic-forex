@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.TendenciaDAO;
+import forex.genetic.dao.TendenciaUltimosDatosDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
@@ -30,12 +31,13 @@ import forex.genetic.util.jdbc.JDBCUtil;
  */
 public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellManager {
 
-	private TendenciaDAO tendenciaDAO;
+	private TendenciaDAO tendenciaCompletaDAO, tendenciaUltimosDatosDAO;
 	private List<TendenciaParaOperarMaxMin> tendenciasResultado;
 
 	public ProcesarTendenciasGrupalManager() throws ClassNotFoundException, SQLException {
 		super();
-		tendenciaDAO = new TendenciaDAO(conn);
+		tendenciaCompletaDAO = new TendenciaDAO(conn);
+		tendenciaUltimosDatosDAO = new TendenciaUltimosDatosDAO(conn);
 		tendenciasResultado = new ArrayList<>();
 	}
 
@@ -51,29 +53,40 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 			Arrays.sort(dias);
 			LogUtil.logTime("Dias exportacion=" + Arrays.toString(dias), 1);
 			Date lastFechaBaseParaMaxima = null;
+			TendenciaDAO tendenciaProcesoDAO;
 			while (fechaProceso.before(parametroFechaFin)) {
-				Date fechaBase = tendenciaDAO.nextFechaBase(fechaProceso);
+				Date fechaComparacion = DateUtil.adicionarDias(new Date(), (-30 / 3));
+				if (fechaProceso.after(fechaComparacion)) {
+					tendenciaProcesoDAO = tendenciaUltimosDatosDAO;
+				} else {
+					tendenciaProcesoDAO = tendenciaCompletaDAO;
+				}
+				LogUtil.logTime(tendenciaProcesoDAO.getClass().getSimpleName(), 1);
+				Date fechaBase = tendenciaProcesoDAO.nextFechaBase(fechaProceso);
 				if (fechaBase != null) {
 					long minutosDia = (24 * 60);
+					// LogUtil.logTime("Procesando dummy...", 1);
+					// procesarDummy();
 					if ((lastFechaBaseParaMaxima == null)
 							|| (DateUtil.diferenciaMinutos(lastFechaBaseParaMaxima, fechaBase) > minutosDia)) {
 						DateInterval intervaloFechaProceso = new DateInterval(DateUtil.adicionarMes(fechaBase, -1),
 								fechaBase);
-						lastFechaBaseParaMaxima = tendenciaDAO.maxFechaProcesoTendencia(intervaloFechaProceso);
+						lastFechaBaseParaMaxima = tendenciaProcesoDAO.maxFechaProcesoTendencia(intervaloFechaProceso);
 					}
-					AgrupadorTendenciaManager agrupador = new AgrupadorTendenciaManager(fechaBase, lastFechaBaseParaMaxima, conn);
+					AgrupadorTendenciaManager agrupadorTendenciaManager = new AgrupadorTendenciaManager(fechaBase,
+							lastFechaBaseParaMaxima, conn);
 					LogUtil.logTime("Fecha base exportacion=" + DateUtil.getDateString(fechaBase), 1);
 					ProcesoTendenciaFiltradaBuySell procesoFromExporterLastIndex = procesarExporter(
 							dias[dias.length - 1], fechaBase);
 					for (int i = 0; i < dias.length - 1; i++) {
 						ProcesoTendenciaFiltradaBuySell procesoFromExporter = procesarExporter(dias[i], fechaBase);
-						agrupador.add(procesoFromExporter);
+						agrupadorTendenciaManager.add(procesoFromExporter);
 					}
 					// procesoFromExporterLastIndex.getTendencias().get(0).getPrecioCalculado()
-					agrupador.add(procesoFromExporterLastIndex);
-					agrupador.procesar();
-					agrupador.export();
-					this.tendenciasResultado.addAll(agrupador.getTendenciasResultado());
+					agrupadorTendenciaManager.add(procesoFromExporterLastIndex);
+					agrupadorTendenciaManager.procesar();
+					agrupadorTendenciaManager.export();
+					this.tendenciasResultado.addAll(agrupadorTendenciaManager.getTendenciasResultado());
 					fechaProceso = DateUtil.calcularFechaXDuracion(parametroStep, fechaBase);
 				} else {
 					LogUtil.logTime("NO existen mas Fecha base tendencia para exportacion", 1);
@@ -85,7 +98,12 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 		{
 			JDBCUtil.close(conn);
 		}
+	}
 
+	public void procesarDummy() throws SQLException {
+		for (int i = 1; i < 10; i++) {
+			tendenciaCompletaDAO.dummyTendencia(parametroFechaInicio, i * 10);
+		}
 	}
 
 	protected ProcesoTendenciaFiltradaBuySell procesarExporter(float tiempoTendencia, Date fechaBase)
@@ -95,8 +113,9 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 		double tiempoTendenciaMinutos = (tiempoTendencia) * 24 * 60;
 		ProcesoTendenciaFiltradaBuySell procesoTendencia = new ProcesoTendenciaFiltradaBuySell(periodo,
 				super.tipoTendencia, tiempoTendenciaMinutos, fechaBase);
-		ProcesoTendenciaFiltradaBuySell procesoFromExporter = (ProcesoTendenciaFiltradaBuySell) procesarExporter(
-				procesoTendencia).getProcesoTendencia();
+		ExportarTendenciaManager exporterTendenciaManager = procesarExporter(procesoTendencia);
+		ProcesoTendenciaFiltradaBuySell procesoFromExporter = (ProcesoTendenciaFiltradaBuySell) exporterTendenciaManager
+				.getProcesoTendencia();
 		return procesoFromExporter;
 	}
 
@@ -106,8 +125,8 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 	}
 
 	@Override
-	protected ExportarTendenciaManager getExporter() {
-		return new ExportarTendenciaGrupalManager(conn);
+	protected ExportarTendenciaManager getExporter(Date fechaBase) {
+		return new ExportarTendenciaGrupalManager(conn, fechaBase);
 	}
 
 	@Override

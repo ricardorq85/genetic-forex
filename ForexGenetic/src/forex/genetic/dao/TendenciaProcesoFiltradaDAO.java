@@ -12,8 +12,15 @@ import java.sql.Connection;
  */
 public class TendenciaProcesoFiltradaDAO extends TendenciaProcesoBuySellDAO {
 
+	private String tablaTendencia;
+
 	public TendenciaProcesoFiltradaDAO(Connection connection) {
+		this(connection, "TENDENCIA");
+	}
+	
+	public TendenciaProcesoFiltradaDAO(Connection connection, String t) {
 		super(connection);
+		this.tablaTendencia = t;
 	}
 
 	protected String getSqlBase() {
@@ -27,7 +34,8 @@ public class TendenciaProcesoFiltradaDAO extends TendenciaProcesoBuySellDAO {
 				+ " 		TEN.FECHA_TENDENCIA) MAXFETENDENCIA,"
 				+ "			MIN(TEN.PRECIO_CALCULADO) MINPRECIO_CALCULADO, MAX(TEN.PRECIO_CALCULADO) MAXPRECIO_CALCULADO,"
 				+ "			ROUND(AVG(TEN.PROBABILIDAD),5) PROBABILIDAD " + " 	FROM"
-				+ " 		PARAMETROS PARAM, TENDENCIA TEN" + " 	WHERE"
+				+ " 		PARAMETROS PARAM, " + tablaTendencia
+				+ "			 TEN" + " 	WHERE"
 				+ "		TEN.TIPO_TENDENCIA=PARAM.TIPO_TENDENCIA"
 				+ "		AND WEEK_MINUTES(TEN.FECHA_TENDENCIA,TEN.FECHA_BASE)<PARAM.TIEMPO_TENDENCIA"
 				+ "		AND TEN.FECHA_BASE<=PARAM.FECHA_PROCESO" + "		AND TEN.FECHA_TENDENCIA>PARAM.FECHA_PROCESO"
@@ -60,8 +68,17 @@ public class TendenciaProcesoFiltradaDAO extends TendenciaProcesoBuySellDAO {
 	}
 
 	@Override
-	protected String getTablaTendencia() {
+	protected String getTablaTendenciaFiltrada() {
 		return "TENDENCIA_FILTRADA";
 	}
+
+	public String getTablaTendencia() {
+		return tablaTendencia;
+	}
+
+	public void setTablaTendencia(String tablaTendencia) {
+		this.tablaTendencia = tablaTendencia;
+	}
+
 
 }

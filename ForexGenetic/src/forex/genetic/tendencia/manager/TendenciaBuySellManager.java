@@ -8,6 +8,7 @@ import java.util.List;
 import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.TendenciaDAO;
+import forex.genetic.dao.TendenciaUltimosDatosDAO;
 import forex.genetic.entities.Estadistica;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
@@ -28,7 +29,8 @@ public class TendenciaBuySellManager extends TendenciasManager {
 	private OperacionesManager operacionManager;
 	private OperacionesTendenciaDAO operacionesDAO;
 	private DatoHistoricoDAO datoHistoricoDAO;
-	private TendenciaDAO tendenciaDAO;
+	private TendenciaDAO tendenciaDAO, tendenciaUltimosDatosDAO;
+	private Date fechaComparacion;
 
 	public TendenciaBuySellManager() throws ClassNotFoundException, SQLException {
 		setup();
@@ -41,6 +43,10 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		operacionesDAO = new OperacionesTendenciaDAO(conn);
 		datoHistoricoDAO = new DatoHistoricoDAO(conn);
 		tendenciaDAO = new TendenciaDAO(conn);
+		tendenciaUltimosDatosDAO = new TendenciaUltimosDatosDAO(conn);
+		this.fechaComparacion = DateUtil.adicionarDias(new Date(), -30);
+		LogUtil.logTime("Borrando tendencias ultimos datos...", 1);
+		tendenciaUltimosDatosDAO.deleteTendenciaMenorQue(fechaComparacion);
 	}
 
 	public List<TendenciaEstadistica> calcularTendencias(Date fechaBaseInicial, Date fechaBaseFinal, int filas)
@@ -48,7 +54,8 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		return this.calcularTendencias(1, fechaBaseInicial, fechaBaseFinal, filas);
 	}
 
-	public List<TendenciaEstadistica> calcularTendencias(int cantidadVeces, Date fechaBaseInicial, Date fechaBaseFinal, int filas) throws SQLException {
+	public List<TendenciaEstadistica> calcularTendencias(int cantidadVeces, Date fechaBaseInicial, Date fechaBaseFinal,
+			int filas) throws SQLException {
 		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
 		List<Point> pointsFechaTendencia = datoHistoricoDAO.consultarHistoricoOrderByPrecio(fechaBaseInicial,
 				fechaBaseFinal);
@@ -59,7 +66,8 @@ public class TendenciaBuySellManager extends TendenciasManager {
 			for (int i = 1; i < c; i++) {
 				int randomIndex = RandomUtil.nextInt(sizeLimit + 1);
 				listaTendencias.addAll(this.calcularTendencias(pointsFechaTendencia.get(randomIndex), filas));
-				listaTendencias.addAll(this.calcularTendencias(pointsFechaTendencia.get(size - randomIndex - 1), filas));
+				listaTendencias
+						.addAll(this.calcularTendencias(pointsFechaTendencia.get(size - randomIndex - 1), filas));
 			}
 		}
 		return listaTendencias;
@@ -77,7 +85,7 @@ public class TendenciaBuySellManager extends TendenciasManager {
 	public List<TendenciaEstadistica> calcularTendencias(Point puntoTendencia, int filas) throws SQLException {
 		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
 		if ((puntoTendencia != null)) {
-			//LogUtil.logEnter(1);
+			// LogUtil.logEnter(1);
 			LogUtil.logTime("Fecha base=" + DateUtil.getDateString(puntoTendencia.getDate()), 1);
 			List<Individuo> individuos = operacionesDAO.consultarIndividuoOperacionActiva(puntoTendencia.getDate(),
 					filas);
@@ -98,17 +106,24 @@ public class TendenciaBuySellManager extends TendenciasManager {
 					e.printStackTrace();
 				}
 			});
-		}
+		}		
 		return listaTendencias;
 	}
 
 	public void guardarTendencia(Tendencia tendencia) throws SQLException {
-		if (tendenciaDAO.exists(tendencia)) {
-			tendenciaDAO.updateTendencia(tendencia);
-		} else {
-			tendenciaDAO.insertTendencia(tendencia);
+		guardarTendencia(tendencia, tendenciaDAO);
+		if (tendencia.getFechaBase().after(fechaComparacion)) {
+			guardarTendencia(tendencia,  tendenciaUltimosDatosDAO);
 		}
 		conn.commit();
+	}
+	
+	public void guardarTendencia(Tendencia tendencia, TendenciaDAO dao) throws SQLException {
+		if (dao.exists(tendencia)) {
+			dao.updateTendencia(tendencia);
+		} else {
+			dao.insertTendencia(tendencia);
+		}
 	}
 
 	public void borrarTendencia(String idIndividuo, Date fechaBase) throws SQLException {
@@ -145,9 +160,10 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		if (individuo != null) {
 			LogUtil.logTime("Cargando orden actual...", 5);
 			Order ordenActual = this.getOrdenActual(pointFecha, individuo, fechaBase);
-			//LogUtil.logTime("Procesando reprocesos...", 5);
+			// LogUtil.logTime("Procesando reprocesos...", 5);
 			LogUtil.logTime("Se suponen reprocesos procesados...", 5);
-			//operacionManager.procesarMaximosRetroceso(individuo, individuo.getFechaApertura());
+			// operacionManager.procesarMaximosRetroceso(individuo,
+			// individuo.getFechaApertura());
 			ParametroConsultaEstadistica parametroConsultaEstadisticaFiltrada = new ParametroConsultaEstadistica(
 					fechaBase, ordenActual.getPips(), ordenActual.getDuracionMinutos(), individuo);
 			LogUtil.logTime("Consultando estadística filtrada...", 5);

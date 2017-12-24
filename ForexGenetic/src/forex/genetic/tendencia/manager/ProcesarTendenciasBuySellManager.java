@@ -84,14 +84,14 @@ public abstract class ProcesarTendenciasBuySellManager {
 	protected ExportarTendenciaManager procesarExporter(ProcesoTendenciaBuySell paraProcesar)
 			throws ClassNotFoundException, SQLException, NoSuchMethodException, InstantiationException,
 			IllegalAccessException, InvocationTargetException {
-		ExportarTendenciaManager exporter = getExporter();
+		ExportarTendenciaManager exporter = getExporter(paraProcesar.getFechaBase());
 		exporter.setProcesoTendencia(paraProcesar);
 		exporter.procesar();
 		// exporter.export();
 		return exporter;
 	}
 
-	protected abstract ExportarTendenciaManager getExporter();
+	protected abstract ExportarTendenciaManager getExporter(Date fechaBase);
 
 	public void export(Path path) throws IOException {
 
