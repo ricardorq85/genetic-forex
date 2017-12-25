@@ -183,16 +183,18 @@ public class TendenciaDAO {
 		}
 	}
 
-	public void deleteTendenciaMenorQue(Date fechaBase) throws SQLException {
+	public int deleteTendenciaMenorQue(Date fechaBase) throws SQLException {
 		String sql = "DELETE FROM " + tabla + " WHERE FECHA_BASE<?";
 		PreparedStatement stmtConsulta = null;
+		int affected = 0;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
 			stmtConsulta.setTimestamp(1, new Timestamp(fechaBase.getTime()));
-			stmtConsulta.executeUpdate();
+			affected = stmtConsulta.executeUpdate();
 		} finally {
 			JDBCUtil.close(stmtConsulta);
 		}
+		return affected;
 	}
 
 	/**

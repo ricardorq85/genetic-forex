@@ -44,9 +44,10 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		datoHistoricoDAO = new DatoHistoricoDAO(conn);
 		tendenciaDAO = new TendenciaDAO(conn);
 		tendenciaUltimosDatosDAO = new TendenciaUltimosDatosDAO(conn);
-		this.fechaComparacion = DateUtil.adicionarDias(new Date(), -30);
+		this.fechaComparacion = DateUtil.calcularFechaComparacionParaTendenciaUltimosDatos();
 		LogUtil.logTime("Borrando tendencias ultimos datos...", 1);
-		tendenciaUltimosDatosDAO.deleteTendenciaMenorQue(fechaComparacion);
+		int affected = tendenciaUltimosDatosDAO.deleteTendenciaMenorQue(fechaComparacion);
+		LogUtil.logTime("Tendencias borradas: " + affected, 1);
 	}
 
 	public List<TendenciaEstadistica> calcularTendencias(Date fechaBaseInicial, Date fechaBaseFinal, int filas)

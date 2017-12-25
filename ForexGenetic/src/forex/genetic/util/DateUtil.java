@@ -10,6 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import forex.genetic.dao.TendenciaProcesoFiltradaDAO;
+import forex.genetic.dao.TendenciaProcesoFiltradaUltimosDatosDAO;
 import forex.genetic.entities.DateInterval;
 
 /**
@@ -19,6 +21,19 @@ import forex.genetic.entities.DateInterval;
 public class DateUtil {
 
 	private static final long HORAS_WEEKEND = 48;
+
+	public static boolean cumpleFechaParaTendenciaUltimosDatos(Date fechaBase) {
+		Date fechaComparacion = DateUtil.adicionarDias(new Date(), (-40 / 3));
+		if (fechaBase.after(fechaComparacion)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static Date calcularFechaComparacionParaTendenciaUltimosDatos() {
+		return DateUtil.adicionarDias(new Date(), -40);
+	}
 
 	public static boolean anyoMesMayorQue(Date fechaMenor, Date fechaMayor) {
 		int yearMonth1 = obtenerAnyoMes(fechaMenor);
@@ -280,7 +295,7 @@ public class DateUtil {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm.ss");
 		return ((fecha == null) ? null : formatter.format(fecha));
 	}
-	
+
 	public static String getDateString(String formato, Date fecha) {
 		SimpleDateFormat formatter = new SimpleDateFormat(formato);
 		return ((fecha == null) ? null : formatter.format(fecha));

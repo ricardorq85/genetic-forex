@@ -29,8 +29,7 @@ public class ExportarTendenciaGrupalManager extends ExportarTendenciaManager {
 
 	public ExportarTendenciaGrupalManager(Connection c, Date fechaBase) {
 		super(c);
-		Date fechaComparacion = DateUtil.adicionarDias(new Date(), (-30 / 3));
-		if (fechaBase.after(fechaComparacion)) {
+		if (DateUtil.cumpleFechaParaTendenciaUltimosDatos(fechaBase)) {
 			super.dao = new TendenciaProcesoFiltradaUltimosDatosDAO(c);
 		} else {
 			super.dao = new TendenciaProcesoFiltradaDAO(c);

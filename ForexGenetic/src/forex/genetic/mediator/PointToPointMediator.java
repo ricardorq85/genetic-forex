@@ -167,7 +167,7 @@ public class PointToPointMediator extends GeneticMediator {
 		Date fechaBaseFinal = fechaHistoricaMaximaNueva;
 		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
 		if (count == 1) {
-			tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia * 2);
+			tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia / 2);
 		}
 		long durMillis = DateUtil.calcularDuracionMillis(ultimaFechaBaseTendencia, fechaBaseFinal);
 		int diasDiferencia = (int) ((durMillis / (1000 * 60 * 60 * 24)) + 1);

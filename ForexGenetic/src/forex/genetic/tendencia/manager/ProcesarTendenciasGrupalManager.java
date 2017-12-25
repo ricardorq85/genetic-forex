@@ -55,8 +55,7 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 			Date lastFechaBaseParaMaxima = null;
 			TendenciaDAO tendenciaProcesoDAO;
 			while (fechaProceso.before(parametroFechaFin)) {
-				Date fechaComparacion = DateUtil.adicionarDias(new Date(), (-30 / 3));
-				if (fechaProceso.after(fechaComparacion)) {
+				if (DateUtil.cumpleFechaParaTendenciaUltimosDatos(fechaProceso)) {
 					tendenciaProcesoDAO = tendenciaUltimosDatosDAO;
 				} else {
 					tendenciaProcesoDAO = tendenciaCompletaDAO;
