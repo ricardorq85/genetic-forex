@@ -20,7 +20,7 @@ public class TendenciaFacade implements IGeneticFacade {
 	protected Connection conn = null;
 	private List<Date> fechasXCantidad;
 	private Date parametroFechaInicio;
-	private int parametroStepTendencia, parametroFilasTendencia, parametroMesesTendencia;
+	private int parametroStepTendencia, parametroFilasTendencia, parametroMesesTendencia, parametroNumXCantidad;
 
 	public TendenciaFacade() throws ClassNotFoundException, SQLException {
 		conn = JDBCUtil.getConnection();
@@ -37,6 +37,7 @@ public class TendenciaFacade implements IGeneticFacade {
 		}
 		if (parametroMesesTendencia > 0) {
 			fechasXCantidad = tendenciaDAO.consultarXCantidadFechaBase(parametroFechaInicio, parametroMesesTendencia);
+			parametroNumXCantidad = parametroDAO.getIntValorParametro("NUM_TENDENCIA_X_CANTIDAD");
 		}
 	}
 
@@ -51,10 +52,10 @@ public class TendenciaFacade implements IGeneticFacade {
 	private void procesarTendenciasXCantidad() throws ClassNotFoundException, SQLException {
 		Date fechaBaseFinal = parametroFechaInicio;
 		int minutosUnDia = 1 * 24 * 60;
-		for (Date fecha : fechasXCantidad) {
-			Date fechaBaseInicial = fecha;
+		for (int i = 0; i < parametroNumXCantidad && i < fechasXCantidad.size(); i++) {
+			Date fechaBaseInicial = fechasXCantidad.get(i);
 			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseInicial, minutosUnDia);
-			//LogUtil.logEnter(1);
+			// LogUtil.logEnter(1);
 			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
 					+ DateUtil.getDateString(fechaBaseFinal), 1);
 			tendenciaManager.calcularTendencias(2, fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
@@ -67,7 +68,7 @@ public class TendenciaFacade implements IGeneticFacade {
 		while (fechaBaseFinal.after(DateUtil.adicionarDias(fechaBaseFinal, -30))) {
 			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1);
 			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, -parametroStepTendencia);
-			//LogUtil.logEnter(1);
+			// LogUtil.logEnter(1);
 			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
 					+ DateUtil.getDateString(fechaBaseFinal), 1);
 			tendenciaManager.calcularTendencias(fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);

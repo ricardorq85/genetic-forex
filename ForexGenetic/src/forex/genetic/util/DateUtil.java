@@ -23,7 +23,7 @@ public class DateUtil {
 	private static final long HORAS_WEEKEND = 48;
 
 	public static boolean cumpleFechaParaTendenciaUltimosDatos(Date fechaBase) {
-		Date fechaComparacion = DateUtil.adicionarDias(new Date(), (-40 / 3));
+		Date fechaComparacion = DateUtil.adicionarDias(new Date(), (-100 / 3));
 		if (fechaBase.after(fechaComparacion)) {
 			return true;
 		} else {
@@ -32,7 +32,7 @@ public class DateUtil {
 	}
 
 	public static Date calcularFechaComparacionParaTendenciaUltimosDatos() {
-		return DateUtil.adicionarDias(new Date(), -40);
+		return DateUtil.adicionarDias(new Date(), -100);
 	}
 
 	public static boolean anyoMesMayorQue(Date fechaMenor, Date fechaMayor) {

@@ -233,7 +233,13 @@ public class TendenciaDAO {
 	 */
 	public Date nextFechaBase(Date fecha) throws SQLException {
 		Date obj = null;
-		String sql = "SELECT MIN(FECHA_BASE) FROM " + tabla + " WHERE FECHA_BASE>? ";
+		String sql = "SELECT MIN(FECHA_BASE) FROM " + tabla + " TEN WHERE FECHA_BASE>? ";
+
+		/*if (DateUtil.obtenerAnyo(fecha) > 2016) {
+			sql = sql + " AND EXISTS (SELECT 1 FROM DATO_ADICIONAL_TPO DATPO WHERE DATPO.FECHA_BASE=TEN.FECHA_BASE "
+					+ " AND DATPO.MAX_EXTREMO_SINFILTRAR IS NULL)"
+					+ " AND EXISTS (SELECT 1 FROM TENDENCIA_PARA_OPERAR TPO WHERE TPO.FECHA_BASE=TEN.FECHA_BASE) ";
+		}*/
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 

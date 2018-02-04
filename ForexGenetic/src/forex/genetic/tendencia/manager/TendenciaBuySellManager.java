@@ -47,6 +47,7 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		this.fechaComparacion = DateUtil.calcularFechaComparacionParaTendenciaUltimosDatos();
 		LogUtil.logTime("Borrando tendencias ultimos datos...", 1);
 		int affected = tendenciaUltimosDatosDAO.deleteTendenciaMenorQue(fechaComparacion);
+		conn.commit();
 		LogUtil.logTime("Tendencias borradas: " + affected, 1);
 	}
 
