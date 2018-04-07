@@ -298,15 +298,15 @@ public class TendenciaParaOperar {
 
 	@Override
 	public String toString() {
-		return "PAIR=" + PropertiesManager.getPair() + ",PERIOD=" + period + ",TIPO_OPERACION="
-				+ tipoOperacion.toString() + ",PRECIO_CALCULADO=" + NumberUtil.round(precioCalculado) + ",TAKE_PROFIT="
-				+ NumberUtil.round(tp) + ",STOP_LOSS=" + NumberUtil.round(sl) + ",STOP_APERTURA="
-				+ NumberUtil.round(stopApertura) + ",LIMIT_APERTURA=" + NumberUtil.round(limitApertura)
-				+ ",FECHA_TENDENCIA=" + DateUtil.getDateString(fechaTendencia) + ",VIGENCIALOWER="
+		return "TIPO_OPERACION=" + tipoOperacion.toString() + ",PRECIO_CALCULADO=" + NumberUtil.round(precioCalculado)
+				+ ",TAKE_PROFIT=" + NumberUtil.round(tp) + ",STOP_LOSS=" + NumberUtil.round(sl) + ",STOP_APERTURA="
+				+ NumberUtil.round(stopApertura) + ",LIMIT_APERTURA=" + NumberUtil.round(limitApertura) + ",PERIOD="
+				+ period + ",PAIR=" + PropertiesManager.getPair() + ",FECHA_TENDENCIA="
+				+ DateUtil.getDateString(fechaTendencia) + ",R2=" + ((regresion != null) ? regresion.getR2() : 1)
+				+ ",ACTIVA=" + (this.activa) + ",CANTIDAD=" + ((regresion != null) ? regresion.getCantidad() : 1)
+				+ ",PENDIENTE=" + ((regresion != null) ? regresion.getPendiente() : 1) + ",LOTE="
+				+ NumberUtil.round(lote) + ",NAME=" + GeneticDelegate.getId() + ",VIGENCIALOWER="
 				+ DateUtil.getDateString(vigenciaLower) + ",VIGENCIAHIGHER=" + DateUtil.getDateString(vigenciaHigher)
-				+ ",R2=" + ((regresion != null) ? regresion.getR2() : 1) + ",ACTIVA=" + (this.activa) + ",CANTIDAD="
-				+ ((regresion != null) ? regresion.getCantidad() : 1) + ",PENDIENTE="
-				+ ((regresion != null) ? regresion.getPendiente() : 1) + ",LOTE=" + NumberUtil.round(lote) + ",NAME="
-				+ GeneticDelegate.getId() + ",FECHA_BASE=" + DateUtil.getDateString(fechaBase);
+				+ ",FECHA_BASE=" + DateUtil.getDateString(fechaBase);
 	}
 }
