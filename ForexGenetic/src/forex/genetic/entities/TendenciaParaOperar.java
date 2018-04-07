@@ -298,10 +298,10 @@ public class TendenciaParaOperar {
 
 	@Override
 	public String toString() {
-		return "TIPO_OPERACION=" + tipoOperacion.toString() + ",PRECIO_CALCULADO=" + NumberUtil.round(precioCalculado)
-				+ ",TAKE_PROFIT=" + NumberUtil.round(tp) + ",STOP_LOSS=" + NumberUtil.round(sl) + ",STOP_APERTURA="
-				+ NumberUtil.round(stopApertura) + ",LIMIT_APERTURA=" + NumberUtil.round(limitApertura) + ",PERIOD="
-				+ period + ",PAIR=" + PropertiesManager.getPair() + ",FECHA_TENDENCIA="
+		return "PERIOD=" + period + ",TIPO_OPERACION=" + tipoOperacion.toString() + ",PRECIO_CALCULADO="
+				+ NumberUtil.round(precioCalculado) + ",TAKE_PROFIT=" + NumberUtil.round(tp) + ",STOP_LOSS="
+				+ NumberUtil.round(sl) + ",STOP_APERTURA=" + NumberUtil.round(stopApertura) + ",LIMIT_APERTURA="
+				+ NumberUtil.round(limitApertura) + ",PAIR=" + PropertiesManager.getPair() + ",FECHA_TENDENCIA="
 				+ DateUtil.getDateString(fechaTendencia) + ",R2=" + ((regresion != null) ? regresion.getR2() : 1)
 				+ ",ACTIVA=" + (this.activa) + ",CANTIDAD=" + ((regresion != null) ? regresion.getCantidad() : 1)
 				+ ",PENDIENTE=" + ((regresion != null) ? regresion.getPendiente() : 1) + ",LOTE="
