@@ -370,7 +370,6 @@ public class DatoHistoricoDAO {
 			} else {
 				statement.setDouble(i++, d);
 			}
-
 			d = ((Sar) point.getIndicators().get(3)).getSar();
 			if (Double.isInfinite(d) || Double.isNaN(d)) {
 				statement.setNull(i++, java.sql.Types.DOUBLE);

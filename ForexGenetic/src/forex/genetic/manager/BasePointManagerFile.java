@@ -165,20 +165,17 @@ public class BasePointManagerFile {
 					point.setCloseCompare(NumberUtil.round(compareCloseValue, 5));
 
 					average = new Average("Ma");
-					average.setAverage(NumberUtil.round(baseAverage));
+					average.setAverage(NumberUtil.round(baseAverage, true));
 
 					macd = new Macd("Macd");
 					macd.setMacdValue(NumberUtil.round(baseMacdValue));
 					macd.setMacdSignal(NumberUtil.round(baseMacdSignal));
 
 					compareAverage = new Average("MaCompare");
-					if (compareAverageValue == 0.0) {
-						compareAverageValue = Double.POSITIVE_INFINITY;
-					}
-					compareAverage.setAverage(NumberUtil.round(compareAverageValue, 5));
+					compareAverage.setAverage(NumberUtil.round(compareAverageValue, true));
 
 					sar = new Sar("Sar");
-					sar.setSar(NumberUtil.round(baseSar));
+					sar.setSar(NumberUtil.round(baseSar, true));
 
 					adx = new Adx("Adx");
 					adx.setAdxValue(baseAdxValue);
@@ -189,37 +186,38 @@ public class BasePointManagerFile {
 					rsi.setRsi(NumberUtil.round(baseRsi));
 
 					bollingerBand = new Bollinger("Bollinger");
-					bollingerBand.setUpper(NumberUtil.round(baseBollingerUpper));
-					bollingerBand.setLower(NumberUtil.round(baseBollingerLower));
+					baseBollingerUpper = NumberUtil.round(baseBollingerUpper, true);
+					if (((!Double.isInfinite(baseBollingerUpper)) && (average.getAverage()>0) && (baseBollingerUpper > average.getAverage()))) {
+						baseBollingerUpper = Double.POSITIVE_INFINITY;
+					}
+					bollingerBand.setUpper(baseBollingerUpper);
+					if (((!Double.isInfinite(baseBollingerLower)) && (average.getAverage()>0) && (baseBollingerLower > average.getAverage()))) {
+						baseBollingerLower = Double.POSITIVE_INFINITY;
+					}
+					bollingerBand.setLower(NumberUtil.round(baseBollingerLower, true));
 
 					momentum = new Momentum("Momentum");
 					momentum.setMomentum(NumberUtil.round(baseMomentum));
 
 					ichimoku = new Ichimoku("Ichimoku");
-					if ((baseIchimokuChinkouSpan < 0.0D)) {
-						baseIchimokuChinkouSpan = Double.POSITIVE_INFINITY;
-					}
-					ichimoku.setChinkouSpan(NumberUtil.round(baseIchimokuChinkouSpan));
-					ichimoku.setKijunSen(NumberUtil.round(baseIchimokuKijunSen));
-					ichimoku.setSenkouSpanA(NumberUtil.round(baseIchimokuSenkouSpanA));
-					ichimoku.setSenkouSpanB(NumberUtil.round(baseIchimokuSenkouSpanB));
-					ichimoku.setTenkanSen(NumberUtil.round(baseIchimokuTenkanSen));
+					ichimoku.setChinkouSpan(NumberUtil.round(baseIchimokuChinkouSpan, true));
+					ichimoku.setKijunSen(NumberUtil.round(baseIchimokuKijunSen, true));
+					ichimoku.setSenkouSpanA(NumberUtil.round(baseIchimokuSenkouSpanA, true));
+					ichimoku.setSenkouSpanB(NumberUtil.round(baseIchimokuSenkouSpanB, true));
+					ichimoku.setTenkanSen(NumberUtil.round(baseIchimokuTenkanSen, true));
 
 					average1200 = new Average("Ma1200");
-					average1200.setAverage(NumberUtil.round(baseAverage1200));
+					average1200.setAverage(NumberUtil.round(baseAverage1200, true));
 
 					macd20x = new Macd("Macd20x");
 					macd20x.setMacdValue(NumberUtil.round(baseMacd20xValue));
 					macd20x.setMacdSignal(NumberUtil.round(baseMacd20xSignal));
 
 					compareAverage1200 = new Average("MaCompare1200");
-					if (compareAverage1200Value == 0.0) {
-						compareAverage1200Value = Double.POSITIVE_INFINITY;
-					}
-					compareAverage1200.setAverage(NumberUtil.round(compareAverage1200Value, 5));
+					compareAverage1200.setAverage(NumberUtil.round(compareAverage1200Value, true));
 
 					sar1200 = new Sar("Sar1200");
-					sar1200.setSar(NumberUtil.round(baseSar1200));
+					sar1200.setSar(NumberUtil.round(baseSar1200, true));
 
 					adx168 = new Adx("Adx168");
 					adx168.setAdxValue(baseAdxValue168);
@@ -230,21 +228,25 @@ public class BasePointManagerFile {
 					rsi84.setRsi(NumberUtil.round(baseRsi84));
 
 					bollingerBand240 = new Bollinger("Bollinger240");
-					bollingerBand240.setUpper(NumberUtil.round(baseBollingerUpper240));
-					bollingerBand240.setLower(NumberUtil.round(baseBollingerLower240));
+					baseBollingerUpper240 = NumberUtil.round(baseBollingerUpper240, true);
+					if (((!Double.isInfinite(baseBollingerUpper240)) && (average.getAverage()>0) && (baseBollingerUpper240 > average.getAverage()*10))) {
+						baseBollingerUpper240 = Double.POSITIVE_INFINITY;
+					}
+					bollingerBand240.setUpper(baseBollingerUpper240);
+					if (((!Double.isInfinite(baseBollingerLower240)) && (average.getAverage()>0) && (baseBollingerLower240 > average.getAverage()*10))) {
+						baseBollingerLower240 = Double.POSITIVE_INFINITY;
+					}
+					bollingerBand240.setLower(NumberUtil.round(baseBollingerLower240, true));
 
 					momentum1200 = new Momentum("Momentum1200");
 					momentum1200.setMomentum(NumberUtil.round(baseMomentum1200));
 
 					ichimoku6 = new Ichimoku("Ichimoku6");
-					if ((baseIchimokuChinkouSpan6 < 0.0D)) {
-						baseIchimokuChinkouSpan6 = Double.POSITIVE_INFINITY;
-					}
-					ichimoku6.setChinkouSpan(NumberUtil.round(baseIchimokuChinkouSpan6));
-					ichimoku6.setKijunSen(NumberUtil.round(baseIchimokuKijunSen6));
-					ichimoku6.setSenkouSpanA(NumberUtil.round(baseIchimokuSenkouSpanA6));
-					ichimoku6.setSenkouSpanB(NumberUtil.round(baseIchimokuSenkouSpanB6));
-					ichimoku6.setTenkanSen(NumberUtil.round(baseIchimokuTenkanSen6));
+					ichimoku6.setChinkouSpan(NumberUtil.round(baseIchimokuChinkouSpan6, true));
+					ichimoku6.setKijunSen(NumberUtil.round(baseIchimokuKijunSen6, true));
+					ichimoku6.setSenkouSpanA(NumberUtil.round(baseIchimokuSenkouSpanA6, true));
+					ichimoku6.setSenkouSpanB(NumberUtil.round(baseIchimokuSenkouSpanB6, true));
+					ichimoku6.setTenkanSen(NumberUtil.round(baseIchimokuTenkanSen6, true));
 
 					indicators = Collections
 							.synchronizedList(new ArrayList<>(indicadorController.getIndicatorNumber()));
