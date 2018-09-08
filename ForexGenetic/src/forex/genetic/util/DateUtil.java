@@ -21,18 +21,15 @@ import forex.genetic.entities.DateInterval;
 public class DateUtil {
 
 	private static final long HORAS_WEEKEND = 48;
+	private static final int DIAS_ULTIMOSDATOS = 100;
 
 	public static boolean cumpleFechaParaTendenciaUltimosDatos(Date fechaBase) {
-		Date fechaComparacion = DateUtil.adicionarDias(new Date(), (-100 / 3));
-		if (fechaBase.after(fechaComparacion)) {
-			return true;
-		} else {
-			return false;
-		}
+		Date fechaComparacion = DateUtil.adicionarDias(new Date(), (-DIAS_ULTIMOSDATOS * 8 / 10));
+		return (fechaBase.after(fechaComparacion));
 	}
 
 	public static Date calcularFechaComparacionParaTendenciaUltimosDatos() {
-		return DateUtil.adicionarDias(new Date(), -100);
+		return DateUtil.adicionarDias(new Date(), -DIAS_ULTIMOSDATOS);
 	}
 
 	public static boolean anyoMesMayorQue(Date fechaMenor, Date fechaMayor) {
@@ -146,7 +143,7 @@ public class DateUtil {
 	public static long diferenciaMinutos(Date f1, Date f2) {
 		long t1 = f1.getTime();
 		long t2 = f2.getTime();
-		long diff = (t2 - t1) / 1000 / 60;
+		long diff = (t2 - t1) / 1000L / 60L;
 		return diff;
 	}
 

@@ -52,6 +52,7 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 
 			Arrays.sort(dias);
 			LogUtil.logTime("Dias exportacion=" + Arrays.toString(dias), 1);
+			Date lastFechaProcesoMaxima = null;
 			Date lastFechaBaseParaMaxima = null;
 			TendenciaDAO tendenciaProcesoDAO;
 			while (fechaProceso.before(parametroFechaFin)) {
@@ -66,14 +67,23 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 					long minutosDia = (24 * 60);
 					// LogUtil.logTime("Procesando dummy...", 1);
 					// procesarDummy();
-					if ((lastFechaBaseParaMaxima == null)
-							|| (DateUtil.diferenciaMinutos(lastFechaBaseParaMaxima, fechaBase) > minutosDia)) {
+					long diffMinutosLastFechaBase = 0L;
+					if (lastFechaBaseParaMaxima != null) {
+						diffMinutosLastFechaBase = DateUtil.diferenciaMinutos(lastFechaBaseParaMaxima, fechaBase);
+						LogUtil.logTime(
+								"diffMinutosLastFechaBase=" + diffMinutosLastFechaBase + "; minutosDia=" + minutosDia,
+								5);
+					}
+					if ((lastFechaProcesoMaxima == null) || (diffMinutosLastFechaBase > minutosDia)) {
 						DateInterval intervaloFechaProceso = new DateInterval(DateUtil.adicionarMes(fechaBase, -1),
 								fechaBase);
-						lastFechaBaseParaMaxima = tendenciaProcesoDAO.maxFechaProcesoTendencia(intervaloFechaProceso);
+						lastFechaProcesoMaxima = tendenciaProcesoDAO.maxFechaProcesoTendencia(intervaloFechaProceso);
+						lastFechaBaseParaMaxima = fechaBase;
+						LogUtil.logTime(
+								"Nueva lastFechaProcesoMaxima=" + DateUtil.getDateString(lastFechaProcesoMaxima), 3);
 					}
 					AgrupadorTendenciaManager agrupadorTendenciaManager = new AgrupadorTendenciaManager(fechaBase,
-							lastFechaBaseParaMaxima, conn);
+							lastFechaProcesoMaxima, conn);
 					LogUtil.logTime("Fecha base exportacion=" + DateUtil.getDateString(fechaBase), 1);
 					ProcesoTendenciaFiltradaBuySell procesoFromExporterLastIndex = procesarExporter(
 							dias[dias.length - 1], fechaBase);
