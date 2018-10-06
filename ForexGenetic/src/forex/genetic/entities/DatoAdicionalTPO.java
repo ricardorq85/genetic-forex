@@ -9,6 +9,8 @@ public class DatoAdicionalTPO {
 
 	private double r2Promedio, pendientePromedio, probabilidadPromedio, diferenciaPrecioSuperior,
 			diferenciaPrecioInferior, minPrimeraTendencia, maxPrimeraTendencia, avgPrimeraTendencia;
+	
+	private double factorDatos = 0.0D;
 
 	private int numeroTendencias, cantidadTotalTendencias, numeroPendientesPositivas, numeroPendientesNegativas;
 
@@ -122,6 +124,14 @@ public class DatoAdicionalTPO {
 
 	public void setExtremos(Extremos extremos) {
 		this.extremos = extremos;
+	}
+
+	public double getFactorDatos() {
+		return factorDatos;
+	}
+
+	public void setFactorDatos(double factorDatos) {
+		this.factorDatos = factorDatos;
 	}
 
 }

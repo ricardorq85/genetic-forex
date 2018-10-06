@@ -252,8 +252,9 @@ public class TendenciaParaOperarDAO {
 				+ "	DIFF_PRECIO_EXTREMO_SUPERIOR, DIFF_PRECIO_EXTREMO_INFERIOR, "
 				+ " DIFF_MIN_PRIMERA_TENDENCIA, DIFF_MAX_PRIMERA_TENDENCIA, DIFF_AVG_PRIMERA_TENDENCIA, "
 				+ " MIN_EXTREMO_EXTREMO, MAX_EXTREMO_EXTREMO, MIN_EXTREMO_FILTRADO, MAX_EXTREMO_FILTRADO, "
-				+ " MIN_EXTREMO_INTERMEDIO, MAX_EXTREMO_INTERMEDIO, MIN_EXTREMO_SINFILTRAR, MAX_EXTREMO_SINFILTRAR "
-				+ ") " + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+				+ " MIN_EXTREMO_INTERMEDIO, MAX_EXTREMO_INTERMEDIO, MIN_EXTREMO_SINFILTRAR, MAX_EXTREMO_SINFILTRAR,"
+				+ " FACTOR_DATOS "
+				+ ") " + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 
 		int index = 1;
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -271,11 +272,13 @@ public class TendenciaParaOperarDAO {
 			statement.setDouble(index++, datoAdicional.getDiferenciaPrecioInferior());
 			statement.setDouble(index++, datoAdicional.getMinPrimeraTendencia());
 			statement.setDouble(index++, datoAdicional.getMaxPrimeraTendencia());
-			statement.setDouble(index++, datoAdicional.getAvgPrimeraTendencia());
+			statement.setDouble(index++, datoAdicional.getAvgPrimeraTendencia());						
 
 			Extremos extremos = datoAdicional.getExtremos();
 			index = setExtremosToStatement(statement, extremos, index);
 
+			statement.setDouble(index++, datoAdicional.getFactorDatos());
+			
 			statement.executeUpdate();
 		} finally {
 			JDBCUtil.close(statement);
@@ -289,7 +292,8 @@ public class TendenciaParaOperarDAO {
 				+ "	DIFF_PRECIO_EXTREMO_SUPERIOR=?, DIFF_PRECIO_EXTREMO_INFERIOR=?,"
 				+ " DIFF_MIN_PRIMERA_TENDENCIA=?, DIFF_MAX_PRIMERA_TENDENCIA=?, DIFF_AVG_PRIMERA_TENDENCIA=?, "
 				+ " MIN_EXTREMO_EXTREMO=?, MAX_EXTREMO_EXTREMO=?, MIN_EXTREMO_FILTRADO=?, MAX_EXTREMO_FILTRADO=?, "
-				+ " MIN_EXTREMO_INTERMEDIO=?, MAX_EXTREMO_INTERMEDIO=?, MIN_EXTREMO_SINFILTRAR=?, MAX_EXTREMO_SINFILTRAR=? "
+				+ " MIN_EXTREMO_INTERMEDIO=?, MAX_EXTREMO_INTERMEDIO=?, MIN_EXTREMO_SINFILTRAR=?, MAX_EXTREMO_SINFILTRAR=?,"
+				+ " FACTOR_DATOS=? "
 				+ " WHERE FECHA_BASE=?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -312,6 +316,8 @@ public class TendenciaParaOperarDAO {
 			
 			Extremos extremos = datoAdicional.getExtremos();
 			index = setExtremosToStatement(statement, extremos, index);
+			
+			statement.setDouble(index++, datoAdicional.getFactorDatos());
 
 			statement.setTimestamp(index++, new Timestamp(datoAdicional.getFechaBase().getTime()));
 

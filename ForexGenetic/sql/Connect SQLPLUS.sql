@@ -22,8 +22,9 @@ C:\app\USER\product\11.2.0\dbhome_2\BIN\sqlplus FOREX/forex@localhost:1522/FOREX
 --C:\app\USER\product\11.2.0\dbhome_2\BIN\sqlplus FOREX/forex@localhost:1522/FOREX3 @"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\temp1.sql"
 --C:\app\USER\product\11.2.0\dbhome_2\BIN\sqlplus FOREX/forex@localhost:1522/FOREX3 @"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\new INSERT INTO TMP_TOFILESTRING2.sql"
 
-
-
 --Delete ESTRATEGIA_OPERACION_PERIODO pips negativos
 C:\app\USER\product\11.2.0\dbhome_2\BIN\sqlplus FOREX/forex@localhost:1522/FOREX3 @"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\Bloque Anonimo Delete ESTRATEGIA_OPERACION_PERIODO pips negativos.sql"
 
+--Conexion
+C:\app\USER\product\11.2.0\dbhome_2\BIN\sqlplus FOREX/forex@localhost:1522/FOREX3
+UPDATE PARAMETRO SET FECHA=SYSDATE, VALOR='2018/08/07 20:59' WHERE NOMBRE='FECHA_INICIO_TENDENCIA';

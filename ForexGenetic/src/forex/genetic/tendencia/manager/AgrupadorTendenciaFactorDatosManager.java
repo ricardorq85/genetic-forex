@@ -22,7 +22,7 @@ import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.NumberUtil;
 
-public class AgrupadorTendenciaManager {
+public class AgrupadorTendenciaFactorDatosManager {
 
 	private List<ProcesoTendenciaFiltradaBuySell> listaTendencias;
 	private List<TendenciaParaOperarMaxMin> tendenciasResultado;
@@ -38,7 +38,7 @@ public class AgrupadorTendenciaManager {
 	private double stepLote = 0.01D;
 	private double maxLote = 0.1D;
 
-	public AgrupadorTendenciaManager(Date fechaBase, Date maxFechaProceso, Connection conn) throws SQLException {
+	public AgrupadorTendenciaFactorDatosManager(Date fechaBase, Date maxFechaProceso, Connection conn) throws SQLException {
 		super();
 		this.conn = conn;
 		this.tendenciaParaOperarDAO = new TendenciaParaOperarDAO(conn);
@@ -50,6 +50,7 @@ public class AgrupadorTendenciaManager {
 		this.precioPonderado = datoHistoricoDAO.consultarPrecioPonderado(fechaBase);
 	}
 
+	//overriding
 	protected void createDatoAdicional(Extremos extremos) {
 		this.adicionalTPO = new DatoAdicionalTPO();
 		this.adicionalTPO.setFechaBase(fechaBase);
@@ -274,16 +275,6 @@ public class AgrupadorTendenciaManager {
 			sellMayorPendiente.setTipoTendencia("MEJOR_PENDIENTE");
 			this.tendenciasResultado.add(sellMayorPendiente);
 		}
-
-		this.tendenciasResultado.forEach(item -> {
-			if ((!item.getTipoTendencia().startsWith("EXTREMO"))) {
-				double factorDatos = item.getRegresionFiltrada().getCantidad() / (24.0D * 13.0D + 1.0D);
-				if (factorDatos > this.adicionalTPO.getFactorDatos()) {
-					this.adicionalTPO.setFactorDatos(factorDatos);
-				}
-			}
-
-		});
 	}
 
 	protected void processDelete() throws SQLException {

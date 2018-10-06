@@ -184,7 +184,8 @@ public class PointToPointMediator extends GeneticMediator {
 		LogUtil.logTime("parametroFilasTendencia:" + parametroFilasTendencia, 1);
 		while (fechaBaseFinal.after(ultimaFechaBaseTendencia)) {
 			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1);
-			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, -parametroStepTendencia);
+			int currentStep = - (parametroStepTendencia - count);
+			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, currentStep);
 			// LogUtil.logEnter(1);
 			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
 					+ DateUtil.getDateString(fechaBaseFinal), 1);
