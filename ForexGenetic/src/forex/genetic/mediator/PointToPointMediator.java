@@ -79,7 +79,8 @@ public class PointToPointMediator extends GeneticMediator {
 			this.setUltimaFechaTendencia(count);
 			LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
 					+ ",fechaHistoricaMaximaAnterior=" + DateUtil.getDateString(this.fechaHistoricaMaximaAnterior)
-					+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva), 1);
+					+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva) + ",count="
+					+ count, 1);
 			this.procesarIndividuos();
 			this.procesarTendencias();
 			this.exportarIndividuos();
@@ -95,9 +96,13 @@ public class PointToPointMediator extends GeneticMediator {
 	protected void setUltimaFechaTendencia(int count) throws SQLException {
 		this.ultimaFechaBaseTendencia = tendenciaDAO.maxFechaBaseTendencia();
 		if ((this.ultimaFechaBaseTendencia == null) || (fechaHistoricaMaximaNueva.equals(ultimaFechaBaseTendencia))) {
-			int minutos = (int) (-(1440 * 0.7 * count));
+			int minutos = (int) (-(1440 * 0.7 * count + calcularFactorCount()));
 			this.ultimaFechaBaseTendencia = DateUtil.adicionarMinutos(fechaHistoricaMaximaNueva, minutos);
 		}
+	}
+
+	private int calcularFactorCount() {
+		return (count + 1);
 	}
 
 	private void exportarDatosHistoricos() throws SQLException, IOException {
@@ -183,8 +188,8 @@ public class PointToPointMediator extends GeneticMediator {
 		LogUtil.logTime("parametroStepTendencia:" + parametroStepTendencia, 1);
 		LogUtil.logTime("parametroFilasTendencia:" + parametroFilasTendencia, 1);
 		while (fechaBaseFinal.after(ultimaFechaBaseTendencia)) {
-			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1);
-			int currentStep = - (parametroStepTendencia - count);
+			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1 * (calcularFactorCount()));
+			int currentStep = -(parametroStepTendencia - count);
 			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, currentStep);
 			// LogUtil.logEnter(1);
 			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
@@ -198,7 +203,7 @@ public class PointToPointMediator extends GeneticMediator {
 	private void exportarIndividuos()
 			throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
 			InvocationTargetException, SQLException, ParseException, GeneticException, IOException {
-		//this.refrescarDatosTendencia();
+		// this.refrescarDatosTendencia();
 		logTime("Init Exportar Individuos", 1);
 		boolean existNewData = this.existenNuevosDatosHistoricos();
 		if (existNewData) {

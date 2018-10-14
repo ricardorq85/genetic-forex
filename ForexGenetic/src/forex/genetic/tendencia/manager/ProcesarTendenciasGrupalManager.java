@@ -82,8 +82,10 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 						LogUtil.logTime(
 								"Nueva lastFechaProcesoMaxima=" + DateUtil.getDateString(lastFechaProcesoMaxima), 3);
 					}
-					AgrupadorTendenciaManager agrupadorTendenciaManager = new AgrupadorTendenciaManager(fechaBase,
-							lastFechaProcesoMaxima, conn);
+					AgrupadorTendenciaManager agrupadorTendenciaManager = new AgrupadorTendenciaFactorDatosManager(
+							fechaBase, lastFechaProcesoMaxima, conn);
+					// new AgrupadorTendenciaManager(fechaBase,
+					// lastFechaProcesoMaxima, conn);
 					LogUtil.logTime("Fecha base exportacion=" + DateUtil.getDateString(fechaBase), 1);
 					ProcesoTendenciaFiltradaBuySell procesoFromExporterLastIndex = procesarExporter(
 							dias[dias.length - 1], fechaBase);
