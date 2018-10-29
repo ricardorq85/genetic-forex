@@ -25,6 +25,7 @@ import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.NumberUtil;
+import forex.genetic.util.RandomUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -809,6 +810,30 @@ public class IndividuoDAO {
 
 		return list;
 	}
+	
+	public List<Individuo> consultarIndividuosRandom(Date fechaInicial, Date fechaFinal, int cantidad) throws SQLException {
+		List<Individuo> list = null;
+		String sql = "SELECT IND.ID ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE  FROM INDIVIDUO IND INNER JOIN OPERACION OPER ON OPER.ID_INDIVIDUO=IND.ID " + 
+				"   AND OPER.FECHA_APERTURA BETWEEN ? AND ? AND IND.ID LIKE ? AND ROWNUM < ?";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setTimestamp(1, new Timestamp(fechaInicial.getTime()));
+			stmtConsulta.setTimestamp(2, new Timestamp(fechaFinal.getTime()));
+			String likeId = "%" + RandomUtil.nextInt(10);
+			stmtConsulta.setString(3, likeId);
+			stmtConsulta.setInt(4, cantidad);
+			resultado = stmtConsulta.executeQuery();
+
+			list = IndividuoHelper.createIndividuosById(resultado);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+
+		return list;
+	}	
 
 	public List<Individuo> consultarIndividuosIndicadoresCloseMinimos(int minimo) throws SQLException {
 		List<Individuo> list = null;

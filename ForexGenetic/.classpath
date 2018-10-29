@@ -4,5 +4,11 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="../drivers/ojdbc6.jar"/>
 	<classpathentry kind="lib" path="../drivers/sqljdbc42.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Angela/Documents/ricardorq85/JavaProjects/Git/genetic-forex/drivers/mongo-java-driver-3.8.2.jar" sourcepath="C:/Users/Angela/Documents/ricardorq85/JavaProjects/Git/genetic-forex/drivers/mongodb-driver-3.8.2-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Angela/Documents/ricardorq85/JavaProjects/Git/genetic-forex/drivers/commons-math3-3.6.1.jar" sourcepath="C:/Users/Angela/Documents/ricardorq85/JavaProjects/Git/genetic-forex/drivers/commons-math3-3.6.1-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/C:/Users/Angela/Documents/ricardorq85/JavaProjects/Git/genetic-forex/drivers/commons-math3-3.6.1-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

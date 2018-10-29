@@ -1,6 +1,14 @@
-D:\app\USER\product\11.2.0\eurjpy_home\BIN\sqlplus FOREX/forex@localhost:1521/FOREX.EURJPY
+--D:\app\USER\product\11.2.0\eurjpy_home\BIN\sqlplus FOREX/forex@localhost:1521/FOREX.EURJPY
 
-C:\app\USER\product\11.2.0\dbhome_2\BIN\sqlplus FOREX/forex@localhost:1522/FOREX3
+--C:\app\USER\product\11.2.0\dbhome_2\BIN\sqlplus FOREX/forex@localhost:1522/FOREX3
+--d:\ricardorq85\app\product\11.2.0\dbhome_5\\BIN\sqlplus SYS/ForexAdmin2018@localhost:1521/orcl.forex
+d:\ricardorq85\app\product\11.2.0\dbhome_5\\BIN\sqlplus FOREX/forex@localhost:1521/orcl.usdcad
+
+c:\app\rrq\product\11.2.0\dbhome_1\BIN\sqlplus FOREX/forex@localhost:1521/usdcad
+
+c:\app\rrq\product\11.2.0\dbhome_1\BIN\sqlplus sys as SYSDBA/ForexAdmin2018@localhost:1521/usdcad
+
+--@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\CreateUserFOREX.sql"
 
 --@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\new INSERT INTO TMP_TOFILESTRING.sql"
 --@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\Regresiones INSERT INTO TMP_TOFILESTRING.sql"

@@ -54,12 +54,14 @@ public class IndividuoXIndicadorManager {
 
 	private final IndicadorController indicadorController = ControllerFactory
 			.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+	private static boolean primeraVez = true;
 
 	public IndividuoXIndicadorManager() throws ClassNotFoundException, SQLException {
 		this(null, null, 12);
 	}
 
-	public IndividuoXIndicadorManager(Date fechaMinima, Date fechaMaxima, int maximoMeses) throws ClassNotFoundException, SQLException {
+	public IndividuoXIndicadorManager(Date fechaMinima, Date fechaMaxima, int maximoMeses)
+			throws ClassNotFoundException, SQLException {
 		conn = JDBCUtil.getConnection();
 		individuoDAO = new IndividuoDAO(conn);
 		dhDAO = new DatoHistoricoDAO(conn);
@@ -82,8 +84,11 @@ public class IndividuoXIndicadorManager {
 		parametroCantidadCruzar = parametroDAO.getIntValorParametro("CANTIDAD_CRUZAR");
 	}
 
-	public void crearIndividuos() throws SQLException, ClassNotFoundException {		
-		//this.configurarAmbiente();
+	public void crearIndividuos() throws SQLException, ClassNotFoundException {
+		if (primeraVez) {
+			this.configurarAmbiente();
+			primeraVez = false;
+		}
 		try {
 			Date fechaFiltroFinal = new Date(fechaMaxima.getTime());
 			while (fechaFiltroFinal.after(fechaMinima)) {
@@ -140,14 +145,16 @@ public class IndividuoXIndicadorManager {
 			IndividuoEstrategia individuoBuy = createIndividuo(rangoOperacionIndividuo, Constants.OperationType.BUY);
 			insertIndividuo(individuoSell);
 			insertIndividuo(individuoBuy);
-			/*
-			 * if ((individuoSell != null) && (individuoBuy != null)) {
-			 * Poblacion poblacion = new Poblacion();
-			 * poblacion.add(individuoSell); poblacion.add(individuoBuy);
-			 * Poblacion mutados = mutarIndividuos(poblacion);
-			 * poblacion.addAll(mutados);
-			 * //cruzarIndividuos(rangoOperacionIndividuo, poblacion); }
-			 */
+
+			if ((individuoSell != null) && (individuoBuy != null)) {
+				Poblacion poblacion = new Poblacion();
+				poblacion.add(individuoSell);
+				poblacion.add(individuoBuy);
+				Poblacion mutados = mutarIndividuos(poblacion);
+				poblacion.addAll(mutados);
+				cruzarIndividuos(rangoOperacionIndividuo, poblacion);
+			}
+
 		} else {
 			logTime("NO cumple con el rango valido.", 2);
 		}
@@ -158,8 +165,11 @@ public class IndividuoXIndicadorManager {
 			throws SQLException {
 		List<Individuo> individuosResumen = null;
 		try {
-			individuosResumen = individuoDAO.consultarIndividuosResumenSemanal(rangoOperacionIndividuo.getFechaFiltro(),
-					rangoOperacionIndividuo.getFechaFiltro2());
+			// individuosResumen =
+			// individuoDAO.consultarIndividuosResumenSemanal(rangoOperacionIndividuo.getFechaFiltro(),
+			// rangoOperacionIndividuo.getFechaFiltro2());
+			individuosResumen = individuoDAO.consultarIndividuosRandom(rangoOperacionIndividuo.getFechaFiltro(),
+					rangoOperacionIndividuo.getFechaFiltro2(), parametroCantidadCruzar * 2);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -325,9 +335,8 @@ public class IndividuoXIndicadorManager {
 		double sumaPorcCumplimiento = indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager,
 				intervalIndicator, dateInterval);
 		/*
-		 * DateInterval di = DateUtil.obtenerIntervaloAnyo(minFechaHistorico);
-		 * while (di.getLowInterval().before(maxFechaHistorico)) {
-		 * sumaPorcCumplimiento +=
+		 * DateInterval di = DateUtil.obtenerIntervaloAnyo(minFechaHistorico); while
+		 * (di.getLowInterval().before(maxFechaHistorico)) { sumaPorcCumplimiento +=
 		 * indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager,
 		 * intervalIndicator, di); di =
 		 * DateUtil.obtenerIntervaloAnyo(di.getHighInterval()); }

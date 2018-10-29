@@ -1,0 +1,3049 @@
+
+d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql>SET ORACLE_SID='orcl'
+
+d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql>REM CD C:\APP\RICARDORQ85\PRODUCT\11.2.0\dbhome_3\BIN
+
+d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql>CD D:\APP\USER\PRODUCT\11.2.0\dbhome_3\BIN
+
+D:\app\USER\product\11.2.0\dbhome_3\BIN>IMP FOREX/forex@localhost:1521/orcl.forex FILE=d:\ricardorq85\Informacion\FOREX\Backups\DMP\USDCAD_EXPDAT_20181015.dmp full=yes
+
+Import: Release 11.2.0.3.0 - Production on Lun Oct 15 21:44:17 2018
+
+Copyright (c) 1982, 2011, Oracle and/or its affiliates.  All rights reserved.
+
+
+Conectado a: Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+Archivo de exportaci¾n creado por EXPORT:V11.02.00 a travÚs de la ruta de acceso convencional
+importaci¾n realizada en el juego de caracteres WE8MSWIN1252 y el juego de caracteres NCHAR AL16UTF16
+. importando objetos de FOREX en FOREX
+. importando la tabla                      "BCK_TOP"      47277 filas importadas
+. importando la tabla                     "BCK_TPO2"      55957 filas importadas
+. importando la tabla           "DATO_ADICIONAL_TPO"      44432 filas importadas
+IMP-00017: la siguiente sentencia ha fallado con el error 959 de ORACLE :
+ "CREATE TABLE "DATOHISTORICO" ("PAR" VARCHAR2(10 CHAR) NOT NULL ENABLE, "MIN"
+ "UTOS" NUMBER(2, 0) NOT NULL ENABLE, "PAR_COMPARE" VARCHAR2(10) NOT NULL ENA"
+ "BLE, "FECHA" DATE NOT NULL ENABLE, "OPEN" NUMBER(10, 5), "LOW" NUMBER(10, 5"
+ "), "HIGH" NUMBER(10, 5), "CLOSE" NUMBER(10, 5), "VOLUME" NUMBER(10, 5), "SP"
+ "READ" NUMBER(5, 0), "AVERAGE" NUMBER(10, 5), "MACD_VALUE" NUMBER(10, 5), "M"
+ "ACD_SIGNAL" NUMBER(10, 5), "COMPARE_VALUE" NUMBER(10, 5), "AVERAGE_COMPARE""
+ " NUMBER(10, 5), "SAR" NUMBER(10, 5), "ADX_VALUE" NUMBER(10, 5), "ADX_PLUS" "
+ "NUMBER(10, 5), "ADX_MINUS" NUMBER(10, 5), "RSI" NUMBER(10, 5), "BOLLINGER_U"
+ "PPER" NUMBER(10, 5), "BOLLINGER_LOWER" NUMBER(10, 5), "MOMENTUM" NUMBER(10,"
+ " 5), "ICHIMOKUTENKANSEN" NUMBER(10, 5), "ICHIMOKUKIJUNSEN" NUMBER(10, 5), ""
+ "ICHIMOKUSENKOUSPANA" NUMBER(10, 5), "ICHIMOKUSENKOUSPANB" NUMBER(10, 5), "I"
+ "CHIMOKUCHINKOUSPAN" NUMBER(10, 5), "MA1200" NUMBER(10, 5), "MACD20X_VALUE" "
+ "NUMBER(10, 5), "MACD20X_SIGNAL" NUMBER(10, 5), "AVERAGE_COMPARE1200" NUMBER"
+ "(10, 5), "SAR1200" NUMBER(10, 5), "ADX_VALUE168" NUMBER(10, 5), "ADX_PLUS16"
+ "8" NUMBER(10, 5), "ADX_MINUS168" NUMBER(10, 5), "RSI84" NUMBER(10, 5), "BOL"
+ "LINGER_UPPER240" NUMBER(10, 5), "BOLLINGER_LOWER240" NUMBER(10, 5), "MOMENT"
+ "UM1200" NUMBER(10, 5), "ICHIMOKUTENKANSEN6" NUMBER(10, 5), "ICHIMOKUKIJUNSE"
+ "N6" NUMBER(10, 5), "ICHIMOKUSENKOUSPANA6" NUMBER(10, 5), "ICHIMOKUSENKOUSPA"
+ "NB6" NUMBER(10, 5), "ICHIMOKUCHINKOUSPAN6" NUMBER(10, 5), "FECHA_REGISTRO" "
+ "DATE)  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 STORAGE(INITIAL 746586"
+ "112 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645 PCTINCREASE 0) TABLESPA"
+ "CE "TS_FOREX2" LOGGING NOCOMPRESS PARTITION BY RANGE ("FECHA" )  (PARTITION"
+ " "DH_ANYO_2008" VALUES LESS THAN (TO_DATE(' 2009-01-01 00:00:00', 'SYYYY-MM"
+ "-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))  PCTFREE 10 PCTUSED 40 INITRANS"
+ " 1 MAXTRANS 255 STORAGE(INITIAL 746586112 NEXT 1048576 MINEXTENTS 1 FREELIS"
+ "TS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT) TABLESPACE "TS_FOREX2" LOGGING "
+ "NOCOMPRESS, PARTITION "DH_ANYO_2009" VALUES LESS THAN (TO_DATE(' 2010-01-01"
+ " 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))  PCTFREE 1"
+ "0 PCTUSED 40 INITRANS 1 MAXTRANS 255 STORAGE(INITIAL 746586112 NEXT 1048576"
+ " MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT) TABLESPACE"
+ " "TS_FOREX2" LOGGING NOCOMPRESS, PARTITION "DH_ANYO_2010" VALUES LESS THAN "
+ "(TO_DATE(' 2011-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GR"
+ "EGORIAN'))  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 STORAGE(INITIAL 7"
+ "46586112 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POO"
+ "L DEFAULT) TABLESPACE "TS_FOREX2" LOGGING NOCOMPRESS, PARTITION "DH_ANYO_20"
+ "11" VALUES LESS THAN (TO_DATE(' 2012-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:"
+ "SS', 'NLS_CALENDAR=GREGORIAN'))  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS "
+ "255 STORAGE(INITIAL 746586112 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIS"
+ "T GROUPS 1 BUFFER_POOL DEFAULT) TABLESPACE "TS_FOREX2" LOGGING NOCOMPRESS, "
+ "PARTITION "DH_ANYO_2012" VALUES LESS THAN (TO_DATE(' 2013-01-01 00:00:00', "
+ "'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))  PCTFREE 10 PCTUSED 40"
+ " INITRANS 1 MAXTRANS 255 STORAGE(INITIAL 746586112 NEXT 1048576 MINEXTENTS "
+ "1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT) TABLESPACE "TS_FOREX2""
+ " LOGGING NOCOMPRESS, PARTITION "DH_ANYO_2013" VALUES LESS THAN (TO_DATE(' 2"
+ "014-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))  "
+ "PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 STORAGE(INITIAL 746586112 NEX"
+ "T 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT) T"
+ "ABLESPACE "TS_FOREX2" LOGGING NOCOMPRESS, PARTITION "DH_ANYO_2014" VALUES L"
+ "ESS THAN (TO_DATE(' 2015-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CA"
+ "LENDAR=GREGORIAN'))  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 STORAGE("
+ "INITIAL 746586112 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 B"
+ "UFFER_POOL DEFAULT) TABLESPACE "TS_FOREX2" LOGGING NOCOMPRESS, PARTITION "D"
+ "H_ANYO_2015" VALUES LESS THAN (TO_DATE(' 2016-01-01 00:00:00', 'SYYYY-MM-DD"
+ " HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))  PCTFREE 10 PCTUSED 40 INITRANS 1 "
+ "MAXTRANS 255 STORAGE(INITIAL 746586112 NEXT 1048576 MINEXTENTS 1 FREELISTS "
+ "1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT) TABLESPACE "TS_FOREX2" LOGGING NOC"
+ "OMPRESS, PARTITION "DH_ANYO_2016" VALUES LESS THAN (TO_DATE(' 2017-01-01 00"
+ ":00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))  PCTFREE 10 P"
+ "CTUSED 40 INITRANS 1 MAXTRANS 255 STORAGE(INITIAL 746586112 NEXT 1048576 MI"
+ "NEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT) TABLESPACE "T"
+ "S_FOREX2" LOGGING NOCOMPRESS, PARTITION "DH_ANYO_2017" VALUES LESS THAN (TO"
+ "_DATE(' 2018-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGO"
+ "RIAN'))  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 STORAGE(INITIAL 7465"
+ "86112 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL D"
+ "EFAULT) TABLESPACE "TS_FOREX2" LOGGING NOCOMPRESS, PARTITION "DH_ANYO_2018""
+ " VALUES LESS THAN (TO_DATE(' 2019-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS'"
+ ", 'NLS_CALENDAR=GREGORIAN'))  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255"
+ " STORAGE(INITIAL 746586112 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST G"
+ "ROUPS 1 BUFFER_POOL DEFAULT) TABLESPACE "TS_FOREX2" LOGGING NOCOMPRESS )"
+IMP-00003: se ha encontrado un error 959 de ORACLE
+ORA-00959: el tablespace 'TS_FOREX2' no existe
+. importando la tabla "ESTRATEGIA_OPERACION_PERIODO"     280860 filas importadas
+. importando la tabla                  "ESTRATEGIAS"          0 filas importadas
+. importando la tabla                 "FILTERED_EOP"
+Nota: La tabla contiene la columna ROWID, los valores pueden estar obsoletos     170039 filas importadas
+. importando la tabla       "FILTERED_PARALELAS_EOP"
+Nota: La tabla contiene la columna ROWID, los valores pueden estar obsoletos      11070 filas importadas
+. importando la tabla    "FILTERED_PARA_OPERAR_BOTH"
+Nota: La tabla contiene la columna ROWID, los valores pueden estar obsoletos      57254 filas importadas
+. importando la tabla     "FILTERED_PARA_OPERAR_BUY"
+Nota: La tabla contiene la columna ROWID, los valores pueden estar obsoletos      97496 filas importadas
+. importando la tabla    "FILTERED_PARA_OPERAR_SELL"
+Nota: La tabla contiene la columna ROWID, los valores pueden estar obsoletos     229303 filas importadas
+. importando la tabla                "FILTERED_PTFS"
+Nota: La tabla contiene la columna ROWID, los valores pueden estar obsoletos    1288510 filas importadas
+. importando la tabla          "INDICADOR_INDIVIDUO"    1039880 filas importadas
+. importando la tabla  "INDICADOR_INDIVIDUO_BORRADO"     832334 filas importadas
+. importando la tabla "INDICADOR_INDIVIDUO_TENDENCIAS"          0 filas importadas
+. importando la tabla                    "INDIVIDUO"      25997 filas importadas
+. importando la tabla            "INDIVIDUO_BORRADO"      20809 filas importadas
+. importando la tabla        "INDIVIDUO_INDICADORES"      25997 filas importadas
+. importando la tabla "INDIVIDUO_INDICADORES_BORRADOS"      20760 filas importadas
+. importando la tabla        "INDIVIDUOS_ESTRATEGIA"          0 filas importadas
+. importando la tabla   "MLOG$_ESTRATEGIA_OPERACION"          0 filas importadas
+. importando la tabla           "MLOG$_FILTERED_EOP"
+Nota: La tabla contiene la columna ROWID, los valores pueden estar obsoletos          0 filas importadas
+. importando la tabla   "MLOG$_FILTERED_PARALELAS_E"
+Nota: La tabla contiene la columna ROWID, los valores pueden estar obsoletos          0 filas importadas
+. importando la tabla          "MLOG$_FILTERED_PTFS"
+Nota: La tabla contiene la columna ROWID, los valores pueden estar obsoletos     279968 filas importadas
+. importando la tabla    "MLOG$_PREVIO_TOFILESTRING"     221895 filas importadas
+. importando la tabla              "MLOG$_TENDENCIA"   12353129 filas importadas
+. importando la tabla                       "MONEDA"          1 filas importadas
+. importando la tabla                    "MONITOREO"          0 filas importadas
+. importando la tabla                    "OPERACION"   18704662 filas importadas
+. importando la tabla       "OPERACION_CONSOLIDADAS"          0 filas importadas
+. importando la tabla "OPERACIONES_ACUM_SEMANA_ANYO"    2620195 filas importadas
+. importando la tabla "OPERACIONES_ACUM_SEMANA_CONSOL"    2399477 filas importadas
+. importando la tabla  "OPERACIONES_ACUM_SEMANA_MES"    2655844 filas importadas
+. importando la tabla "OPERACION_ESTRATEGIA_PERIODO"   13716675 filas importadas
+IMP-00017: la siguiente sentencia ha fallado con el error 1115 de ORACLE :
+ "CREATE INDEX "OPER_EST_PER_FECHA_IDX" ON "OPERACION_ESTRATEGIA_PERIODO" ("F"
+ "ECHA_APERTURA" , "FECHA_CIERRE" )  PCTFREE 10 INITRANS 2 MAXTRANS 255 STORA"
+ "GE(INITIAL 1299185664 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS"
+ " 1 BUFFER_POOL DEFAULT) TABLESPACE "USERS" LOGGING"
+IMP-00003: se ha encontrado un error 1115 de ORACLE
+ORA-01115: error de E/S al leer el bloque del archivo  (bloque n·mero )
+ORA-01115: error de E/S al leer el bloque del archivo 201 (bloque n·mero 56669)
+ORA-27070: fallo de la lectura/escritura asÝncrona
+OSD-04016: Error al poner en la cola una solicitud de E/S asÝncrona.
+O/S-Error: (OS 23) Error de datos (comprobaci¾n de redundancia cÝclica).
+IMP-00017: la siguiente sentencia ha fallado con el error 20000 de ORACLE :
+ "BEGIN  DBMS_STATS.SET_INDEX_STATS(NULL,'"OPER_EST_PER_FECHA_IDX"',NULL,NULL"
+ ",NULL,13429937,102543,38776,11,1429,12931074,3,6); END;"
+IMP-00003: se ha encontrado un error 20000 de ORACLE
+ORA-20000: INDEX "FOREX"."OPER_EST_PER_FECHA_IDX" does not exist or insufficient privileges
+ORA-06512: en "SYS.DBMS_STATS", lÝnea 4505
+ORA-06512: en "SYS.DBMS_STATS", lÝnea 9599
+ORA-06512: en lÝnea 1
+IMP-00017: la siguiente sentencia ha fallado con el error 1115 de ORACLE :
+ "CREATE INDEX "OPER_EST_PER_IDX1" ON "OPERACION_ESTRATEGIA_PERIODO" ("FECHA_"
+ "CIERRE" )  PCTFREE 10 INITRANS 2 MAXTRANS 255 STORAGE(INITIAL 849346560 NEX"
+ "T 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT) T"
+ "ABLESPACE "USERS" LOGGING"
+IMP-00003: se ha encontrado un error 1115 de ORACLE
+ORA-01115: error de E/S al leer el bloque del archivo  (bloque n·mero )
+ORA-01115: error de E/S al leer el bloque del archivo 201 (bloque n·mero 72192)
+ORA-27070: fallo de la lectura/escritura asÝncrona
+OSD-04016: Error al poner en la cola una solicitud de E/S asÝncrona.
+O/S-Error: (OS 23) Error de datos (comprobaci¾n de redundancia cÝclica).
+IMP-00017: la siguiente sentencia ha fallado con el error 20000 de ORACLE :
+ "BEGIN  DBMS_STATS.SET_INDEX_STATS(NULL,'"OPER_EST_PER_IDX1"',NULL,NULL,NULL"
+ ",12998315,71911,13263,5,935,12411800,2,6); END;"
+IMP-00003: se ha encontrado un error 20000 de ORACLE
+ORA-20000: INDEX "FOREX"."OPER_EST_PER_IDX1" does not exist or insufficient privileges
+ORA-06512: en "SYS.DBMS_STATS", lÝnea 4505
+ORA-06512: en "SYS.DBMS_STATS", lÝnea 9599
+ORA-06512: en lÝnea 1
+IMP-00017: la siguiente sentencia ha fallado con el error 1115 de ORACLE :
+ "CREATE INDEX "OPER_ESTPER_IDIND_FECIER_IDX" ON "OPERACION_ESTRATEGIA_PERIOD"
+ "O" ("ID_INDIVIDUO" , "FECHA_CIERRE" )  PCTFREE 10 INITRANS 2 MAXTRANS 255 S"
+ "TORAGE(INITIAL 100663296 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GRO"
+ "UPS 1 BUFFER_POOL DEFAULT) TABLESPACE "USERS" LOGGING"
+IMP-00003: se ha encontrado un error 1115 de ORACLE
+ORA-01115: error de E/S al leer el bloque del archivo  (bloque n·mero )
+ORA-01115: error de E/S al leer el bloque del archivo 201 (bloque n·mero 56674)
+ORA-27070: fallo de la lectura/escritura asÝncrona
+OSD-04016: Error al poner en la cola una solicitud de E/S asÝncrona.
+O/S-Error: (OS 23) Error de datos (comprobaci¾n de redundancia cÝclica).
+IMP-00017: la siguiente sentencia ha fallado con el error 20000 de ORACLE :
+ "BEGIN  DBMS_STATS.SET_INDEX_STATS(NULL,'"OPER_ESTPER_IDIND_FECIER_IDX"',NUL"
+ "L,NULL,NULL,13125529,133726,13263,15,1464,12765386,3,6); END;"
+IMP-00003: se ha encontrado un error 20000 de ORACLE
+ORA-20000: INDEX "FOREX"."OPER_ESTPER_IDIND_FECIER_IDX" does not exist or insufficient privileges
+ORA-06512: en "SYS.DBMS_STATS", lÝnea 4505
+ORA-06512: en "SYS.DBMS_STATS", lÝnea 9599
+ORA-06512: en lÝnea 1
+IMP-00017: la siguiente sentencia ha fallado con el error 1115 de ORACLE :
+ "CREATE UNIQUE INDEX "OPERACION_ESTRAT_PER_PK2" ON "OPERACION_ESTRATEGIA_PER"
+ "IODO" ("ESTRATEGIA_PERIODO" , "ID_INDIVIDUO" , "FECHA_APERTURA" )  PCTFREE "
+ "10 INITRANS 2 MAXTRANS 255 STORAGE(INITIAL 226492416 NEXT 1048576 MINEXTENT"
+ "S 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT) TABLESPACE "USERS" L"
+ "OGGING"
+IMP-00003: se ha encontrado un error 1115 de ORACLE
+ORA-01115: error de E/S al leer el bloque del archivo  (bloque n·mero )
+ORA-01115: error de E/S al leer el bloque del archivo 201 (bloque n·mero 88704)
+ORA-27070: fallo de la lectura/escritura asÝncrona
+OSD-04016: Error al poner en la cola una solicitud de E/S asÝncrona.
+O/S-Error: (OS 23) Error de datos (comprobaci¾n de redundancia cÝclica).
+IMP-00017: la siguiente sentencia ha fallado con el error 20000 de ORACLE :
+ "BEGIN  DBMS_STATS.SET_INDEX_STATS(NULL,'"OPERACION_ESTRAT_PER_PK2"',NULL,NU"
+ "LL,NULL,12361423,148973,12361423,1,1,3845242,3,6); END;"
+IMP-00003: se ha encontrado un error 20000 de ORACLE
+ORA-20000: INDEX "FOREX"."OPERACION_ESTRAT_PER_PK2" does not exist or insufficient privileges
+ORA-06512: en "SYS.DBMS_STATS", lÝnea 4505
+ORA-06512: en "SYS.DBMS_STATS", lÝnea 9599
+ORA-06512: en lÝnea 1
+IMP-00017: la siguiente sentencia ha fallado con el error 1115 de ORACLE :
+ "ALTER TABLE "OPERACION_ESTRATEGIA_PERIODO" ADD  CONSTRAINT "OPERACION_ESTRA"
+ "T_PER_PK2" PRIMARY KEY ("ESTRATEGIA_PERIODO", "ID_INDIVIDUO", "FECHA_APERTU"
+ "RA") USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 STORAGE(INITIAL 2264924"
+ "16 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFA"
+ "ULT) TABLESPACE "USERS" LOGGING ENABLE "
+IMP-00003: se ha encontrado un error 1115 de ORACLE
+ORA-01115: error de E/S al leer el bloque del archivo  (bloque n·mero )
+ORA-01115: error de E/S al leer el bloque del archivo 201 (bloque n·mero 95744)
+ORA-27070: fallo de la lectura/escritura asÝncrona
+OSD-04016: Error al poner en la cola una solicitud de E/S asÝncrona.
+O/S-Error: (OS 23) Error de datos (comprobaci¾n de redundancia cÝclica).
+. importando la tabla          "OPERACION_NEGATIVAS"    1813886 filas importadas
+. importando la tabla          "OPERACION_POSITIVAS"    1816719 filas importadas
+. importando la tabla           "OPERACION_X_SEMANA"    3697350 filas importadas
+IMP-00017: la siguiente sentencia ha fallado con el error 1115 de ORACLE :
+ "CREATE UNIQUE INDEX "OPERACION_X_SEMANA_PK" ON "OPERACION_X_SEMANA" ("ID_IN"
+ "DIVIDUO" , "FECHA_SEMANA" )  PCTFREE 10 INITRANS 2 MAXTRANS 255 STORAGE(INI"
+ "TIAL 251658240 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFF"
+ "ER_POOL DEFAULT)                       LOGGING"
+IMP-00003: se ha encontrado un error 1115 de ORACLE
+ORA-01115: error de E/S al leer el bloque del archivo  (bloque n·mero )
+ORA-01115: error de E/S al leer el bloque del archivo 201 (bloque n·mero 88704)
+ORA-27070: fallo de la lectura/escritura asÝncrona
+OSD-04016: Error al poner en la cola una solicitud de E/S asÝncrona.
+O/S-Error: (OS 23) Error de datos (comprobaci¾n de redundancia cÝclica).
+IMP-00017: la siguiente sentencia ha fallado con el error 20000 de ORACLE :
+ "BEGIN  DBMS_STATS.SET_INDEX_STATS(NULL,'"OPERACION_X_SEMANA_PK"',NULL,NULL,"
+ "NULL,3701772,29442,3701772,1,1,115218,2,6); END;"
+IMP-00003: se ha encontrado un error 20000 de ORACLE
+ORA-20000: INDEX "FOREX"."OPERACION_X_SEMANA_PK" does not exist or insufficient privileges
+ORA-06512: en "SYS.DBMS_STATS", lÝnea 4505
+ORA-06512: en "SYS.DBMS_STATS", lÝnea 9599
+ORA-06512: en lÝnea 1
+. importando la tabla                    "PARAMETRO"         36 filas importadas
+. importando la tabla          "PREVIO_TOFILESTRING"    2374090 filas importadas
+IMP-00017: la siguiente sentencia ha fallado con el error 1115 de ORACLE :
+ "CREATE UNIQUE INDEX "PREVIO_TOFILESTRING_PK" ON "PREVIO_TOFILESTRING" ("ID_"
+ "INDIVIDUO" , "FECHA_SEMANA" , "TIPO_OPERACION" )  PCTFREE 10 INITRANS 2 MAX"
+ "TRANS 255 STORAGE(INITIAL 209715200 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 F"
+ "REELIST GROUPS 1 BUFFER_POOL DEFAULT)                       LOGGING"
+IMP-00003: se ha encontrado un error 1115 de ORACLE
+ORA-01115: error de E/S al leer el bloque del archivo  (bloque n·mero )
+ORA-01115: error de E/S al leer el bloque del archivo 201 (bloque n·mero 89670)
+ORA-27070: fallo de la lectura/escritura asÝncrona
+OSD-04016: Error al poner en la cola una solicitud de E/S asÝncrona.
+O/S-Error: (OS 23) Error de datos (comprobaci¾n de redundancia cÝclica).
+. importando la tabla                      "PROCESO"      25997 filas importadas
+. importando la tabla            "PROCESO_REPETIDOS"      10146 filas importadas
+. importando la tabla                      "SEMANAS"        457 filas importadas
+. importando la tabla                    "TENDENCIA"   24302482 filas importadas
+IMP-00017: la siguiente sentencia ha fallado con el error 1115 de ORACLE :
+ "CREATE INDEX "TENDENCIA_IDX5" ON "TENDENCIA" ("ID_INDIVIDUO" , "FECHA_BASE""
+ " , "FECHA_APERTURA" )  PCTFREE 10 INITRANS 2 MAXTRANS 255 STORAGE(INITIAL 1"
+ "879048192 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_PO"
+ "OL DEFAULT) TABLESPACE "USERS" LOGGING"
+IMP-00003: se ha encontrado un error 1115 de ORACLE
+ORA-01115: error de E/S al leer el bloque del archivo  (bloque n·mero )
+ORA-01115: error de E/S al leer el bloque del archivo 201 (bloque n·mero 105728)
+ORA-27070: fallo de la lectura/escritura asÝncrona
+OSD-04016: Error al poner en la cola una solicitud de E/S asÝncrona.
+O/S-Error: (OS 23) Error de datos (comprobaci¾n de redundancia cÝclica).
+IMP-00017: la siguiente sentencia ha fallado con el error 1115 de ORACLE :
+ "CREATE UNIQUE INDEX "TENDENCIA_PK1" ON "TENDENCIA" ("FECHA_BASE" , "ID_INDI"
+ "VIDUO" , "TIPO_CALCULO" )  PCTFREE 10 INITRANS 2 MAXTRANS 255 STORAGE(INITI"
+ "AL 1889533952 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFE"
+ "R_POOL DEFAULT) TABLESPACE "USERS" LOGGING"
+IMP-00003: se ha encontrado un error 1115 de ORACLE
+ORA-01115: error de E/S al leer el bloque del archivo  (bloque n·mero )
+ORA-01115: error de E/S al leer el bloque del archivo 201 (bloque n·mero 106752)
+ORA-27070: fallo de la lectura/escritura asÝncrona
+OSD-04016: Error al poner en la cola una solicitud de E/S asÝncrona.
+O/S-Error: (OS 23) Error de datos (comprobaci¾n de redundancia cÝclica).
+IMP-00017: la siguiente sentencia ha fallado con el error 1115 de ORACLE :
+ "ALTER TABLE "TENDENCIA" ADD  CONSTRAINT "TENDENCIA_PK" PRIMARY KEY ("FECHA_"
+ "BASE", "ID_INDIVIDUO", "TIPO_CALCULO") USING INDEX PCTFREE 10 INITRANS 2 MA"
+ "XTRANS 255 STORAGE(INITIAL 1889533952 NEXT 1048576 MINEXTENTS 1 FREELISTS 1"
+ " FREELIST GROUPS 1 BUFFER_POOL DEFAULT) TABLESPACE "USERS" LOGGING ENABLE "
+IMP-00003: se ha encontrado un error 1115 de ORACLE
+ORA-01115: error de E/S al leer el bloque del archivo  (bloque n·mero )
+ORA-01115: error de E/S al leer el bloque del archivo 201 (bloque n·mero 91392)
+ORA-27070: fallo de la lectura/escritura asÝncrona
+OSD-04016: Error al poner en la cola una solicitud de E/S asÝncrona.
+O/S-Error: (OS 23) Error de datos (comprobaci¾n de redundancia cÝclica).
+. importando la tabla        "TENDENCIA_PARA_OPERAR"     149248 filas importadas
+. importando la tabla          "TENDENCIA_PROCESADA"          0 filas importadas
+. importando la tabla              "TENDENCIA_QUERY"          0 filas importadas
+. importando la tabla          "TENDENCIA_ULTIMOMES"     698496 filas importadas
+. importando la tabla       "TENDENCIA_ULTIMOSDATOS"    1993291 filas importadas
+IMP-00017: la siguiente sentencia ha fallado con el error 1658 de ORACLE :
+ "CREATE INDEX "TENDENCIAULTM_IDX5" ON "TENDENCIA_ULTIMOSDATOS" ("ID_INDIVIDU"
+ "O" , "FECHA_BASE" , "FECHA_APERTURA" )  PCTFREE 10 INITRANS 2 MAXTRANS 255 "
+ "STORAGE(INITIAL 318767104 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GR"
+ "OUPS 1 BUFFER_POOL DEFAULT)                       LOGGING"
+IMP-00003: se ha encontrado un error 1658 de ORACLE
+ORA-01658: no se ha podido crear extensi¾n INITIAL para el segmento en el tablespace USERS
+. importando la tabla             "TMP_TOFILESTRING"       9979 filas importadas
+. importando la tabla            "TMP_TOFILESTRING2"       4535 filas importadas
+IMP-00041: Advertencia: Objeto creado con advertencias de compilaci¾n
+ "CREATE FORCE VIEW "FOREX"."DETALLE_ESTADISTICAS"                           "
+ "("ID_INDIVIDUO","CANTIDAD_POSITIVOS","CANTIDAD_NEGATIVOS","CANTIDAD_TOTAL","
+ ""PIPS_POSITIVOS","PIPS_NEGATIVOS","PIPS_TOTALES","PIPS_MINIMOS_POS","PIPS_M"
+ "INIMOS_NEG","PIPS_MINIMOS","PIPS_RETROCESO_MINIMO_POS","PIPS_RETROCESO_MINI"
+ "MO_NEG","PIPS_RETROCESO_MINIMO_TOTAL","PIPS_MAXIMOS_POS","PIPS_MAXIMOS_NEG""
+ ","PIPS_MAXIMOS","PIPS_RETROCESO_MAXIMO_POS","PIPS_RETROCESO_MAXIMO_NEG","PI"
+ "PS_RETROCESO_MAXIMO_TOTAL","AVG_PIPS_POS","AVG_PIPS_NEG","AVG_PIPS","PIPS_R"
+ "ETROCESO_PROMEDIO_POS","PIPS_RETROCESO_PROMEDIO_NEG","PIPS_RETROCESO_PROMED"
+ "IO_TOTAL","PIPS_MODA_POS","PIPS_MODA_NEG","PIPS_MODA","PIPS_RETROCESO_MODA_"
+ "POS","PIPS_RETROCESO_MODA_NEG","PIPS_RETROCESO_MODA_TOTAL","DUR_MIN_POS","D"
+ "UR_MIN_NEG","DUR_MIN","DUR_MAX_POS","DUR_MAX_NEG","DUR_MAX","DUR_PROM_POS","
+ ""DUR_PROM_NEG","DUR_PROM","DUR_MODA_POS","DUR_MODA_NEG","DUR_MODA","DUR_DES"
+ "V_POS","DUR_DESV_NEG","DUR_DESV") AS "
+ "SELECT IND.ID ID_INDIVIDUO, "
+ "  NVL(SUM(POSITIVOS.CANTIDAD),0) CANTIDAD_POSITIVOS, NVL(SUM(NEGATIVOS.CANT"
+ "IDAD),0) CANTIDAD_NEGATIVOS, NVL(SUM(OPER.CANTIDAD),0) CANTIDAD_TOTAL,"
+ "  NVL(SUM(POSITIVOS.PIPS),0) PIPS_POSITIVOS, NVL(SUM(NEGATIVOS.PIPS),0) PIP"
+ "S_NEGATIVOS, NVL(SUM(POSITIVOS.PIPS),0)+NVL(SUM(NEGATIVOS.PIPS),0) PIPS_TOT"
+ "ALES,"
+ "  NVL(MIN(POSITIVOS.PIPS_MINIMOS),0) PIPS_MINIMOS_POS, NVL(MIN(NEGATIVOS.PI"
+ "PS_MINIMOS),0) PIPS_MINIMOS_NEG, NVL(MIN(OPER.PIPS_MINIMOS),0) PIPS_MINIMOS"
+ ","
+ "    NVL(MIN(POSITIVOS.PIPS_RETROCESO_MINIMO),0) PIPS_RETROCESO_MINIMO_POS,N"
+ "VL(MIN(NEGATIVOS.PIPS_RETROCESO_MINIMO),0) PIPS_RETROCESO_MINIMO_NEG, NVL(M"
+ "IN(OPER.PIPS_RETROCESO_MINIMO),0) PIPS_RETROCESO_MINIMO_TOTAL,"
+ "  NVL(MAX(POSITIVOS.PIPS_MAXIMOS),0) PIPS_MAXIMOS_POS, NVL(MAX(NEGATIVOS.PI"
+ "PS_MAXIMOS),0) PIPS_MAXIMOS_NEG, NVL(MAX(OPER.PIPS_MAXIMOS),0) PIPS_MAXIMOS"
+ ","
+ "    NVL(MIN(POSITIVOS.PIPS_RETROCESO_MAXIMO),0) PIPS_RETROCESO_MAXIMO_POS,N"
+ "VL(MIN(NEGATIVOS.PIPS_RETROCESO_MAXIMO),0) PIPS_RETROCESO_MAXIMO_NEG, NVL(M"
+ "IN(OPER.PIPS_RETROCESO_MAXIMO),0) PIPS_RETROCESO_MAXIMO_TOTAL,"
+ "  ROUND(NVL(AVG(POSITIVOS.PIPS_PROMEDIO),0),5) AVG_PIPS_POS, ROUND(NVL(AVG("
+ "NEGATIVOS.PIPS_PROMEDIO),0),0) AVG_PIPS_NEG, ROUND(NVL(AVG(OPER.PIPS_PROMED"
+ "IO),0),0) AVG_PIPS,"
+ "    ROUND(NVL(MIN(POSITIVOS.PIPS_RETROCESO_PROMEDIO),0),5) PIPS_RETROCESO_P"
+ "ROMEDIO_POS,ROUND(NVL(MIN(NEGATIVOS.PIPS_RETROCESO_PROMEDIO),0),5) PIPS_RET"
+ "ROCESO_PROMEDIO_NEG, ROUND(NVL(MIN(OPER.PIPS_RETROCESO_PROMEDIO),0),5) PIPS"
+ "_RETROCESO_PROMEDIO_TOTAL,"
+ "  NVL(SUM(POSITIVOS.PIPS_MODA),0) PIPS_MODA_POS, NVL(SUM(NEGATIVOS.PIPS_MOD"
+ "A),0) PIPS_MODA_NEG, NVL(SUM(OPER.PIPS_MODA),0) PIPS_MODA,"
+ "    NVL(MIN(POSITIVOS.PIPS_RETROCESO_MODA),0) PIPS_RETROCESO_MODA_POS,NVL(M"
+ "IN(NEGATIVOS.PIPS_RETROCESO_MODA),0) PIPS_RETROCESO_MODA_NEG, NVL(MIN(OPER."
+ "PIPS_RETROCESO_MODA),0) PIPS_RETROCESO_MODA_TOTAL,"
+ "  ROUND(NVL(SUM(POSITIVOS.DUR_MINIMA),0),5) DUR_MIN_POS, ROUND(NVL(SUM(NEGA"
+ "TIVOS.DUR_MINIMA),0),5) DUR_MIN_NEG, ROUND(NVL(SUM(OPER.DUR_MINIMA),0),5) D"
+ "UR_MIN, "
+ "  ROUND(NVL(SUM(POSITIVOS.DUR_MAXIMA),0),5) DUR_MAX_POS, ROUND(NVL(SUM(NEGA"
+ "TIVOS.DUR_MAXIMA),0),5) DUR_MAX_NEG, ROUND(NVL(SUM(OPER.DUR_MAXIMA),0),5) D"
+ "UR_MAX,"
+ "  ROUND(NVL(SUM(POSITIVOS.DUR_PROMEDIO),0),5) DUR_PROM_POS, ROUND(NVL(SUM(N"
+ "EGATIVOS.DUR_PROMEDIO),0),5) DUR_PROM_NEG, ROUND(NVL(SUM(OPER.DUR_PROMEDIO)"
+ ",0),5) DUR_PROM,"
+ "  ROUND(NVL(SUM(POSITIVOS.DUR_MODA),0),5) DUR_MODA_POS, ROUND(NVL(SUM(NEGAT"
+ "IVOS.DUR_MODA),0),5) DUR_MODA_NEG, ROUND(NVL(SUM(OPER.DUR_MODA),0),5) DUR_M"
+ "ODA, "
+ "  ROUND(NVL(SUM(POSITIVOS.DUR_DESV),0),5) DUR_DESV_POS, ROUND(NVL(SUM(NEGAT"
+ "IVOS.DUR_DESV),0),5) DUR_DESV_NEG, ROUND(NVL(SUM(OPER.DUR_DESV),0),5) DUR_D"
+ "ESV"
+ "FROM INDIVIDUO IND"
+ "  INNER JOIN (SELECT OPER.ID_INDIVIDUO, MIN(OPER.PIPS) PIPS_MINIMOS, MAX(OP"
+ "ER.PIPS) PIPS_MAXIMOS, AVG(OPER.PIPS) PIPS_PROMEDIO, STATS_MODE(PIPS) PIPS_"
+ "MODA,"
+ "    MIN(WEEK_MINUTES(FECHA_CIERRE,FECHA_APERTURA)) DUR_MINIMA, MAX(WEEK_MIN"
+ "UTES(FECHA_CIERRE,FECHA_APERTURA)) DUR_MAXIMA,"
+ "    AVG(WEEK_MINUTES(FECHA_CIERRE,FECHA_APERTURA)) DUR_PROMEDIO, STATS_MODE"
+ "(WEEK_MINUTES(FECHA_CIERRE,FECHA_APERTURA)) DUR_MODA,"
+ "    STDDEV(WEEK_MINUTES(FECHA_CIERRE,FECHA_APERTURA)) DUR_DESV,"
+ "    MIN(OPER.MAX_PIPS_RETROCESO) PIPS_RETROCESO_MINIMO, MAX(OPER.MAX_PIPS_R"
+ "ETROCESO) PIPS_RETROCESO_MAXIMO, AVG(OPER.MAX_PIPS_RETROCESO) PIPS_RETROCES"
+ "O_PROMEDIO, STATS_MODE(OPER.MAX_PIPS_RETROCESO) PIPS_RETROCESO_MODA,    "
+ "    COUNT(*) CANTIDAD"
+ "    FROM OPERACION OPER, PARAMETROS_ESTADISTICAS PARAM"
+ "              WHERE OPER.FECHA_CIERRE IS NOT NULL AND OPER.FECHA_CIERRE < PARAM.PARAM_F"
+ "ECHA"
+ "    AND (WEEK_MINUTES(OPER.FECHA_CIERRE,OPER.FECHA_APERTURA))>=NVL(PARAM.PA"
+ "RAM_DURACION,0)"
+ "    AND (PARAM.PARAM_RETROCESO IS NULL OR"
+ "      (OPER.PIPS<0 AND PARAM.PARAM_RETROCESO/1>0 "
+ "      AND OPER.MAX_PIPS_RETROCESO>=NVL(PARAM.PARAM_RETROCESO,0)) "
+ "      OR (OPER.PIPS>0 AND PARAM.PARAM_RETROCESO/-1>0 "
+ "      AND OPER.MAX_PIPS_RETROCESO<=NVL(PARAM.PARAM_RETROCESO,0))"
+ "      OR ((OPER.PIPS<0 AND PARAM.PARAM_RETROCESO/1<0 "
+ "      AND OPER.PIPS<=NVL(PARAM.PARAM_RETROCESO,0)))"
+ "      OR ((OPER.PIPS>0 AND PARAM.PARAM_RETROCESO/-1<0 "
+ "      AND OPER.PIPS>=NVL(PARAM.PARAM_RETROCESO,0))))"
+ "      GROUP BY OPER.ID_INDIVIDUO) OPER ON OPER.ID_INDIVIDUO=IND.ID"
+ "  LEFT JOIN (SELECT P.ID_INDIVIDUO, SUM(P.PIPS) PIPS, MIN(P.PIPS) PIPS_MINI"
+ "MOS, MAX(P.PIPS) PIPS_MAXIMOS, AVG(P.PIPS) PIPS_PROMEDIO, STATS_MODE(P.PIPS"
+ ") PIPS_MODA,"
+ "    MIN(WEEK_MINUTES(FECHA_CIERRE,FECHA_APERTURA)) DUR_MINIMA, MAX(WEEK_MIN"
+ "UTES(FECHA_CIERRE,FECHA_APERTURA)) DUR_MAXIMA,"
+ "    AVG(WEEK_MINUTES(FECHA_CIERRE,FECHA_APERTURA)) DUR_PROMEDIO, STATS_MODE"
+ "(WEEK_MINUTES(FECHA_CIERRE,FECHA_APERTURA)) DUR_MODA,"
+ "    STDDEV(WEEK_MINUTES(FECHA_CIERRE,FECHA_APERTURA)) DUR_DESV,"
+ "    MIN(MAX_PIPS_RETROCESO) PIPS_RETROCESO_MINIMO, MAX(MAX_PIPS_RETROCESO) "
+ "PIPS_RETROCESO_MAXIMO, AVG(MAX_PIPS_RETROCESO) PIPS_RETROCESO_PROMEDIO, STA"
+ "TS_MODE(MAX_PIPS_RETROCESO) PIPS_RETROCESO_MODA,    "
+ "    COUNT(*) CANTIDAD"
+ "    FROM OPERACION P, PARAMETROS_ESTADISTICAS PARAM "
+ "    WHERE P.PIPS>0 "
+ "    AND P.FECHA_CIERRE IS NOT NULL AND P.FECHA_CIERRE < PARAM.PARAM_FECHA  "
+ "  "
+ "    AND (WEEK_MINUTES(P.FECHA_CIERRE,P.FECHA_APERTURA))>=NVL(PARAM.PARAM_DU"
+ "RACION,0)"
+ "    AND ((PARAM.PARAM_RETROCESO IS NULL)"
+ "     OR (PARAM.PARAM_RETROCESO>0"
+ "      AND (P.PIPS>=PARAM.PARAM_RETROCESO))"
+ "     OR (PARAM.PARAM_RETROCESO<0"
+ "      AND P.MAX_PIPS_RETROCESO<=NVL(PARAM.PARAM_RETROCESO,0)))"
+ "      GROUP BY P.ID_INDIVIDUO) POSITIVOS ON POSITIVOS.ID_INDIVIDUO=IND.ID"
+ "  LEFT JOIN (SELECT N.ID_INDIVIDUO, SUM(N.PIPS) PIPS, MIN(N.PIPS) PIPS_MINI"
+ "MOS, MAX(N.PIPS) PIPS_MAXIMOS, AVG(N.PIPS) PIPS_PROMEDIO, STATS_MODE(N.PIPS"
+ ") PIPS_MODA,"
+ "    MIN(WEEK_MINUTES(FECHA_CIERRE,FECHA_APERTURA)) DUR_MINIMA, MAX(WEEK_MIN"
+ "UTES(FECHA_CIERRE,FECHA_APERTURA)) DUR_MAXIMA,"
+ "    AVG(WEEK_MINUTES(FECHA_CIERRE,FECHA_APERTURA)) DUR_PROMEDIO, STATS_MODE"
+ "(WEEK_MINUTES(FECHA_CIERRE,FECHA_APERTURA)) DUR_MODA,"
+ "    STDDEV(WEEK_MINUTES(FECHA_CIERRE,FECHA_APERTURA)) DUR_DESV,"
+ "    MIN(MAX_PIPS_RETROCESO) PIPS_RETROCESO_MINIMO, MAX(MAX_PIPS_RETROCESO) "
+ "PIPS_RETROCESO_MAXIMO, AVG(MAX_PIPS_RETROCESO) PIPS_RETROCESO_PROMEDIO, STA"
+ "TS_MODE(MAX_PIPS_RETROCESO) PIPS_RETROCESO_MODA,    "
+ "    COUNT(*) CANTIDAD"
+ "    FROM OPERACION N, PARAMETROS_ESTADISTICAS PARAM"
+ "              WHERE N.PIPS<=0 "
+ "    AND N.FECHA_CIERRE IS NOT NULL AND N.FECHA_CIERRE < PARAM.PARAM_FECHA"
+ "    AND (WEEK_MINUTES(N.FECHA_CIERRE,N.FECHA_APERTURA))>=NVL(PARAM.PARAM_DU"
+ "RACION,0)"
+ "    AND ((PARAM.PARAM_RETROCESO IS NULL)"
+ "      OR (PARAM.PARAM_RETROCESO<0"
+ "        AND(N.PIPS<=PARAM.PARAM_RETROCESO))"
+ "     OR (PARAM.PARAM_RETROCESO>0"
+ "      AND (N.MAX_PIPS_RETROCESO>=NVL(PARAM.PARAM_RETROCESO,0))))              "
+ "  GROUP BY N.ID_INDIVIDUO) NEGATIVOS ON NEGATIVOS.ID_INDIVIDUO=IND.ID"
+ "GROUP BY IND.ID"
+IMP-00017: la siguiente sentencia ha fallado con el error 1658 de ORACLE :
+ "CREATE INDEX "OPER_ACUM_SEM_MES_PIPS_IDX" ON "OPERACIONES_ACUM_SEMANA_MES" "
+ "("PIPS" DESC )  PCTFREE 10 INITRANS 2 MAXTRANS 255 STORAGE(INITIAL 92274688"
+ " NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAUL"
+ "T)                       LOGGING"
+IMP-00003: se ha encontrado un error 1658 de ORACLE
+ORA-01658: no se ha podido crear extensi¾n INITIAL para el segmento en el tablespace USERS
+IMP-00017: la siguiente sentencia ha fallado con el error 1658 de ORACLE :
+ "CREATE INDEX "OPER_ACUM_SEM_CONSOL_PIPS_IDX" ON "OPERACIONES_ACUM_SEMANA_CO"
+ "NSOL" ("PIPS" DESC )  PCTFREE 10 INITRANS 2 MAXTRANS 255 STORAGE(INITIAL 92"
+ "274688 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL "
+ "DEFAULT)                       LOGGING"
+IMP-00003: se ha encontrado un error 1658 de ORACLE
+ORA-01658: no se ha podido crear extensi¾n INITIAL para el segmento en el tablespace USERS
+IMP-00017: la siguiente sentencia ha fallado con el error 1658 de ORACLE :
+ "CREATE INDEX "OPER_ACUM_SEM_ANYO_PIPS_IDX" ON "OPERACIONES_ACUM_SEMANA_ANYO"
+ "" ("PIPS" DESC )  PCTFREE 10 INITRANS 2 MAXTRANS 255 STORAGE(INITIAL 922746"
+ "88 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFA"
+ "ULT)                       LOGGING"
+IMP-00003: se ha encontrado un error 1658 de ORACLE
+ORA-01658: no se ha podido crear extensi¾n INITIAL para el segmento en el tablespace USERS
+IMP-00017: la siguiente sentencia ha fallado con el error 1658 de ORACLE :
+ "CREATE INDEX "PTFS_IDX1" ON "PREVIO_TOFILESTRING" ("ID_INDIVIDUO" , "FECHA_"
+ "SEMANA" , "TIPO_OPERACION" , NVL("PIPS_SEMANA",0) , NVL("PIPS_MES",0) , NVL"
+ "("PIPS_ANYO",0) , "PIPS_TOTALES" , NVL("R2_SEMANA",0) , NVL("R2_MES",0) , N"
+ "VL("R2_ANYO",0) , "R2_CONSOL" , NVL("PENDIENTE_SEMANA",0) , NVL("PENDIENTE_"
+ "MES",0) , NVL("PENDIENTE_ANYO",0) , "PENDIENTE_CONSOL" )  PCTFREE 10 INITRA"
+ "NS 2 MAXTRANS 255 STORAGE(INITIAL 603979776 NEXT 1048576 MINEXTENTS 1 FREEL"
+ "ISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)                       LOGGING"
+IMP-00003: se ha encontrado un error 1658 de ORACLE
+ORA-01658: no se ha podido crear extensi¾n INITIAL para el segmento en el tablespace USERS
+IMP-00017: la siguiente sentencia ha fallado con el error 1658 de ORACLE :
+ "CREATE INDEX "PTFS_FECHASEMANA_IDX" ON "PREVIO_TOFILESTRING" ("FECHA_SEMANA"
+ "" DESC )  PCTFREE 10 INITRANS 2 MAXTRANS 255 STORAGE(INITIAL 100663296 NEXT"
+ " 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)   "
+ "                    LOGGING"
+IMP-00003: se ha encontrado un error 1658 de ORACLE
+ORA-01658: no se ha podido crear extensi¾n INITIAL para el segmento en el tablespace USERS
+IMP-00017: la siguiente sentencia ha fallado con el error 1658 de ORACLE :
+ "CREATE INDEX "TENDENCIA_IDX1" ON "TENDENCIA" ("FECHA_BASE" DESC , "FECHA_TE"
+ "NDENCIA" , TRUNC("FECHA_TENDENCIA",'fmhh24') , "FOREX"."WEEK_MINUTES"("FECH"
+ "A_TENDENCIA","FECHA_BASE") DESC , "TIPO_TENDENCIA" )  PCTFREE 10 INITRANS 2"
+ " MAXTRANS 255 STORAGE(INITIAL 2415919104 NEXT 1048576 MINEXTENTS 1 FREELIST"
+ "S 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)                       LOGGING"
+IMP-00003: se ha encontrado un error 1658 de ORACLE
+ORA-01658: no se ha podido crear extensi¾n INITIAL para el segmento en el tablespace USERS
+IMP-00017: la siguiente sentencia ha fallado con el error 1658 de ORACLE :
+ "CREATE INDEX "TENDENCIAUM_IDX1" ON "TENDENCIA_ULTIMOMES" ("FECHA_BASE" DESC"
+ " , "FECHA_TENDENCIA" , TRUNC("FECHA_TENDENCIA",'fmhh24') , "FOREX"."WEEK_MI"
+ "NUTES"("FECHA_TENDENCIA","FECHA_BASE") DESC , "TIPO_TENDENCIA" )  PCTFREE 1"
+ "0 INITRANS 2 MAXTRANS 255 STORAGE(INITIAL 117440512 NEXT 1048576 MINEXTENTS"
+ " 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)                      "
+ " LOGGING"
+IMP-00003: se ha encontrado un error 1658 de ORACLE
+ORA-01658: no se ha podido crear extensi¾n INITIAL para el segmento en el tablespace USERS
+IMP-00017: la siguiente sentencia ha fallado con el error 1658 de ORACLE :
+ "CREATE INDEX "TENDENCIAULTM_IDX1" ON "TENDENCIA_ULTIMOSDATOS" ("FECHA_BASE""
+ " DESC , "FECHA_TENDENCIA" , TRUNC("FECHA_TENDENCIA",'fmhh24') , "FOREX"."WE"
+ "EK_MINUTES"("FECHA_TENDENCIA","FECHA_BASE") DESC , "TIPO_TENDENCIA" )  PCTF"
+ "REE 10 INITRANS 2 MAXTRANS 255 STORAGE(INITIAL 251658240 NEXT 1048576 MINEX"
+ "TENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)                 "
+ "      LOGGING"
+IMP-00003: se ha encontrado un error 1658 de ORACLE
+ORA-01658: no se ha podido crear extensi¾n INITIAL para el segmento en el tablespace USERS
+IMP-00017: la siguiente sentencia ha fallado con el error 12026 de ORACLE :
+ "CREATE SNAPSHOT LOG ON "FOREX"."ESTRATEGIA_OPERACION_PERIODO" WITH ROWID , "
+ "PRIMARY KEY INCLUDING NEW VALUES USING ("MLOG$_ESTRATEGIA_OPERACION", (7, '"
+ "FOREX3', 270423, '2017-01-31:18:10:30', '2017-01-31:18:10:27', '2017-01-06:"
+ "13:44:29', '4000-01-01:00:00:00','2017-01-31:18:10:27','4000-01-01:00:00:00"
+ "', 19, "FECHA", '2017-01-06:13:44:29', 1, "FECHA_FINAL", '2017-01-06:13:44:"
+ "29', 2, "FECHA_INICIAL", '2017-01-06:13:44:29', 2, "FILTRO_PENDIENTE_ANYO","
+ " '2017-01-06:13:44:29', 2, "FILTRO_PENDIENTE_MES", '2017-01-06:13:44:29', 2"
+ ", "FILTRO_PENDIENTE_SEMANA", '2017-01-06:13:44:29', 2, "FILTRO_PENDIENTE_TO"
+ "TALES", '2017-01-06:13:44:29', 2, "FILTRO_PIPS_TOTALES", '2017-01-06:13:44:"
+ "29', 2, "FILTRO_PIPS_X_ANYO", '2017-01-06:13:44:29', 2, "FILTRO_PIPS_X_MES""
+ ", '2017-01-06:13:44:29', 2, "FILTRO_PIPS_X_SEMANA", '2017-01-06:13:44:29', "
+ "2, "FILTRO_R2_ANYO", '2017-01-06:13:44:29', 2, "FILTRO_R2_MES", '2017-01-06"
+ ":13:44:29', 2, "FILTRO_R2_SEMANA", '2017-01-06:13:44:29', 2, "FILTRO_R2_TOT"
+ "ALES", '2017-01-06:13:44:29', 2, "FIRST_ORDER", '2017-01-06:13:44:29', 2, ""
+ "ID", '2017-01-06:13:44:29', 1, "MAX_FECHA_CIERRE", '2017-01-06:13:44:29', 2"
+ ", "TIPO_OPERACION", '2017-01-06:13:44:29', 2, 2, 626, '2017-01-31:18:10:27'"
+ ", 649, '2017-01-31:18:10:30', ("RUPD$_ESTRATEGIA_OPERACION")))"
+IMP-00003: se ha encontrado un error 12026 de ORACLE
+ORA-12026: se ha detectado una columna de filtro no vßlida
+Activando las restricciones...
+La importaci¾n ha terminado correctamente pero con advertencias.
+
+D:\app\USER\product\11.2.0\dbhome_3\BIN>PAUSE
+Presione una tecla para continuar . . .
+
+
+
+
+
+d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql>SET ORACLE_SID='orcl'
+
+d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql>REM CD C:\APP\RICARDORQ85\PRODUCT\11.2.0\dbhome_3\BIN
+
+d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql>CD D:\APP\USER\PRODUCT\11.2.0\dbhome_3\BIN
+
+D:\app\USER\product\11.2.0\dbhome_3\BIN>rem IMP FOREX/forex@localhost:1521/orcl.forex FILE=d:\ricardorq85\Informacion\FOREX\Backups\DMP\USDCAD_EXPDAT_20181015.dmp full=yes
+
+D:\app\USER\product\11.2.0\dbhome_3\BIN>IMP FOREX/forex@localhost:1521/orcl.forex FILE=d:\ricardorq85\Informacion\FOREX\Backups\DMP\USDCAD_EXPDAT_20181015.dmp tables=DATOHISTORICO
+
+Import: Release 11.2.0.3.0 - Production on Mar Oct 16 17:39:11 2018
+
+Copyright (c) 1982, 2011, Oracle and/or its affiliates.  All rights reserved.
+
+
+--------------------ok-----------------------------
+
+Conectado a: Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+Archivo de exportaci¾n creado por EXPORT:V11.02.00 a travÚs de la ruta de acceso convencional
+importaci¾n realizada en el juego de caracteres WE8MSWIN1252 y el juego de caracteres NCHAR AL16UTF16
+. importando objetos de FOREX en FOREX
+. importando objetos de FOREX en FOREX
+. . importando la partici¾n "DATOHISTORICO":"DH_ANYO_2008"     186158 filas importadas
+. . importando la partici¾n "DATOHISTORICO":"DH_ANYO_2009"     345747 filas importadas
+. . importando la partici¾n "DATOHISTORICO":"DH_ANYO_2010"     365471 filas importadas
+. . importando la partici¾n "DATOHISTORICO":"DH_ANYO_2011"     368001 filas importadas
+. . importando la partici¾n "DATOHISTORICO":"DH_ANYO_2012"     368596 filas importadas
+. . importando la partici¾n "DATOHISTORICO":"DH_ANYO_2013"     367320 filas importadas
+. . importando la partici¾n "DATOHISTORICO":"DH_ANYO_2014"     365473 filas importadas
+. . importando la partici¾n "DATOHISTORICO":"DH_ANYO_2015"     368528 filas importadas
+. . importando la partici¾n "DATOHISTORICO":"DH_ANYO_2016"     372770 filas importadas
+. . importando la partici¾n "DATOHISTORICO":"DH_ANYO_2017"     370214 filas importadas
+. . importando la partici¾n "DATOHISTORICO":"DH_ANYO_2018"     294498 filas importadas
+IMP-00017: la siguiente sentencia ha fallado con el error 1658 de ORACLE :
+ "CREATE UNIQUE INDEX "DATOHISTORICO_PK" ON "DATOHISTORICO" ("PAR" , "MINUTOS"
+ "" , "FECHA" )  PCTFREE 10 INITRANS 2 MAXTRANS 255 STORAGE(INITIAL 159383552"
+ " NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAUL"
+ "T)                       LOGGING"
+IMP-00003: se ha encontrado un error 1658 de ORACLE
+ORA-01658: no se ha podido crear extensi¾n INITIAL para el segmento en el tablespace USERS
+IMP-00017: la siguiente sentencia ha fallado con el error 1658 de ORACLE :
+ "ALTER TABLE "DATOHISTORICO" ADD  CONSTRAINT "DATOHISTORICO_PK" PRIMARY KEY "
+ "("PAR", "MINUTOS", "FECHA") USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 "
+ "STORAGE(INITIAL 159383552 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GR"
+ "OUPS 1 BUFFER_POOL DEFAULT)                       LOGGING ENABLE "
+IMP-00003: se ha encontrado un error 1658 de ORACLE
+ORA-01658: no se ha podido crear extensi¾n INITIAL para el segmento en el tablespace USERS
+
+--------------------ok-----------------------------
+
+
+Microsoft Windows [Versión 10.0.17134.345]
+(c) 2018 Microsoft Corporation. Todos los derechos reservados.
+
+C:\Users\USER>C:\app\USER\product\11.2.0\dbhome_3\BIN\sqlplus SYS/ForexAdmin2018@localhost:1522/ORCL
+El sistema no puede encontrar la ruta especificada.
+
+C:\Users\USER>D:\app\USER\product\11.2.0\dbhome_3\BIN\sqlplus SYS/ForexAdmin2018@localhost:1522/ORCL
+
+SQL*Plus: Release 11.2.0.3.0 Production on Lun Oct 15 21:35:41 2018
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+ERROR:
+ORA-12541: TNS:no hay ning·n listener
+
+
+Introduzca el nombre de usuario:
+ERROR:
+ORA-01017: nombre de usuario/contrase±a no vßlidos; conexi¾n denegada
+
+
+Introduzca el nombre de usuario:
+ERROR:
+ORA-01017: nombre de usuario/contrase±a no vßlidos; conexi¾n denegada
+
+
+SP2-0157: no se puede CONNECT con ORACLE despuÚs de 3 intentos, saliendo de SQL*Plus
+
+C:\Users\USER>
+C:\Users\USER>
+C:\Users\USER>D:\app\USER\product\11.2.0\dbhome_3\BIN\sqlplus SYS/ForexAdmin2018@localhost:1521/orcl.forex
+
+SQL*Plus: Release 11.2.0.3.0 Production on Lun Oct 15 21:37:01 2018
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+ERROR:
+ORA-28009: connection as SYS should be as SYSDBA or SYSOPER
+
+
+Introduzca el nombre de usuario:
+C:\Users\USER>
+
+C:\Users\USER>D:\app\USER\product\11.2.0\dbhome_3\BIN\sqlplus SYSDBA/ForexAdmin2018@localhost:1521/orcl.forex
+
+SQL*Plus: Release 11.2.0.3.0 Production on Lun Oct 15 21:37:14 2018
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+ERROR:
+ORA-01017: invalid username/password; logon denied
+
+
+Introduzca el nombre de usuario: SYS as SYSDBA
+Introduzca la contrase±a:
+
+Conectado a:
+Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SQL> @"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\CreateUserFOREX.sql"
+
+Usuario creado.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+
+Concesi¾n terminada correctamente.
+
+SQL> ALTER USER FOREX IDENTIFIED BY forex;
+
+Usuario modificado.
+
+SQL> EXIT
+Desconectado de Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+C:\Users\USER>D:\app\USER\product\11.2.0\dbhome_3\BIN\sqlplus FOREX/FOREX@localhost:1521/orcl.forex
+
+SQL*Plus: Release 11.2.0.3.0 Production on Lun Oct 15 21:40:58 2018
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+ERROR:
+ORA-01017: invalid username/password; logon denied
+
+
+Introduzca el nombre de usuario: FOREX
+Introduzca la contrase±a:
+ERROR:
+ORA-01017: invalid username/password; logon denied
+
+
+Introduzca el nombre de usuario: FOREX
+Introduzca la contrase±a:
+
+Conectado a:
+Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SQL> exit
+Desconectado de Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+C:\Users\USER>D:\app\USER\product\11.2.0\dbhome_3\BIN\sqlplus FOREX/forex@localhost:1521/orcl.forex
+
+SQL*Plus: Release 11.2.0.3.0 Production on Lun Oct 15 21:41:22 2018
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+
+Conectado a:
+Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SQL> exit
+Desconectado de Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+C:\Users\USER>D:\app\USER\product\11.2.0\dbhome_3\BIN\sqlplus FOREX/forex@localhost:1521/orcl.forex
+
+SQL*Plus: Release 11.2.0.3.0 Production on Mar Oct 16 17:05:15 2018
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+
+Conectado a:
+Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SQL> SELECT  * FORM OPERACION WHERE ROWNUM<10
+  2  ;
+SELECT  * FORM OPERACION WHERE ROWNUM<10
+          *
+ERROR en lÝnea 1:
+ORA-00923: palabra clave FROM no encontrada donde se esperaba
+
+
+SQL> SELECT  * FROM OPERACION WHERE ROWNUM<10;
+
+ID_INDIVIDUO                                       TAKE_PROFIT  STOP_LOSS
+-------------------------------------------------- ----------- ----------
+FECHA_AP FECHA_CI     SPREAD OPEN_PRICE       PIPS       LOTE
+-------- -------- ---------- ---------- ---------- ----------
+TIPO                 MAX_PIPS_RETROCESO MAX_VALUE_RETROCESO MAX_FECH FECHA
+-------------------- ------------------ ------------------- -------- --------
+1469622989774.81                                           465        744
+09/09/08 09/09/08         30     1,0637       -744         ,1
+SELL                                320              1,0602 09/09/08 04/10/16
+
+1469622989774.81                                           465        744
+16/09/08 17/09/08         30     1,0705        465         ,1
+SELL                               -230              1,0725 16/09/08 04/10/16
+
+ID_INDIVIDUO                                       TAKE_PROFIT  STOP_LOSS
+-------------------------------------------------- ----------- ----------
+FECHA_AP FECHA_CI     SPREAD OPEN_PRICE       PIPS       LOTE
+-------- -------- ---------- ---------- ---------- ----------
+TIPO                 MAX_PIPS_RETROCESO MAX_VALUE_RETROCESO MAX_FECH FECHA
+-------------------- ------------------ ------------------- -------- --------
+
+1469622989774.81                                           465        744
+18/09/08 18/09/08         30    1,06689        465         ,1
+SELL                               -121              1,0678 18/09/08 04/10/16
+
+1469622989774.81                                           465        744
+21/01/09 21/01/09         30     1,2616       -744         ,1
+
+ID_INDIVIDUO                                       TAKE_PROFIT  STOP_LOSS
+-------------------------------------------------- ----------- ----------
+FECHA_AP FECHA_CI     SPREAD OPEN_PRICE       PIPS       LOTE
+-------- -------- ---------- ---------- ---------- ----------
+TIPO                 MAX_PIPS_RETROCESO MAX_VALUE_RETROCESO MAX_FECH FECHA
+-------------------- ------------------ ------------------- -------- --------
+SELL                                200              1,2593 21/01/09 04/10/16
+
+1469622989774.81                                           465        744
+18/02/09 18/02/09         30     1,2612        465         ,1
+SELL                               -430              1,2652 18/02/09 04/10/16
+
+1469622989774.81                                           465        744
+
+ID_INDIVIDUO                                       TAKE_PROFIT  STOP_LOSS
+-------------------------------------------------- ----------- ----------
+FECHA_AP FECHA_CI     SPREAD OPEN_PRICE       PIPS       LOTE
+-------- -------- ---------- ---------- ---------- ----------
+TIPO                 MAX_PIPS_RETROCESO MAX_VALUE_RETROCESO MAX_FECH FECHA
+-------------------- ------------------ ------------------- -------- --------
+24/02/09 24/02/09         30     1,2468        465         ,1
+SELL                               -740              1,2539 24/02/09 04/10/16
+
+1469622989774.81                                           465        744
+04/03/09 04/03/09         30     1,2898        465         ,1
+SELL                               -570              1,2952 04/03/09 04/10/16
+
+
+ID_INDIVIDUO                                       TAKE_PROFIT  STOP_LOSS
+-------------------------------------------------- ----------- ----------
+FECHA_AP FECHA_CI     SPREAD OPEN_PRICE       PIPS       LOTE
+-------- -------- ---------- ---------- ---------- ----------
+TIPO                 MAX_PIPS_RETROCESO MAX_VALUE_RETROCESO MAX_FECH FECHA
+-------------------- ------------------ ------------------- -------- --------
+1469622989774.81                                           465        744
+22/04/09 22/04/09         30    1,23658       -744         ,1
+SELL                                 45             1,23583 22/04/09 04/10/16
+
+1469622989774.81                                           465        744
+19/06/09 19/06/09         30    1,13096        465         ,1
+SELL                               -163             1,13229 19/06/09 04/10/16
+
+ID_INDIVIDUO                                       TAKE_PROFIT  STOP_LOSS
+-------------------------------------------------- ----------- ----------
+FECHA_AP FECHA_CI     SPREAD OPEN_PRICE       PIPS       LOTE
+-------- -------- ---------- ---------- ---------- ----------
+TIPO                 MAX_PIPS_RETROCESO MAX_VALUE_RETROCESO MAX_FECH FECHA
+-------------------- ------------------ ------------------- -------- --------
+
+
+9 filas seleccionadas.
+
+SQL> SELECT  * FROM DATO_HISTORICO WHERE ROWNUM<10;
+SELECT  * FROM DATO_HISTORICO WHERE ROWNUM<10
+               *
+ERROR en lÝnea 1:
+ORA-00942: la tabla o vista no existe
+
+
+SQL> SELECT  * FROM DATOHISTORICO WHERE ROWNUM<10;
+SELECT  * FROM DATOHISTORICO WHERE ROWNUM<10
+               *
+ERROR en lÝnea 1:
+ORA-00942: la tabla o vista no existe
+
+
+SQL> exit
+Desconectado de Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+C:\Users\USER>D:\app\USER\product\11.2.0\dbhome_3\BIN\sqlplus
+
+SQL*Plus: Release 11.2.0.3.0 Production on Mar Oct 16 17:09:38 2018
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+Introduzca el nombre de usuario: sys as sysdba
+Introduzca la contrase±a:
+
+Conectado a:
+Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SQL>
+SQL>   CREATE TABLESPACE "TS_FOREX2" DATAFILE
+  2    'D:\app\USER\oradata\orcl\TS_FOREX201.DBF' SIZE 5242880
+  3    AUTOEXTEND ON NEXT 1310720 MAXSIZE 32767M,
+  4    'D:\app\USER\oradata\orcl\TS_FOREX202.DBF' SIZE 33554432
+  5    AUTOEXTEND ON NEXT 1310720 MAXSIZE 32767M
+  6    LOGGING ONLINE PERMANENT BLOCKSIZE 8192
+  7    EXTENT MANAGEMENT LOCAL AUTOALLOCATE DEFAULT
+  8   NOCOMPRESS  SEGMENT SPACE MANAGEMENT AUTO;
+
+Tablespace creado.
+
+SQL>    ALTER DATABASE DATAFILE
+  2    'D:\app\USER\oradata\orcl\TS_FOREX201.DBF' RESIZE 34359214080;
+
+Base de datos modificada.
+
+SQL>    ALTER DATABASE DATAFILE
+  2    'D:\app\USER\oradata\orcl\TS_FOREX202.DBF' RESIZE 1737490432;
+
+Base de datos modificada.
+
+SQL>
+SQL>  ALTER TABLESPACE USERS
+  2  ADD DATAFILE 'D:\app\USER\oradata\orcl\USERS02.DBF'
+  3  SIZE 33554432;
+
+Tablespace modificado.
+
+SQL>    ALTER DATABASE DATAFILE
+  2    'D:\app\USER\oradata\orcl\USERS02.DBF' RESIZE 1737490432;
+
+Base de datos modificada.
+
+SQL> "CREATE UNIQUE INDEX "DATOHISTORICO_PK" ON "DATOHISTORICO" ("PAR" , "MINUTOS"
+SP2-0734: inicio ""CREATE UN..." de comando desconocido - resto de la lÝnea ignorado.
+SQL>  "" , "FECHA" )  PCTFREE 10 INITRANS 2 MAXTRANS 255 STORAGE(INITIAL 159383552"
+SP2-0734: inicio """ , "FECH..." de comando desconocido - resto de la lÝnea ignorado.
+SQL>  " NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAUL"
+SP2-0734: inicio "" NEXT 104..." de comando desconocido - resto de la lÝnea ignorado.
+SQL>  "T)                       LOGGING"
+SP2-0734: inicio ""T)     ..." de comando desconocido - resto de la lÝnea ignorado.
+SP2-0044: Si desea ver una lista de comandos conocidos escriba HELP
+ y para salir EXIT.
+SQL> "CREATE UNIQUE INDEX "DATOHISTORICO_PK" ON "DATOHISTORICO" ("PAR" , "MINUTOS" , "FECHA" )  PCTFREE 10 INITRANS 2 MAXTRANS 255 STORAGE(INITIAL 159383552 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAUL T)                       LOGGING"
+SP2-0734: inicio ""CREATE UN..." de comando desconocido - resto de la lÝnea ignorado.
+SQL> CREATE UNIQUE INDEX "DATOHISTORICO_PK" ON "DATOHISTORICO" ("PAR" , "MINUTOS" , "FECHA" )  PCTFREE 10 INITRANS 2 MAXTRANS 255 STORAGE(INITIAL 159383552 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAUL T)                       LOGGING
+  2  ;
+CREATE UNIQUE INDEX "DATOHISTORICO_PK" ON "DATOHISTORICO" ("PAR" , "MINUTOS" , "FECHA" )  PCTFREE 10 INITRANS 2 MAXTRANS 255 STORAGE(INITIAL 159383552 NEXT 1048576 MINEXTENTS 1 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAUL T)
+           LOGGING
+                                                                                                                                                                                                                           *
+ERROR en lÝnea 1:
+ORA-25126: Se ha especificado un nombre no vßlido para
+BUFFER_POOL/FLASH_CACHE/CELL_FLASH_CACHE
+
+
+SQL> CREATE UNIQUE INDEX "DATOHISTORICO_PK" ON "DATOHISTORICO" ("PAR" , "MINUTOS" , "FECHA" )
+  2  ;
+CREATE UNIQUE INDEX "DATOHISTORICO_PK" ON "DATOHISTORICO" ("PAR" , "MINUTOS" , "FECHA" )
+                                          *
+ERROR en lÝnea 1:
+ORA-00942: la tabla o vista no existe
+
+
+SQL> EXIT
+Desconectado de Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+C:\Users\USER>D:\app\USER\product\11.2.0\dbhome_3\BIN\sqlplus FOREX/forex@localhost:1521/orcl.forex
+
+SQL*Plus: Release 11.2.0.3.0 Production on Mar Oct 16 18:00:53 2018
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+
+Conectado a:
+Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SQL> CREATE UNIQUE INDEX "DATOHISTORICO_PK" ON "DATOHISTORICO" ("PAR" , "MINUTOS" , "FECHA" )
+  2  ;
+
+═ndice creado.
+
+SQL> ALTER TABLE "DATOHISTORICO" ADD  CONSTRAINT "DATOHISTORICO_PK" PRIMARY KEY ("PAR", "MINUTOS", "FECHA")
+  2  ;
+
+Tabla modificada.
+
+SQL> SELECT  * FROM DATOHISTORICO WHERE ROWNUM<10;
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+USDCAD              1 EURUSD     05/08/08     1,0411     1,0411     1,0412
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+    1,0412          2         30    1,04167    -,00009     -,00004        1,5498
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,55015    1,04227   23,43295    21,0843   45,93011   45,56644
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,04247         1,04079    99,9856           1,04135          1,04145
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+            1,04125             1,04125              1,0413    1,03463
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+       ,00176         ,00199             1,55621     1,0413       5,3785
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+   25,58351     27,01423   49,56065            1,06548            1,01674
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+   103,27036            1,04125           1,04105              1,04078
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+              1,0392               1,0438 30/09/16
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+USDCAD              1 EURUSD     05/08/08     1,0413     1,0413     1,0417
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+    1,0417          6         30    1,04166    -,00007     -,00005        1,5497
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,55015    1,04224   21,83951   31,60639   39,80609   50,26695
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,04247          1,0408  100,07686            1,0414           1,0416
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+             1,0412             1,04125              1,0412    1,03464
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+       ,00176         ,00199              1,5562     1,0415      5,37267
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+   25,28075     27,87797   49,16961             1,0651            1,01714
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+   103,24764            1,04125           1,04105               1,0407
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+              1,0392               1,0439 30/09/16
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+USDCAD              1 EURUSD     05/08/08     1,0416     1,0412     1,0416
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+    1,0412          5         30    1,04165    -,00007     -,00005        1,5495
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,55014    1,04222   20,94605    27,3922   37,16528   47,27835
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,04246         1,04081  100,07689            1,0414          1,04175
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+             1,0412             1,04125              1,0412    1,03465
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+       ,00175         ,00199             1,55619     1,0411      5,33956
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+     26,165     27,54805   50,83803            1,06473            1,01753
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+    103,2821            1,04125            1,0411               1,0407
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+              1,0392               1,0439 30/09/16
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+USDCAD              1 EURUSD     05/08/08     1,0411     1,0411     1,0413
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+    1,0412          7         30    1,04164    -,00008     -,00006        1,5493
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,55013     1,0422   21,37639   23,73991   38,87658   46,32625
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,04247         1,04082  100,05526            1,0414          1,04175
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+            1,04113             1,04125              1,0408    1,03467
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+       ,00174         ,00199             1,55618     1,0411      5,31196
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+   25,85535     27,45873   49,67327            1,06441            1,01787
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+   103,24212            1,04125            1,0411               1,0407
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+              1,0392               1,0438 30/09/16
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+USDCAD              1 EURUSD     05/08/08      1,041      1,041     1,0413
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+    1,0412         11         30    1,04162    -,00009     -,00007        1,5488
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+         1,5501    1,04218   22,51468   20,57459   38,13748   46,08564
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,04246         1,04079  100,00961           1,04135          1,04175
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+             1,0411             1,04125              1,0407    1,03468
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+       ,00174         ,00198             1,55617     1,0417      5,29744
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+   25,54937     27,72549   49,29228            1,06404            1,01826
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+   103,22197            1,04125           1,04115               1,0407
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+             1,03925                1,044 30/09/16
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+USDCAD              1 EURUSD     05/08/08     1,0413     1,0411     1,0413
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+    1,0411          6         30    1,04161     -,0001     -,00008        1,5494
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,55008    1,04213   23,50121   17,83131   33,05248   45,83873
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,04243         1,04075  100,01201           1,04135          1,04175
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+            1,04098             1,04125              1,0406    1,03469
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+       ,00173         ,00198             1,55616     1,0416      5,29153
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+   25,24701     27,79185   49,19681            1,06369            1,01863
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+   103,22205            1,04125           1,04125               1,0407
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+             1,03925                1,044 30/09/16
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+USDCAD              1 EURUSD     05/08/08     1,0412     1,0412     1,0415
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+    1,0415          4         30    1,04159    -,00009     -,00008        1,5494
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,55006    1,04208   22,08146   22,12047   28,64548   48,95813
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,04228         1,04077  100,03122           1,04135          1,04175
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+            1,04098             1,04125              1,0406     1,0347
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+       ,00173         ,00198             1,55616     1,0413      5,28569
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+   24,94823     27,46296   49,10057            1,06337            1,01898
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+   103,20934            1,04125            1,0413               1,0407
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+             1,03925                1,044 30/09/16
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+USDCAD              1 EURUSD     05/08/08     1,0414     1,0413     1,0416
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+    1,0414         21         30    1,04158    -,00007     -,00008        1,5495
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,55004    1,04204   19,47047   23,61552   24,82609   48,95813
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+         1,0421         1,04082  100,02161           1,04135          1,04175
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+            1,04103             1,04125               1,041    1,03472
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+       ,00172         ,00198             1,55615      1,041      5,26591
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+    25,2447     27,13795   50,18546            1,06303            1,01934
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+   103,21614            1,04125            1,0413               1,0407
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+             1,03925               1,0444 30/09/16
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+USDCAD              1 EURUSD     05/08/08     1,0413      1,041     1,0414
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+    1,0412          7         30    1,04156    -,00008     -,00008        1,5498
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,55002      1,042   19,70847   20,46678   31,51594    46,5967
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+        1,04185         1,04096  100,01201           1,04135          1,04175
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+            1,04108             1,04125              1,0409    1,03473
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+       ,00172         ,00198             1,55614     1,0411      5,23709
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+   25,34042     26,81679   50,18546            1,06278            1,01962
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+   103,22381            1,04125            1,0413               1,0407
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+             1,03925               1,0436 30/09/16
+
+PAR           MINUTOS PAR_COMPAR FECHA          OPEN        LOW       HIGH
+---------- ---------- ---------- -------- ---------- ---------- ----------
+     CLOSE     VOLUME     SPREAD    AVERAGE MACD_VALUE MACD_SIGNAL COMPARE_VALUE
+---------- ---------- ---------- ---------- ---------- ----------- -------------
+AVERAGE_COMPARE        SAR  ADX_VALUE   ADX_PLUS  ADX_MINUS        RSI
+--------------- ---------- ---------- ---------- ---------- ----------
+BOLLINGER_UPPER BOLLINGER_LOWER   MOMENTUM ICHIMOKUTENKANSEN ICHIMOKUKIJUNSEN
+--------------- --------------- ---------- ----------------- ----------------
+ICHIMOKUSENKOUSPANA ICHIMOKUSENKOUSPANB ICHIMOKUCHINKOUSPAN     MA1200
+------------------- ------------------- ------------------- ----------
+MACD20X_VALUE MACD20X_SIGNAL AVERAGE_COMPARE1200    SAR1200 ADX_VALUE168
+------------- -------------- ------------------- ---------- ------------
+ADX_PLUS168 ADX_MINUS168      RSI84 BOLLINGER_UPPER240 BOLLINGER_LOWER240
+----------- ------------ ---------- ------------------ ------------------
+MOMENTUM1200 ICHIMOKUTENKANSEN6 ICHIMOKUKIJUNSEN6 ICHIMOKUSENKOUSPANA6
+------------ ------------------ ----------------- --------------------
+ICHIMOKUSENKOUSPANB6 ICHIMOKUCHINKOUSPAN6 FECHA_RE
+-------------------- -------------------- --------
+
+
+9 filas seleccionadas.
+
+SQL> CREATE INDEX "OPER_EST_PER_FECHA_IDX" ON "OPERACION_ESTRATEGIA_PERIODO" ("FECHA_APERTURA" , "FECHA_CIERRE" );
+
+═ndice creado.
+
+SQL> CREATE INDEX "OPER_EST_PER_IDX1" ON "OPERACION_ESTRATEGIA_PERIODO" ("FECHA_CIERRE" )
+  2  ;
+
+═ndice creado.
+
+SQL> CREATE INDEX "OPER_ESTPER_IDIND_FECIER_IDX" ON "OPERACION_ESTRATEGIA_PERIODO" ("ID_INDIVIDUO" , "FECHA_CIERRE" );
+
+═ndice creado.
+
+SQL> ALTER TABLE "OPERACION_ESTRATEGIA_PERIODO" ADD  CONSTRAINT "OPERACION_ESTRAT_PER_PK2" PRIMARY KEY ("ESTRATEGIA_PERIODO", "ID_INDIVIDUO", "FECHA_APERTURA");
+ALTER TABLE "OPERACION_ESTRATEGIA_PERIODO" ADD  CONSTRAINT "OPERACION_ESTRAT_PER_PK2" PRIMARY KEY ("ESTRATEGIA_PERIODO", "ID_INDIVIDUO", "FECHA_APERTURA")
+*
+ERROR en lÝnea 1:
+ORA-01652: no se ha podido ampliar el segmento temporal con 1024 en el
+tablespace USERS
+
+
+SQL> exit
+Desconectado de Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+C:\Users\USER>D:\app\USER\product\11.2.0\dbhome_3\BIN\sqlplus SYS/ForexAdmin2018@localhost:1521/orcl.forex
+
+SQL*Plus: Release 11.2.0.3.0 Production on Mar Oct 16 18:16:54 2018
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+ERROR:
+ORA-28009: connection as SYS should be as SYSDBA or SYSOPER
+
+
+Introduzca el nombre de usuario: sys as sysdba
+Introduzca la contrase±a:
+
+Conectado a:
+Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SQL>  ALTER TABLESPACE USERS
+  2  ADD DATAFILE 'D:\app\USER\oradata\orcl\USERS03.DBF'
+  3  SIZE 33554432;
+
+Tablespace modificado.
+
+SQL>
+SQL>    ALTER DATABASE DATAFILE
+  2    'D:\app\USER\oradata\orcl\USERS03.DBF' RESIZE 1737490432;
+
+Base de datos modificada.
+
+SQL> exit
+Desconectado de Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+C:\Users\USER>D:\app\USER\product\11.2.0\dbhome_3\BIN\sqlplus FOREX/FOREX@localhost:1521/orcl.forex
+
+SQL*Plus: Release 11.2.0.3.0 Production on Mar Oct 16 18:20:05 2018
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+ERROR:
+ORA-01017: invalid username/password; logon denied
+
+
+Introduzca el nombre de usuario: FOREX
+Introduzca la contrase±a:
+
+Conectado a:
+Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SQL> CREATE UNIQUE INDEX "OPERACION_X_SEMANA_PK" ON "OPERACION_X_SEMANA" ("ID_INDIVIDUO" , "FECHA_SEMANA" )
+  2  ;
+CREATE UNIQUE INDEX "OPERACION_X_SEMANA_PK" ON "OPERACION_X_SEMANA" ("ID_INDIVIDUO" , "FECHA_SEMANA" )
+                    *
+ERROR en lÝnea 1:
+ORA-00955: este nombre ya lo estß utilizando otro objeto existente
+
+
+SQL> CREATE UNIQUE INDEX "PREVIO_TOFILESTRING_PK" ON "PREVIO_TOFILESTRING" ("ID_INDIVIDUO" , "FECHA_SEMANA" , "TIPO_OPERACION" );
+CREATE UNIQUE INDEX "PREVIO_TOFILESTRING_PK" ON "PREVIO_TOFILESTRING" ("ID_INDIVIDUO" , "FECHA_SEMANA" , "TIPO_OPERACION" )
+                    *
+ERROR en lÝnea 1:
+ORA-00955: este nombre ya lo estß utilizando otro objeto existente
+
+
+SQL> select user from dual;
+
+USER
+------------------------------
+FOREX
+
+SQL> CREATE INDEX "TENDENCIA_IDX5" ON "TENDENCIA" ("ID_INDIVIDUO" , "FECHA_BASE", "FECHA_APERTURA" );
+
+═ndice creado.
+
+SQL> CREATE UNIQUE INDEX "TENDENCIA_PK1" ON "TENDENCIA" ("FECHA_BASE" , "ID_INDIVIDUO" , "TIPO_CALCULO" );
+CREATE UNIQUE INDEX "TENDENCIA_PK1" ON "TENDENCIA" ("FECHA_BASE" , "ID_INDIVIDUO" , "TIPO_CALCULO" )
+                                       *
+ERROR en lÝnea 1:
+ORA-01115: error de E/S al leer el bloque del archivo  (bloque n·mero )
+ORA-01115: error de E/S al leer el bloque del archivo 201 (bloque n·mero 89984)
+ORA-27070: fallo de la lectura/escritura asÝncrona
+OSD-04016: Error al poner en la cola una solicitud de E/S asÝncrona.
+O/S-Error: (OS 23) Error de datos (comprobaci¾n de redundancia cÝclica).
+
+
+SQL> CREATE UNIQUE INDEX "TENDENCIA_PK1" ON "TENDENCIA" ("FECHA_BASE" , "ID_INDIVIDUO" , "TIPO_CALCULO" );
+^C
+C:\Users\USER>D:\app\USER\product\11.2.0\dbhome_3\BIN\sqlplus FOREX/FOREX@localhost:1521/orcl.forex
+
+SQL*Plus: Release 11.2.0.3.0 Production on Mar Oct 16 18:33:27 2018
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+ERROR:
+ORA-01017: invalid username/password; logon denied
+
+
+Introduzca el nombre de usuario: FOREX
+Introduzca la contrase±a:
+
+Conectado a:
+Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SQL> ALTER TABLE "TENDENCIA" ADD  CONSTRAINT "TENDENCIA_PK" PRIMARY KEY ("FECHA_BASE", "ID_INDIVIDUO", "TIPO_CALCULO") ;
+ALTER TABLE "TENDENCIA" ADD  CONSTRAINT "TENDENCIA_PK" PRIMARY KEY ("FECHA_BASE", "ID_INDIVIDUO", "TIPO_CALCULO")
+*
+ERROR en lÝnea 1:
+ORA-01652: no se ha podido ampliar el segmento temporal con 1024 en el
+tablespace USERS
+
+
+SQL> SELECT USER FROM DUAL;
+
+USER
+------------------------------
+FOREX
+
+SQL> EXI
+SP2-0042: comando desconocido "EXI" - resto de la lÝnea ignorado.
+SQL> EXIT
+Desconectado de Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+C:\Users\USER>D:\app\USER\product\11.2.0\dbhome_3\BIN\sqlplus SYSDBA/ForexAdmin2018@localhost:1521/orcl.forex
+
+SQL*Plus: Release 11.2.0.3.0 Production on Mar Oct 16 21:29:28 2018
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+ERROR:
+ORA-01017: invalid username/password; logon denied
+
+
+Introduzca el nombre de usuario: SYS AS SYSDBA
+Introduzca la contrase±a:
+
+Conectado a:
+Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SQL>  ALTER TABLESPACE USERS
+  2  ADD DATAFILE 'D:\app\USER\oradata\orcl\USERS04.DBF'
+  3  SIZE 33554432;
+
+Tablespace modificado.
+
+SQL>
+SQL>    ALTER DATABASE DATAFILE
+  2    'D:\app\USER\oradata\orcl\USERS04.DBF' RESIZE 1737490432;
+
+Base de datos modificada.
+
+SQL> exit
+Desconectado de Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+C:\Users\USER>D:\app\USER\product\11.2.0\dbhome_3\BIN\sqlplus FOREX/forex@localhost:1521/orcl.forex
+
+SQL*Plus: Release 11.2.0.3.0 Production on Mar Oct 16 21:35:03 2018
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+
+Conectado a:
+Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SQL> ALTER TABLE "TENDENCIA" ADD  CONSTRAINT "TENDENCIA_PK" PRIMARY KEY ("FECHA_BASE", "ID_INDIVIDUO", "TIPO_CALCULO") ;
+
+Tabla modificada.
+
+SQL>
+SQL>
+SQL>
+SQL> CREATE INDEX "TENDENCIAULTM_IDX5" ON "TENDENCIA_ULTIMOSDATOS" ("ID_INDIVIDUO" , "FECHA_BASE" , "FECHA_APERTURA" ) ;
+
+═ndice creado.
+
+SQL>
+SQL> CREATE INDEX "OPER_ACUM_SEM_CONSOL_PIPS_IDX" ON "OPERACIONES_ACUM_SEMANA_CONSOL" ("PIPS" DESC );
+
+═ndice creado.
+
+SQL>
+SQL> CREATE INDEX "OPER_ACUM_SEM_ANYO_PIPS_IDX" ON "OPERACIONES_ACUM_SEMANA_ANYO" ("PIPS" DESC );
+
+═ndice creado.
+
+SQL>
+SQL> CREATE INDEX "PTFS_IDX1" ON "PREVIO_TOFILESTRING" ("ID_INDIVIDUO" , "FECHA_SEMANA" , "TIPO_OPERACION" , NVL("PIPS_SEMANA",0) , NVL("PIPS_MES",0) , NVL("PIPS_ANYO",0) , "PIPS_TOTALES" , NVL("R2_SEMANA",0) , NVL("R2_MES",0) , NVL("R2_ANYO",0) , "R2_CONSOL" , NVL("PENDIENTE_SEMANA",0) , NVL("PENDIENTE_MES",0) , NVL("PENDIENTE_ANYO",0) , "PENDIENTE_CONSOL" );
+
+═ndice creado.
+
+SQL>
+SQL> CREATE INDEX "PTFS_FECHASEMANA_IDX" ON "PREVIO_TOFILESTRING" ("FECHA_SEMANA" DESC );
+
+═ndice creado.
+
+SQL>
+SQL> CREATE INDEX "TENDENCIA_IDX1" ON "TENDENCIA" ("FECHA_BASE" DESC , "FECHA_TENDENCIA" , TRUNC("FECHA_TENDENCIA",'fmhh24') , "FOREX"."WEEK_MINUTES"("FECHA_TENDENCIA","FECHA_BASE") DESC , "TIPO_TENDENCIA" );
+CREATE INDEX "TENDENCIA_IDX1" ON "TENDENCIA" ("FECHA_BASE" DESC , "FECHA_TENDENCIA" , TRUNC("FECHA_TENDENCIA",'fmhh24') , "FOREX"."WEEK_MINUTES"("FECHA_TENDENCIA","FECHA_BASE") DESC , "TIPO_TENDENCIA" )
+                                                                                                                                                                   *
+ERROR en lÝnea 1:
+ORA-01652: no se ha podido ampliar el segmento temporal con 1024 en el
+tablespace USERS
+
+
+SQL>
+SQL> CREATE INDEX "TENDENCIAUM_IDX1" ON "TENDENCIA_ULTIMOMES" ("FECHA_BASE" DESC, "FECHA_TENDENCIA" , TRUNC("FECHA_TENDENCIA",'fmhh24') , "FOREX"."WEEK_MINUTES"("FECHA_TENDENCIA","FECHA_BASE") DESC , "TIPO_TENDENCIA" );
+
+═ndice creado.
+
+SQL>
+SQL> CREATE INDEX "TENDENCIAULTM_IDX1" ON "TENDENCIA_ULTIMOSDATOS" ("FECHA_BASE DESC , "FECHA_TENDENCIA" , TRUNC("FECHA_TENDENCIA",'fmhh24') , "FOREX"."WEEK_MINUTES"("FECHA_TENDENCIA","FECHA_BASE") DESC , "TIPO_TENDENCIA" );
+CREATE INDEX "TENDENCIAULTM_IDX1" ON "TENDENCIA_ULTIMOSDATOS" ("FECHA_BASE DESC , "FECHA_TENDENCIA" , TRUNC("FECHA_TENDENCIA",'fmhh24') , "FOREX"."WEEK_MINUTES"("FECHA_TENDENCIA","FECHA_BASE") DESC , "TIPO_TENDENCIA" )
+                                                                                                                                                                                                                       *
+ERROR en lÝnea 1:
+ORA-01740: faltan comillas en el identificador
+
+
+SQL>
+SQL> exit
+Desconectado de Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+C:\Users\USER>

@@ -10,12 +10,15 @@ import java.util.List;
 
 import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.TendenciaParaOperarDAO;
+import forex.genetic.dao.mongodb.MongoTendenciaParaOperarDAO;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
 import forex.genetic.manager.IndividuoManager;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 public class ExportarTendenciaParaOperarManager {
 	private Connection connection = null;
+
+	private MongoTendenciaParaOperarDAO mongoTendenciaParaOperarDAO;
 
 	private TendenciaParaOperarDAO tendenciaParaOperarDAO;
 	private ParametroDAO parametroDAO;
@@ -26,6 +29,7 @@ public class ExportarTendenciaParaOperarManager {
 	public ExportarTendenciaParaOperarManager() throws SQLException, ClassNotFoundException {
 		connection = JDBCUtil.getConnection();
 		this.tendenciaParaOperarDAO = new TendenciaParaOperarDAO(connection);
+		this.mongoTendenciaParaOperarDAO = new MongoTendenciaParaOperarDAO();
 		this.parametroDAO = new ParametroDAO(connection);
 		ExportarTendenciaParaOperarManager.sourceEstrategiasPath = parametroDAO
 				.getValorParametro("SOURCE_ESTRATEGIAS_PATH");
@@ -33,14 +37,27 @@ public class ExportarTendenciaParaOperarManager {
 	}
 
 	public void exportar() throws SQLException, ClassNotFoundException, IOException {
-		List<TendenciaParaOperarMaxMin> list = this.tendenciaParaOperarDAO.consultarTendenciasParaOperar(this.fechaInicio);
+		String indId = IndividuoManager.nextId();
+
+		List<TendenciaParaOperarMaxMin> list = this.tendenciaParaOperarDAO
+				.consultarTendenciasParaOperar(this.fechaInicio);
+		this.exportar(list, indId);
+
+		List<TendenciaParaOperarMaxMin> listMongo = this.mongoTendenciaParaOperarDAO
+				.consultarTendenciasParaOperar(this.fechaInicio);
+		this.exportar(listMongo, "Mongo_" + indId);
+	}
+
+	private void exportar(List<TendenciaParaOperarMaxMin> list, String name)
+			throws IOException, ClassNotFoundException, SQLException {
 		ProcesarTendenciasGrupalManager grupalManager = new ProcesarTendenciasGrupalManager();
 		grupalManager.setTendenciasResultado(list);
 
-		String fileName = sourceEstrategiasPath + "\\Tendencia" + IndividuoManager.nextId() + ".csv";
+		String fileName = sourceEstrategiasPath + "\\Tendencia" + name + ".csv";
 		Path filePath = FileSystems.getDefault().getPath(fileName);
 
 		grupalManager.export(filePath);
+
 	}
 
 }

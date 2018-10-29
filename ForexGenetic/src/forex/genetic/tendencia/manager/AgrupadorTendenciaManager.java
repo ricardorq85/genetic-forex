@@ -8,6 +8,7 @@ import java.util.List;
 
 import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.TendenciaParaOperarDAO;
+import forex.genetic.dao.mongodb.MongoTendenciaParaOperarDAO;
 import forex.genetic.entities.DatoAdicionalTPO;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Extremos;
@@ -28,6 +29,7 @@ public class AgrupadorTendenciaManager {
 	protected List<TendenciaParaOperarMaxMin> tendenciasResultado;
 	private Connection conn;
 	private TendenciaParaOperarDAO tendenciaParaOperarDAO;
+	private MongoTendenciaParaOperarDAO mongoTendenciaParaOperarDAO;
 	private DatoHistoricoDAO datoHistoricoDAO;
 
 	private Date fechaBase, maxFechaProceso;
@@ -42,6 +44,7 @@ public class AgrupadorTendenciaManager {
 		super();
 		this.conn = conn;
 		this.tendenciaParaOperarDAO = new TendenciaParaOperarDAO(conn);
+		this.mongoTendenciaParaOperarDAO = new MongoTendenciaParaOperarDAO();
 		this.listaTendencias = new ArrayList<>();
 		this.tendenciasResultado = new ArrayList<>();
 		this.setFechaBase(fechaBase);
@@ -280,8 +283,9 @@ public class AgrupadorTendenciaManager {
 		TendenciaParaOperarMaxMin tpo = new TendenciaParaOperarMaxMin();
 		tpo.setFechaBase(fechaBase);
 		int borrados = tendenciaParaOperarDAO.deleteTendenciaParaProcesar(tpo, maxFechaProceso);
+		long borradosMongo = mongoTendenciaParaOperarDAO.deleteTendenciaParaProcesar(tpo, maxFechaProceso);
 		LogUtil.logTime("Borrando tendencias para operar: maxFechaProceso=" + DateUtil.getDateString(maxFechaProceso)
-				+ "; borrados=" + borrados, 1);
+				+ "; borradosOracle=" + borrados + "; borradosMongo=" + borradosMongo, 1);
 		conn.commit();
 	}
 
@@ -478,6 +482,7 @@ public class AgrupadorTendenciaManager {
 
 	private void saveTendenciaParaOperar(TendenciaParaOperar ten) throws SQLException {
 		boolean exists = tendenciaParaOperarDAO.exists(ten);
+		mongoTendenciaParaOperarDAO.insertOrUpdateTendenciaParaOperar(ten);
 		if (exists) {
 			tendenciaParaOperarDAO.updateTendenciaParaProcesar(ten);
 		} else {
@@ -488,6 +493,7 @@ public class AgrupadorTendenciaManager {
 	public void saveDatosAdicionalesTPO(DatoAdicionalTPO datoAdicional) throws SQLException {
 		if (datoAdicional != null) {
 			boolean exists = tendenciaParaOperarDAO.existsDatoAdicional(datoAdicional);
+			mongoTendenciaParaOperarDAO.insertOrUpdateDatoAdicional(datoAdicional);
 			if (exists) {
 				tendenciaParaOperarDAO.updateDatoAdicionalTPO(datoAdicional);
 			} else {

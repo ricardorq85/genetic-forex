@@ -64,11 +64,11 @@ public abstract class BorradoManager {
 			List<Individuo> individuos = this.consultarIndividuos(individuo);
 			int count = 0;
 			while ((individuos != null) && (!individuos.isEmpty())) {
-				LogUtil.logTime("Individuos consultados: " + individuos.size(), 1);
+				LogUtil.logTime("Individuos consultados para borrar: " + individuos.size(), 1);
 				this.smartDelete(individuos);
 				count += individuos.size();
 				if (count > 0) {
-					logTime("Individuos borrados= " + count, 1);
+					logTime("Individuos borrados= " + count + ". Razon: " + this.getClass().getName(), 1);
 				}
 				individuos = this.consultarIndividuos(individuo);
 			}

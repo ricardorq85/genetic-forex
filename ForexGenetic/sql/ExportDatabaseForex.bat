@@ -1,3 +1,3 @@
-set ORACLE_SID=FOREX
-c:\app\ricardorq85\product\11.2.0\dbhome_1\BIN\exp.exe forex/forex full=y
+SET ORACLE_SID='orcl'
+d:\app\USER\product\11.2.0\dbhome_3\BIN\exp.exe FOREX/forex full=y
 pause
