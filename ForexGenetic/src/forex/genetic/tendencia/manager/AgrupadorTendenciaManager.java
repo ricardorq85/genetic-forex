@@ -425,6 +425,8 @@ public class AgrupadorTendenciaManager {
 		if (regresion == null) {
 			regresionIndex = procesoIndex.getRegresion();
 		}
+		tpo.setRegresionJava(procesoIndex.getRegresionJava());
+		tpo.setRegresionFiltradaJava(procesoIndex.getRegresionFiltradaJava());
 		tpo.setRegresion(regresionIndex);
 		tpo.setTipoTendencia(tipoTendencia);
 		tpo.setRegresionFiltrada(procesoIndex.getRegresionFiltrada());

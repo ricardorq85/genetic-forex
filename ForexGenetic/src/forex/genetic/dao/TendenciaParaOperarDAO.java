@@ -42,13 +42,13 @@ public class TendenciaParaOperarDAO {
 	 */
 	public void insertTendenciaParaOperar(TendenciaParaOperar tpo) throws SQLException {
 		String sql = "INSERT INTO TENDENCIA_PARA_OPERAR (" + " TIPO_EXPORTACION, PERIODO, "
-				+ " TIPO_TENDENCIA, TIPO_OPERACION, "
-				+ " FECHA_BASE, FECHA_TENDENCIA, VIGENCIA_LOWER,"
+				+ " TIPO_TENDENCIA, TIPO_OPERACION, " + " FECHA_BASE, FECHA_TENDENCIA, VIGENCIA_LOWER,"
 				+ " VIGENCIA_HIGHER, PRECIO_CALCULADO, STOP_APERTURA, LIMIT_APERTURA, "
 				+ " TAKE_PROFIT, STOP_LOSS, LOTE, LOTE_CALCULADO, " + " TIEMPO_TENDENCIA, "
 				+ " R2, PENDIENTE, DESVIACION, "
 				+ " R2_FILTRADA, PENDIENTE_FILTRADA, DESVIACION_FILTRADA, CANTIDAD_FILTRADA, "
-				+ " MIN_PRECIO, MAX_PRECIO," + " CANTIDAD, FECHA, ID_EJECUCION, ACTIVA) "
+				+ " MIN_PRECIO, MAX_PRECIO,"
+				+ " CANTIDAD, FECHA, ID_EJECUCION, ACTIVA, R2_JAVA, PENDIENTE_JAVA, R2FILTRADA_JAVA, PENDIENTEFILTRADA_JAVA) "
 				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		int index = 1;
@@ -83,6 +83,12 @@ public class TendenciaParaOperarDAO {
 			statement.setTimestamp(index++, new Timestamp(new Date().getTime()));
 			statement.setString(index++, tpo.getIdEjecucion());
 			statement.setInt(index++, tpo.getActiva());
+
+			statement.setDouble(index++, tpo.getRegresionJava().getR2());
+			statement.setDouble(index++, tpo.getRegresionJava().getPendiente());
+			statement.setDouble(index++, tpo.getRegresionFiltradaJava().getR2());
+			statement.setDouble(index++, tpo.getRegresionFiltradaJava().getPendiente());
+
 			statement.executeUpdate();
 		} finally {
 			JDBCUtil.close(statement);
@@ -100,7 +106,8 @@ public class TendenciaParaOperarDAO {
 				+ " TAKE_PROFIT=?, STOP_LOSS=?, " + " LOTE=?, LOTE_CALCULADO=?, " + " TIEMPO_TENDENCIA=?, "
 				+ " R2=?, PENDIENTE=?, DESVIACION=?, "
 				+ " R2_FILTRADA=?, PENDIENTE_FILTRADA=?, DESVIACION_FILTRADA=?, CANTIDAD_FILTRADA=?, "
-				+ " MIN_PRECIO=?, MAX_PRECIO=?," + " CANTIDAD=?, FECHA=?, ID_EJECUCION=?, ACTIVA=?, TIPO_TENDENCIA=? "
+				+ " MIN_PRECIO=?, MAX_PRECIO=?," + " CANTIDAD=?, FECHA=?, ID_EJECUCION=?, ACTIVA=?, TIPO_TENDENCIA=?,"
+				+ " R2_JAVA=?, PENDIENTE_JAVA=?, R2FILTRADA_JAVA=?, PENDIENTEFILTRADA_JAVA=? "
 				+ " WHERE TIPO_OPERACION=? AND TIPO_EXPORTACION=? AND PERIODO=? AND FECHA_BASE=?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -132,6 +139,11 @@ public class TendenciaParaOperarDAO {
 			statement.setString(index++, tpo.getIdEjecucion());
 			statement.setInt(index++, tpo.getActiva());
 			statement.setString(index++, tpo.getTipoTendencia());
+
+			statement.setDouble(index++, tpo.getRegresionJava().getR2());
+			statement.setDouble(index++, tpo.getRegresionJava().getPendiente());
+			statement.setDouble(index++, tpo.getRegresionFiltradaJava().getR2());
+			statement.setDouble(index++, tpo.getRegresionFiltradaJava().getPendiente());
 
 			statement.setString(index++, tpo.getTipoOperacion().name());
 			statement.setString(index++, tpo.getTipoExportacion());
@@ -253,8 +265,8 @@ public class TendenciaParaOperarDAO {
 				+ " DIFF_MIN_PRIMERA_TENDENCIA, DIFF_MAX_PRIMERA_TENDENCIA, DIFF_AVG_PRIMERA_TENDENCIA, "
 				+ " MIN_EXTREMO_EXTREMO, MAX_EXTREMO_EXTREMO, MIN_EXTREMO_FILTRADO, MAX_EXTREMO_FILTRADO, "
 				+ " MIN_EXTREMO_INTERMEDIO, MAX_EXTREMO_INTERMEDIO, MIN_EXTREMO_SINFILTRAR, MAX_EXTREMO_SINFILTRAR,"
-				+ " FACTOR_DATOS "
-				+ ") " + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+				+ " FACTOR_DATOS " + ") "
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 
 		int index = 1;
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -272,13 +284,13 @@ public class TendenciaParaOperarDAO {
 			statement.setDouble(index++, datoAdicional.getDiferenciaPrecioInferior());
 			statement.setDouble(index++, datoAdicional.getMinPrimeraTendencia());
 			statement.setDouble(index++, datoAdicional.getMaxPrimeraTendencia());
-			statement.setDouble(index++, datoAdicional.getAvgPrimeraTendencia());						
+			statement.setDouble(index++, datoAdicional.getAvgPrimeraTendencia());
 
 			Extremos extremos = datoAdicional.getExtremos();
 			index = setExtremosToStatement(statement, extremos, index);
 
 			statement.setDouble(index++, datoAdicional.getFactorDatos());
-			
+
 			statement.executeUpdate();
 		} finally {
 			JDBCUtil.close(statement);
@@ -293,8 +305,7 @@ public class TendenciaParaOperarDAO {
 				+ " DIFF_MIN_PRIMERA_TENDENCIA=?, DIFF_MAX_PRIMERA_TENDENCIA=?, DIFF_AVG_PRIMERA_TENDENCIA=?, "
 				+ " MIN_EXTREMO_EXTREMO=?, MAX_EXTREMO_EXTREMO=?, MIN_EXTREMO_FILTRADO=?, MAX_EXTREMO_FILTRADO=?, "
 				+ " MIN_EXTREMO_INTERMEDIO=?, MAX_EXTREMO_INTERMEDIO=?, MIN_EXTREMO_SINFILTRAR=?, MAX_EXTREMO_SINFILTRAR=?,"
-				+ " FACTOR_DATOS=? "
-				+ " WHERE FECHA_BASE=?";
+				+ " FACTOR_DATOS=? " + " WHERE FECHA_BASE=?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
 		int affected = 0;
@@ -313,10 +324,10 @@ public class TendenciaParaOperarDAO {
 			statement.setDouble(index++, datoAdicional.getMinPrimeraTendencia());
 			statement.setDouble(index++, datoAdicional.getMaxPrimeraTendencia());
 			statement.setDouble(index++, datoAdicional.getAvgPrimeraTendencia());
-			
+
 			Extremos extremos = datoAdicional.getExtremos();
 			index = setExtremosToStatement(statement, extremos, index);
-			
+
 			statement.setDouble(index++, datoAdicional.getFactorDatos());
 
 			statement.setTimestamp(index++, new Timestamp(datoAdicional.getFechaBase().getTime()));

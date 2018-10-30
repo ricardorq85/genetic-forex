@@ -30,7 +30,7 @@ public abstract class TendenciaProcesoBuySellDAO extends TendenciaDAO {
 	}
 
 	protected abstract String getSqlBase();
-	
+
 	private ResultSet execute(PreparedStatement stmtConsulta, ProcesoTendenciaBuySell procesoTendencia)
 			throws SQLException {
 		int count = 1;

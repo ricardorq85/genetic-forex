@@ -25,7 +25,7 @@ public class TendenciaParaOperar {
 	protected double limitApertura = 0.0D;
 	protected double tp = 0.0D;
 	protected double sl = 0.0D;
-	private Regresion regresion, regresionFiltrada;
+	private Regresion regresion, regresionFiltrada, regresionJava, regresionFiltradaJava;
 	private double puntosDiferenciaInicial;
 
 	private double lote = 0.01D, loteCalculado = 0.01D;
@@ -246,6 +246,22 @@ public class TendenciaParaOperar {
 
 	public void setRegresionFiltrada(Regresion regresionFiltrada) {
 		this.regresionFiltrada = regresionFiltrada;
+	}
+
+	public Regresion getRegresionFiltradaJava() {
+		return regresionFiltradaJava;
+	}
+
+	public void setRegresionFiltradaJava(Regresion regresionFiltradaJava) {
+		this.regresionFiltradaJava = regresionFiltradaJava;
+	}
+
+	public Regresion getRegresionJava() {
+		return regresionJava;
+	}
+
+	public void setRegresionJava(Regresion regresionJava) {
+		this.regresionJava = regresionJava;
 	}
 
 	public String getTipoExportacion() {
