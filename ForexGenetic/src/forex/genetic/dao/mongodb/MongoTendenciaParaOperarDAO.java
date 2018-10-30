@@ -43,11 +43,12 @@ public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO {
 	public void insertOrUpdateTendenciaParaOperar(TendenciaParaOperar tpo) {
 		// System.out.println("TPOS: " + collection.countDocuments());
 
+		//com.mongodb.client.model.Filters.
 		Document filterPk = new Document(MongoTendenciaParaOperarHelper.toPrimaryKeyMap(tpo));
 		Document doc = new Document("$set", MongoTendenciaParaOperarHelper.toMap(tpo));
 		UpdateOptions options = new UpdateOptions();
 		options.upsert(true);
-
+		//com.mongodb.client.model.Filters
 		this.collection.updateOne(filterPk, doc, options);
 	}
 

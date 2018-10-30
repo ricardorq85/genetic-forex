@@ -23,7 +23,7 @@ public class ExportarTendenciaFiltradaManager extends ExportarTendenciaManager {
 
 	public ExportarTendenciaFiltradaManager(Connection c) {
 		super(c);
-		super.dao = new TendenciaProcesoFiltradaDAO(c);
+		super.tendenciaProcesoDAO = new TendenciaProcesoFiltradaDAO(c);
 	}
 
 	protected void procesarRegresion(Regresion regresion, Regresion regresionFiltrada) throws SQLException {
@@ -41,10 +41,10 @@ public class ExportarTendenciaFiltradaManager extends ExportarTendenciaManager {
 
 	@Override
 	protected void procesarRegresion() throws SQLException {
-		Regresion regresion = dao.consultarRegresion(procesoTendencia);
+		Regresion regresion = tendenciaProcesoDAO.consultarRegresion(procesoTendencia);
 		this.setParametrosRegresion(regresion);
 		String sqlRegresion = "SELECT PARAM.PERIODO PERIODO, REG.*  FROM PARAMETROS PARAM, REGRESION_FILTRADA REG";
-		Regresion regresionFiltrada = dao.consultarRegresion(procesoTendencia, sqlRegresion);
+		Regresion regresionFiltrada = tendenciaProcesoDAO.consultarRegresion(procesoTendencia, sqlRegresion);
 		this.setParametrosRegresion(regresionFiltrada);
 		this.procesarRegresion(regresion, regresionFiltrada);
 	}

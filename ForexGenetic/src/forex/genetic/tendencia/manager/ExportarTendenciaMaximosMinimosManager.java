@@ -14,7 +14,7 @@ public class ExportarTendenciaMaximosMinimosManager extends ExportarTendenciaMan
 
 	public ExportarTendenciaMaximosMinimosManager(Connection c) throws ClassNotFoundException, SQLException {
 		super(c);
-		super.dao = new TendenciaProcesoFiltroFechaTendenciaFechaBaseDAO(c);
+		super.tendenciaProcesoDAO = new TendenciaProcesoFiltroFechaTendenciaFechaBaseDAO(c);
 	}
 
 }
