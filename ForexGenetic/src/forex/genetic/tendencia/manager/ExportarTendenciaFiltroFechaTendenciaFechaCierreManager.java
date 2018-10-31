@@ -14,6 +14,6 @@ public class ExportarTendenciaFiltroFechaTendenciaFechaCierreManager extends Exp
 
 	public ExportarTendenciaFiltroFechaTendenciaFechaCierreManager(Connection c) throws ClassNotFoundException, SQLException {
 		super();
-		super.tendenciaProcesoDAO = new TendenciaProcesoFiltroFechaTendenciaFechaCierreDAO(c);
+		super.dao = new TendenciaProcesoFiltroFechaTendenciaFechaCierreDAO(c);
 	}
 }

@@ -10,6 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import forex.genetic.dao.TendenciaProcesoFiltradaDAO;
+import forex.genetic.dao.TendenciaProcesoFiltradaUltimosDatosDAO;
 import forex.genetic.entities.DateInterval;
 
 /**
@@ -294,27 +296,6 @@ public class DateUtil {
 	public static String getDateString(String formato, Date fecha) {
 		SimpleDateFormat formatter = new SimpleDateFormat(formato);
 		return ((fecha == null) ? null : formatter.format(fecha));
-	}
-
-	public static Date truncHourDate(Date fecha) {
-		Calendar cal = Calendar.getInstance(); // locale-specific
-		cal.setTime(fecha);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		long time = cal.getTimeInMillis();
-		return new Date(time);
-	}
-
-	public static Date truncDayDate(Date fecha) {
-		Calendar cal = Calendar.getInstance(); // locale-specific
-		cal.setTime(fecha);
-		cal.set(Calendar.HOUR, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		long time = cal.getTimeInMillis();
-		return new Date(time);
 	}
 
 }

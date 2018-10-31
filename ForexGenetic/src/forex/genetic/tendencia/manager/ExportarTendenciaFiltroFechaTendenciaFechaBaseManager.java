@@ -13,7 +13,7 @@ public class ExportarTendenciaFiltroFechaTendenciaFechaBaseManager extends Expor
 
 	public ExportarTendenciaFiltroFechaTendenciaFechaBaseManager(Connection c) {
 		super(c);
-		super.tendenciaProcesoDAO = new TendenciaProcesoFiltroFechaTendenciaFechaBaseDAO(c);
+		super.dao = new TendenciaProcesoFiltroFechaTendenciaFechaBaseDAO(c);
 	}
 
 	@Override

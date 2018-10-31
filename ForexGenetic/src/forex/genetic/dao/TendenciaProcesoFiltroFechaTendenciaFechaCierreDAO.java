@@ -5,18 +5,6 @@
 package forex.genetic.dao;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import forex.genetic.dao.helper.TendenciaProcesoBuySellHelper;
-import forex.genetic.entities.ProcesoTendenciaBuySell;
-import forex.genetic.entities.Regresion;
-import forex.genetic.entities.TendenciaParaOperar;
-import forex.genetic.util.DateUtil;
-import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *

@@ -18,7 +18,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
 public class ExportarTendenciaManager {
 
 	private Connection conn = null;
-	protected TendenciaProcesoBuySellDAO tendenciaProcesoDAO;
+	protected TendenciaProcesoBuySellDAO dao;
 	protected ProcesoTendenciaBuySell procesoTendencia;
 	private static int index = 0;
 
@@ -72,7 +72,7 @@ public class ExportarTendenciaManager {
 	}
 
 	protected List<TendenciaParaOperar> consultarTendencias() throws SQLException {
-		List<TendenciaParaOperar> tendencias = tendenciaProcesoDAO.consultarTendencias(procesoTendencia);
+		List<TendenciaParaOperar> tendencias = dao.consultarTendencias(procesoTendencia);
 		return tendencias;
 	}
 
@@ -101,7 +101,7 @@ public class ExportarTendenciaManager {
 	}
 
 	protected void procesarRegresion() throws SQLException {
-		Regresion regresion = tendenciaProcesoDAO.consultarRegresion(procesoTendencia);
+		Regresion regresion = dao.consultarRegresion(procesoTendencia);
 		procesarRegresion(regresion);
 	}
 	

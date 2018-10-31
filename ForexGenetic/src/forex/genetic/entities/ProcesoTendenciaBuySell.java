@@ -19,7 +19,7 @@ public class ProcesoTendenciaBuySell {
 	private String periodo = null;
 	private String tipoTendencia = null;
 	private double tiempoTendencia = 0.0D;
-	private Regresion regresion = null, regresionFiltrada = null, regresionJava = null, regresionFiltradaJava = null;
+	private Regresion regresion = null, regresionFiltrada = null;
 	private Date fechaBase = null;
 	private int valida = 1;
 	private OperationType tipoOperacion = null;
@@ -125,22 +125,6 @@ public class ProcesoTendenciaBuySell {
 
 	public void setRegresionFiltrada(Regresion regresionFiltrada) {
 		this.regresionFiltrada = regresionFiltrada;
-	}
-
-	public Regresion getRegresionJava() {
-		return regresionJava;
-	}
-
-	public void setRegresionJava(Regresion regresionJava) {
-		this.regresionJava = regresionJava;
-	}
-
-	public Regresion getRegresionFiltradaJava() {
-		return regresionFiltradaJava;
-	}
-
-	public void setRegresionFiltradaJava(Regresion regresionFiltradaJava) {
-		this.regresionFiltradaJava = regresionFiltradaJava;
 	}
 
 }
