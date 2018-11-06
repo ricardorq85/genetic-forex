@@ -4,6 +4,9 @@
  */
 package forex.genetic.entities.indicator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author ricardorq85
@@ -56,5 +59,19 @@ public class Rsi extends IntervalIndicator {
     public void setRsi(double rsi) {
         this.rsi = rsi;
     }
+
+	@Override
+	public Map<String, Object> valuesToMap() {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		if (Double.isInfinite(this.rsi) || Double.isNaN(this.rsi)) {
+			objectMap.put("rsi", null);
+			objectMap.put("calculado", null);
+		} else {
+			objectMap.put("rsi", this.rsi);
+			objectMap.put("calculado", this.rsi);
+		}
+
+		return objectMap;		
+	}
 
 }

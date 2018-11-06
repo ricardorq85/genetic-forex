@@ -4,6 +4,9 @@
  */
 package forex.genetic.dao.mongodb;
 
+import static com.mongodb.client.model.Sorts.ascending;
+import static com.mongodb.client.model.Sorts.orderBy;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +16,8 @@ import org.bson.Document;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
 
@@ -22,8 +27,6 @@ import forex.genetic.entities.TendenciaParaOperarMaxMin;
 import forex.genetic.entities.mongodb.MongoDatoAdicionalTPOHelper;
 import forex.genetic.entities.mongodb.MongoTendenciaParaOperarHelper;
 import forex.genetic.util.jdbc.mongodb.ConnectionMongoDB;
-import static com.mongodb.client.model.Sorts.ascending;
-import static com.mongodb.client.model.Sorts.orderBy;
 
 /**
  *
@@ -38,6 +41,14 @@ public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO {
 	public MongoTendenciaParaOperarDAO() {
 		this.collection = ConnectionMongoDB.getDatabase().getCollection("tendenciaParaOperar");
 		this.collectionDatoAdicional = ConnectionMongoDB.getDatabase().getCollection("datoAdicionalTPO");
+		this.configureCollection();
+	}
+
+	private void configureCollection() {
+		IndexOptions indexOptions = new IndexOptions();
+		indexOptions.unique(true);
+		
+		this.collection.createIndex(Indexes.ascending("periodo", "fechaBase", "tipoOperacion", "tipoExportacion"), indexOptions);		
 	}
 
 	public void insertOrUpdateTendenciaParaOperar(TendenciaParaOperar tpo) {

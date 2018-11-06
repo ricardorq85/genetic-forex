@@ -31,7 +31,7 @@ public abstract class TendenciaProcesoBuySellDAO extends TendenciaDAO {
 
 	protected abstract String getSqlBase();
 
-	private ResultSet execute(PreparedStatement stmtConsulta, ProcesoTendenciaBuySell procesoTendencia)
+	protected ResultSet execute(PreparedStatement stmtConsulta, ProcesoTendenciaBuySell procesoTendencia)
 			throws SQLException {
 		int count = 1;
 		stmtConsulta.setString(count++, procesoTendencia.getPeriodo());

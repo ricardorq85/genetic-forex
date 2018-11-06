@@ -48,8 +48,8 @@ public class TendenciaParaOperarDAO {
 				+ " R2, PENDIENTE, DESVIACION, "
 				+ " R2_FILTRADA, PENDIENTE_FILTRADA, DESVIACION_FILTRADA, CANTIDAD_FILTRADA, "
 				+ " MIN_PRECIO, MAX_PRECIO,"
-				+ " CANTIDAD, FECHA, ID_EJECUCION, ACTIVA, R2_JAVA, PENDIENTE_JAVA, R2FILTRADA_JAVA, PENDIENTEFILTRADA_JAVA) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ " CANTIDAD, FECHA, ID_EJECUCION, ACTIVA, R2_JAVA, PENDIENTE_JAVA, DESVIACION_JAVA, R2FILTRADA_JAVA, PENDIENTEFILTRADA_JAVA, DESVIACIONFILTRADA_JAVA, VALOR_TEMPORAL) "
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		int index = 1;
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -86,8 +86,14 @@ public class TendenciaParaOperarDAO {
 
 			statement.setDouble(index++, tpo.getRegresionJava().getR2());
 			statement.setDouble(index++, tpo.getRegresionJava().getPendiente());
+			statement.setDouble(index++, tpo.getRegresionJava().getDesviacion());
+
 			statement.setDouble(index++, tpo.getRegresionFiltradaJava().getR2());
 			statement.setDouble(index++, tpo.getRegresionFiltradaJava().getPendiente());
+			statement.setDouble(index++, tpo.getRegresionFiltradaJava().getDesviacion());
+
+			//VALOR_TEMPORAL
+			statement.setDouble(index++, tpo.getPrecioCalculado());
 
 			statement.executeUpdate();
 		} finally {
@@ -107,7 +113,7 @@ public class TendenciaParaOperarDAO {
 				+ " R2=?, PENDIENTE=?, DESVIACION=?, "
 				+ " R2_FILTRADA=?, PENDIENTE_FILTRADA=?, DESVIACION_FILTRADA=?, CANTIDAD_FILTRADA=?, "
 				+ " MIN_PRECIO=?, MAX_PRECIO=?," + " CANTIDAD=?, FECHA=?, ID_EJECUCION=?, ACTIVA=?, TIPO_TENDENCIA=?,"
-				+ " R2_JAVA=?, PENDIENTE_JAVA=?, R2FILTRADA_JAVA=?, PENDIENTEFILTRADA_JAVA=? "
+				+ " R2_JAVA=?, PENDIENTE_JAVA=?, DESVIACION_JAVA=?, R2FILTRADA_JAVA=?, PENDIENTEFILTRADA_JAVA=?, DESVIACIONFILTRADA_JAVA=?, VALOR_TEMPORAL=? "
 				+ " WHERE TIPO_OPERACION=? AND TIPO_EXPORTACION=? AND PERIODO=? AND FECHA_BASE=?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -142,8 +148,14 @@ public class TendenciaParaOperarDAO {
 
 			statement.setDouble(index++, tpo.getRegresionJava().getR2());
 			statement.setDouble(index++, tpo.getRegresionJava().getPendiente());
+			statement.setDouble(index++, tpo.getRegresionJava().getDesviacion());
+
 			statement.setDouble(index++, tpo.getRegresionFiltradaJava().getR2());
 			statement.setDouble(index++, tpo.getRegresionFiltradaJava().getPendiente());
+			statement.setDouble(index++, tpo.getRegresionFiltradaJava().getDesviacion());
+
+			//VALOR_TEMPORAL
+			statement.setDouble(index++, tpo.getPrecioCalculado());
 
 			statement.setString(index++, tpo.getTipoOperacion().name());
 			statement.setString(index++, tpo.getTipoExportacion());

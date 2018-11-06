@@ -2,25 +2,11 @@ package forex.genetic.tendencia.manager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
-import forex.genetic.dao.TendenciaParaOperarDAO;
-import forex.genetic.entities.DatoAdicionalTPO;
-import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Extremos;
-import forex.genetic.entities.ProcesoTendenciaBuySell;
-import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
-import forex.genetic.entities.Regresion;
-import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
-import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants.OperationType;
-import forex.genetic.util.DateUtil;
-import forex.genetic.util.LogUtil;
-import forex.genetic.util.NumberUtil;
 
 public class AgrupadorTendenciaFactorDatosManager extends AgrupadorTendenciaManager {
 
@@ -32,6 +18,11 @@ public class AgrupadorTendenciaFactorDatosManager extends AgrupadorTendenciaMana
 	@Override
 	public void procesarExtremos(Extremos extremos) throws SQLException {
 		super.procesarExtremos(extremos);
+		this.setFactorDatos();
+		this.actualizarTPO();
+	}
+
+	private void setFactorDatos() {
 		super.tendenciasResultado.forEach(item -> {
 			if ((!item.getTipoTendencia().startsWith("EXTREMO"))) {
 				double factorDatos = item.getRegresionFiltrada().getCantidad() / (24.0D * 13.0D + 1.0D);
@@ -41,6 +32,90 @@ public class AgrupadorTendenciaFactorDatosManager extends AgrupadorTendenciaMana
 			}
 
 		});
+	}
+
+	private void actualizarTPO() {
+		super.tendenciasResultado.forEach(item -> {
+			if ((!item.getTipoTendencia().startsWith("EXTREMO"))) {
+				setValores(item);
+				activarInactivar(item);
+			}
+		});
+	}
+
+	private void activarInactivar(TendenciaParaOperarMaxMin item) {
+		activarMejorTendencia(item);
+		inactivarPorPrecioInvalidoConTakeProfit(item);
+	}
+
+	private void inactivarPorPrecioInvalidoConTakeProfit(TendenciaParaOperarMaxMin item) {
+		if ((item.getPrecioCalculado() >= item.getTp()) && (item.getTipoOperacion().equals(OperationType.BUY))) {
+			item.setActiva(0);
+		} else if ((item.getPrecioCalculado() <= item.getTp())
+				&& (item.getTipoOperacion().equals(OperationType.SELL))) {
+			item.setActiva(0);
+		} else if ((Math.abs(item.getPrecioCalculado() - item.getTp()) * 100000) < 20) {
+			item.setActiva(0);
+		}
+	}
+
+	private void activarMejorTendencia(TendenciaParaOperarMaxMin item) {
+		if ("MEJOR_TENDENCIA".equals(item.getTipoTendencia())) {
+			item.setActiva(1);
+		}
+	}
+
+	private void setValores(TendenciaParaOperarMaxMin item) {
+		double factorDatos = this.adicionalTPO.getFactorDatos();
+		double precioAntesDe = item.getPrecioCalculado();
+		double stopAperturaAntesDe = item.getStopApertura();
+		double takeProfitAntesDe = item.getTp();
+		double stopLossAntesDe = item.getSl();
+
+		double valorMinimo = 1000.0D / 100000.0D;
+		double multiplicador = 100.0D / 100000.0D;
+		double multiplicadorFactorDatosParaLimitApertura = 0.20D * 10.0D;
+		double multiplicadorFactorDatosParaPrecio = 0.25D * 10.0D;
+		double multiplicadorFactorDatosParaStopApertura = 0.15D * 10.0D;
+		double multiplicadorFactorDatosParaTakeProfit = 0.15D * 10.0D;
+		double multiplicadorFactorDatosParaStopLoss = 0.25D * 10.0D;
+
+		double baseLimitApertura, basePrecio, baseStopApertura, baseTakeProfit, baseStopLoss;
+		if (factorDatos > 0) {
+			baseLimitApertura = (1 - factorDatos) * multiplicadorFactorDatosParaLimitApertura;
+			basePrecio = (1 - factorDatos) * multiplicadorFactorDatosParaPrecio;
+			baseStopApertura = (1 - factorDatos) * multiplicadorFactorDatosParaStopApertura;
+			baseTakeProfit = (1 - factorDatos) * multiplicadorFactorDatosParaTakeProfit;
+			baseStopLoss = (1 - factorDatos) * multiplicadorFactorDatosParaStopLoss;
+		} else {
+			baseLimitApertura = 1.0D / 0.1D;
+			basePrecio = 1.0D / 0.1D;
+			baseStopApertura = 1.0D / 0.1D;
+			baseTakeProfit = 1.0D / 0.1D;
+			baseStopLoss = 1.0D / 0.1D;
+		}
+		double calculoLimitApertura = Math.min(valorMinimo, (multiplicador) * (baseLimitApertura));
+		double calculoPrecio = Math.min(valorMinimo, (multiplicador) * (basePrecio));
+		double calculoStopApertura = Math.min(valorMinimo, (multiplicador) * (baseStopApertura));
+		double calculoTakeProfit = Math.min(valorMinimo, (multiplicador) * (baseTakeProfit));
+		double calculoStopLoss = Math.min(valorMinimo, (multiplicador) * (baseStopLoss));
+
+		double nuevoPrecio;
+		if (item.getTipoOperacion().equals(OperationType.BUY)) {
+			item.setLimitApertura(precioAntesDe - calculoLimitApertura);
+			nuevoPrecio = precioAntesDe + calculoPrecio;
+			item.setPrecioCalculado(nuevoPrecio);
+			item.setStopApertura(stopAperturaAntesDe - calculoStopApertura);
+			item.setTp(takeProfitAntesDe - calculoTakeProfit);
+			item.setSl(stopLossAntesDe - calculoStopLoss);
+		} else if (item.getTipoOperacion().equals(OperationType.SELL)) {
+			item.setLimitApertura(precioAntesDe + calculoLimitApertura);
+			nuevoPrecio = precioAntesDe - calculoPrecio;
+			item.setPrecioCalculado(nuevoPrecio);
+			item.setStopApertura(stopAperturaAntesDe + calculoStopApertura);
+			item.setTp(takeProfitAntesDe + calculoTakeProfit);
+			item.setSl(stopLossAntesDe + calculoStopLoss);
+		}
 	}
 
 }

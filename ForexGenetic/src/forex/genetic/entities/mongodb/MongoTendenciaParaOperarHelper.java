@@ -46,25 +46,26 @@ public class MongoTendenciaParaOperarHelper {
 		objectMap.put("stopLoss", obj.getSl());
 		objectMap.put("lote", obj.getLote());
 		objectMap.put("loteCalculado", obj.getLoteCalculado());
-		if (obj.getRegresion() != null) {
-			objectMap.put("tiempoTendencia", obj.getRegresion().getTiempoTendencia());
-			objectMap.put("r2", obj.getRegresion().getR2());
-			objectMap.put("pendiente", obj.getRegresion().getPendiente());
-			objectMap.put("desviacion", obj.getRegresion().getDesviacion());
-			objectMap.put("r2Filtrada", obj.getRegresionFiltrada().getR2());
-			objectMap.put("minPrecio", obj.getRegresion().getMinPrecio());
-			objectMap.put("maxPrecio", obj.getRegresion().getMaxPrecio());
-			objectMap.put("cantidad", obj.getRegresion().getCantidad());
-		}
-		if (obj.getRegresionFiltrada() != null) {
-			objectMap.put("pendienteFiltrada", obj.getRegresionFiltrada().getPendiente());
-			objectMap.put("desviacionFiltrada", obj.getRegresionFiltrada().getDesviacion());
-			objectMap.put("cantidadFiltrada", obj.getRegresionFiltrada().getCantidad());
-		}
+		objectMap.put("regresion", regresionToMap(obj.getRegresion()));
+		objectMap.put("regresionFiltrada", regresionToMap(obj.getRegresionFiltrada()));
 		objectMap.put("fecha", new Date());
 		objectMap.put("idEjecucion", obj.getIdEjecucion());
 		objectMap.put("activa", obj.getActiva());
 
+		return objectMap;
+	}
+
+	public static Map<String, Object> regresionToMap(Regresion obj) {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		if (obj != null) {
+			objectMap.put("tiempoTendencia", obj.getTiempoTendencia());
+			objectMap.put("r2", obj.getR2());
+			objectMap.put("pendiente", obj.getPendiente());
+			objectMap.put("desviacion", obj.getDesviacion());
+			objectMap.put("minPrecio", obj.getMinPrecio());
+			objectMap.put("maxPrecio", obj.getMaxPrecio());
+			objectMap.put("cantidad", obj.getCantidad());
+		}
 		return objectMap;
 	}
 
@@ -125,6 +126,13 @@ public class MongoTendenciaParaOperarHelper {
 		tpo.setLoteCalculado(one.getDouble("loteCalculado"));
 		tpo.setFecha(one.getDate("fecha"));
 
+		tpo.setRegresion(documentToRegresion((Document) one.get("regresion")));
+		tpo.setRegresionFiltrada(documentToRegresion((Document) one.get("regresionFiltrada")));
+
+		return tpo;
+	}
+
+	public static Regresion documentToRegresion(Document one) {
 		Regresion regresion = new Regresion();
 		regresion.setTiempoTendencia(one.getDouble("tiempoTendencia"));
 		regresion.setR2(one.getDouble("r2"));
@@ -133,7 +141,8 @@ public class MongoTendenciaParaOperarHelper {
 		regresion.setMinPrecio(one.getDouble("minPrecio"));
 		regresion.setMaxPrecio(one.getDouble("maxPrecio"));
 		regresion.setCantidad(one.getInteger("cantidad"));
-		tpo.setRegresion(regresion);
-		return tpo;
+
+		return regresion;
 	}
+
 }

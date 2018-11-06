@@ -5,6 +5,8 @@
 package forex.genetic.entities.indicator;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import forex.genetic.entities.Interval;
 
@@ -70,6 +72,14 @@ public abstract class IntervalIndicator extends Indicator implements Serializabl
 		this.interval = interval;
 		this.interval.setName(this.name);
 	}
+
+	public Map<String, Object> toMap() {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		objectMap.put(this.getName(), this.valuesToMap());
+		return objectMap;
+	}
+
+	public abstract Map<String, Object> valuesToMap();
 
 	/**
 	 *

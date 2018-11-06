@@ -5,6 +5,16 @@
 package forex.genetic.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import forex.genetic.dao.helper.TendenciaProcesoBuySellHelper;
+import forex.genetic.entities.ProcesoTendenciaBuySell;
+import forex.genetic.entities.TendenciaParaOperar;
+import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *
@@ -80,5 +90,22 @@ public class TendenciaProcesoFiltradaDAO extends TendenciaProcesoBuySellDAO {
 		this.tablaTendencia = tablaTendencia;
 	}
 
+	public List<TendenciaParaOperar> consultarTendencias(ProcesoTendenciaBuySell procesoTendencia) throws SQLException {
+		List<TendenciaParaOperar> tendencias = new ArrayList<>();
+		String sql = this.getSqlBase() + "SELECT PARAM.PERIODO PERIODO, TEN.*  FROM PARAMETROS PARAM, "
+				+ this.getTablaTendenciaFiltrada() + " TEN	"
+				+ " ORDER BY TEN.FECHA_TENDENCIA ASC ";
+		ResultSet resultado = null;
+		PreparedStatement stmtConsulta = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			resultado = super.execute(stmtConsulta, procesoTendencia);
+			tendencias = TendenciaProcesoBuySellHelper.helpTendencias(resultado);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
 
+		return tendencias;
+	}
 }
