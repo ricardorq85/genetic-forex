@@ -27,6 +27,7 @@ import forex.genetic.dao.TestTendenciaDAO;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.util.DateUtil;
+import forex.genetic.util.NumberUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 public class TestTendenciaRegresion {
@@ -61,7 +62,7 @@ public class TestTendenciaRegresion {
 
 	private void calcularRegresion() throws ParseException, ClassNotFoundException, SQLException {
 		Date fechaBase = DateUtil.obtenerFecha("2018/10/01 00:06");
-		ProcesoTendenciaBuySell procesoTendencia = new ProcesoTendenciaBuySell("1D", "BUY_SELL_20170204-2", 1440 * 1,
+		ProcesoTendenciaBuySell procesoTendencia = new ProcesoTendenciaBuySell("1D", "BUY_SELL_20170204-2", 1440 * 8,
 				fechaBase);
 		Connection conn = JDBCUtil.getConnection();
 
@@ -69,19 +70,21 @@ public class TestTendenciaRegresion {
 		List<TendenciaParaOperar> results = dao.consultarDatosTendencia(procesoTendencia);
 
 		double[] sdData = new double[results.size()];
-		StandardDeviation sd = new StandardDeviation();
+		// StandardDeviation sd = new StandardDeviation();
 		SimpleRegression sr = new SimpleRegression();
 		results.stream().forEach((tendencia) -> {
-			long diffDias = DateUtil.diferenciaMinutos(fechaBase, tendencia.getFechaTendencia()); // / 60 / 24;
+			float diffDias = DateUtil.diferenciaMinutos(fechaBase, tendencia.getFechaTendencia()) / 60.0F / 24.0F;
+			System.out.println(DateUtil.getDateString(tendencia.getFechaBase()) + ";"
+					+ DateUtil.getDateString(tendencia.getFechaTendencia()) + ";" + diffDias + ";" + tendencia.getPrecioCalculado());
 			sr.addData(diffDias, tendencia.getPrecioCalculado());
 			sdData[index++] = tendencia.getPrecioCalculado();
 		});
-		double standardDeviation = sd.evaluate(sdData);
+		// double standardDeviation = sd.evaluate(sdData);
 		System.out.println("Fecha base:" + DateUtil.getDateString(fechaBase));
-		System.out.println("Pendiente:" + sr.getSlope());
-		System.out.println("R2:" + sr.getRSquare());
-		System.out.println("Intercept:" + sr.getIntercept());
-		System.out.println("standardDeviation:" + standardDeviation);
+		System.out.println("Pendiente:" + NumberUtil.round(sr.getSlope()));
+		System.out.println("R2:" + NumberUtil.round(sr.getRSquare()));
+		System.out.println("Intercept:" + NumberUtil.round(sr.getIntercept()));
+		// System.out.println("standardDeviation:" + standardDeviation);
 
 	}
 

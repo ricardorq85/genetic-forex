@@ -2,25 +2,9 @@ package forex.genetic.tendencia.manager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
-import forex.genetic.dao.TendenciaParaOperarDAO;
-import forex.genetic.entities.DatoAdicionalTPO;
-import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Extremos;
-import forex.genetic.entities.ProcesoTendenciaBuySell;
-import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
-import forex.genetic.entities.Regresion;
-import forex.genetic.entities.TendenciaParaOperar;
-import forex.genetic.entities.TendenciaParaOperarMaxMin;
-import forex.genetic.manager.PropertiesManager;
-import forex.genetic.util.Constants.OperationType;
-import forex.genetic.util.DateUtil;
-import forex.genetic.util.LogUtil;
-import forex.genetic.util.NumberUtil;
 
 public class AgrupadorTendenciaFactorDatosManager extends AgrupadorTendenciaManager {
 
@@ -39,7 +23,6 @@ public class AgrupadorTendenciaFactorDatosManager extends AgrupadorTendenciaMana
 					this.adicionalTPO.setFactorDatos(factorDatos);
 				}
 			}
-
 		});
 	}
 
