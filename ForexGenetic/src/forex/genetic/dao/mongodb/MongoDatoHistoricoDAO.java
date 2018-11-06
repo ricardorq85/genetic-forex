@@ -4,9 +4,14 @@
  */
 package forex.genetic.dao.mongodb;
 
+import java.util.Arrays;
+import java.util.Date;
+
 import org.bson.Document;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.UpdateOptions;
@@ -34,6 +39,25 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO {
 
 		this.collection.createIndex(Indexes.ascending("moneda", "periodo", "fechaHistorico"), indexOptions);
 		this.collection.createIndex(Indexes.ascending("fechaHistorico"));
+	}
+
+	public Date getFechaHistoricaMinima() {
+		Date fecha = null;
+		Document doc = this.collection
+				.aggregate(Arrays.asList(Aggregates.group(null, Accumulators.min("minDate", "$fechaHistorico"))))
+				.first();
+		if (doc != null) {
+			fecha =  doc.getDate("minDate");
+		}
+		return fecha;
+	}
+
+	public Date getFechaHistoricaMaxima() {
+		Document doc = this.collection
+				.aggregate(Arrays.asList(Aggregates.group(null, Accumulators.max("maxDate", "$fechaHistorico"))))
+				.first();
+
+		return doc.getDate("minDate");
 	}
 
 	public void insertOrUpdateDatoHistorico(Point datoHistorico) {

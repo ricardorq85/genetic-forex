@@ -42,7 +42,7 @@ public class RandomUtil {
 		return value;
 	}
 
-	public static double nextDOuble() {
+	public static double nextDouble() {
 		return random.nextDouble();
 	}
 

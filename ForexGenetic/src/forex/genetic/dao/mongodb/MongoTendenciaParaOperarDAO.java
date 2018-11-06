@@ -7,6 +7,7 @@ package forex.genetic.dao.mongodb;
 import static com.mongodb.client.model.Sorts.ascending;
 import static com.mongodb.client.model.Sorts.orderBy;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,8 @@ import org.bson.Document;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.UpdateOptions;
@@ -47,19 +50,30 @@ public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO {
 	private void configureCollection() {
 		IndexOptions indexOptions = new IndexOptions();
 		indexOptions.unique(true);
-		
-		this.collection.createIndex(Indexes.ascending("periodo", "fechaBase", "tipoOperacion", "tipoExportacion"), indexOptions);		
+
+		this.collection.createIndex(Indexes.ascending("periodo", "fechaBase", "tipoOperacion", "tipoExportacion"),
+				indexOptions);
+	}
+
+	public Date getFechaBaseMinima() {
+		Date fecha = null;
+		Document doc = this.collection
+				.aggregate(Arrays.asList(Aggregates.group(null, Accumulators.min("minDate", "$fechaBase")))).first();
+		if (doc != null) {
+			fecha = doc.getDate("minDate");
+		}
+		return fecha;
 	}
 
 	public void insertOrUpdateTendenciaParaOperar(TendenciaParaOperar tpo) {
 		// System.out.println("TPOS: " + collection.countDocuments());
 
-		//com.mongodb.client.model.Filters.
+		// com.mongodb.client.model.Filters.
 		Document filterPk = new Document(MongoTendenciaParaOperarHelper.toPrimaryKeyMap(tpo));
 		Document doc = new Document("$set", MongoTendenciaParaOperarHelper.toMap(tpo));
 		UpdateOptions options = new UpdateOptions();
 		options.upsert(true);
-		//com.mongodb.client.model.Filters
+		// com.mongodb.client.model.Filters
 		this.collection.updateOne(filterPk, doc, options);
 	}
 
@@ -74,7 +88,7 @@ public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO {
 		filter.append("activa", 1);
 		MongoCursor<Document> cursor = this.collection.find(filter).sort(orderBy(ascending("fechaBase"))).iterator();
 		list = MongoTendenciaParaOperarHelper.helpList(cursor);
-		
+
 		return list;
 	}
 
