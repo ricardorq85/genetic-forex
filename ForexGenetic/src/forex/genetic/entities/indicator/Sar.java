@@ -84,7 +84,7 @@ public class Sar extends IntervalIndicator {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		if (!Double.isInfinite(this.sar) && !Double.isNaN(this.sar)) {
 			objectMap.put("sar", this.sar);
-			objectMap.put("calculado", this.sar);
+			objectMap.put("calculado", (this.sar - datoHistorico.getLow()));
 		}
 		return objectMap;
 	}

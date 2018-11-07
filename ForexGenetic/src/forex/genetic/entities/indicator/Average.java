@@ -67,8 +67,8 @@ public class Average extends IntervalIndicator {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		if (!Double.isInfinite(this.average) && !Double.isNaN(this.average)) {
 			objectMap.put("average", this.average);
-			objectMap.put("calculado", this.average);
-			objectMap.put("calculado2", this.average - datoHistorico.getCloseCompare());
+			objectMap.put("calculado", (this.average - datoHistorico.getClose()));
+			objectMap.put("calculado_compare", (this.average - datoHistorico.getCloseCompare()));
 		}
 		return objectMap;
 	}

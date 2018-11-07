@@ -123,7 +123,7 @@ public class Macd extends IntervalIndicator {
 			objectMap.put("macdValue", this.macdValue);
 		}
 		if (objectMap.size() == 2) {
-			objectMap.put("calculado", this.macdValue - this.macdSignal);
+			objectMap.put("calculado", (this.macdValue - this.macdSignal));
 		}
 
 		return objectMap;
