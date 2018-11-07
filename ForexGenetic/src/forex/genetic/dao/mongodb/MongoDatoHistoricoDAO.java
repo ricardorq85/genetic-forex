@@ -38,7 +38,7 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO {
 		indexOptions.unique(true);
 
 		this.collection.createIndex(Indexes.ascending("moneda", "periodo", "fechaHistorico"), indexOptions);
-		this.collection.createIndex(Indexes.ascending("fechaHistorico"));
+		this.collection.createIndex(Indexes.ascending("fechaHistorico"), indexOptions);
 	}
 
 	public Date getFechaHistoricaMinima() {
@@ -57,7 +57,7 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO {
 				.aggregate(Arrays.asList(Aggregates.group(null, Accumulators.max("maxDate", "$fechaHistorico"))))
 				.first();
 
-		return doc.getDate("minDate");
+		return doc.getDate("maxDate");
 	}
 
 	public void insertOrUpdateDatoHistorico(Point datoHistorico) {
@@ -69,6 +69,11 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO {
 		// com.mongodb.client.model.Filters
 		this.collection.updateOne(filterPk, doc, options);
 	}
+	
+	public void cleanDatosHistoricos() {
+		this.collection.drop();
+	}
+
 
 	/*
 	 * public List<TendenciaParaOperarMaxMin> consultarTendenciasParaOperar(Date

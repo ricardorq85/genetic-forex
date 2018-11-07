@@ -7,6 +7,8 @@ package forex.genetic.entities.indicator;
 import java.util.HashMap;
 import java.util.Map;
 
+import forex.genetic.entities.Point;
+
 /**
  *
  * @author ricardorq85
@@ -112,45 +114,26 @@ public class Ichimoku extends IntervalIndicator {
 	}
 
 	@Override
-	public Map<String, Object> valuesToMap() {
+	public Map<String, Object> valuesToMap(Point datoHistorico) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
-		boolean allSet = true;
-		if (Double.isInfinite(this.chinkouSpan) || Double.isNaN(this.chinkouSpan)) {
-			objectMap.put("chinkouSpan", null);
-			allSet = false;
-		} else {
+		if (!Double.isInfinite(this.chinkouSpan) && !Double.isNaN(this.chinkouSpan)) {
 			objectMap.put("chinkouSpan", this.chinkouSpan);
 		}
-		if (Double.isInfinite(this.kijunSen) || Double.isNaN(this.kijunSen)) {
-			objectMap.put("kijunSen", null);
-			allSet = false;
-		} else {
+		if (!Double.isInfinite(this.kijunSen) && !Double.isNaN(this.kijunSen)) {
 			objectMap.put("kijunSen", this.kijunSen);
 		}
-		if (Double.isInfinite(this.senkouSpanA) || Double.isNaN(this.senkouSpanA)) {
-			objectMap.put("senkouSpanA", null);
-			allSet = false;
-		} else {
+		if (!Double.isInfinite(this.senkouSpanA) && !Double.isNaN(this.senkouSpanA)) {
 			objectMap.put("senkouSpanA", this.senkouSpanA);
 		}
-		if (Double.isInfinite(this.senkouSpanB) || Double.isNaN(this.senkouSpanB)) {
-			objectMap.put("senkouSpanB", null);
-			allSet = false;
-		} else {
+		if (!Double.isInfinite(this.senkouSpanB) && !Double.isNaN(this.senkouSpanB)) {
 			objectMap.put("senkouSpanB", this.senkouSpanB);
 		}
-		if (Double.isInfinite(this.tenkanSen) || Double.isNaN(this.tenkanSen)) {
-			objectMap.put("tenkanSen", null);
-			allSet = false;
-		} else {
+		if (!Double.isInfinite(this.tenkanSen) && !Double.isNaN(this.tenkanSen)) {
 			objectMap.put("tenkanSen", this.tenkanSen);
 		}
-		if (allSet) {
-			objectMap.put("calculado", (this.senkouSpanA-this.senkouSpanB));
-			objectMap.put("calculado2", this.chinkouSpan * (this.tenkanSen-this.kijunSen));
-		} else {
-			objectMap.put("calculado", null);
-			objectMap.put("calculado2", null);
+		if (objectMap.size() == 5) {
+			objectMap.put("calculado", (this.senkouSpanA - this.senkouSpanB));
+			objectMap.put("calculado2", this.chinkouSpan * (this.tenkanSen - this.kijunSen));
 		}
 		return objectMap;
 	}

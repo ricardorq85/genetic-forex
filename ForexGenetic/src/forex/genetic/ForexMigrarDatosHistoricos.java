@@ -19,11 +19,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.util.Date;
 
-import forex.genetic.dao.mongodb.MongoTendenciaParaOperarDAO;
 import forex.genetic.delegate.MigracionDelegate;
-import forex.genetic.util.DateUtil;
 
 /**
  *

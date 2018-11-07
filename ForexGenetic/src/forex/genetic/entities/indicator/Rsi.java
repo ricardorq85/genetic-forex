@@ -7,6 +7,8 @@ package forex.genetic.entities.indicator;
 import java.util.HashMap;
 import java.util.Map;
 
+import forex.genetic.entities.Point;
+
 /**
  *
  * @author ricardorq85
@@ -61,17 +63,15 @@ public class Rsi extends IntervalIndicator {
     }
 
 	@Override
-	public Map<String, Object> valuesToMap() {
+	public Map<String, Object> valuesToMap(Point datoHistorico) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
-		if (Double.isInfinite(this.rsi) || Double.isNaN(this.rsi)) {
-			objectMap.put("rsi", null);
-			objectMap.put("calculado", null);
-		} else {
+		if (!Double.isInfinite(this.rsi) && !Double.isNaN(this.rsi)) {
 			objectMap.put("rsi", this.rsi);
 			objectMap.put("calculado", this.rsi);
 		}
 
 		return objectMap;		
 	}
+
 
 }

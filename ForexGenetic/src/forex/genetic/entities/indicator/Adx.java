@@ -7,6 +7,8 @@ package forex.genetic.entities.indicator;
 import java.util.HashMap;
 import java.util.Map;
 
+import forex.genetic.entities.Point;
+
 /**
  *
  * @author ricardorq85
@@ -95,31 +97,19 @@ public class Adx extends IntervalIndicator {
 	}
 
 	@Override
-	public Map<String, Object> valuesToMap() {
+	public Map<String, Object> valuesToMap(Point datoHistorico) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
-		boolean allSet = true;
-		if (Double.isInfinite(this.adxValue) || Double.isNaN(this.adxValue)) {
-			objectMap.put("adxValue", null);
-			allSet = false;
-		} else {
+		if (!Double.isInfinite(this.adxValue) && !Double.isNaN(this.adxValue)) {
 			objectMap.put("adxValue", this.adxValue);
 		}
-		if (Double.isInfinite(this.adxMinus) || Double.isNaN(this.adxMinus)) {
-			objectMap.put("adxMinus", null);
-			allSet = false;
-		} else {
+		if (!Double.isInfinite(this.adxMinus) && !Double.isNaN(this.adxMinus)) {
 			objectMap.put("adxMinus", this.adxMinus);
 		}
-		if (Double.isInfinite(this.adxPlus) || Double.isNaN(this.adxPlus)) {
-			objectMap.put("adxPlus", null);
-			allSet = false;
-		} else {
+		if (!Double.isInfinite(this.adxPlus) && !Double.isNaN(this.adxPlus)) {
 			objectMap.put("adxPlus", this.adxPlus);
 		}
-		if (allSet) {
+		if (objectMap.size() == 3) {
 			objectMap.put("calculado", this.adxValue * (this.adxPlus - this.adxMinus));
-		} else {
-			objectMap.put("calculado", null);
 		}
 		return objectMap;
 	}

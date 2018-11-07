@@ -39,7 +39,7 @@ public class MongoDatoHistoricoHelper {
 
 		List<IntervalIndicator> indicadoresBase = ((List<IntervalIndicator>) datoHistorico.getIndicators());
 		indicadoresBase.stream().forEach((ind) -> {
-			indicadores.add(ind.toMap());
+			indicadores.add(ind.toMap(datoHistorico));
 		});
 
 		objectMap.put("indicadores", indicadores);

@@ -7,6 +7,8 @@ package forex.genetic.entities.indicator;
 import java.util.HashMap;
 import java.util.Map;
 
+import forex.genetic.entities.Point;
+
 /**
  *
  * @author ricardorq85
@@ -112,25 +114,16 @@ public class Macd extends IntervalIndicator {
 	}
 
 	@Override
-	public Map<String, Object> valuesToMap() {
+	public Map<String, Object> valuesToMap(Point datoHistorico) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
-		boolean allSet = true;
-		if (Double.isInfinite(this.macdSignal) || Double.isNaN(this.macdSignal)) {
-			objectMap.put("macdSignal", null);
-			allSet = false;
-		} else {
+		if (!Double.isInfinite(this.macdSignal) && !Double.isNaN(this.macdSignal)) {
 			objectMap.put("macdSignal", this.macdSignal);
 		}
-		if (Double.isInfinite(this.macdValue) || Double.isNaN(this.macdValue)) {
-			objectMap.put("macdValue", null);
-			allSet = false;
-		} else {
+		if (!Double.isInfinite(this.macdValue) && !Double.isNaN(this.macdValue)) {
 			objectMap.put("macdValue", this.macdValue);
 		}
-		if (allSet) {
+		if (objectMap.size() == 2) {
 			objectMap.put("calculado", this.macdValue - this.macdSignal);
-		} else {
-			objectMap.put("calculado", null);
 		}
 
 		return objectMap;

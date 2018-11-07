@@ -6,6 +6,8 @@ package forex.genetic.entities.indicator;
 
 import java.util.Map;
 
+import forex.genetic.entities.Point;
+
 /**
  *
  * @author ricardorq85
@@ -18,5 +20,5 @@ public abstract class Indicator {
      * @return
      */
     public abstract String toFileString(String prefix);
-    public abstract Map<String, Object> toMap();
+    public abstract Map<String, Object> toMap(Point datoHistorico);
 }

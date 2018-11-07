@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import forex.genetic.entities.Interval;
+import forex.genetic.entities.Point;
 
 /**
  *
@@ -73,13 +74,19 @@ public abstract class IntervalIndicator extends Indicator implements Serializabl
 		this.interval.setName(this.name);
 	}
 
-	public Map<String, Object> toMap() {
+	@Override
+	public Map<String, Object> toMap(Point datoHistorico) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
-		objectMap.put(this.getName(), this.valuesToMap());
+		Map<String, Object> indMap = this.valuesToMap(datoHistorico);
+		if (indMap.containsKey("calculado")) {
+			objectMap.put(this.getName(), indMap);
+		}else {
+			objectMap.put(this.getName(), null);
+		}
 		return objectMap;
 	}
 
-	public abstract Map<String, Object> valuesToMap();
+	public abstract Map<String, Object> valuesToMap(Point datoHistorico);
 
 	/**
 	 *

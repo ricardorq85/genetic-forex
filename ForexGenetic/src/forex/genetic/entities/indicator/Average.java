@@ -7,6 +7,8 @@ package forex.genetic.entities.indicator;
 import java.util.HashMap;
 import java.util.Map;
 
+import forex.genetic.entities.Point;
+
 /**
  *
  * @author ricardorq85
@@ -61,14 +63,12 @@ public class Average extends IntervalIndicator {
 	}
 
 	@Override
-	public Map<String, Object> valuesToMap() {
+	public Map<String, Object> valuesToMap(Point datoHistorico) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
-		if (Double.isInfinite(this.average) || Double.isNaN(this.average)) {
-			objectMap.put("average", null);
-			objectMap.put("calculado", null);
-		} else {
+		if (!Double.isInfinite(this.average) && !Double.isNaN(this.average)) {
 			objectMap.put("average", this.average);
 			objectMap.put("calculado", this.average);
+			objectMap.put("calculado2", this.average - datoHistorico.getCloseCompare());
 		}
 		return objectMap;
 	}
