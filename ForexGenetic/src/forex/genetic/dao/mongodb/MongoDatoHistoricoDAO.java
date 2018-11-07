@@ -4,19 +4,28 @@
  */
 package forex.genetic.dao.mongodb;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.InsertManyOptions;
 import com.mongodb.client.model.UpdateOptions;
 
+import forex.genetic.entities.DateInterval;
+import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.entities.mongodb.MongoDatoHistoricoHelper;
 import forex.genetic.util.jdbc.mongodb.ConnectionMongoDB;
 
@@ -47,7 +56,7 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO {
 				.aggregate(Arrays.asList(Aggregates.group(null, Accumulators.min("minDate", "$fechaHistorico"))))
 				.first();
 		if (doc != null) {
-			fecha =  doc.getDate("minDate");
+			fecha = doc.getDate("minDate");
 		}
 		return fecha;
 	}
@@ -69,37 +78,33 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO {
 		// com.mongodb.client.model.Filters
 		this.collection.updateOne(filterPk, doc, options);
 	}
-	
+
+	public void insertMany(List<Point> datos) {
+		List<Document> docs = MongoDatoHistoricoHelper.toMap(datos);
+		InsertManyOptions options = new InsertManyOptions();
+		options.bypassDocumentValidation(true);
+		this.collection.insertMany(docs, options);
+	}
+
 	public void cleanDatosHistoricos() {
 		this.collection.drop();
 	}
 
+	public List<Date> consultarPuntosApertura(DateInterval rango, IndividuoEstrategia individuo) throws SQLException {
+		List<Date> fechas = new ArrayList<Date>();
 
-	/*
-	 * public List<TendenciaParaOperarMaxMin> consultarTendenciasParaOperar(Date
-	 * fechaInicio) { List<TendenciaParaOperarMaxMin> list = null; Document filter =
-	 * new Document(); if (fechaInicio != null) { Map<String, Object> filterValue =
-	 * new HashMap<String, Object>(); filterValue.put("$gte", fechaInicio);
-	 * filter.append("fechaBase", filterValue); } filter.append("activa", 1);
-	 * MongoCursor<Document> cursor =
-	 * this.collection.find(filter).sort(orderBy(ascending("fechaBase"))).iterator()
-	 * ; list = MongoTendenciaParaOperarHelper.helpList(cursor);
-	 * 
-	 * return list; }
-	 * 
-	 * public long deleteTendenciaParaProcesar(TendenciaParaOperar tpo, Date
-	 * fechaReferencia) { Document doc = new
-	 * Document(MongoTendenciaParaOperarHelper.toMapForDelete(tpo,
-	 * fechaReferencia)); DeleteResult result = this.collection.deleteMany(doc);
-	 * return result.getDeletedCount(); }
-	 * 
-	 * public void insertOrUpdateDatoAdicional(DatoAdicionalTPO datpo) { Document
-	 * docPk = new Document(MongoDatoAdicionalTPOHelper.toPrimaryKeyMap(datpo));
-	 * Document doc = new Document("$set",
-	 * MongoDatoAdicionalTPOHelper.toMap(datpo)); UpdateOptions options = new
-	 * UpdateOptions(); options.upsert(true);
-	 * 
-	 * this.collectionDatoAdicional.updateOne(docPk, doc, options); }
-	 */
+		Bson filtros = Filters.and(Filters.lte("fechaHistorico", rango.getLowInterval()),
+				Filters.gte("fechaHistorico", rango.getHighInterval()));
 
+		individuo.getOpenIndicators().stream().forEach(indicador -> {
+			IntervalIndicator intervalIndicator = ((IntervalIndicator)indicador);
+			StringBuilder nombreIndicador = new StringBuilder("indicadores").append(".").append(intervalIndicator.getName());
+			//Filters.or("indicadores")
+			//.getInterval()
+		});
+		
+		this.collection.find(filtros);
+
+		return fechas;
+	}
 }
