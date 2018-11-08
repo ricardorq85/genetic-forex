@@ -43,7 +43,7 @@ public class ForexMigrarDatosHistoricos {
 
 		MigracionDelegate delegate = new MigracionDelegate();
 		logTime("Init Migrar Datos Historicos", 1);
-		delegate.cargarDatosHistoricos();
+		delegate.migrarDatosHistoricos();
 		logTime("End Migrar Datos Historicos", 1);
 
 //		MongoTendenciaParaOperarDAO tendenciaParaOperarDAO = new MongoTendenciaParaOperarDAO();

@@ -85,7 +85,6 @@ public class IndividuoHelper {
         list = new ArrayList<>();
         while (resultado.next()) {
             IndividuoOptimo ind = new IndividuoOptimo();
-            ind.setId(resultado.getString("ID_INDIVIDUO"));
             ind.setCantidadTotal(resultado.getInt("CANTIDAD_TOTAL"));
             ind.setFactorPips(resultado.getDouble("FACTOR_PIPS"));
             ind.setFactorCantidad(resultado.getDouble("FACTOR_CANTIDAD"));

@@ -33,16 +33,13 @@ import forex.genetic.util.jdbc.mongodb.ConnectionMongoDB;
  *
  * @author ricardorq85
  */
-public class MongoDatoHistoricoDAO extends MongoGeneticDAO {
-
-	private MongoCollection<Document> collection = null;
+public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> {
 
 	public MongoDatoHistoricoDAO() {
-		this.collection = ConnectionMongoDB.getDatabase().getCollection("datoHistorico");
-		this.configureCollection();
+		super("datoHistorico");
 	}
 
-	private void configureCollection() {
+	protected void configureCollection() {
 		IndexOptions indexOptions = new IndexOptions();
 		indexOptions.unique(true);
 
@@ -69,7 +66,7 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO {
 		return doc.getDate("maxDate");
 	}
 
-	public void insertOrUpdateDatoHistorico(Point datoHistorico) {
+	public void insertOrUpdate(Point datoHistorico) {
 		// com.mongodb.client.model.Filters.
 		Document filterPk = new Document(MongoDatoHistoricoHelper.toPrimaryKeyMap(datoHistorico));
 		Document doc = new Document("$set", MongoDatoHistoricoHelper.toMap(datoHistorico));
@@ -84,10 +81,6 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO {
 		InsertManyOptions options = new InsertManyOptions();
 		options.bypassDocumentValidation(true);
 		this.collection.insertMany(docs, options);
-	}
-
-	public void cleanDatosHistoricos() {
-		this.collection.drop();
 	}
 
 	public List<Date> consultarPuntosApertura(DateInterval rango, IndividuoEstrategia individuo) throws SQLException {

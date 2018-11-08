@@ -289,7 +289,7 @@ public class AgrupadorTendenciaManager {
 		TendenciaParaOperarMaxMin tpo = new TendenciaParaOperarMaxMin();
 		tpo.setFechaBase(fechaBase);
 		int borrados = tendenciaParaOperarDAO.deleteTendenciaParaProcesar(tpo, maxFechaProceso);
-		long borradosMongo = mongoTendenciaParaOperarDAO.deleteTendenciaParaProcesar(tpo, maxFechaProceso);
+		long borradosMongo = mongoTendenciaParaOperarDAO.delete(tpo, maxFechaProceso);
 		LogUtil.logTime("Borrando tendencias para operar: maxFechaProceso=" + DateUtil.getDateString(maxFechaProceso)
 				+ "; borradosOracle=" + borrados + "; borradosMongo=" + borradosMongo, 1);
 		conn.commit();
@@ -497,7 +497,7 @@ public class AgrupadorTendenciaManager {
 
 	private void saveTendenciaParaOperar(TendenciaParaOperar ten) throws SQLException {
 		boolean exists = tendenciaParaOperarDAO.exists(ten);
-		mongoTendenciaParaOperarDAO.insertOrUpdateTendenciaParaOperar(ten);
+		mongoTendenciaParaOperarDAO.insertOrUpdate(ten);
 		if (exists) {
 			tendenciaParaOperarDAO.updateTendenciaParaProcesar(ten);
 		} else {

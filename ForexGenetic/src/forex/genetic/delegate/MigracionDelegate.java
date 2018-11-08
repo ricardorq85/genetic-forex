@@ -8,16 +8,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import forex.genetic.entities.Poblacion;
-import forex.genetic.facade.DatoHistoricoFacade;
-import forex.genetic.facade.PoblacionFacade;
-import forex.genetic.factory.ControllerFactory;
-import forex.genetic.manager.MigracionManager;
-import forex.genetic.manager.PoblacionManager;
-import forex.genetic.manager.PropertiesManager;
-import forex.genetic.manager.controller.IndicadorController;
-import forex.genetic.util.Constants;
-import forex.genetic.util.LogUtil;
+import forex.genetic.entities.Individuo;
+import forex.genetic.entities.Point;
+import forex.genetic.manager.mongodb.MigracionManager;
+import forex.genetic.manager.mongodb.MongoMigracionDatoHistoricoManager;
+import forex.genetic.manager.mongodb.MongoMigracionIndividuosManager;
 
 /**
  *
@@ -25,8 +20,14 @@ import forex.genetic.util.LogUtil;
  */
 public class MigracionDelegate {
 
-	public void cargarDatosHistoricos() throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {
-		MigracionManager migracionManager = new MigracionManager();
+	public void migrarDatosHistoricos() throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {
+		MigracionManager<Point> migracionManager = new MongoMigracionDatoHistoricoManager();
+		//migracionManager.migrate();
+	}
+	
+	public void migrarIndividuos() throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {
+		MigracionManager<Individuo> migracionManager = new MongoMigracionIndividuosManager();
 		migracionManager.migrate();
 	}
+
 }

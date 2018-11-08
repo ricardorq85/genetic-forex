@@ -49,7 +49,7 @@ public class RandomUtil {
 	public static int nextInt(int bound) {
 		return random.nextInt(bound);
 	}
-
+	
 	public static boolean nextBoolean() {
 		return random.nextBoolean();
 	}

@@ -35,7 +35,7 @@ public class DatoHistoricoFacade implements IGeneticFacade {
 			for (int i = 0; i < points.size(); i++) {
 				Point point = points.get(i);
 				try {
-					mongoDao.insertOrUpdateDatoHistorico(point);
+					mongoDao.insertOrUpdate(point);
 					if (dao.existHistorico(point)) {
 						dao.updateDatoHistorico(point);
 						System.out.print("*");

@@ -1,5 +1,5 @@
 package forex.genetic.dao.mongodb;
 
-public abstract class GeneticDAO {
+public abstract class GeneticDAO<E> {
 
 }

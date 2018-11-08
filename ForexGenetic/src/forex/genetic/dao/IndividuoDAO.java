@@ -835,6 +835,28 @@ public class IndividuoDAO {
 		return list;
 	}	
 
+	public List<Individuo> consultarIndividuosRandom(int cantidad) throws SQLException {
+		List<Individuo> list = null;
+		String sql = "SELECT IND.ID ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE  FROM INDIVIDUO IND " + 
+				"   WHERE IND.ID LIKE ? AND ROWNUM < ?";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			String likeId = "%" + RandomUtil.nextInt(10);
+			stmtConsulta.setString(3, likeId);
+			stmtConsulta.setInt(4, cantidad);
+			resultado = stmtConsulta.executeQuery();
+
+			list = IndividuoHelper.createIndividuosById(resultado);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+
+		return list;
+	}	
+
 	public List<Individuo> consultarIndividuosIndicadoresCloseMinimos(int minimo) throws SQLException {
 		List<Individuo> list = null;
 		String sql = "SELECT II.ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE FROM FOREX.INDICADOR_INDIVIDUO II"

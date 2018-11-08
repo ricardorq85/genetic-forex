@@ -35,19 +35,19 @@ import forex.genetic.util.jdbc.mongodb.ConnectionMongoDB;
  *
  * @author ricardorq85
  */
-public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO {
+public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO<TendenciaParaOperar> {
 
 	private MongoCollection<Document> collection = null;
 	private MongoCollection<Document> collectionDatoAdicional = null;
 
 	// public MongoTendenciaParaOperarDAO(Connection connection) {
 	public MongoTendenciaParaOperarDAO() {
-		this.collection = ConnectionMongoDB.getDatabase().getCollection("tendenciaParaOperar");
+		super("tendenciaParaOperar");
 		this.collectionDatoAdicional = ConnectionMongoDB.getDatabase().getCollection("datoAdicionalTPO");
 		this.configureCollection();
 	}
 
-	private void configureCollection() {
+	protected void configureCollection() {
 		IndexOptions indexOptions = new IndexOptions();
 		indexOptions.unique(true);
 
@@ -65,7 +65,7 @@ public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO {
 		return fecha;
 	}
 
-	public void insertOrUpdateTendenciaParaOperar(TendenciaParaOperar tpo) {
+	public void insertOrUpdate(TendenciaParaOperar tpo) {
 		// System.out.println("TPOS: " + collection.countDocuments());
 
 		// com.mongodb.client.model.Filters.
@@ -92,7 +92,7 @@ public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO {
 		return list;
 	}
 
-	public long deleteTendenciaParaProcesar(TendenciaParaOperar tpo, Date fechaReferencia) {
+	public long delete(TendenciaParaOperar tpo, Date fechaReferencia) {
 		Document doc = new Document(MongoTendenciaParaOperarHelper.toMapForDelete(tpo, fechaReferencia));
 		DeleteResult result = this.collection.deleteMany(doc);
 		return result.getDeletedCount();
@@ -105,6 +105,10 @@ public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO {
 		options.upsert(true);
 
 		this.collectionDatoAdicional.updateOne(docPk, doc, options);
+	}
+
+	@Override
+	public void insertMany(List<TendenciaParaOperar> datos) {
 	}
 
 }
