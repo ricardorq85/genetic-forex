@@ -6,12 +6,12 @@
 	<classpathentry kind="lib" path="../drivers/sqljdbc42.jar"/>
 	<classpathentry kind="lib" path="../drivers/mongo-java-driver-3.8.2.jar" sourcepath="../drivers/mongodb-driver-3.8.2-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/../drivers/mongo-java-driver-3.9.0-rc0-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:file:../drivers/mongo-java-driver-3.9.0-rc0-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="../drivers/commons-math3-3.6.1.jar" sourcepath="../drivers/commons-math3-3.6.1-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/../drivers/commons-math3-3.6.1-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:file:../drivers/commons-math3-3.6.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>

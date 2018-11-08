@@ -13,13 +13,15 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.InsertManyOptions;
+import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.UpdateOptions;
 
 import forex.genetic.entities.DateInterval;
@@ -27,7 +29,9 @@ import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.entities.mongodb.MongoDatoHistoricoHelper;
-import forex.genetic.util.jdbc.mongodb.ConnectionMongoDB;
+import forex.genetic.factory.ControllerFactory;
+import forex.genetic.manager.controller.IndicadorController;
+import forex.genetic.manager.indicator.IndicadorManager;
 
 /**
  *
@@ -84,20 +88,38 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> {
 	}
 
 	public List<Date> consultarPuntosApertura(DateInterval rango, IndividuoEstrategia individuo) throws SQLException {
-		List<Date> fechas = new ArrayList<Date>();
+		List<Date> fechas = null;
 
-		Bson filtros = Filters.and(Filters.lte("fechaHistorico", rango.getLowInterval()),
-				Filters.gte("fechaHistorico", rango.getHighInterval()));
+		List<Bson> filtros = new ArrayList<>();
+		filtros.add(Filters.lte("fechaHistorico", rango.getLowInterval()));
+		filtros.add(Filters.gte("fechaHistorico", rango.getHighInterval()));
 
-		individuo.getOpenIndicators().stream().forEach(indicador -> {
-			IntervalIndicator intervalIndicator = ((IntervalIndicator)indicador);
-			StringBuilder nombreIndicador = new StringBuilder("indicadores").append(".").append(intervalIndicator.getName());
-			//Filters.or("indicadores")
-			//.getInterval()
-		});
-		
-		this.collection.find(filtros);
+		IndicadorController indicadorController = ControllerFactory
+				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+		for (int i = 0; i < individuo.getOpenIndicators().size(); i++) {
+			IndicadorManager managerInstance = indicadorController.getManagerInstance(i);
+			String nombreCalculado = managerInstance.getNombreCalculado();
+			IntervalIndicator intervalIndicator = ((IntervalIndicator) individuo.getOpenIndicators().get(i));
+			StringBuilder nombreIndicador = new StringBuilder("indicadores").append(".")
+					.append(intervalIndicator.getName());
 
+			if ((intervalIndicator != null) && (intervalIndicator.getInterval() != null)
+					&& (intervalIndicator.getInterval().getLowInterval() != null)
+					&& (intervalIndicator.getInterval().getHighInterval() != null)) {
+				Bson filtroLow = Filters.gte(nombreIndicador.append(nombreCalculado).toString(),
+						intervalIndicator.getInterval().getLowInterval());
+				Bson filtroHigh = Filters.lte(nombreIndicador.append(nombreCalculado).toString(),
+						intervalIndicator.getInterval().getHighInterval());
+				filtros.add(filtroLow);
+				filtros.add(filtroHigh);
+			}
+		}
+
+		MongoCursor<Document> cursor = this.collection.find(Filters.and(filtros))
+				.projection(Projections.fields(Projections.include("fechaHistorico"), Projections.excludeId()))
+				.sort(Sorts.orderBy(Sorts.ascending("fechaHistorico"))).iterator();
+
+		fechas = MongoDatoHistoricoHelper.helpFechas(cursor);
 		return fechas;
 	}
 }
