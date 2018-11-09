@@ -31,20 +31,19 @@ public class RandomFillIndividuoManager {
 			rango.setLowInterval(DateUtil.obtenerFecha("2018/01/01 00:00"));
 			rango.setHighInterval(DateUtil.obtenerFecha("2018/11/10 00:00"));
 
-			//IndividuoEstrategia ind = dao.consultarById("1541772969789.20");
-			individuos.stream().forEach(ind -> {
-				List<Date> fechas2 = dhDAO.consultarPuntosApertura(rango, ind);
-				if ((fechas2 != null) && (!fechas.isEmpty())) {
-					System.out.println("Individuo con fechas consultadas:" + ind.getId());
-					System.out.println("Fechas consultadas:" + fechas2.toString());
-					fechas.addAll(fechas2);
-				}
-			});
+			IndividuoEstrategia ind = dao.consultarById("1541772969789.20");
+			// individuos.stream().forEach(ind -> {
+			List<Date> fechas2 = dhDAO.consultarPuntosApertura(rango, ind);
+			if ((fechas2 != null) && (!fechas.isEmpty())) {
+				System.out.println("Individuo con fechas consultadas:" + ind.getId());
+				System.out.println("Fechas consultadas:" + fechas2.toString());
+				fechas.addAll(fechas2);
+			}
+			// });
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		return fechas;
 	}
 

@@ -32,7 +32,7 @@ public class RandomFillDatoHistoricoManager {
 
 	public List<Point> fill() {
 		List<Point> points = new ArrayList<Point>();
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 100; i++) {
 			points.add(this.generate(i));
 		}
 		try {

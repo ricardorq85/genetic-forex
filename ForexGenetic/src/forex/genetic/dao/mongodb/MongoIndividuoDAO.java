@@ -17,7 +17,7 @@ import forex.genetic.entities.IndividuoEstrategia;
 
 public class MongoIndividuoDAO extends MongoGeneticDAO<IndividuoEstrategia> {
 
-	public MongoIndividuoDAO () {
+	public MongoIndividuoDAO() {
 		super("individuo");
 	}
 
@@ -27,16 +27,15 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<IndividuoEstrategia> {
 
 		this.collection.createIndex(Indexes.ascending("idIndividuo"), indexOptions);
 	}
-	
-	public Document consultarById(String idIndividuo) {
-		Document doc = null;
-		MongoCursor<Document> cursor = this.collection.find(Filters.eq("idIndividuo", idIndividuo)).iterator();
 
+	public IndividuoEstrategia consultarById(String idIndividuo) {
+		IndividuoEstrategia obj = null;
+		MongoCursor<Document> cursor = this.collection.find(Filters.eq("idIndividuo", idIndividuo)).iterator();
 		if (cursor.hasNext()) {
-			doc = cursor.next();
+			obj = MongoIndividuoHelper.helpOne(cursor.next());
 		}
-		return doc;
-	}	
+		return obj;
+	}
 
 	public void insertOrUpdate(IndividuoEstrategia obj) {
 		// com.mongodb.client.model.Filters.
@@ -55,5 +54,5 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<IndividuoEstrategia> {
 		options.bypassDocumentValidation(true);
 		this.collection.insertMany(docs, options);
 	}
-	
+
 }

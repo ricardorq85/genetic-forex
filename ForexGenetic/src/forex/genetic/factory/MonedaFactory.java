@@ -37,14 +37,20 @@ public class MonedaFactory {
 					e.printStackTrace();
 				}
 			}
-			if ((m == null) || ("USDCAD".equals(m))) {
-				moneda = new MonedaUSDCAD();
-			} else if ("EURJPY".equals(m)) {
-				moneda = new MonedaEURJPY();
-			}
+			moneda = getMoneda(m);
 			consultado = true;
 		}
 		return moneda;
+	}
+	
+	public static Moneda getMoneda(String m) {
+		Moneda moneda = null;
+		if ((m == null) || ("USDCAD".equals(m))) {
+			moneda = new MonedaUSDCAD();
+		} else if ("EURJPY".equals(m)) {
+			moneda = new MonedaEURJPY();
+		}
+		return moneda;		
 	}
 
 }

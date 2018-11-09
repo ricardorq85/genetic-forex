@@ -90,8 +90,8 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> {
 		List<Date> fechas = null;
 
 		List<Bson> filtros = new ArrayList<>();
-		filtros.add(Filters.lte("fechaHistorico", rango.getLowInterval()));
-		filtros.add(Filters.gte("fechaHistorico", rango.getHighInterval()));
+		filtros.add(Filters.gte("fechaHistorico", rango.getLowInterval()));
+		filtros.add(Filters.lte("fechaHistorico", rango.getHighInterval()));
 
 		IndicadorController indicadorController = ControllerFactory
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
