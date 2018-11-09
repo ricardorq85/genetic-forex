@@ -43,6 +43,10 @@ public abstract class IndicadorManager<E> {
 		this.priceDependence = priceDependence;
 		this.obligatory = obligatory;
 	}
+	
+	public String getNombreCalculado () {
+		return "calculado";
+	}
 
 	/**
 	 *
