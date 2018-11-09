@@ -1,4 +1,4 @@
-package forex.genetic.entities.mongodb;
+package forex.genetic.dao.helper.mongodb;
 
 import java.util.Date;
 import java.util.HashMap;

@@ -11,9 +11,9 @@ import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.InsertManyOptions;
 import com.mongodb.client.model.UpdateOptions;
 
+import forex.genetic.dao.helper.mongodb.MongoIndividuoHelper;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.entities.mongodb.MongoIndividuoHelper;
 
 public class MongoIndividuoDAO extends MongoGeneticDAO<Individuo> {
 

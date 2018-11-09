@@ -24,11 +24,11 @@ import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.UpdateOptions;
 
+import forex.genetic.dao.helper.mongodb.MongoDatoHistoricoHelper;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.IntervalIndicator;
-import forex.genetic.entities.mongodb.MongoDatoHistoricoHelper;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;

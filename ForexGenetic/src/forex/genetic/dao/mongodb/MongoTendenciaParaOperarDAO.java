@@ -24,11 +24,11 @@ import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
 
+import forex.genetic.dao.helper.mongodb.MongoDatoAdicionalTPOHelper;
+import forex.genetic.dao.helper.mongodb.MongoTendenciaParaOperarHelper;
 import forex.genetic.entities.DatoAdicionalTPO;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
-import forex.genetic.entities.mongodb.MongoDatoAdicionalTPOHelper;
-import forex.genetic.entities.mongodb.MongoTendenciaParaOperarHelper;
 import forex.genetic.util.jdbc.mongodb.ConnectionMongoDB;
 
 /**

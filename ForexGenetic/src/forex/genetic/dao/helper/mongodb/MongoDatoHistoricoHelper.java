@@ -1,6 +1,5 @@
-package forex.genetic.entities.mongodb;
+package forex.genetic.dao.helper.mongodb;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,14 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.bson.Document;
-import org.bson.conversions.Bson;
 
-import com.mongodb.client.model.Filters;
+import com.mongodb.client.MongoCursor;
 
-import forex.genetic.entities.DateInterval;
-import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.IntervalIndicator;
+import forex.genetic.util.DateUtil;
 
 public class MongoDatoHistoricoHelper {
 
@@ -61,6 +58,19 @@ public class MongoDatoHistoricoHelper {
 			objectMaps.add(new Document(toMap(dato)));
 		});
 		return objectMaps;
+	}
+
+	public static List<Date> helpFechas(MongoCursor<Document> cursor) {
+		List<Date> list = new ArrayList<Date>();
+		try {
+			while (cursor.hasNext()) {
+				Date fecha = cursor.next().getDate("fechaHistorico");
+				list.add(DateUtil.adicionarMinutos(fecha, -1));
+			}
+		} finally {
+			cursor.close();
+		}
+		return list;
 	}
 
 }
