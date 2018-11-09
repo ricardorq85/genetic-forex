@@ -20,7 +20,7 @@ public abstract class MongoGeneticDAO<E> extends GeneticDAO<E> {
 
 	protected abstract void configureCollection();
 	public abstract void insertOrUpdate(E obj);
-	public abstract void insertMany(List<E> datos);
+	public abstract void insertMany(List<? extends E> datos);
 
 	public void clean() {
 		this.collection.drop();

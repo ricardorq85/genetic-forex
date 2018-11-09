@@ -10,7 +10,6 @@ import org.bson.conversions.Bson;
 
 import com.mongodb.client.model.Filters;
 
-import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.indicator.IntervalIndicator;
 
@@ -21,7 +20,7 @@ public class MongoIndividuoHelper {
 		return filtros;
 	}
 
-	public static Map<String, Object> toMap(Individuo obj) {
+	public static Map<String, Object> toMap(IndividuoEstrategia obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		objectMap.put("idIndividuo", obj.getId());
 		objectMap.put("idParent1", obj.getIdParent1());
@@ -37,13 +36,17 @@ public class MongoIndividuoHelper {
 		}
 		objectMap.put("tipoOperacion", obj.getTipoOperacion().name());
 		objectMap.put("tipoIndividuo", obj.getTipoIndividuo());
-		objectMap.put("moneda", obj.getMoneda());
+		objectMap.put("moneda", obj.getMoneda().getMoneda());
 
 		List<Map<String, Object>> indicadores = new ArrayList<Map<String, Object>>();
 
 		List<IntervalIndicator> indicadoresBase = ((List<IntervalIndicator>) obj.getOpenIndicators());
 		indicadoresBase.stream().forEach((ind) -> {
-			indicadores.add(ind.toIntervalMap());
+			if (ind != null) {
+				indicadores.add(ind.toIntervalMap());
+			} else {
+				indicadores.add(null);
+			}
 		});
 
 		objectMap.put("indicadores", indicadores);
@@ -51,9 +54,9 @@ public class MongoIndividuoHelper {
 		return objectMap;
 	}
 
-	public static List<Document> toMap(List<Individuo> objs) {
-		List<Document> objectMaps = new ArrayList<Document>(objs.size());
-		objs.stream().forEach(dato -> {
+	public static List<Document> toMap(List<? extends IndividuoEstrategia> datos) {
+		List<Document> objectMaps = new ArrayList<Document>(datos.size());
+		datos.stream().forEach(dato -> {
 			objectMaps.add(new Document(toMap(dato)));
 		});
 		return objectMaps;

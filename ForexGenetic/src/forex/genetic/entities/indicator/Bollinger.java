@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import forex.genetic.entities.Point;
+import forex.genetic.util.NumberUtil;
 
 /**
  *
@@ -106,7 +107,7 @@ public class Bollinger extends IntervalIndicator {
 			objectMap.put("upper", this.upper);
 		}
 		if (objectMap.size() == 2) {
-			objectMap.put("calculado", (this.upper - this.lower));
+			objectMap.put("calculado", NumberUtil.round((this.upper - this.lower)));
 		}
 
 		return objectMap;

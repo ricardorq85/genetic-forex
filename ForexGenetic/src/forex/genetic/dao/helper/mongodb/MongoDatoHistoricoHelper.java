@@ -52,7 +52,7 @@ public class MongoDatoHistoricoHelper {
 		return objectMap;
 	}
 
-	public static List<Document> toMap(List<Point> datosHistoricos) {
+	public static List<Document> toMap(List<? extends Point> datosHistoricos) {
 		List<Document> objectMaps = new ArrayList<Document>(datosHistoricos.size());
 		datosHistoricos.stream().forEach(dato -> {
 			objectMaps.add(new Document(toMap(dato)));

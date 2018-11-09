@@ -5,17 +5,17 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.InsertManyOptions;
 import com.mongodb.client.model.UpdateOptions;
 
 import forex.genetic.dao.helper.mongodb.MongoIndividuoHelper;
-import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 
-public class MongoIndividuoDAO extends MongoGeneticDAO<Individuo> {
+public class MongoIndividuoDAO extends MongoGeneticDAO<IndividuoEstrategia> {
 
 	public MongoIndividuoDAO () {
 		super("individuo");
@@ -27,8 +27,18 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<Individuo> {
 
 		this.collection.createIndex(Indexes.ascending("idIndividuo"), indexOptions);
 	}
+	
+	public Document consultarById(String idIndividuo) {
+		Document doc = null;
+		MongoCursor<Document> cursor = this.collection.find(Filters.eq("idIndividuo", idIndividuo)).iterator();
 
-	public void insertOrUpdate(Individuo obj) {
+		if (cursor.hasNext()) {
+			doc = cursor.next();
+		}
+		return doc;
+	}	
+
+	public void insertOrUpdate(IndividuoEstrategia obj) {
 		// com.mongodb.client.model.Filters.
 		Bson filterPk = MongoIndividuoHelper.toPrimaryKey(obj);
 		Document doc = new Document("$set", MongoIndividuoHelper.toMap(obj));
@@ -38,10 +48,12 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<Individuo> {
 		this.collection.updateOne(filterPk, doc, options);
 	}
 
-	public void insertMany(List<Individuo> datos) {
+	@Override
+	public void insertMany(List<? extends IndividuoEstrategia> datos) {
 		List<Document> docs = MongoIndividuoHelper.toMap(datos);
 		InsertManyOptions options = new InsertManyOptions();
 		options.bypassDocumentValidation(true);
 		this.collection.insertMany(docs, options);
 	}
+	
 }

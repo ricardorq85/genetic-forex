@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import forex.genetic.entities.Point;
+import forex.genetic.util.NumberUtil;
 
 /**
  *
@@ -132,8 +133,8 @@ public class Ichimoku extends IntervalIndicator {
 			objectMap.put("tenkanSen", this.tenkanSen);
 		}
 		if (objectMap.size() == 5) {
-			objectMap.put("calculado", (this.senkouSpanA - this.senkouSpanB - datoHistorico.getLow()));
-			objectMap.put("calculado2", this.chinkouSpan * (this.tenkanSen - this.kijunSen));
+			objectMap.put("calculado", NumberUtil.round((this.senkouSpanA - this.senkouSpanB - datoHistorico.getLow())));
+			objectMap.put("calculado2", NumberUtil.round(this.chinkouSpan * (this.tenkanSen - this.kijunSen)));
 		}
 		return objectMap;
 	}

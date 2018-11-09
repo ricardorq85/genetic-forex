@@ -4,7 +4,6 @@
  */
 package forex.genetic.dao.mongodb;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -80,14 +79,14 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> {
 		this.collection.updateOne(filterPk, doc, options);
 	}
 
-	public void insertMany(List<Point> datos) {
+	public void insertMany(List<? extends Point> datos) {
 		List<Document> docs = MongoDatoHistoricoHelper.toMap(datos);
 		InsertManyOptions options = new InsertManyOptions();
 		options.bypassDocumentValidation(true);
 		this.collection.insertMany(docs, options);
 	}
 
-	public List<Date> consultarPuntosApertura(DateInterval rango, IndividuoEstrategia individuo) throws SQLException {
+	public List<Date> consultarPuntosApertura(DateInterval rango, IndividuoEstrategia individuo) {
 		List<Date> fechas = null;
 
 		List<Bson> filtros = new ArrayList<>();
@@ -100,15 +99,16 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> {
 			IndicadorManager managerInstance = indicadorController.getManagerInstance(i);
 			String nombreCalculado = managerInstance.getNombreCalculado();
 			IntervalIndicator intervalIndicator = ((IntervalIndicator) individuo.getOpenIndicators().get(i));
-			StringBuilder nombreIndicador = new StringBuilder("indicadores").append(".")
-					.append(intervalIndicator.getName());
-
 			if ((intervalIndicator != null) && (intervalIndicator.getInterval() != null)
 					&& (intervalIndicator.getInterval().getLowInterval() != null)
 					&& (intervalIndicator.getInterval().getHighInterval() != null)) {
-				Bson filtroLow = Filters.gte(nombreIndicador.append(nombreCalculado).toString(),
+				StringBuilder nombreIndicador = new StringBuilder("indicadores").append(".")
+						.append(intervalIndicator.getName()).append(".");
+				StringBuilder nombreIndicadorCalculado = new StringBuilder(nombreIndicador).append(nombreCalculado);
+
+				Bson filtroLow = Filters.gte(nombreIndicadorCalculado.toString(),
 						intervalIndicator.getInterval().getLowInterval());
-				Bson filtroHigh = Filters.lte(nombreIndicador.append(nombreCalculado).toString(),
+				Bson filtroHigh = Filters.lte(nombreIndicadorCalculado.toString(),
 						intervalIndicator.getInterval().getHighInterval());
 				filtros.add(filtroLow);
 				filtros.add(filtroHigh);

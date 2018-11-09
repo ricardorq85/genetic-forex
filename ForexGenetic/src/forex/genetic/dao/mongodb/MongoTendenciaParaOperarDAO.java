@@ -108,7 +108,7 @@ public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO<TendenciaParaOp
 	}
 
 	@Override
-	public void insertMany(List<TendenciaParaOperar> datos) {
+	public void insertMany(List<? extends TendenciaParaOperar> datos) {
 	}
 
 }

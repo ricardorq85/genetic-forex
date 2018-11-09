@@ -11,6 +11,7 @@ import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.mongodb.MongoGeneticDAO;
 import forex.genetic.dao.mongodb.MongoIndividuoDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
 
@@ -18,7 +19,7 @@ import forex.genetic.manager.controller.IndicadorController;
  *
  * @author ricardorq85
  */
-public class MongoMigracionIndividuosManager extends MigracionManager<Individuo> {
+public class MongoMigracionIndividuosManager extends MigracionManager<IndividuoEstrategia> {
 
 	private IndividuoDAO individuoDAO;
 
@@ -50,7 +51,7 @@ public class MongoMigracionIndividuosManager extends MigracionManager<Individuo>
 	}
 
 	@Override
-	protected MongoGeneticDAO<Individuo> getDestinoDAO() {
+	protected MongoGeneticDAO<IndividuoEstrategia> getDestinoDAO() {
 		return new MongoIndividuoDAO();
 	}
 }

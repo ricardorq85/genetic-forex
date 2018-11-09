@@ -28,12 +28,14 @@ public class MonedaFactory {
 	public static Moneda getMoneda() {
 		if (!consultado) {
 			String nombreParametro = "MONEDA";
-			String m;
-			try {
-				m = parametroDAO.getValorParametro(nombreParametro);
-			} catch (SQLException e) {
-				m = null;
-				e.printStackTrace();
+			String m = null;
+			if (parametroDAO != null) {
+				try {
+					m = parametroDAO.getValorParametro(nombreParametro);
+				} catch (SQLException e) {
+					m = null;
+					e.printStackTrace();
+				}
 			}
 			if ((m == null) || ("USDCAD".equals(m))) {
 				moneda = new MonedaUSDCAD();

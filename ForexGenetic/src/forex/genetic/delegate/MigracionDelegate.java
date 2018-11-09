@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import forex.genetic.entities.Individuo;
+import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Point;
 import forex.genetic.manager.mongodb.MigracionManager;
 import forex.genetic.manager.mongodb.MongoMigracionDatoHistoricoManager;
@@ -26,7 +26,7 @@ public class MigracionDelegate {
 	}
 	
 	public void migrarIndividuos() throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {
-		MigracionManager<Individuo> migracionManager = new MongoMigracionIndividuosManager();
+		MigracionManager<IndividuoEstrategia> migracionManager = new MongoMigracionIndividuosManager();
 		migracionManager.migrate();
 	}
 

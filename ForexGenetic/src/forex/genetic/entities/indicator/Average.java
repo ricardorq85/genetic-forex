@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import forex.genetic.entities.Point;
+import forex.genetic.util.NumberUtil;
 
 /**
  *
@@ -67,8 +68,8 @@ public class Average extends IntervalIndicator {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		if (!Double.isInfinite(this.average) && !Double.isNaN(this.average)) {
 			objectMap.put("average", this.average);
-			objectMap.put("calculado", (this.average - datoHistorico.getClose()));
-			objectMap.put("calculado_compare", (this.average - datoHistorico.getCloseCompare()));
+			objectMap.put("calculado", NumberUtil.round((this.average - datoHistorico.getClose())));
+			objectMap.put("calculado_compare", NumberUtil.round((this.average - datoHistorico.getCloseCompare())));
 		}
 		return objectMap;
 	}
