@@ -85,9 +85,9 @@ public class MongoIndividuoHelper {
 		obj.setTipoIndividuo(one.getString("tipoIndividuo"));
 		obj.setMoneda(MonedaFactory.getMoneda(one.getString("moneda")));
 
-		// obj.setOpenIndicators(getListIndicadores((List<Map<String, Object>>)
-		// one.get("openIndicadores")));
-		obj.setOpenIndicators(getListIndicadores((List<Map<String, Object>>) one.get("indicadores")));
+		obj.setOpenIndicators(getListIndicadores((List<Map<String, Object>>)
+		one.get("openIndicadores")));
+		//obj.setOpenIndicators(getListIndicadores((List<Map<String, Object>>) one.get("indicadores")));
 		obj.setCloseIndicators(getListIndicadores((List<Map<String, Object>>) one.get("closeIndicadores")));
 
 		return obj;
