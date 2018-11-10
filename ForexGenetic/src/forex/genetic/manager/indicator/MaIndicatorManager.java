@@ -32,6 +32,10 @@ public class MaIndicatorManager extends IntervalIndicatorManager<Average> {
 	public Average getIndicatorInstance() {
 		return new Average("Ma");
 	}
+	
+	public String[] getNombreCalculado() {
+		return new String[] { "calculado_low", "calculado_high" };
+	}
 
 	/**
 	 *

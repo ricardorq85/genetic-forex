@@ -29,6 +29,8 @@ public class MongoMigracionDatoHistoricoManager extends MigracionManager<Point> 
 	}
 
 	public void migrate() throws SQLException {
+		mongoDestinoDAO.clean();
+
 		Date fechaMinima = datoHistoricoDAO.getFechaHistoricaMinima();
 		Date fechaMinimaDestino = ((MongoDatoHistoricoDAO)mongoDestinoDAO).getFechaHistoricaMinima();
 		Date fechaMaxima = datoHistoricoDAO.getFechaHistoricaMaxima();
@@ -41,7 +43,7 @@ public class MongoMigracionDatoHistoricoManager extends MigracionManager<Point> 
 		 */
 
 		while (!fechaInicialConsulta.after(fechaMaxima)) {
-			Date fechaFinalConsulta = DateUtil.adicionarDias(fechaInicialConsulta, 10);
+			Date fechaFinalConsulta = DateUtil.adicionarDias(fechaInicialConsulta, 50);
 			LogUtil.logTime("Exportando..." + DateUtil.getDateString(fechaInicialConsulta) + "-"
 					+ DateUtil.getDateString(fechaFinalConsulta), 1);
 			List<Point> datosConsultados = datoHistoricoDAO.consultarHistorico(fechaInicialConsulta,
@@ -52,7 +54,6 @@ public class MongoMigracionDatoHistoricoManager extends MigracionManager<Point> 
 			fechaInicialConsulta = DateUtil
 					.adicionarMinutos(datosConsultados.get(datosConsultados.size() - 1).getDate(), 1);
 		}
-
 	}
 
 	@Override

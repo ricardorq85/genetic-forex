@@ -85,9 +85,9 @@ public class MongoIndividuoHelper {
 		obj.setTipoIndividuo(one.getString("tipoIndividuo"));
 		obj.setMoneda(MonedaFactory.getMoneda(one.getString("moneda")));
 
-		obj.setOpenIndicators(getListIndicadores((List<Map<String, Object>>)
-		one.get("openIndicadores")));
-		//obj.setOpenIndicators(getListIndicadores((List<Map<String, Object>>) one.get("indicadores")));
+		obj.setOpenIndicators(getListIndicadores((List<Map<String, Object>>) one.get("openIndicadores")));
+		// obj.setOpenIndicators(getListIndicadores((List<Map<String, Object>>)
+		// one.get("indicadores")));
 		obj.setCloseIndicators(getListIndicadores((List<Map<String, Object>>) one.get("closeIndicadores")));
 
 		return obj;
@@ -104,14 +104,18 @@ public class MongoIndividuoHelper {
 						.getManagerInstance(i);
 				if ((indicadoresMap != null) && (indicadoresMap.size() > i)) {
 					Map<String, Object> mapIndicador = indicadoresMap.get(i);
-					IntervalIndicator indicator = managerInstance.getIndicatorInstance();
-					Interval<Double> interval = new DoubleInterval(managerInstance.getId());
-					Map<String, Double> mapIntervalo = (Map<String, Double>) mapIndicador.get(indicator.getName());
-					if (mapIntervalo != null) {
-						interval.setLowInterval(mapIntervalo.get("low"));
-						interval.setHighInterval(mapIntervalo.get("high"));
-						indicator.setInterval(interval);
-						indicadores.add(indicator);
+					if (mapIndicador != null) {
+						IntervalIndicator indicator = managerInstance.getIndicatorInstance();
+						Interval<Double> interval = new DoubleInterval(managerInstance.getId());
+						Map<String, Double> mapIntervalo = (Map<String, Double>) mapIndicador.get(indicator.getName());
+						if (mapIntervalo != null) {
+							interval.setLowInterval(mapIntervalo.get("low"));
+							interval.setHighInterval(mapIntervalo.get("high"));
+							indicator.setInterval(interval);
+							indicadores.add(indicator);
+						} else {
+							indicadores.add(null);
+						}
 					} else {
 						indicadores.add(null);
 					}

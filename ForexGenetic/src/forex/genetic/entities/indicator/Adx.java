@@ -7,8 +7,6 @@ package forex.genetic.entities.indicator;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.math.NumberUtils;
-
 import forex.genetic.entities.Point;
 import forex.genetic.util.NumberUtil;
 
@@ -113,6 +111,8 @@ public class Adx extends IntervalIndicator {
 		}
 		if (objectMap.size() == 3) {
 			objectMap.put("calculado", NumberUtil.round(this.adxValue * (this.adxPlus - this.adxMinus)));
+		} else {
+			objectMap = null;
 		}
 		return objectMap;
 	}

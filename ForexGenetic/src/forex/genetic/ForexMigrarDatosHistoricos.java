@@ -45,9 +45,9 @@ public class ForexMigrarDatosHistoricos {
 		logTime("Init Migrar Datos Historicos", 1);
 		delegate.migrarDatosHistoricos();
 		logTime("End Migrar Datos Historicos", 1);
-
+		//delegate.migrarIndividuos();
 //		MongoTendenciaParaOperarDAO tendenciaParaOperarDAO = new MongoTendenciaParaOperarDAO();
-	//	Date fecha = tendenciaParaOperarDAO.getFechaBaseMinima();
-		//logTime(DateUtil.getDateString(fecha), 1);
+		// Date fecha = tendenciaParaOperarDAO.getFechaBaseMinima();
+		// logTime(DateUtil.getDateString(fecha), 1);
 	}
 }

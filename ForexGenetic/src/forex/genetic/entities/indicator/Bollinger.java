@@ -108,6 +108,8 @@ public class Bollinger extends IntervalIndicator {
 		}
 		if (objectMap.size() == 2) {
 			objectMap.put("calculado", NumberUtil.round((this.upper - this.lower)));
+		} else {
+			objectMap = null;
 		}
 
 		return objectMap;

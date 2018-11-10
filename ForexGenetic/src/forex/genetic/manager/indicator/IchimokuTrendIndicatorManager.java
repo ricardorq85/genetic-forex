@@ -32,6 +32,10 @@ public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
 	public Ichimoku getIndicatorInstance() {
 		return new Ichimoku("IchiTrend");
 	}
+	
+	public String[] getNombreCalculado() {
+		return new String[] { "calculado_trend_low", "calculado_trend_high" };
+	}
 
 	/**
 	 *

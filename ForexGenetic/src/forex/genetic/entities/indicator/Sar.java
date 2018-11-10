@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import forex.genetic.entities.Point;
+import forex.genetic.util.NumberUtil;
 
 /**
  *
@@ -81,10 +82,12 @@ public class Sar extends IntervalIndicator {
 
 	@Override
 	public Map<String, Object> valuesToMap(Point datoHistorico) {
-		Map<String, Object> objectMap = new HashMap<String, Object>();
+		Map<String, Object> objectMap = null;
 		if (!Double.isInfinite(this.sar) && !Double.isNaN(this.sar)) {
+			objectMap = new HashMap<String, Object>();
 			objectMap.put("sar", this.sar);
-			objectMap.put("calculado", (this.sar - datoHistorico.getLow()));
+			objectMap.put("calculado_low", NumberUtil.round(this.sar - datoHistorico.getLow()));
+			objectMap.put("calculado_high", NumberUtil.round(this.sar - datoHistorico.getHigh()));
 		}
 		return objectMap;
 	}

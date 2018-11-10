@@ -4,7 +4,10 @@
  */
 package forex.genetic.manager.mongodb;
 
+import static forex.genetic.util.LogUtil.logTime;
+
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.IndividuoDAO;
@@ -37,7 +40,7 @@ public class MongoMigracionIndividuosManager extends MigracionManager<IndividuoE
 		IndicadorController indicadorController = ControllerFactory
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 
-		List<Individuo> individuos = individuoDAO.consultarIndividuosRandom(100);
+		List<Individuo> individuos = individuoDAO.consultarIndividuosRandom(10);
 		individuos.stream().forEach(individuo -> {
 			try {
 				individuoDAO.consultarDetalleIndividuo(indicadorController, individuo);
@@ -46,8 +49,14 @@ public class MongoMigracionIndividuosManager extends MigracionManager<IndividuoE
 			}
 		});
 
-		mongoDestinoDAO.insertMany(individuos);
-
+		try {
+			mongoDestinoDAO.insertMany(individuos);
+		} catch (Exception exc) {
+		}
+		logTime("Consultando fechas individuos", 1);
+		MongoIndividuoManager indManager = new MongoIndividuoManager();
+		List<Date> fechas = indManager.consultarPuntosApertura(individuos);
+		fechas.toString();
 	}
 
 	@Override

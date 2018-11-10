@@ -1,4 +1,4 @@
-package forex.genetic.manager;
+package forex.genetic.manager.mongodb;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -8,9 +8,9 @@ import java.util.List;
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.dao.mongodb.MongoIndividuoDAO;
 import forex.genetic.entities.DateInterval;
-import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Point;
+import forex.genetic.manager.PoblacionManager;
 import forex.genetic.util.DateUtil;
 
 public class RandomFillIndividuoManager {

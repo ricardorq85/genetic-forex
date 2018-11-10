@@ -125,6 +125,8 @@ public class Macd extends IntervalIndicator {
 		}
 		if (objectMap.size() == 2) {
 			objectMap.put("calculado", NumberUtil.round((this.macdValue - this.macdSignal)));
+		} else {
+			objectMap = null;
 		}
 
 		return objectMap;

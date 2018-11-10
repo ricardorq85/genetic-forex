@@ -33,6 +33,10 @@ public class CompareMaIndicatorManager extends IntervalIndicatorManager<Average>
 		return new Average("MaCompare");
 	}
 
+	public String[] getNombreCalculado() {
+		return new String[] { "calculado_compare" };
+	}
+
 	/**
 	 *
 	 * @param indicator

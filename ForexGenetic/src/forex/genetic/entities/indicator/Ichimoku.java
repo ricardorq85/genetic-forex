@@ -133,8 +133,13 @@ public class Ichimoku extends IntervalIndicator {
 			objectMap.put("tenkanSen", this.tenkanSen);
 		}
 		if (objectMap.size() == 5) {
-			objectMap.put("calculado", NumberUtil.round((this.senkouSpanA - this.senkouSpanB - datoHistorico.getLow())));
-			objectMap.put("calculado2", NumberUtil.round(this.chinkouSpan * (this.tenkanSen - this.kijunSen)));
+			objectMap.put("calculado_trend_low",
+					NumberUtil.round((this.senkouSpanA - this.senkouSpanB - datoHistorico.getLow())));
+			objectMap.put("calculado_trend_high",
+					NumberUtil.round((this.senkouSpanA - this.senkouSpanB - datoHistorico.getHigh())));
+			objectMap.put("calculado_signal", NumberUtil.round(this.chinkouSpan * (this.tenkanSen - this.kijunSen)));
+		}else {
+			objectMap = null;
 		}
 		return objectMap;
 	}

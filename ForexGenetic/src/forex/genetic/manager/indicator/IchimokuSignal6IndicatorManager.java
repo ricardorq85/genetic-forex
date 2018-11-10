@@ -25,6 +25,10 @@ public class IchimokuSignal6IndicatorManager extends IchimokuSignalIndicatorMana
 	public Ichimoku getIndicatorInstance() {
 		return new Ichimoku("IchiSignal6");
 	}
+	
+	public String[] getNombreCalculado() {
+		return new String[] { "calculado_signal" };
+	}
 
 	@Override
 	public String[] queryRangoOperacionIndicador() {

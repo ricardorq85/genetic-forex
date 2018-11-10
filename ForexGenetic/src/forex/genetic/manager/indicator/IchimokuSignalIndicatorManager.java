@@ -32,6 +32,10 @@ public class IchimokuSignalIndicatorManager extends IchimokuIndicatorManager {
 	public Ichimoku getIndicatorInstance() {
 		return new Ichimoku("IchiSignal");
 	}
+	
+	public String[] getNombreCalculado() {
+		return new String[] { "calculado_signal"};
+	}
 
 	/**
 	 *

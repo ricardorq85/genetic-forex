@@ -37,6 +37,10 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
 		return new Sar("Sar");
 	}
 
+	public String[] getNombreCalculado() {
+		return new String[] { "calculado_low", "calculado_high" };
+	}
+
 	/**
 	 *
 	 * @param indicator
@@ -83,15 +87,14 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
 	}
 	/*
 	 * public Indicator optimize(Sar individuo, Sar optimizedIndividuo, Sar
-	 * indicator, Point point) { Sar optimized = this.getIndicatorInstance();
-	 * double sar = indicator.getSar(); Interval generated =
-	 * intervalManager.generate(sar, point.getLow(), point.getHigh());
-	 * intervalManager.round(generated); Interval intersected =
-	 * IntervalManager.intersect(generated, individuo.getInterval());
-	 * optimized.setInterval(intervalManager.optimize((optimizedIndividuo ==
-	 * null) ? null : optimizedIndividuo.getInterval(), intersected)); if
-	 * (optimized.getInterval() == null) { optimized = optimizedIndividuo; }
-	 * return optimized; }
+	 * indicator, Point point) { Sar optimized = this.getIndicatorInstance(); double
+	 * sar = indicator.getSar(); Interval generated = intervalManager.generate(sar,
+	 * point.getLow(), point.getHigh()); intervalManager.round(generated); Interval
+	 * intersected = IntervalManager.intersect(generated, individuo.getInterval());
+	 * optimized.setInterval(intervalManager.optimize((optimizedIndividuo == null) ?
+	 * null : optimizedIndividuo.getInterval(), intersected)); if
+	 * (optimized.getInterval() == null) { optimized = optimizedIndividuo; } return
+	 * optimized; }
 	 */
 
 	/**
@@ -111,8 +114,7 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
 	@Override
 	public String[] queryRangoOperacionIndicador() {
 		String[] s = new String[2];
-		s[0] = " MIN(DH.SAR-OPER.OPEN_PRICE) INF_" + this.id
-				+ ",  MAX(DH.SAR-OPER.OPEN_PRICE) SUP_" + this.id + ", "
+		s[0] = " MIN(DH.SAR-OPER.OPEN_PRICE) INF_" + this.id + ",  MAX(DH.SAR-OPER.OPEN_PRICE) SUP_" + this.id + ", "
 				+ " ROUND(AVG(DH.SAR-OPER.OPEN_PRICE), 5) PROM_" + this.id + ", ";
 		s[1] = " AND DH.SAR IS NOT NULL ";
 		return s;

@@ -7,8 +7,8 @@ import java.util.List;
 
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Point;
-import forex.genetic.manager.RandomFillDatoHistoricoManager;
-import forex.genetic.manager.RandomFillIndividuoManager;
+import forex.genetic.manager.mongodb.RandomFillDatoHistoricoManager;
+import forex.genetic.manager.mongodb.RandomFillIndividuoManager;
 
 public class FillDatabaseDelegate {
 

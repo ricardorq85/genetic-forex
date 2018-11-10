@@ -44,8 +44,8 @@ public abstract class IndicadorManager<E> {
 		this.obligatory = obligatory;
 	}
 	
-	public String getNombreCalculado () {
-		return "calculado";
+	public String[] getNombreCalculado () {
+		return new String[]{"calculado"};
 	}
 
 	/**

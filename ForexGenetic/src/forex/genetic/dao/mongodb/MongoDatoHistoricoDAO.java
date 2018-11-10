@@ -12,6 +12,7 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
@@ -31,6 +32,7 @@ import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
+import forex.genetic.util.LogUtil;
 
 /**
  *
@@ -90,32 +92,45 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> {
 		List<Date> fechas = null;
 
 		List<Bson> filtros = new ArrayList<>();
-		filtros.add(Filters.gte("fechaHistorico", rango.getLowInterval()));
+		filtros.add(Filters.gt("fechaHistorico", rango.getLowInterval()));
 		filtros.add(Filters.lte("fechaHistorico", rango.getHighInterval()));
 
 		IndicadorController indicadorController = ControllerFactory
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 		for (int i = 0; i < individuo.getOpenIndicators().size(); i++) {
 			IndicadorManager managerInstance = indicadorController.getManagerInstance(i);
-			String nombreCalculado = managerInstance.getNombreCalculado();
-			IntervalIndicator intervalIndicator = ((IntervalIndicator) individuo.getOpenIndicators().get(i));
-			if ((intervalIndicator != null) && (intervalIndicator.getInterval() != null)
-					&& (intervalIndicator.getInterval().getLowInterval() != null)
-					&& (intervalIndicator.getInterval().getHighInterval() != null)) {
-				StringBuilder nombreIndicador = new StringBuilder("indicadores").append(".")
-						.append(intervalIndicator.getName()).append(".");
-				StringBuilder nombreIndicadorCalculado = new StringBuilder(nombreIndicador).append(nombreCalculado);
+			String[] nombreCalculado = managerInstance.getNombreCalculado();
+			List<Bson> filtrosDatosCalculados = new ArrayList<>();
+			for (int j = 0; j < nombreCalculado.length; j++) {
+				IntervalIndicator intervalIndicator = ((IntervalIndicator) individuo.getOpenIndicators().get(i));
+				if ((intervalIndicator != null) && (intervalIndicator.getInterval() != null)
+						&& (intervalIndicator.getInterval().getLowInterval() != null)
+						&& (intervalIndicator.getInterval().getHighInterval() != null)) {
+					StringBuilder nombreIndicador = new StringBuilder("indicadores").append(".")
+							.append(intervalIndicator.getName()).append(".");
+					StringBuilder nombreIndicadorCalculado = new StringBuilder(nombreIndicador)
+							.append(nombreCalculado[j]);
 
-				Bson filtroLow = Filters.gte(nombreIndicadorCalculado.toString(),
-						intervalIndicator.getInterval().getLowInterval());
-				Bson filtroHigh = Filters.lte(nombreIndicadorCalculado.toString(),
-						intervalIndicator.getInterval().getHighInterval());
-				filtros.add(filtroLow);
-				filtros.add(filtroHigh);
+					Bson filtroLow = Filters.gte(nombreIndicadorCalculado.toString(),
+							intervalIndicator.getInterval().getLowInterval());
+					Bson filtroHigh = Filters.lte(nombreIndicadorCalculado.toString(),
+							intervalIndicator.getInterval().getHighInterval());
+					filtrosDatosCalculados.add(Filters.and(filtroLow, filtroHigh));
+				}
+			}
+			if (filtrosDatosCalculados.size() > 1) {
+				filtros.add(Filters.or(filtrosDatosCalculados));
+			} else {
+				filtros.addAll(filtrosDatosCalculados);
 			}
 		}
 
-		MongoCursor<Document> cursor = this.collection.find(Filters.and(filtros))
+		Bson bsonFiltrosCompletos = Filters.and(filtros);
+		LogUtil.logTime("idIndividuo=" + individuo.getId(), 1);
+		LogUtil.logTime(
+				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
+
+		MongoCursor<Document> cursor = this.collection.find(bsonFiltrosCompletos)
 				.projection(Projections.fields(Projections.include("fechaHistorico"), Projections.excludeId()))
 				.sort(Sorts.orderBy(Sorts.ascending("fechaHistorico"))).iterator();
 

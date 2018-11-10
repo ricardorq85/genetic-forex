@@ -27,7 +27,6 @@ public abstract class MigracionManager<E> {
 	public MigracionManager() throws ClassNotFoundException, SQLException {
 		conn = JDBCUtil.getConnection();
 		mongoDestinoDAO = getDestinoDAO();
-		//mongoDestinoDAO.clean();
 	}
 	
 	protected abstract MongoGeneticDAO<E> getDestinoDAO();

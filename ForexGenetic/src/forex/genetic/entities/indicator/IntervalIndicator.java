@@ -78,7 +78,7 @@ public abstract class IntervalIndicator extends Indicator implements Serializabl
 	public Map<String, Object> toMap(Point datoHistorico) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		Map<String, Object> indMap = this.valuesToMap(datoHistorico);
-		if (indMap.containsKey("calculado")) {
+		if (indMap != null && indMap.size() > 0) {
 			objectMap.put(this.getName(), indMap);
 		} else {
 			objectMap.put(this.getName(), null);

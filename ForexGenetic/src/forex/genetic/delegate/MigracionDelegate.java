@@ -22,7 +22,7 @@ public class MigracionDelegate {
 
 	public void migrarDatosHistoricos() throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {
 		MigracionManager<Point> migracionManager = new MongoMigracionDatoHistoricoManager();
-		//migracionManager.migrate();
+		migracionManager.migrate();
 	}
 	
 	public void migrarIndividuos() throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {

@@ -14,4 +14,10 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<variableList>
+		<variable>
+			<name>running_ws</name>
+			<value>file:/C:/Users/Angela/Documents/ricardorq85/JavaProjects/ForexGeneticRunning/Estrategia_Tester_USDCAD</value>
+		</variable>
+	</variableList>
 </projectDescription>
