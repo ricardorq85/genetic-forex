@@ -4,10 +4,14 @@
  */
 package forex.genetic.manager.indicator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Adx;
 import forex.genetic.entities.indicator.Indicator;
+import forex.genetic.util.NumberUtil;
 
 /**
  *
@@ -87,9 +91,9 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 	@Override
 	public String[] queryRangoOperacionIndicador() {
 		String[] s = new String[2];
-		s[0] = "  MIN((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_MINUS))) INF_" + this.id
-				+ ",  MAX((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_MINUS))) SUP_" + this.id + ",  "
-				+ "  ROUND(AVG((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_MINUS))), 5) PROM_" + this.id + ", ";
+		s[0] = "  MIN((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_Minus()))) INF_" + this.id
+				+ ",  MAX((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_Minus()))) SUP_" + this.id + ",  "
+				+ "  ROUND(AVG((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_Minus()))), 5) PROM_" + this.id + ", ";
 		s[1] = " AND DH.ADX_VALUE IS NOT NULL AND DH.ADX_PLUS IS NOT NULL AND DH.ADX_MINUS IS NOT NULL ";
 		return s;
 	}
@@ -97,7 +101,7 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 	@Override
 	public String[] queryPorcentajeCumplimientoIndicador() {
 		String[] s = new String[1];
-		s[0] = " ((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_MINUS)) BETWEEN ? AND ?) ";
+		s[0] = " ((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_Minus())) BETWEEN ? AND ?) ";
 		return s;
 	}
 
@@ -106,6 +110,26 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 		// TODO Auto-generated method stub
 		return super.mutate(obj);
 	}
-	
-	
+
+	@Override
+	public Map<String, Object> getCalculatedValues(Adx prevIndicator, Adx indicator, Point prevPoint, Point point) {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		if (!NumberUtil.isInfiniteOrNan(indicator.getAdxValue())) {
+			objectMap.put("adxValue", indicator.getAdxValue());
+		}
+		if (!NumberUtil.isInfiniteOrNan(indicator.getAdxMinus())) {
+			objectMap.put("adxMinus", indicator.getAdxMinus());
+		}
+		if (!NumberUtil.isInfiniteOrNan(indicator.getAdxPlus())) {
+			objectMap.put("adxPlus", indicator.getAdxPlus());
+		}
+		if (prevIndicator != null) {
+			if (!NumberUtil.isAnyInfiniteOrNan(prevIndicator.getAdxValue(), prevIndicator.getAdxPlus(),
+					prevIndicator.getAdxMinus())) {
+				objectMap.put("calculado",
+						NumberUtil.round(prevIndicator.getAdxValue() * (prevIndicator.getAdxPlus() - prevIndicator.getAdxMinus())));
+			}
+		}
+		return objectMap;
+	}
 }

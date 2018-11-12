@@ -13,7 +13,6 @@ import java.util.List;
 
 import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.IndividuoDAO;
-import forex.genetic.dao.OperacionSemanalDAO;
 import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.ProcesoPoblacionDAO;
 import forex.genetic.entities.DateInterval;

@@ -4,10 +4,14 @@
  */
 package forex.genetic.manager.indicator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Bollinger;
 import forex.genetic.entities.indicator.Indicator;
+import forex.genetic.util.NumberUtil;
 
 /**
  *
@@ -98,4 +102,21 @@ public class BollingerIndicatorManager extends IntervalIndicatorManager<Bollinge
 		return s;
 	}
 
+	@Override
+	public Map<String, Object> getCalculatedValues(Bollinger prevIndicator, Bollinger indicator, Point prevPoint,
+			Point point) {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		if (!NumberUtil.isInfiniteOrNan(indicator.getLower())) {
+			objectMap.put("lower", indicator.getLower());
+		}
+		if (!NumberUtil.isInfiniteOrNan(indicator.getUpper())) {
+			objectMap.put("upper", indicator.getUpper());
+		}
+		if (prevIndicator != null) {
+			if (!NumberUtil.isAnyInfiniteOrNan(prevIndicator.getLower(), prevIndicator.getUpper())) {
+				objectMap.put("calculado", NumberUtil.round((prevIndicator.getUpper() - prevIndicator.getLower())));
+			}
+		}
+		return objectMap;
+	}
 }

@@ -4,10 +4,14 @@
  */
 package forex.genetic.manager.indicator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.Sar;
+import forex.genetic.util.NumberUtil;
 
 /**
  *
@@ -37,7 +41,7 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
 		return new Sar("Sar");
 	}
 
-	public String[] getNombreCalculado() {
+	public String[] getNombresCalculados() {
 		return new String[] { "calculado_low", "calculado_high" };
 	}
 
@@ -125,6 +129,21 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
 		String[] s = new String[1];
 		s[0] = " ((DH.SAR-DH.LOW) BETWEEN ? AND ? " + "  OR (DH.SAR-DH.HIGH) BETWEEN ? AND ? ) ";
 		return s;
+	}
+
+	@Override
+	public Map<String, Object> getCalculatedValues(Sar prevIndicator, Sar indicator, Point prevPoint, Point point) {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		if (!NumberUtil.isInfiniteOrNan(indicator.getSar())) {
+			objectMap.put("sar", indicator.getSar());
+		}
+		if (prevIndicator != null) {
+			if (!NumberUtil.isAnyInfiniteOrNan(prevIndicator.getSar(), point.getLow(), point.getHigh())) {
+				objectMap.put("calculado_low", NumberUtil.round((prevIndicator.getSar() - point.getLow())));
+				objectMap.put("calculado_high", NumberUtil.round((prevIndicator.getSar() - point.getHigh())));
+			}
+		}
+		return objectMap;
 	}
 
 }

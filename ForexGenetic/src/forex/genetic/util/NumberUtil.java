@@ -47,6 +47,18 @@ public class NumberUtil {
 			return value;
 		}
 	}
+	
+	public static boolean isInfiniteOrNan(double d) {
+		return (Double.isInfinite(d) || Double.isNaN(d));
+	}
+	
+	public static boolean isAnyInfiniteOrNan(double... ds) {
+		boolean val = false;
+		for (int i = 0; i < ds.length && !val; i++) {
+			val = isInfiniteOrNan(ds[i]);
+		}
+		return val;
+	}
 
 	public static double zeroToOne(double d) {
 		return (d == 0.0D) ? 1.0D : d;

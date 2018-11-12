@@ -62,15 +62,4 @@ public class Momentum extends IntervalIndicator {
 		this.period = period;
 	}
 
-	@Override
-	public Map<String, Object> valuesToMap(Point datoHistorico) {
-		Map<String, Object> objectMap = null;
-		if (!Double.isInfinite(this.momentum) && !Double.isNaN(this.momentum)) {
-			objectMap = new HashMap<String, Object>();
-			objectMap.put("momentum", this.momentum);
-			objectMap.put("calculado", this.momentum);
-		}
-		return objectMap;
-	}
-
 }

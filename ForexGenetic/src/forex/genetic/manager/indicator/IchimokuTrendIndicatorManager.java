@@ -4,10 +4,15 @@
  */
 package forex.genetic.manager.indicator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.Adx;
 import forex.genetic.entities.indicator.Ichimoku;
 import forex.genetic.entities.indicator.Indicator;
+import forex.genetic.util.NumberUtil;
 
 /**
  *
@@ -32,8 +37,8 @@ public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
 	public Ichimoku getIndicatorInstance() {
 		return new Ichimoku("IchiTrend");
 	}
-	
-	public String[] getNombreCalculado() {
+
+	public String[] getNombresCalculados() {
 		return new String[] { "calculado_trend_low", "calculado_trend_high" };
 	}
 
@@ -106,9 +111,8 @@ public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
 	@Override
 	public String[] queryRangoOperacionIndicador() {
 		String[] s = new String[2];
-		s[0] = " MIN(DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-OPER.OPEN_PRICE) INF_" + this.id
-				+ ",  " + " MAX(DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-OPER.OPEN_PRICE) SUP_"
-				+ this.id + ",  "
+		s[0] = " MIN(DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-OPER.OPEN_PRICE) INF_" + this.id + ",  "
+				+ " MAX(DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-OPER.OPEN_PRICE) SUP_" + this.id + ",  "
 				+ "  ROUND(AVG(DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-OPER.OPEN_PRICE), 5) PROM_" + this.id
 				+ ", ";
 		s[1] = " AND DH.ICHIMOKUSENKOUSPANA IS NOT NULL AND DH.ICHIMOKUSENKOUSPANB IS NOT NULL ";
@@ -121,6 +125,27 @@ public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
 		s[0] = " ((DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-DH.LOW) BETWEEN ? AND ? "
 				+ "  OR (DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-DH.HIGH) BETWEEN ? AND ?) ";
 		return s;
+	}
+
+	@Override
+	public Map<String, Object> getCalculatedValues(Ichimoku prevIndicator, Ichimoku indicator, Point prevPoint,
+			Point point) {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		if (!NumberUtil.isInfiniteOrNan(indicator.getSenkouSpanA())) {
+			objectMap.put("senkouSpanA", indicator.getSenkouSpanA());
+		}
+		if (!NumberUtil.isInfiniteOrNan(indicator.getSenkouSpanB())) {
+			objectMap.put("senkouSpanB", indicator.getSenkouSpanB());
+		}
+		if (prevIndicator != null) {
+			if (!NumberUtil.isAnyInfiniteOrNan(prevIndicator.getSenkouSpanA(), prevIndicator.getSenkouSpanB())) {
+				objectMap.put("calculado_trend_low", NumberUtil
+						.round((prevIndicator.getSenkouSpanA() - prevIndicator.getSenkouSpanB() - point.getLow())));
+				objectMap.put("calculado_trend_high", NumberUtil
+						.round((prevIndicator.getSenkouSpanA() - prevIndicator.getSenkouSpanB() - point.getHigh())));
+			}
+		}
+		return objectMap;
 	}
 
 }

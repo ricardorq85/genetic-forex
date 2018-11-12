@@ -22,6 +22,7 @@ public class Point implements Serializable {
 	 *
 	 */
 	public static final long serialVersionUID = 201203120716L;
+	private Point prevPoint = null;
 	private String moneda = "USDCAD";
 	private int periodo = 1;
 	private String monedaComparacion = "EURUSD";
@@ -274,6 +275,14 @@ public class Point implements Serializable {
 
 	public void setMonedaComparacion(String monedaComparacion) {
 		this.monedaComparacion = monedaComparacion;
+	}
+
+	public Point getPrevPoint() {
+		return prevPoint;
+	}
+
+	public void setPrevPoint(Point prevPoint) {
+		this.prevPoint = prevPoint;
 	}
 
 }

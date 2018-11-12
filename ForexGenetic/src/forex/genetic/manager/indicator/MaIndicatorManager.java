@@ -4,10 +4,14 @@
  */
 package forex.genetic.manager.indicator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Average;
 import forex.genetic.entities.indicator.Indicator;
+import forex.genetic.util.NumberUtil;
 
 /**
  *
@@ -32,8 +36,8 @@ public class MaIndicatorManager extends IntervalIndicatorManager<Average> {
 	public Average getIndicatorInstance() {
 		return new Average("Ma");
 	}
-	
-	public String[] getNombreCalculado() {
+
+	public String[] getNombresCalculados() {
 		return new String[] { "calculado_low", "calculado_high" };
 	}
 
@@ -100,9 +104,8 @@ public class MaIndicatorManager extends IntervalIndicatorManager<Average> {
 	@Override
 	public String[] queryRangoOperacionIndicador() {
 		String[] s = new String[2];
-		s[0] = " MIN(DH.AVERAGE-OPER.OPEN_PRICE) INF_" + this.id
-				+ ",  MAX(DH.AVERAGE-OPER.OPEN_PRICE) SUP_" + this.id + ",  "
-				+ " ROUND(AVG(DH.AVERAGE-OPER.OPEN_PRICE), 5) PROM_" + this.id + ", ";
+		s[0] = " MIN(DH.AVERAGE-OPER.OPEN_PRICE) INF_" + this.id + ",  MAX(DH.AVERAGE-OPER.OPEN_PRICE) SUP_" + this.id
+				+ ",  " + " ROUND(AVG(DH.AVERAGE-OPER.OPEN_PRICE), 5) PROM_" + this.id + ", ";
 		s[1] = " AND DH.AVERAGE IS NOT NULL ";
 		return s;
 	}
@@ -112,5 +115,21 @@ public class MaIndicatorManager extends IntervalIndicatorManager<Average> {
 		String[] s = new String[1];
 		s[0] = " ((DH.AVERAGE-DH.LOW) BETWEEN ? AND ? " + "  OR (DH.AVERAGE-DH.HIGH) BETWEEN ? AND ?) ";
 		return s;
+	}
+
+	@Override
+	public Map<String, Object> getCalculatedValues(Average prevIndicator, Average indicator, Point prevPoint,
+			Point point) {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		if (!NumberUtil.isInfiniteOrNan(indicator.getAverage())) {
+			objectMap.put("average", indicator.getAverage());
+		}
+		if (prevIndicator != null) {
+			if (!NumberUtil.isAnyInfiniteOrNan(prevIndicator.getAverage(), point.getLow(), point.getHigh())) {
+				objectMap.put("calculado_low", NumberUtil.round((prevIndicator.getAverage() - point.getLow())));
+				objectMap.put("calculado_high", NumberUtil.round((prevIndicator.getAverage() - point.getHigh())));
+			}
+		}
+		return objectMap;
 	}
 }

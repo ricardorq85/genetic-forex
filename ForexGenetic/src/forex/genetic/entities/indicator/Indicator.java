@@ -14,11 +14,29 @@ import forex.genetic.entities.Point;
  */
 public abstract class Indicator {
 
-    /**
-     *
-     * @param prefix
-     * @return
-     */
-    public abstract String toFileString(String prefix);
-    public abstract Map<String, Object> toMap(Point datoHistorico);
+	protected String name = null;
+
+	/**
+	 *
+	 * @param prefix
+	 * @return
+	 */
+	public abstract String toFileString(String prefix);
+
+	/**
+	 *
+	 * @return
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 *
+	 * @param name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
 }

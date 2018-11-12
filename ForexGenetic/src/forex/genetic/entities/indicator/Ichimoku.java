@@ -114,34 +114,4 @@ public class Ichimoku extends IntervalIndicator {
 		this.tenkanSen = tenkanSen;
 	}
 
-	@Override
-	public Map<String, Object> valuesToMap(Point datoHistorico) {
-		Map<String, Object> objectMap = new HashMap<String, Object>();
-		if (!Double.isInfinite(this.chinkouSpan) && !Double.isNaN(this.chinkouSpan)) {
-			objectMap.put("chinkouSpan", this.chinkouSpan);
-		}
-		if (!Double.isInfinite(this.kijunSen) && !Double.isNaN(this.kijunSen)) {
-			objectMap.put("kijunSen", this.kijunSen);
-		}
-		if (!Double.isInfinite(this.senkouSpanA) && !Double.isNaN(this.senkouSpanA)) {
-			objectMap.put("senkouSpanA", this.senkouSpanA);
-		}
-		if (!Double.isInfinite(this.senkouSpanB) && !Double.isNaN(this.senkouSpanB)) {
-			objectMap.put("senkouSpanB", this.senkouSpanB);
-		}
-		if (!Double.isInfinite(this.tenkanSen) && !Double.isNaN(this.tenkanSen)) {
-			objectMap.put("tenkanSen", this.tenkanSen);
-		}
-		if (objectMap.size() == 5) {
-			objectMap.put("calculado_trend_low",
-					NumberUtil.round((this.senkouSpanA - this.senkouSpanB - datoHistorico.getLow())));
-			objectMap.put("calculado_trend_high",
-					NumberUtil.round((this.senkouSpanA - this.senkouSpanB - datoHistorico.getHigh())));
-			objectMap.put("calculado_signal", NumberUtil.round(this.chinkouSpan * (this.tenkanSen - this.kijunSen)));
-		}else {
-			objectMap = null;
-		}
-		return objectMap;
-	}
-
 }

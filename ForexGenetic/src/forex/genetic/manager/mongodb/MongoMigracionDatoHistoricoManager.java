@@ -5,6 +5,7 @@
 package forex.genetic.manager.mongodb;
 
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -29,35 +30,34 @@ public class MongoMigracionDatoHistoricoManager extends MigracionManager<Point> 
 	}
 
 	public void migrate() throws SQLException {
+		LogUtil.logTime(new StringBuilder("Borrando collection: ").append(mongoDestinoDAO.getCollectionName()).toString(), 1);
 		mongoDestinoDAO.clean();
-
 		Date fechaMinima = datoHistoricoDAO.getFechaHistoricaMinima();
-		Date fechaMinimaDestino = ((MongoDatoHistoricoDAO)mongoDestinoDAO).getFechaHistoricaMinima();
+		//Date fechaMinimaDestino = ((MongoDatoHistoricoDAO) mongoDestinoDAO).getFechaHistoricaMinima();
 		Date fechaMaxima = datoHistoricoDAO.getFechaHistoricaMaxima();
-		Date fechaInicialConsulta = DateUtil.obtenerFechaMinima(fechaMinima, fechaMinimaDestino);
-		/*
-		 * Date fechaInicialConsulta; try { fechaInicialConsulta =
-		 * DateUtil.obtenerFecha("2008/05/06 08:45"); } catch (ParseException e) { //
-		 * TODO Auto-generated catch block e.printStackTrace(); fechaInicialConsulta =
-		 * DateUtil.obtenerFechaMinima(fechaMinima, fechaMinimaDestino); fo }
-		 */
+		//Date fechaInicialConsulta = DateUtil.obtenerFechaMinima(fechaMinima, fechaMinimaDestino);
+		Date fechaInicialConsulta = fechaMinima;
+		try {
+			fechaInicialConsulta = DateUtil.obtenerFecha("2009/01/07 09:29");
+		} catch (ParseException e) {
+		}
 
 		while (!fechaInicialConsulta.after(fechaMaxima)) {
-			Date fechaFinalConsulta = DateUtil.adicionarDias(fechaInicialConsulta, 50);
+			Date fechaFinalConsulta = DateUtil.adicionarDias(fechaInicialConsulta, 10);
 			LogUtil.logTime("Exportando..." + DateUtil.getDateString(fechaInicialConsulta) + "-"
 					+ DateUtil.getDateString(fechaFinalConsulta), 1);
-			List<Point> datosConsultados = datoHistoricoDAO.consultarHistorico(fechaInicialConsulta,
-					fechaFinalConsulta);
+			List<Point> datosConsultados = datoHistoricoDAO
+					.consultarHistorico(DateUtil.adicionarMinutos(fechaInicialConsulta, -1), fechaFinalConsulta);
+			mongoDestinoDAO.insertMany(datosConsultados.subList(1, datosConsultados.size() - 1));
 
-			mongoDestinoDAO.insertMany(datosConsultados);
-
-			fechaInicialConsulta = DateUtil
-					.adicionarMinutos(datosConsultados.get(datosConsultados.size() - 1).getDate(), 1);
+			fechaInicialConsulta = datosConsultados.get(datosConsultados.size() - 1).getDate();
 		}
+		LogUtil.logTime(new StringBuilder("Configurando collection: ").append(mongoDestinoDAO.getCollectionName()).toString(), 1);
+		mongoDestinoDAO.configureCollection();
 	}
 
 	@Override
 	protected MongoGeneticDAO<Point> getDestinoDAO() {
-		return new MongoDatoHistoricoDAO();
+		return new MongoDatoHistoricoDAO(false);
 	}
 }

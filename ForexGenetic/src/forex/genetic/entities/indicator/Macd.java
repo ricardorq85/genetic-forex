@@ -114,22 +114,5 @@ public class Macd extends IntervalIndicator {
 		this.parameter2 = parameter2;
 	}
 
-	@Override
-	public Map<String, Object> valuesToMap(Point datoHistorico) {
-		Map<String, Object> objectMap = new HashMap<String, Object>();
-		if (!Double.isInfinite(this.macdSignal) && !Double.isNaN(this.macdSignal)) {
-			objectMap.put("macdSignal", this.macdSignal);
-		}
-		if (!Double.isInfinite(this.macdValue) && !Double.isNaN(this.macdValue)) {
-			objectMap.put("macdValue", this.macdValue);
-		}
-		if (objectMap.size() == 2) {
-			objectMap.put("calculado", NumberUtil.round((this.macdValue - this.macdSignal)));
-		} else {
-			objectMap = null;
-		}
-
-		return objectMap;
-	}
 
 }

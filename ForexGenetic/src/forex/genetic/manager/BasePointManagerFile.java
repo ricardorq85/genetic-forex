@@ -94,10 +94,9 @@ public class BasePointManagerFile {
 			if (lineRead != null) {
 				boolean hasSpread = lineRead.contains("Spread");
 				int indexField = 0;
-				int pointsControl = PropertiesManager.getPointsControl();
 				IndicadorController indicadorController = ControllerFactory
 						.createIndicadorController(ControllerFactory.ControllerType.Individuo);
-				while ((counter < pointsControl) && ((lineRead = reader.readLine()) != null)) {
+				while ((lineRead = reader.readLine()) != null) {
 					indexField = 0;
 					String[] strings = lineRead.split(",");
 					String moneda = strings[++indexField];
@@ -151,6 +150,9 @@ public class BasePointManagerFile {
 					double baseIchimokuChinkouSpan6 = Double.parseDouble(strings[++indexField]);
 
 					point = new Point();
+					if (counter > 0) {
+						point.setPrevPoint(points.get(counter - 1));
+					}
 					point.setMoneda(moneda);
 					point.setPeriodo(periodo);
 					point.setMonedaComparacion(monedaComparacion);
@@ -187,11 +189,13 @@ public class BasePointManagerFile {
 
 					bollingerBand = new Bollinger("Bollinger");
 					baseBollingerUpper = NumberUtil.round(baseBollingerUpper, true);
-					if (((!Double.isInfinite(baseBollingerUpper)) && (average.getAverage()>0) && (baseBollingerUpper > average.getAverage()))) {
+					if (((!Double.isInfinite(baseBollingerUpper)) && (average.getAverage() > 0)
+							&& (baseBollingerUpper > average.getAverage()))) {
 						baseBollingerUpper = Double.POSITIVE_INFINITY;
 					}
 					bollingerBand.setUpper(baseBollingerUpper);
-					if (((!Double.isInfinite(baseBollingerLower)) && (average.getAverage()>0) && (baseBollingerLower > average.getAverage()))) {
+					if (((!Double.isInfinite(baseBollingerLower)) && (average.getAverage() > 0)
+							&& (baseBollingerLower > average.getAverage()))) {
 						baseBollingerLower = Double.POSITIVE_INFINITY;
 					}
 					bollingerBand.setLower(NumberUtil.round(baseBollingerLower, true));
@@ -229,11 +233,13 @@ public class BasePointManagerFile {
 
 					bollingerBand240 = new Bollinger("Bollinger240");
 					baseBollingerUpper240 = NumberUtil.round(baseBollingerUpper240, true);
-					if (((!Double.isInfinite(baseBollingerUpper240)) && (average.getAverage()>0) && (baseBollingerUpper240 > average.getAverage()*10))) {
+					if (((!Double.isInfinite(baseBollingerUpper240)) && (average.getAverage() > 0)
+							&& (baseBollingerUpper240 > average.getAverage() * 10))) {
 						baseBollingerUpper240 = Double.POSITIVE_INFINITY;
 					}
 					bollingerBand240.setUpper(baseBollingerUpper240);
-					if (((!Double.isInfinite(baseBollingerLower240)) && (average.getAverage()>0) && (baseBollingerLower240 > average.getAverage()*10))) {
+					if (((!Double.isInfinite(baseBollingerLower240)) && (average.getAverage() > 0)
+							&& (baseBollingerLower240 > average.getAverage() * 10))) {
 						baseBollingerLower240 = Double.POSITIVE_INFINITY;
 					}
 					bollingerBand240.setLower(NumberUtil.round(baseBollingerLower240, true));

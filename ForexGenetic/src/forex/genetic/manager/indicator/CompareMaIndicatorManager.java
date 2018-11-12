@@ -4,10 +4,14 @@
  */
 package forex.genetic.manager.indicator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Average;
 import forex.genetic.entities.indicator.Indicator;
+import forex.genetic.util.NumberUtil;
 
 /**
  *
@@ -31,10 +35,6 @@ public class CompareMaIndicatorManager extends IntervalIndicatorManager<Average>
 	@Override
 	public Average getIndicatorInstance() {
 		return new Average("MaCompare");
-	}
-
-	public String[] getNombreCalculado() {
-		return new String[] { "calculado_compare" };
 	}
 
 	/**
@@ -104,4 +104,20 @@ public class CompareMaIndicatorManager extends IntervalIndicatorManager<Average>
 		return s;
 	}
 
+	@Override
+	public Map<String, Object> getCalculatedValues(Average prevIndicator, Average indicator, Point prevPoint,
+			Point point) {
+		Map<String, Object> objectMap = null;
+		objectMap = new HashMap<String, Object>();
+		if (!NumberUtil.isInfiniteOrNan(indicator.getAverage())) {
+			objectMap.put("average", indicator.getAverage());
+		}
+		if (prevIndicator != null) {
+			if (!NumberUtil.isAnyInfiniteOrNan(prevIndicator.getAverage(), prevPoint.getCloseCompare())) {
+				objectMap.put("calculado",
+						NumberUtil.round((prevIndicator.getAverage() - prevPoint.getCloseCompare())));
+			}
+		}
+		return objectMap;
+	}
 }

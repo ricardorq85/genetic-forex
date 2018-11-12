@@ -62,17 +62,5 @@ public class Rsi extends IntervalIndicator {
         this.rsi = rsi;
     }
 
-	@Override
-	public Map<String, Object> valuesToMap(Point datoHistorico) {
-		Map<String, Object> objectMap = null;
-		if (!Double.isInfinite(this.rsi) && !Double.isNaN(this.rsi)) {
-			objectMap = new HashMap<String, Object>();
-			objectMap.put("rsi", this.rsi);
-			objectMap.put("calculado", this.rsi);
-		}
-
-		return objectMap;		
-	}
-
 
 }

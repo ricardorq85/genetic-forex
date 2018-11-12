@@ -4,10 +4,14 @@
  */
 package forex.genetic.manager.indicator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.Macd;
+import forex.genetic.util.NumberUtil;
 
 /**
  *
@@ -83,9 +87,8 @@ public class MacdIndicatorManager extends IntervalIndicatorManager<Macd> {
 	@Override
 	public String[] queryRangoOperacionIndicador() {
 		String[] s = new String[2];
-		s[0] = " MIN(DH.MACD_VALUE-DH.MACD_SIGNAL) INF_" + this.id
-				+ ", MAX(DH.MACD_VALUE-DH.MACD_SIGNAL) SUP_" + this.id
-				+ ",  ROUND(AVG(DH.MACD_VALUE-DH.MACD_SIGNAL), 5) PROM_" + this.id + ", ";
+		s[0] = " MIN(DH.MACD_VALUE-DH.MACD_SIGNAL) INF_" + this.id + ", MAX(DH.MACD_VALUE-DH.MACD_SIGNAL) SUP_"
+				+ this.id + ",  ROUND(AVG(DH.MACD_VALUE-DH.MACD_SIGNAL), 5) PROM_" + this.id + ", ";
 		s[1] = " AND DH.MACD_VALUE IS NOT NULL AND DH.MACD_SIGNAL IS NOT NULL ";
 		return s;
 	}
@@ -95,6 +98,24 @@ public class MacdIndicatorManager extends IntervalIndicatorManager<Macd> {
 		String[] s = new String[1];
 		s[0] = " ((DH.MACD_VALUE-DH.MACD_SIGNAL) BETWEEN ? AND ?) ";
 		return s;
+	}
+
+	@Override
+	public Map<String, Object> getCalculatedValues(Macd prevIndicator, Macd indicator, Point prevPoint, Point point) {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		if (!NumberUtil.isInfiniteOrNan(indicator.getMacdSignal())) {
+			objectMap.put("macdSignal", indicator.getMacdSignal());
+		}
+		if (!NumberUtil.isInfiniteOrNan(indicator.getMacdValue())) {
+			objectMap.put("macdValue", indicator.getMacdValue());
+		}
+		if (prevIndicator != null) {
+			if (!NumberUtil.isAnyInfiniteOrNan(prevIndicator.getMacdSignal(), prevIndicator.getMacdSignal())) {
+				objectMap.put("calculado",
+						NumberUtil.round((prevIndicator.getMacdValue() - prevIndicator.getMacdSignal())));
+			}
+		}
+		return objectMap;
 	}
 
 }

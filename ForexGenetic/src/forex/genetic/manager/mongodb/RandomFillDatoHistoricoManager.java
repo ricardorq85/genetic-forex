@@ -27,7 +27,7 @@ public class RandomFillDatoHistoricoManager {
 	private MongoDatoHistoricoDAO dao;
 
 	public RandomFillDatoHistoricoManager() {
-		dao = new MongoDatoHistoricoDAO();
+		dao = new MongoDatoHistoricoDAO(true);
 	}
 
 	public List<Point> fill() {

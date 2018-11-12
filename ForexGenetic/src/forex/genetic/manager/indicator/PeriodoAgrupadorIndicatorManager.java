@@ -4,6 +4,7 @@
  */
 package forex.genetic.manager.indicator;
 
+import java.util.Map;
 import java.util.Random;
 
 import forex.genetic.entities.DoubleInterval;
@@ -135,6 +136,13 @@ public class PeriodoAgrupadorIndicatorManager extends IntervalIndicatorManager<P
 																		// Tools
 																		// |
 																		// Templates.
+	}
+
+	@Override
+	public Map<String, Object> getCalculatedValues(PeriodoAgrupador prevIndicator, PeriodoAgrupador indicator,
+			Point prevPoint, Point point) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import forex.genetic.entities.Interval;
-import forex.genetic.entities.Point;
 
 /**
  *
@@ -29,32 +28,11 @@ public abstract class IntervalIndicator extends Indicator implements Serializabl
 
 	/**
 	 *
-	 */
-	protected String name = null;
-
-	/**
-	 *
 	 * @param name
 	 */
 	public IntervalIndicator(String name) {
 		this.name = name;
 		// interval = new DoubleInterval(name);
-	}
-
-	/**
-	 *
-	 * @return
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 *
-	 * @param name
-	 */
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	/**
@@ -74,7 +52,7 @@ public abstract class IntervalIndicator extends Indicator implements Serializabl
 		this.interval.setName(this.name);
 	}
 
-	@Override
+	/*@Override
 	public Map<String, Object> toMap(Point datoHistorico) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		Map<String, Object> indMap = this.valuesToMap(datoHistorico);
@@ -84,7 +62,7 @@ public abstract class IntervalIndicator extends Indicator implements Serializabl
 			objectMap.put(this.getName(), null);
 		}
 		return objectMap;
-	}
+	}*/
 
 	public Map<String, Object> toIntervalMap() {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
@@ -98,8 +76,6 @@ public abstract class IntervalIndicator extends Indicator implements Serializabl
 		}
 		return objectMap;
 	}
-
-	public abstract Map<String, Object> valuesToMap(Point datoHistorico);
 
 	/**
 	 *
@@ -139,5 +115,4 @@ public abstract class IntervalIndicator extends Indicator implements Serializabl
 		hash = 79 * hash + (this.interval != null ? this.interval.hashCode() : 0);
 		return hash;
 	}
-
 }

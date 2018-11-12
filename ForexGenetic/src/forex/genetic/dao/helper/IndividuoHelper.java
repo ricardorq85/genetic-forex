@@ -32,7 +32,13 @@ public class IndividuoHelper {
     private static final IndicadorController INDICADOR_CONTROLLER = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 
     public static List<Date> createFechas(ResultSet rs) throws SQLException {
-        List<Date> fechas = new ArrayList();
+        List<Date> fechas = new ArrayList<Date>();
+/*        try {
+			fechas.add(DateUtil.obtenerFecha("2009/01/07 09:30"));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
         while (rs.next()) {
             fechas.add(new Date(rs.getTimestamp("FECHA").getTime()));
         }

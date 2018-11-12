@@ -4,11 +4,6 @@
  */
 package forex.genetic.entities.indicator;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import forex.genetic.entities.Point;
-
 /**
  *
  * @author ricardorq85
@@ -53,11 +48,5 @@ public class PeriodoAgrupador extends IntervalIndicator {
 
         return buffer.toString();
     }
-
-	@Override
-	public Map<String, Object> valuesToMap(Point datoHistorico) {
-		Map<String, Object> objectMap = new HashMap<String, Object>();
-		return objectMap;
-	}
     
 }

@@ -4,6 +4,8 @@
  */
 package forex.genetic.manager;
 
+import java.util.Map;
+
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Indicator;
@@ -114,4 +116,11 @@ public class DummyIndicatorManager extends IndicadorIndividuoManager<Object> {
     public double getValue(Object indicator, Point prevPoint, Point point) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+	@Override
+	public Map<String, Object> getCalculatedValues(Object prevIndicator, Object indicator, Point prevPoint,
+			Point point) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

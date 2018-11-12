@@ -42,12 +42,12 @@ public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO<TendenciaParaOp
 
 	// public MongoTendenciaParaOperarDAO(Connection connection) {
 	public MongoTendenciaParaOperarDAO() {
-		super("tendenciaParaOperar");
+		super("tendenciaParaOperar", true);
 		this.collectionDatoAdicional = ConnectionMongoDB.getDatabase().getCollection("datoAdicionalTPO");
 		this.configureCollection();
 	}
 
-	protected void configureCollection() {
+	public void configureCollection() {
 		IndexOptions indexOptions = new IndexOptions();
 		indexOptions.unique(true);
 

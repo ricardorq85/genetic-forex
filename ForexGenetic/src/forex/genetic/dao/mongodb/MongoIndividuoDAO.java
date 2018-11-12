@@ -18,10 +18,10 @@ import forex.genetic.entities.IndividuoEstrategia;
 public class MongoIndividuoDAO extends MongoGeneticDAO<IndividuoEstrategia> {
 
 	public MongoIndividuoDAO() {
-		super("individuo");
+		super("individuo", true);
 	}
 
-	protected void configureCollection() {
+	public void configureCollection() {
 		IndexOptions indexOptions = new IndexOptions();
 		indexOptions.unique(true);
 

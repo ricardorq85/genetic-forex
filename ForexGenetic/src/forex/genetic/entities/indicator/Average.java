@@ -63,18 +63,4 @@ public class Average extends IntervalIndicator {
 		this.average = average;
 	}
 
-	@Override
-	public Map<String, Object> valuesToMap(Point datoHistorico) {
-		Map<String, Object> objectMap = null;
-		if (!Double.isInfinite(this.average) && !Double.isNaN(this.average)) {
-			objectMap = new HashMap<String, Object>();
-			objectMap.put("average", this.average);
-			objectMap.put("calculado_low", NumberUtil.round((this.average - datoHistorico.getLow())));
-			objectMap.put("calculado_high", NumberUtil.round((this.average - datoHistorico.getHigh())));
-
-			objectMap.put("calculado_compare", NumberUtil.round((this.average - datoHistorico.getCloseCompare())));
-		}
-		return objectMap;
-	}
-
 }

@@ -4,10 +4,14 @@
  */
 package forex.genetic.manager.indicator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.Rsi;
+import forex.genetic.util.NumberUtil;
 
 /**
  *
@@ -69,15 +73,15 @@ public class RsiIndicatorManager extends IntervalIndicatorManager<Rsi> {
 
 	/*
 	 * public Indicator optimize(Rsi individuo, Rsi optimizedIndividuo, Rsi
-	 * indicator, Point point) { Rsi optimized = this.getIndicatorInstance();
-	 * double value = indicator.getRsi(); Interval generated =
-	 * intervalManager.generate(value, 0.0, 0.0);
-	 * intervalManager.round(generated); Interval intersected =
-	 * IntervalManager.intersect(generated, individuo.getInterval());
-	 * optimized.setInterval(intervalManager.optimize((optimizedIndividuo ==
-	 * null) ? null : optimizedIndividuo.getInterval(), intersected)); if
-	 * (optimized.getInterval() == null) { optimized = optimizedIndividuo; }
-	 * return optimized; }
+	 * indicator, Point point) { Rsi optimized = this.getIndicatorInstance(); double
+	 * value = indicator.getRsi(); Interval generated =
+	 * intervalManager.generate(value, 0.0, 0.0); intervalManager.round(generated);
+	 * Interval intersected = IntervalManager.intersect(generated,
+	 * individuo.getInterval());
+	 * optimized.setInterval(intervalManager.optimize((optimizedIndividuo == null) ?
+	 * null : optimizedIndividuo.getInterval(), intersected)); if
+	 * (optimized.getInterval() == null) { optimized = optimizedIndividuo; } return
+	 * optimized; }
 	 */
 	/**
 	 *
@@ -95,8 +99,8 @@ public class RsiIndicatorManager extends IntervalIndicatorManager<Rsi> {
 	@Override
 	public String[] queryRangoOperacionIndicador() {
 		String[] s = new String[2];
-		s[0] = " MIN(DH.RSI) INF_" + this.id + ",  MAX(DH.RSI) SUP_" + this.id + ",  "
-				+ "  ROUND(AVG(DH.RSI), 5) PROM_" + this.id + ", ";
+		s[0] = " MIN(DH.RSI) INF_" + this.id + ",  MAX(DH.RSI) SUP_" + this.id + ",  " + "  ROUND(AVG(DH.RSI), 5) PROM_"
+				+ this.id + ", ";
 		s[1] = " AND DH.RSI IS NOT NULL ";
 		return s;
 	}
@@ -106,6 +110,20 @@ public class RsiIndicatorManager extends IntervalIndicatorManager<Rsi> {
 		String[] s = new String[1];
 		s[0] = " ((DH.RSI) BETWEEN ? AND ?) ";
 		return s;
+	}
+
+	@Override
+	public Map<String, Object> getCalculatedValues(Rsi prevIndicator, Rsi indicator, Point prevPoint, Point point) {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		if (!NumberUtil.isInfiniteOrNan(indicator.getRsi())) {
+			objectMap.put("rsi", indicator.getRsi());
+		}
+		if (prevIndicator != null) {
+			if (!NumberUtil.isAnyInfiniteOrNan(prevIndicator.getRsi())) {
+				objectMap.put("calculado", NumberUtil.round((prevIndicator.getRsi())));
+			}
+		}
+		return objectMap;
 	}
 
 }

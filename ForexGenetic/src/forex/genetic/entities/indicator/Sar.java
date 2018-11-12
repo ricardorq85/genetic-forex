@@ -80,16 +80,4 @@ public class Sar extends IntervalIndicator {
 		this.sar = sar;
 	}
 
-	@Override
-	public Map<String, Object> valuesToMap(Point datoHistorico) {
-		Map<String, Object> objectMap = null;
-		if (!Double.isInfinite(this.sar) && !Double.isNaN(this.sar)) {
-			objectMap = new HashMap<String, Object>();
-			objectMap.put("sar", this.sar);
-			objectMap.put("calculado_low", NumberUtil.round(this.sar - datoHistorico.getLow()));
-			objectMap.put("calculado_high", NumberUtil.round(this.sar - datoHistorico.getHigh()));
-		}
-		return objectMap;
-	}
-
 }

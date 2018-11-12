@@ -4,12 +4,6 @@
  */
 package forex.genetic.entities.indicator;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import forex.genetic.entities.Point;
-import forex.genetic.util.NumberUtil;
-
 /**
  *
  * @author ricardorq85
@@ -95,24 +89,6 @@ public class Bollinger extends IntervalIndicator {
 	 */
 	public void setPeriod(double period) {
 		this.period = period;
-	}
-
-	@Override
-	public Map<String, Object> valuesToMap(Point datoHistorico) {
-		Map<String, Object> objectMap = new HashMap<String, Object>();
-		if (!Double.isInfinite(this.lower) && !Double.isNaN(this.lower)) {
-			objectMap.put("lower", this.lower);
-		}
-		if (!Double.isInfinite(this.upper) && !Double.isNaN(this.upper)) {
-			objectMap.put("upper", this.upper);
-		}
-		if (objectMap.size() == 2) {
-			objectMap.put("calculado", NumberUtil.round((this.upper - this.lower)));
-		} else {
-			objectMap = null;
-		}
-
-		return objectMap;
 	}
 
 }

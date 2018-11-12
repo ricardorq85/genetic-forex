@@ -5,6 +5,7 @@
 package forex.genetic.manager.indicator;
 
 import java.util.List;
+import java.util.Map;
 
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
@@ -13,8 +14,7 @@ import forex.genetic.entities.indicator.Indicator;
 /**
  *
  * @author ricardorq85
- * @param <E>
- *            Tipo indicador
+ * @param <E> Tipo indicador
  */
 public abstract class IndicadorManager<E> {
 
@@ -43,9 +43,9 @@ public abstract class IndicadorManager<E> {
 		this.priceDependence = priceDependence;
 		this.obligatory = obligatory;
 	}
-	
-	public String[] getNombreCalculado () {
-		return new String[]{"calculado"};
+
+	public String[] getNombresCalculados() {
+		return new String[] { "calculado" };
 	}
 
 	/**
@@ -182,4 +182,6 @@ public abstract class IndicadorManager<E> {
 	 * @return
 	 */
 	public abstract double getValue(E indicator, Point prevPoint, Point point);
+
+	public abstract Map<String, Object> getCalculatedValues(E prevIndicator, E indicator, Point prevPoint, Point point);
 }

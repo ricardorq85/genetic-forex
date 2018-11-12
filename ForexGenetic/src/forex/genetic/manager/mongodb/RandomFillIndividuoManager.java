@@ -20,7 +20,7 @@ public class RandomFillIndividuoManager {
 
 	public RandomFillIndividuoManager() {
 		dao = new MongoIndividuoDAO();
-		dhDAO = new MongoDatoHistoricoDAO();
+		dhDAO = new MongoDatoHistoricoDAO(true);
 	}
 
 	public List<Date> consultarPuntosApertura(List<IndividuoEstrategia> individuos) {

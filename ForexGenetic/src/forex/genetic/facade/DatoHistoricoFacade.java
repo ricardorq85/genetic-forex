@@ -29,7 +29,7 @@ public class DatoHistoricoFacade implements IGeneticFacade {
 		try {
 			conn = JDBCUtil.getConnection();
 			DatoHistoricoDAO dao = new DatoHistoricoDAO(conn);
-			MongoDatoHistoricoDAO mongoDao = new MongoDatoHistoricoDAO();
+			MongoDatoHistoricoDAO mongoDao = new MongoDatoHistoricoDAO(true);
 			int countError = 0;
 
 			for (int i = 0; i < points.size(); i++) {

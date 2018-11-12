@@ -22,6 +22,7 @@ import forex.genetic.entities.indicator.Rsi;
 import forex.genetic.entities.indicator.Sar;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
+import forex.genetic.manager.indicator.IndicadorManager;
 
 /**
  *
@@ -37,7 +38,7 @@ public class BasePointHelper {
 	 */
 	public static List<Point> createPoints(ResultSet resultado) throws SQLException {
 		List<Point> points = new ArrayList<>();
-		Point point;
+		Point prevPoint = null;
 		List<Indicator> indicators;
 		Average average;
 		Macd macd;
@@ -60,6 +61,7 @@ public class BasePointHelper {
 
 		IndicadorController indicadorController = ControllerFactory
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+		int index = 0;
 		while (resultado.next()) {
 			Date date = new Date(resultado.getTimestamp("FECHA").getTime());
 			double baseOpen = resultado.getDouble("OPEN");
@@ -99,11 +101,14 @@ public class BasePointHelper {
 					: resultado.getDouble("ICHIMOKUTENKANSEN");
 			double baseIchimokuKijunSen = (resultado.getObject("ICHIMOKUKIJUNSEN") == null) ? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("ICHIMOKUKIJUNSEN");
-			double baseIchimokuSenkouSpanA = (resultado.getObject("ICHIMOKUSENKOUSPANA") == null) ? Double.NEGATIVE_INFINITY
+			double baseIchimokuSenkouSpanA = (resultado.getObject("ICHIMOKUSENKOUSPANA") == null)
+					? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("ICHIMOKUSENKOUSPANA");
-			double baseIchimokuSenkouSpanB = (resultado.getObject("ICHIMOKUSENKOUSPANB") == null) ? Double.NEGATIVE_INFINITY
+			double baseIchimokuSenkouSpanB = (resultado.getObject("ICHIMOKUSENKOUSPANB") == null)
+					? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("ICHIMOKUSENKOUSPANB");
-			double baseIchimokuChinkouSpan = (resultado.getObject("ICHIMOKUCHINKOUSPAN") == null) ? Double.NEGATIVE_INFINITY
+			double baseIchimokuChinkouSpan = (resultado.getObject("ICHIMOKUCHINKOUSPAN") == null)
+					? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("ICHIMOKUCHINKOUSPAN");
 			double baseAverage1200 = (resultado.getObject("MA1200") == null) ? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("MA1200");
@@ -111,7 +116,8 @@ public class BasePointHelper {
 					: resultado.getDouble("MACD20X_VALUE");
 			double baseMacd20xSignal = (resultado.getObject("MACD20X_SIGNAL") == null) ? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("MACD20X_SIGNAL");
-			double compareAverage1200Value = (resultado.getObject("AVERAGE_COMPARE1200") == null) ? Double.NEGATIVE_INFINITY
+			double compareAverage1200Value = (resultado.getObject("AVERAGE_COMPARE1200") == null)
+					? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("AVERAGE_COMPARE1200");
 			double baseSar1200 = (resultado.getObject("SAR1200") == null) ? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("SAR1200");
@@ -123,24 +129,34 @@ public class BasePointHelper {
 					: resultado.getDouble("ADX_MINUS168");
 			double baseRsi84 = (resultado.getObject("RSI84") == null) ? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("RSI84");
-			double baseBollingerUpper240 = (resultado.getObject("BOLLINGER_UPPER240") == null) ? Double.NEGATIVE_INFINITY
+			double baseBollingerUpper240 = (resultado.getObject("BOLLINGER_UPPER240") == null)
+					? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("BOLLINGER_UPPER240");
-			double baseBollingerLower240 = (resultado.getObject("BOLLINGER_LOWER240") == null) ? Double.NEGATIVE_INFINITY
+			double baseBollingerLower240 = (resultado.getObject("BOLLINGER_LOWER240") == null)
+					? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("BOLLINGER_LOWER240");
 			double baseMomentum1200 = (resultado.getObject("MOMENTUM1200") == null) ? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("MOMENTUM1200");
-			double baseIchimokuTenkanSen6 = (resultado.getObject("ICHIMOKUTENKANSEN6") == null) ? Double.NEGATIVE_INFINITY
+			double baseIchimokuTenkanSen6 = (resultado.getObject("ICHIMOKUTENKANSEN6") == null)
+					? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("ICHIMOKUTENKANSEN6");
 			double baseIchimokuKijunSen6 = (resultado.getObject("ICHIMOKUKIJUNSEN6") == null) ? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("ICHIMOKUKIJUNSEN6");
-			double baseIchimokuSenkouSpanA6 = (resultado.getObject("ICHIMOKUSENKOUSPANA6") == null) ? Double.NEGATIVE_INFINITY
+			double baseIchimokuSenkouSpanA6 = (resultado.getObject("ICHIMOKUSENKOUSPANA6") == null)
+					? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("ICHIMOKUSENKOUSPANA6");
-			double baseIchimokuSenkouSpanB6 = (resultado.getObject("ICHIMOKUSENKOUSPANB6") == null) ? Double.NEGATIVE_INFINITY
+			double baseIchimokuSenkouSpanB6 = (resultado.getObject("ICHIMOKUSENKOUSPANB6") == null)
+					? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("ICHIMOKUSENKOUSPANB6");
-			double baseIchimokuChinkouSpan6 = (resultado.getObject("ICHIMOKUCHINKOUSPAN6") == null) ? Double.NEGATIVE_INFINITY
+			double baseIchimokuChinkouSpan6 = (resultado.getObject("ICHIMOKUCHINKOUSPAN6") == null)
+					? Double.NEGATIVE_INFINITY
 					: resultado.getDouble("ICHIMOKUCHINKOUSPAN6");
 
-			point = new Point();
+			Point point = new Point();
+			if (index > 0) {
+				prevPoint = points.get(index - 1);
+				point.setPrevPoint(prevPoint);
+			}
 			point.setDate(date);
 			point.setOpen(baseOpen);
 			point.setLow(baseLow);
@@ -156,7 +172,6 @@ public class BasePointHelper {
 			macd = new Macd("Macd");
 			macd.setMacdValue(baseMacdValue);
 			macd.setMacdSignal(baseMacdSignal);
-
 			compareAverage = new Average("MaCompare");
 			compareAverage.setAverage(compareAverageValue);
 
@@ -245,6 +260,7 @@ public class BasePointHelper {
 			point.setIndicators(indicators);
 
 			points.add(point);
+			index++;
 		}
 		return points;
 	}

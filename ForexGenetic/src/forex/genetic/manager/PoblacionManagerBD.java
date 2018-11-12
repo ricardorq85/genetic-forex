@@ -14,6 +14,7 @@ import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.ProcesoPoblacionDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.thread.ProcesarIndividuoThreadBD;
+import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
@@ -66,6 +67,7 @@ public class PoblacionManagerBD {
 						ProcesarIndividuoThreadBD procesarIndividuoThread = new ProcesarIndividuoThreadBD(
 								"FILTRO_ADICIONAL_" + countFiltro, individuos);
 						procesarIndividuoThread.setMaxFechaHistorico(maxFechaHistorico);
+						//procesarIndividuoThread.setMaxFechaHistorico(DateUtil.adicionarMinutos(maxFechaHistorico,1));
 						procesarIndividuoThread.setMinFechaHistorico(minFechaHistorico);
 						procesarIndividuoThread.start();
 						threads.add(procesarIndividuoThread);

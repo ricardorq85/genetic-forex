@@ -11,7 +11,11 @@ import org.bson.Document;
 import com.mongodb.client.MongoCursor;
 
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
+import forex.genetic.factory.ControllerFactory;
+import forex.genetic.manager.controller.IndicadorController;
+import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.util.DateUtil;
 
 public class MongoDatoHistoricoHelper {
@@ -43,9 +47,26 @@ public class MongoDatoHistoricoHelper {
 		List<Map<String, Object>> indicadores = new ArrayList<Map<String, Object>>();
 
 		List<IntervalIndicator> indicadoresBase = ((List<IntervalIndicator>) datoHistorico.getIndicators());
-		indicadoresBase.stream().forEach((ind) -> {
-			indicadores.add(ind.toMap(datoHistorico));
-		});
+		IndicadorController indicadorController = ControllerFactory
+				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+		for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
+			IndicadorManager<Indicator> indicadorManager = indicadorController.getManagerInstance(i);
+			Point prevPoint = datoHistorico.getPrevPoint();
+			if (indicadoresBase.get(i) != null) {
+				Indicator prevIndicator = (prevPoint != null) ? prevPoint.getIndicators().get(i) : null;
+				Map<String, Object> values = indicadorManager.getCalculatedValues(
+						prevIndicator, indicadoresBase.get(i),
+						datoHistorico.getPrevPoint(), datoHistorico);
+				Map<String, Object> indMap = new HashMap<String, Object>();
+				indMap.put(indicadoresBase.get(i).getName(), values);
+				indicadores.add(indMap);
+			} else {
+				indicadores.add(null);
+			}
+		}
+//		indicadoresBase.stream().forEach((indicador) -> {
+		// indicadores.add(indicador.toMap(datoHistorico));
+		// });
 
 		objectMap.put("indicadores", indicadores);
 

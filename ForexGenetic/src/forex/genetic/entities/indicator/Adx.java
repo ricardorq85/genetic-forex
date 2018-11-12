@@ -4,12 +4,6 @@
  */
 package forex.genetic.entities.indicator;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import forex.genetic.entities.Point;
-import forex.genetic.util.NumberUtil;
-
 /**
  *
  * @author ricardorq85
@@ -95,26 +89,6 @@ public class Adx extends IntervalIndicator {
 	 */
 	public void setParameter1(double parameter1) {
 		this.parameter1 = parameter1;
-	}
-
-	@Override
-	public Map<String, Object> valuesToMap(Point datoHistorico) {
-		Map<String, Object> objectMap = new HashMap<String, Object>();
-		if (!Double.isInfinite(this.adxValue) && !Double.isNaN(this.adxValue)) {
-			objectMap.put("adxValue", this.adxValue);
-		}
-		if (!Double.isInfinite(this.adxMinus) && !Double.isNaN(this.adxMinus)) {
-			objectMap.put("adxMinus", this.adxMinus);
-		}
-		if (!Double.isInfinite(this.adxPlus) && !Double.isNaN(this.adxPlus)) {
-			objectMap.put("adxPlus", this.adxPlus);
-		}
-		if (objectMap.size() == 3) {
-			objectMap.put("calculado", NumberUtil.round(this.adxValue * (this.adxPlus - this.adxMinus)));
-		} else {
-			objectMap = null;
-		}
-		return objectMap;
 	}
 
 }

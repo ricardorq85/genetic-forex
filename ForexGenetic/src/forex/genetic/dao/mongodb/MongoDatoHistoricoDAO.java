@@ -32,6 +32,7 @@ import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
+import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.LogUtil;
 
 /**
@@ -41,15 +42,39 @@ import forex.genetic.util.LogUtil;
 public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> {
 
 	public MongoDatoHistoricoDAO() {
-		super("datoHistorico");
+		super("datoHistorico", true);
 	}
 
-	protected void configureCollection() {
+	public MongoDatoHistoricoDAO(boolean configure) {
+		super("datoHistorico", configure);
+	}
+
+	public void configureCollection() {
 		IndexOptions indexOptions = new IndexOptions();
 		indexOptions.unique(true);
 
 		this.collection.createIndex(Indexes.ascending("moneda", "periodo", "fechaHistorico"), indexOptions);
 		this.collection.createIndex(Indexes.ascending("fechaHistorico"), indexOptions);
+
+		this.configureIndexIndicators();
+
+	}
+
+	private void configureIndexIndicators() {
+		IndicadorController indicadorController = ControllerFactory
+				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+		for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
+			IntervalIndicatorManager<IntervalIndicator> indManager = (IntervalIndicatorManager) indicadorController
+					.getManagerInstance(i);
+			IntervalIndicator indicator = indManager.getIndicatorInstance();
+			StringBuilder indexNamePrefix = new StringBuilder("indicadores.").append(indicator.getName());
+			String[] nombresCalculados = indManager.getNombresCalculados();
+			for (int j = 0; j < nombresCalculados.length; j++) {
+				String indexName = new StringBuilder(indexNamePrefix).append(".").append(nombresCalculados[j]).toString();
+				LogUtil.logTime("Index: " + indexName, 1);
+				this.collection.createIndex(Indexes.ascending(indexName));
+			}
+		}
 	}
 
 	public Date getFechaHistoricaMinima() {
@@ -98,8 +123,8 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> {
 		IndicadorController indicadorController = ControllerFactory
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 		for (int i = 0; i < individuo.getOpenIndicators().size(); i++) {
-			IndicadorManager managerInstance = indicadorController.getManagerInstance(i);
-			String[] nombreCalculado = managerInstance.getNombreCalculado();
+			IndicadorManager<?> managerInstance = indicadorController.getManagerInstance(i);
+			String[] nombreCalculado = managerInstance.getNombresCalculados();
 			List<Bson> filtrosDatosCalculados = new ArrayList<>();
 			for (int j = 0; j < nombreCalculado.length; j++) {
 				IntervalIndicator intervalIndicator = ((IntervalIndicator) individuo.getOpenIndicators().get(i));
