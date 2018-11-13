@@ -14,10 +14,12 @@
 			<attribute name="javadoc_location" value="jar:file:../drivers/commons-math3-3.6.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="../drivers/commons-lang3-3.8.1.jar" sourcepath="../drivers/commons-lang3-3.8.1-sources.jar">
+	<classpathentry kind="lib" path="../drivers/commons-lang3-3.8.1.jar" sourcepath="/drivers/commons-lang3-3.8.1-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:file:/../drivers/commons-lang3-3.8.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/genetic-forex-bo"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/genetic-forex-dto"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

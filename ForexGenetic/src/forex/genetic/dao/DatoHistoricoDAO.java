@@ -34,7 +34,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class DatoHistoricoDAO {
+public class DatoHistoricoDAO extends GeneticDAO<Point> {
 
 	/**
 	 *

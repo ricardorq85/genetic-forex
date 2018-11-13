@@ -10,6 +10,7 @@ import com.mongodb.client.model.InsertManyOptions;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
 
+import forex.genetic.dao.GeneticDAO;
 import forex.genetic.dao.helper.mongodb.MongoMapper;
 import forex.genetic.dao.helper.mongodb.MongoMapperFactory;
 import forex.genetic.util.LogUtil;

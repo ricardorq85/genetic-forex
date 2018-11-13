@@ -1,33 +1,31 @@
 package forex.genetic.mediator.mongo;
 
-import static forex.genetic.util.LogUtil.logTime;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.FileSystems;
-import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.ParametroDAO;
-import forex.genetic.dao.TendenciaDAO;
+import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
+import forex.genetic.dao.mongodb.MongoDefaultDAO;
+import forex.genetic.dao.mongodb.MongoGeneticDAO;
+import forex.genetic.dao.mongodb.MongoParametroDAO;
 import forex.genetic.delegate.GeneticDelegateBD;
 import forex.genetic.delegate.PoblacionDelegate;
+import forex.genetic.entities.Tendencia;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.ProcesarTendenciasFactory;
 import forex.genetic.manager.IndividuoManager;
 import forex.genetic.manager.IndividuoXIndicadorManager;
 import forex.genetic.manager.PropertiesManager;
-import forex.genetic.manager.io.CopyFileVisitor;
-import forex.genetic.mediator.GeneticMediator;
+import forex.genetic.mediator.PointToPointMediator;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
 import forex.genetic.tendencia.manager.TendenciaBuySellManager;
 import forex.genetic.util.Constants;
@@ -36,45 +34,36 @@ import forex.genetic.util.FileUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
-public class MongoPointToPointMediator extends GeneticMediator {
+public class MongoPointToPointMediator extends PointToPointMediator {
 
 	private int count = 1;
 	private Connection connection;
 	private Date fechaHistoricaMaximaAnterior, fechaHistoricaMaximaNueva, ultimaFechaBaseTendencia;
-	private DatoHistoricoDAO datoHistoricoDAO;
-	private TendenciaDAO tendenciaDAO;
-	private ParametroDAO parametroDAO;
-	private static String sourceExportedHistoryDataPath;// =
-														// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\exported";
-	private static String processedExportedHistoryDataPath;// =
-															// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\processed";
-	private static String exportedPropertyFileName;// =
-													// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\Export.properties";
-	private static String sourceEstrategiasPath;// =
-												// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\estrategias\\live";
+	private MongoDatoHistoricoDAO datoHistoricoDAO;
+	private MongoGeneticDAO<Tendencia> tendenciaDAO;
+	private MongoParametroDAO parametroDAO;
 
 	@Override
-	public void init() throws ClassNotFoundException, SQLException {
-		this.connection = JDBCUtil.getConnection();
-		this.datoHistoricoDAO = new DatoHistoricoDAO(connection);
-		this.tendenciaDAO = new TendenciaDAO(connection);
-		this.parametroDAO = new ParametroDAO(connection);
+	public void init() throws ClassNotFoundException {
+		this.datoHistoricoDAO = new MongoDatoHistoricoDAO();
+		this.tendenciaDAO = new MongoDefaultDAO<Tendencia>("tendencia");
+		this.parametroDAO = new MongoParametroDAO();
 
-		MongoPointToPointMediator.sourceExportedHistoryDataPath = parametroDAO
-				.getValorParametro("SOURCE_EXPORTED_HISTORY_DATA_PATH");
-		MongoPointToPointMediator.processedExportedHistoryDataPath = parametroDAO
-				.getValorParametro("PROCESSED_EXPORTED_HISTORY_DATA_PATH");
-		MongoPointToPointMediator.exportedPropertyFileName = parametroDAO.getValorParametro("EXPORTED_PROPERTY_FILE_NAME");
-		MongoPointToPointMediator.sourceEstrategiasPath = parametroDAO.getValorParametro("SOURCE_ESTRATEGIAS_PATH");
+		sourceExportedHistoryDataPath = parametroDAO
+				.consultarByName("SOURCE_EXPORTED_HISTORY_DATA_PATH").getParametroString();
+		processedExportedHistoryDataPath = parametroDAO
+				.consultarByName("PROCESSED_EXPORTED_HISTORY_DATA_PATH").getParametroString();
+		exportedPropertyFileName = parametroDAO.consultarByName("EXPORTED_PROPERTY_FILE_NAME")
+				.getParametroString();
+		sourceEstrategiasPath = parametroDAO.consultarByName("SOURCE_ESTRATEGIAS_PATH")
+				.getParametroString();
 	}
 
 	@Override
-	public void start()
-			throws SQLException, IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException,
-			IllegalAccessException, InvocationTargetException, ParseException, GeneticException {
+	public void start() throws IOException, SQLException {
 		while (true) {
 			this.fechaHistoricaMaximaAnterior = datoHistoricoDAO.getFechaHistoricaMaxima();
-			int imported = this.importarDatosHistoricos();
+			int imported = importarDatosHistoricos();
 			this.fechaHistoricaMaximaNueva = datoHistoricoDAO.getFechaHistoricaMaxima();
 			this.exportarDatosHistoricos();
 			this.setUltimaFechaTendencia(count);
@@ -114,15 +103,6 @@ public class MongoPointToPointMediator extends GeneticMediator {
 		logTime("End Exportar Datos Historicos=" + fechaExportString, 1);
 	}
 
-	private int importarDatosHistoricos() throws IOException, SQLException {
-		logTime("Init Importar Datos Historicos", 1);
-		List<Path> files = this.copiarArchivosARuta();
-		this.ejecutarCarga(files);
-		logTime("End Importar Datos Historicos. fechaMaximaNueva=" + DateUtil.getDateString(fechaHistoricaMaximaNueva),
-				1);
-		return files.size();
-	}
-
 	private String[] getFileParameters(String fileName) {
 		String[] spt = fileName.split("-");
 		return spt;
@@ -147,15 +127,6 @@ public class MongoPointToPointMediator extends GeneticMediator {
 		String fileNumber = fileParameters[2].split("\\.")[0];
 		PropertiesManager.setProperty(Constants.INITIAL_POBLACION, fileNumber);
 		PropertiesManager.setProperty(Constants.END_POBLACION, fileNumber);
-	}
-
-	private List<Path> copiarArchivosARuta() throws IOException {
-		String targetPathName = System.getProperty("user.dir") + "\\files\\";
-		Path sourcePath = FileSystems.getDefault().getPath(sourceExportedHistoryDataPath);
-		CopyFileVisitor fileVisitor = new CopyFileVisitor(sourceExportedHistoryDataPath, targetPathName,
-				processedExportedHistoryDataPath);
-		Files.walkFileTree(sourcePath, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, fileVisitor);
-		return fileVisitor.getCopiedFiles();
 	}
 
 	private void procesarIndividuos() throws FileNotFoundException {
@@ -272,4 +243,5 @@ public class MongoPointToPointMediator extends GeneticMediator {
 			manager.export(path);
 		}
 	}
+	
 }

@@ -7,7 +7,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 
-import forex.genetic.entities.Parametro;
+import forex.genetic.bo.Parametro;
 
 public class MongoParametroDAO extends MongoGeneticDAO<Parametro> {
 
