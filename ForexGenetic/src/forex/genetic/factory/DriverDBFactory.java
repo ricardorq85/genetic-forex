@@ -9,34 +9,40 @@ import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
-public class DriverDBFactory {
+public class DriverDBFactory extends GeneticFactory {
 
-	private static String drivers[] = new String[] { "oracle", "mongodb" };
-
-	public static void registerDriver(String oneDriver) {
-		drivers = new String[] { oneDriver };
-	}
-
-	public static GeneticDAO<?>[] createDAO(String entidad) {
+	public static GeneticDAO<? extends Object>[] createDAO(String entidad) {
 		GeneticDAO<?>[] daos = new GeneticDAO[drivers.length];
 		for (int i = 0; i < drivers.length; i++) {
 			if ("oracle".equals(drivers[i])) {
-				Connection conn;
 				try {
-					conn = JDBCUtil.getConnection();
-					if ("datoHistorico".equals(entidad)) {
-						daos[i] = new DatoHistoricoDAO(conn);
-					}					
+					createOracleDAO(entidad);
 				} catch (ClassNotFoundException | SQLException e) {
 					LogUtil.logTime("Error al crear conexion con BD Oracle. Se continua el proceso con drivers.", 1);
 					e.printStackTrace();
 				}
-			} else if ("oracle".equals(drivers[i])) {
-				if ("datoHistorico".equals(entidad)) {
-					daos[i] = new MongoDatoHistoricoDAO();
-				}
+			} else if ("mongodb".equals(drivers[i])) {
+				createMongoDAO(entidad);
 			}
 		}
 		return daos;
+	}
+
+	private static GeneticDAO<? extends Object> createOracleDAO(String entidad)
+			throws ClassNotFoundException, SQLException {
+		GeneticDAO<? extends Object> dao = null;
+		Connection conn = JDBCUtil.getConnection();
+		if ("datoHistorico".equals(entidad)) {
+			dao = new DatoHistoricoDAO(conn);
+		}
+		return dao;
+	}
+
+	private static GeneticDAO<? extends Object> createMongoDAO(String entidad) {
+		GeneticDAO<? extends Object> dao = null;
+		if ("datoHistorico".equals(entidad)) {
+			dao = new MongoDatoHistoricoDAO();
+		}
+		return dao;
 	}
 }

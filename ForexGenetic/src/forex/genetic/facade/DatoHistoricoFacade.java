@@ -9,10 +9,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import forex.genetic.dao.DatoHistoricoDAO;
-import forex.genetic.dao.GeneticDAO;
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.entities.Point;
-import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
@@ -29,7 +27,6 @@ public class DatoHistoricoFacade implements IGeneticFacade {
 	public void cargarDatoHistorico(List<Point> points) {
 		Connection conn = null;
 		try {
-			GeneticDAO<Point>[] ndao = DriverDBFactory.createDAO("datoHistorico");
 			conn = JDBCUtil.getConnection();
 			DatoHistoricoDAO dao = new DatoHistoricoDAO(conn);
 			MongoDatoHistoricoDAO mongoDao = new MongoDatoHistoricoDAO(true);
@@ -38,7 +35,7 @@ public class DatoHistoricoFacade implements IGeneticFacade {
 			for (int i = 0; i < points.size(); i++) {
 				Point point = points.get(i);
 				try {
-					mongoDao.insertOrUpdate(point);
+					//mongoDao.insertOrUpdate(point);
 					if (dao.existHistorico(point)) {
 						dao.updateDatoHistorico(point);
 						System.out.print("*");

@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.helper.BasePointHelper;
+import forex.genetic.dao.oracle.OracleGeneticDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Order;
@@ -26,6 +27,7 @@ import forex.genetic.entities.indicator.Macd;
 import forex.genetic.entities.indicator.Momentum;
 import forex.genetic.entities.indicator.Rsi;
 import forex.genetic.entities.indicator.Sar;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -34,19 +36,28 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class DatoHistoricoDAO extends GeneticDAO<Point> {
-
-	/**
-	 *
-	 */
-	protected Connection connection = null;
+public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 
 	/**
 	 *
 	 * @param connection
 	 */
 	public DatoHistoricoDAO(Connection connection) {
-		this.connection = connection;
+		super(connection);
+	}
+
+	public void insertOrUpdate(Point point) throws GeneticDAOException {
+		try {
+			if (existHistorico(point)) {
+				updateDatoHistorico(point);
+				System.out.print("*");
+			} else {
+				insertDatoHistorico(point);
+				System.out.print(".");
+			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error en insertOrUpdate", e);
+		}
 	}
 
 	public int consultarCantidadPuntos() throws SQLException {

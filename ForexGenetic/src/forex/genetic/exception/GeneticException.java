@@ -11,10 +11,19 @@ package forex.genetic.exception;
 public class GeneticException extends Exception {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
      *
      * @param message
      */
     public GeneticException(String message) {
         super(message);
     }
+    
+    public GeneticException(String message, Throwable cause) {
+        super(message, cause);
+    }    
 }

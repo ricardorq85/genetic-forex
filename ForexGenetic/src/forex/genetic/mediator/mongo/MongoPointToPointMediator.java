@@ -1,38 +1,14 @@
 package forex.genetic.mediator.mongo;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.Date;
-import java.util.List;
 
-import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.dao.mongodb.MongoDefaultDAO;
 import forex.genetic.dao.mongodb.MongoGeneticDAO;
 import forex.genetic.dao.mongodb.MongoParametroDAO;
-import forex.genetic.delegate.GeneticDelegateBD;
-import forex.genetic.delegate.PoblacionDelegate;
 import forex.genetic.entities.Tendencia;
-import forex.genetic.exception.GeneticException;
-import forex.genetic.factory.ProcesarTendenciasFactory;
-import forex.genetic.manager.IndividuoManager;
-import forex.genetic.manager.IndividuoXIndicadorManager;
-import forex.genetic.manager.PropertiesManager;
 import forex.genetic.mediator.PointToPointMediator;
-import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
-import forex.genetic.tendencia.manager.TendenciaBuySellManager;
-import forex.genetic.util.Constants;
-import forex.genetic.util.DateUtil;
-import forex.genetic.util.FileUtil;
-import forex.genetic.util.LogUtil;
-import forex.genetic.util.jdbc.JDBCUtil;
 
 public class MongoPointToPointMediator extends PointToPointMediator {
 
@@ -59,6 +35,7 @@ public class MongoPointToPointMediator extends PointToPointMediator {
 				.getParametroString();
 	}
 
+	/*
 	@Override
 	public void start() throws IOException, SQLException {
 		while (true) {
@@ -204,7 +181,7 @@ public class MongoPointToPointMediator extends PointToPointMediator {
 	}
 
 	private boolean existenNuevosDatosHistoricos() throws IOException {
-		Path path = FileSystems.getDefault().getPath(MongoPointToPointMediator.sourceExportedHistoryDataPath);
+		Path path = FileSystems.getDefault().getPath(sourceExportedHistoryDataPath);
 		long countFile = Files.list(path).count();
 		return (countFile > 0);
 	}
@@ -243,5 +220,5 @@ public class MongoPointToPointMediator extends PointToPointMediator {
 			manager.export(path);
 		}
 	}
-	
+*/	
 }
