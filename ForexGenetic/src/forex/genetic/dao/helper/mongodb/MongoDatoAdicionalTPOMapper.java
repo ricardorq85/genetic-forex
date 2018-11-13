@@ -4,20 +4,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bson.Document;
+
 import forex.genetic.entities.DatoAdicionalTPO;
 import forex.genetic.entities.Extremos;
-import forex.genetic.entities.TendenciaParaOperar;
-import forex.genetic.util.DateUtil;
 
-public class MongoDatoAdicionalTPOHelper {
+public class MongoDatoAdicionalTPOMapper extends MongoMapper<DatoAdicionalTPO> {
 
-	public static Map<String, Object> toPrimaryKeyMap(DatoAdicionalTPO obj) {
+	@Override
+	public Map<String, Object> toPrimaryKeyMap(DatoAdicionalTPO obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		objectMap.put("fechaBase", obj.getFechaBase());
 		return objectMap;
 	}
 
-	public static Map<String, Object> toMap(DatoAdicionalTPO obj) {
+	@Override
+	public Map<String, Object> toMap(DatoAdicionalTPO obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		objectMap.put("fechaBase", obj.getFechaBase());
 		objectMap.put("fecha", new Date());
@@ -32,7 +34,7 @@ public class MongoDatoAdicionalTPOHelper {
 		objectMap.put("minPrimeraTendencia", obj.getMinPrimeraTendencia());
 		objectMap.put("maxPrimeraTendencia", obj.getMaxPrimeraTendencia());
 		objectMap.put("avgPrimeraTendencia", obj.getAvgPrimeraTendencia());
-		
+
 		Extremos extremos = obj.getExtremos();
 		setExtremosToMap(objectMap, extremos);
 
@@ -41,7 +43,7 @@ public class MongoDatoAdicionalTPOHelper {
 		return objectMap;
 	}
 
-	private static void setExtremosToMap(Map<String, Object> map, Extremos extremos) {
+	private void setExtremosToMap(Map<String, Object> map, Extremos extremos) {
 		if ((extremos != null) && (extremos.getExtremosExtremo() != null)) {
 			map.put("minExtremoExtremo", extremos.getExtremosExtremo().getLowInterval());
 			map.put("maxExtremoExtremo", extremos.getExtremosExtremo().getHighInterval());
@@ -60,27 +62,14 @@ public class MongoDatoAdicionalTPOHelper {
 		}
 	}
 
-	public static Map<String, Object> toMapForDelete(TendenciaParaOperar obj, Date fechaReferencia) {
-		Map<String, Object> objectMap = new HashMap<String, Object>();
-//		WHERE TIPO_EXPORTACION=? AND TRUNC(FECHA_BASE,'HH24')=TRUNC(?,'HH24')" + " AND ID_EJECUCION<>?"
-//				+ " AND FECHA<?";
-		objectMap.put("tipoExportacion", obj.getTipoExportacion());
+	@Override
+	public Map<String, Object> toMapForDelete(DatoAdicionalTPO obj, Date fechaReferencia) {
+		throw new UnsupportedOperationException();
+	}
 
-		Map<String, Object> mapFechaBase = new HashMap<String, Object>();
-		Date initDate = DateUtil.truncHourDate(obj.getFechaBase());
-		Date endDate = DateUtil.adicionarMinutos(initDate, 60);
-		mapFechaBase.put("$gte", initDate);
-		mapFechaBase.put("$lt", endDate);
-		objectMap.put("fechaBase", mapFechaBase);
-
-		Map<String, Object> mapFechaReferencia = new HashMap<String, Object>();
-		mapFechaReferencia.put("$lt", fechaReferencia);
-		objectMap.put("fecha", mapFechaReferencia);
-
-		Map<String, Object> mapIdEjecucion = new HashMap<String, Object>();
-		mapIdEjecucion.put("$ne", obj.getIdEjecucion());
-		objectMap.put("idEjecucion", mapIdEjecucion);
-
-		return objectMap;
+	@Override
+	public DatoAdicionalTPO helpOne(Document one) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

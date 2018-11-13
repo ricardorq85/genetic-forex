@@ -1,14 +1,12 @@
 package forex.genetic.dao.helper.mongodb;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.bson.Document;
-import org.bson.conversions.Bson;
-
-import com.mongodb.client.model.Filters;
 
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.IndividuoEstrategia;
@@ -21,14 +19,16 @@ import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.Constants;
 
-public class MongoIndividuoHelper {
+public class MongoIndividuoMapper extends MongoMapper<IndividuoEstrategia> {
 
-	public static Bson toPrimaryKey(IndividuoEstrategia obj) {
-		Bson filtros = Filters.eq("idIndividuo", obj.getId());
-		return filtros;
+	@Override
+	public Map<String, Object> toPrimaryKeyMap(IndividuoEstrategia obj) {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		objectMap.put("idIndividuo", obj.getId());
+		return objectMap;
 	}
 
-	public static Map<String, Object> toMap(IndividuoEstrategia obj) {
+	public Map<String, Object> toMap(IndividuoEstrategia obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		objectMap.put("idIndividuo", obj.getId());
 		objectMap.put("idParent1", obj.getIdParent1());
@@ -52,7 +52,7 @@ public class MongoIndividuoHelper {
 		return objectMap;
 	}
 
-	private static List<Map<String, Object>> getMapIndicadores(List<? extends Indicator> list) {
+	private List<Map<String, Object>> getMapIndicadores(List<? extends Indicator> list) {
 		List<Map<String, Object>> indicadores = new ArrayList<Map<String, Object>>();
 		((List<IntervalIndicator>) list).stream().forEach((ind) -> {
 			if (ind != null) {
@@ -64,15 +64,8 @@ public class MongoIndividuoHelper {
 		return indicadores;
 	}
 
-	public static List<Document> toMap(List<? extends IndividuoEstrategia> datos) {
-		List<Document> objectMaps = new ArrayList<Document>(datos.size());
-		datos.stream().forEach(dato -> {
-			objectMaps.add(new Document(toMap(dato)));
-		});
-		return objectMaps;
-	}
-
-	public static IndividuoEstrategia helpOne(Document one) {
+	@Override
+	public IndividuoEstrategia helpOne(Document one) {
 		IndividuoEstrategia obj = new IndividuoEstrategia(one.getString("idIndividuo"));
 		obj.setTakeProfit(one.getInteger("takeProfit"));
 		obj.setStopLoss(one.getInteger("stopLoss"));
@@ -86,14 +79,12 @@ public class MongoIndividuoHelper {
 		obj.setMoneda(MonedaFactory.getMoneda(one.getString("moneda")));
 
 		obj.setOpenIndicators(getListIndicadores((List<Map<String, Object>>) one.get("openIndicadores")));
-		// obj.setOpenIndicators(getListIndicadores((List<Map<String, Object>>)
-		// one.get("indicadores")));
 		obj.setCloseIndicators(getListIndicadores((List<Map<String, Object>>) one.get("closeIndicadores")));
 
 		return obj;
 	}
 
-	private static List<IntervalIndicator> getListIndicadores(List<Map<String, Object>> indicadoresMap) {
+	private List<IntervalIndicator> getListIndicadores(List<Map<String, Object>> indicadoresMap) {
 		IndicadorController indicadorController = ControllerFactory
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 		List<IntervalIndicator> indicadores = new ArrayList<IntervalIndicator>(
@@ -125,5 +116,10 @@ public class MongoIndividuoHelper {
 			}
 		}
 		return indicadores;
+	}
+
+	@Override
+	public Map<String, Object> toMapForDelete(IndividuoEstrategia obj, Date fechaReferencia) {
+		throw new UnsupportedOperationException();
 	}
 }

@@ -1,6 +1,5 @@
 package forex.genetic.dao.helper.mongodb;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -8,17 +7,16 @@ import java.util.Map;
 
 import org.bson.Document;
 
-import com.mongodb.client.MongoCursor;
-
 import forex.genetic.entities.Regresion;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 
-public class MongoTendenciaParaOperarHelper {
+public class MongoTendenciaParaOperarMapper extends MongoMapper<TendenciaParaOperar> {
 
-	public static Map<String, Object> toPrimaryKeyMap(TendenciaParaOperar obj) {
+	@Override
+	public Map<String, Object> toPrimaryKeyMap(TendenciaParaOperar obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 
 		objectMap.put("tipoExportacion", obj.getTipoExportacion());
@@ -28,7 +26,8 @@ public class MongoTendenciaParaOperarHelper {
 		return objectMap;
 	}
 
-	public static Map<String, Object> toMap(TendenciaParaOperar obj) {
+	@Override
+	public Map<String, Object> toMap(TendenciaParaOperar obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 
 		objectMap.put("tipoExportacion", obj.getTipoExportacion());
@@ -55,7 +54,7 @@ public class MongoTendenciaParaOperarHelper {
 		return objectMap;
 	}
 
-	public static Map<String, Object> regresionToMap(Regresion obj) {
+	public Map<String, Object> regresionToMap(Regresion obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		if (obj != null) {
 			objectMap.put("tiempoTendencia", obj.getTiempoTendencia());
@@ -69,10 +68,9 @@ public class MongoTendenciaParaOperarHelper {
 		return objectMap;
 	}
 
-	public static Map<String, Object> toMapForDelete(TendenciaParaOperar obj, Date fechaReferencia) {
+	@Override
+	public Map<String, Object> toMapForDelete(TendenciaParaOperar obj, Date fechaReferencia) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
-//		WHERE TIPO_EXPORTACION=? AND TRUNC(FECHA_BASE,'HH24')=TRUNC(?,'HH24')" + " AND ID_EJECUCION<>?"
-//				+ " AND FECHA<?";
 		objectMap.put("tipoExportacion", obj.getTipoExportacion());
 
 		Map<String, Object> mapFechaBase = new HashMap<String, Object>();
@@ -93,19 +91,8 @@ public class MongoTendenciaParaOperarHelper {
 		return objectMap;
 	}
 
-	public static List<TendenciaParaOperarMaxMin> helpList(MongoCursor<Document> cursor) {
-		List<TendenciaParaOperarMaxMin> list = new ArrayList<>();
-		try {
-			while (cursor.hasNext()) {
-				list.add(helpOne(cursor.next()));
-			}
-		} finally {
-			cursor.close();
-		}
-		return list;
-	}
-
-	public static TendenciaParaOperarMaxMin helpOne(Document one) {
+	@Override
+	public TendenciaParaOperarMaxMin helpOne(Document one) {
 		TendenciaParaOperarMaxMin tpo = new TendenciaParaOperarMaxMin();
 		tpo.setIdEjecucion(one.getString("idEjecucion"));
 		tpo.setPeriodo(one.getString("periodo"));
@@ -132,7 +119,7 @@ public class MongoTendenciaParaOperarHelper {
 		return tpo;
 	}
 
-	public static Regresion documentToRegresion(Document one) {
+	public Regresion documentToRegresion(Document one) {
 		Regresion regresion = new Regresion();
 		regresion.setTiempoTendencia(one.getDouble("tiempoTendencia"));
 		regresion.setR2(one.getDouble("r2"));

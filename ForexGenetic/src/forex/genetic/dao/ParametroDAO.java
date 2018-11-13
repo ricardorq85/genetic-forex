@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import forex.genetic.manager.io.FileProperties;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**

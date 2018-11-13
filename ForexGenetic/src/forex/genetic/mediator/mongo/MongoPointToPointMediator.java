@@ -1,4 +1,4 @@
-package forex.genetic.mediator;
+package forex.genetic.mediator.mongo;
 
 import static forex.genetic.util.LogUtil.logTime;
 
@@ -27,6 +27,7 @@ import forex.genetic.manager.IndividuoManager;
 import forex.genetic.manager.IndividuoXIndicadorManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.io.CopyFileVisitor;
+import forex.genetic.mediator.GeneticMediator;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
 import forex.genetic.tendencia.manager.TendenciaBuySellManager;
 import forex.genetic.util.Constants;
@@ -35,7 +36,7 @@ import forex.genetic.util.FileUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
-public class PointToPointMediator extends GeneticMediator {
+public class MongoPointToPointMediator extends GeneticMediator {
 
 	private int count = 1;
 	private Connection connection;
@@ -43,13 +44,13 @@ public class PointToPointMediator extends GeneticMediator {
 	private DatoHistoricoDAO datoHistoricoDAO;
 	private TendenciaDAO tendenciaDAO;
 	private ParametroDAO parametroDAO;
-	protected String sourceExportedHistoryDataPath;// =
+	private static String sourceExportedHistoryDataPath;// =
 														// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\exported";
-	protected String processedExportedHistoryDataPath;// =
+	private static String processedExportedHistoryDataPath;// =
 															// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\processed";
-	protected String exportedPropertyFileName;// =
+	private static String exportedPropertyFileName;// =
 													// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\Export.properties";
-	protected String sourceEstrategiasPath;// =
+	private static String sourceEstrategiasPath;// =
 												// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\estrategias\\live";
 
 	@Override
@@ -59,12 +60,12 @@ public class PointToPointMediator extends GeneticMediator {
 		this.tendenciaDAO = new TendenciaDAO(connection);
 		this.parametroDAO = new ParametroDAO(connection);
 
-		sourceExportedHistoryDataPath = parametroDAO
+		MongoPointToPointMediator.sourceExportedHistoryDataPath = parametroDAO
 				.getValorParametro("SOURCE_EXPORTED_HISTORY_DATA_PATH");
-		processedExportedHistoryDataPath = parametroDAO
+		MongoPointToPointMediator.processedExportedHistoryDataPath = parametroDAO
 				.getValorParametro("PROCESSED_EXPORTED_HISTORY_DATA_PATH");
-		exportedPropertyFileName = parametroDAO.getValorParametro("EXPORTED_PROPERTY_FILE_NAME");
-		sourceEstrategiasPath = parametroDAO.getValorParametro("SOURCE_ESTRATEGIAS_PATH");
+		MongoPointToPointMediator.exportedPropertyFileName = parametroDAO.getValorParametro("EXPORTED_PROPERTY_FILE_NAME");
+		MongoPointToPointMediator.sourceEstrategiasPath = parametroDAO.getValorParametro("SOURCE_ESTRATEGIAS_PATH");
 	}
 
 	@Override
@@ -113,7 +114,7 @@ public class PointToPointMediator extends GeneticMediator {
 		logTime("End Exportar Datos Historicos=" + fechaExportString, 1);
 	}
 
-	public int importarDatosHistoricos() throws IOException, SQLException {
+	private int importarDatosHistoricos() throws IOException, SQLException {
 		logTime("Init Importar Datos Historicos", 1);
 		List<Path> files = this.copiarArchivosARuta();
 		this.ejecutarCarga(files);
@@ -127,7 +128,7 @@ public class PointToPointMediator extends GeneticMediator {
 		return spt;
 	}
 
-	protected void ejecutarCarga(List<Path> files) throws FileNotFoundException, IOException {
+	private void ejecutarCarga(List<Path> files) throws FileNotFoundException, IOException {
 		for (Path file : files) {
 			this.actualizarProperty(file);
 			PoblacionDelegate delegate = new PoblacionDelegate();
@@ -232,7 +233,7 @@ public class PointToPointMediator extends GeneticMediator {
 	}
 
 	private boolean existenNuevosDatosHistoricos() throws IOException {
-		Path path = FileSystems.getDefault().getPath(sourceExportedHistoryDataPath);
+		Path path = FileSystems.getDefault().getPath(MongoPointToPointMediator.sourceExportedHistoryDataPath);
 		long countFile = Files.list(path).count();
 		return (countFile > 0);
 	}

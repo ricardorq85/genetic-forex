@@ -508,7 +508,7 @@ public class AgrupadorTendenciaManager {
 	public void saveDatosAdicionalesTPO(DatoAdicionalTPO datoAdicional) throws SQLException {
 		if (datoAdicional != null) {
 			boolean exists = tendenciaParaOperarDAO.existsDatoAdicional(datoAdicional);
-			mongoTendenciaParaOperarDAO.insertOrUpdateDatoAdicional(datoAdicional);
+			//mongoTendenciaParaOperarDAO.insertOrUpdateDatoAdicional(datoAdicional);
 			if (exists) {
 				tendenciaParaOperarDAO.updateDatoAdicionalTPO(datoAdicional);
 			} else {

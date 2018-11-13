@@ -19,12 +19,10 @@ import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
-import com.mongodb.client.model.InsertManyOptions;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
-import com.mongodb.client.model.UpdateOptions;
 
-import forex.genetic.dao.helper.mongodb.MongoDatoHistoricoHelper;
+import forex.genetic.dao.helper.mongodb.MongoDatoHistoricoMapper;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Point;
@@ -96,23 +94,6 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> {
 		return doc.getDate("maxDate");
 	}
 
-	public void insertOrUpdate(Point datoHistorico) {
-		// com.mongodb.client.model.Filters.
-		Document filterPk = new Document(MongoDatoHistoricoHelper.toPrimaryKeyMap(datoHistorico));
-		Document doc = new Document("$set", MongoDatoHistoricoHelper.toMap(datoHistorico));
-		UpdateOptions options = new UpdateOptions();
-		options.upsert(true);
-		// com.mongodb.client.model.Filters
-		this.collection.updateOne(filterPk, doc, options);
-	}
-
-	public void insertMany(List<? extends Point> datos) {
-		List<Document> docs = MongoDatoHistoricoHelper.toMap(datos);
-		InsertManyOptions options = new InsertManyOptions();
-		options.bypassDocumentValidation(true);
-		this.collection.insertMany(docs, options);
-	}
-
 	public List<Date> consultarPuntosApertura(DateInterval rango, IndividuoEstrategia individuo) {
 		List<Date> fechas = null;
 
@@ -159,7 +140,7 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> {
 				.projection(Projections.fields(Projections.include("fechaHistorico"), Projections.excludeId()))
 				.sort(Sorts.orderBy(Sorts.ascending("fechaHistorico"))).iterator();
 
-		fechas = MongoDatoHistoricoHelper.helpFechas(cursor);
+		fechas = ((MongoDatoHistoricoMapper)mapper).helpFechas(cursor);
 		return fechas;
 	}
 }

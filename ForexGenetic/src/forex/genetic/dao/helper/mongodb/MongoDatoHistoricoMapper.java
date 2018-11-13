@@ -18,9 +18,10 @@ import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.util.DateUtil;
 
-public class MongoDatoHistoricoHelper {
-
-	public static Map<String, Object> toPrimaryKeyMap(Point obj) {
+public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
+	
+	@Override
+	public Map<String, Object> toPrimaryKeyMap(Point obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 
 		objectMap.put("moneda", obj.getMoneda());
@@ -29,7 +30,8 @@ public class MongoDatoHistoricoHelper {
 		return objectMap;
 	}
 
-	public static Map<String, Object> toMap(Point datoHistorico) {
+	@Override
+	public Map<String, Object> toMap(Point datoHistorico) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		objectMap.put("moneda", datoHistorico.getMoneda());
 		objectMap.put("periodo", datoHistorico.getPeriodo());
@@ -54,8 +56,7 @@ public class MongoDatoHistoricoHelper {
 			Point prevPoint = datoHistorico.getPrevPoint();
 			if (indicadoresBase.get(i) != null) {
 				Indicator prevIndicator = (prevPoint != null) ? prevPoint.getIndicators().get(i) : null;
-				Map<String, Object> values = indicadorManager.getCalculatedValues(
-						prevIndicator, indicadoresBase.get(i),
+				Map<String, Object> values = indicadorManager.getCalculatedValues(prevIndicator, indicadoresBase.get(i),
 						datoHistorico.getPrevPoint(), datoHistorico);
 				Map<String, Object> indMap = new HashMap<String, Object>();
 				indMap.put(indicadoresBase.get(i).getName(), values);
@@ -73,15 +74,7 @@ public class MongoDatoHistoricoHelper {
 		return objectMap;
 	}
 
-	public static List<Document> toMap(List<? extends Point> datosHistoricos) {
-		List<Document> objectMaps = new ArrayList<Document>(datosHistoricos.size());
-		datosHistoricos.stream().forEach(dato -> {
-			objectMaps.add(new Document(toMap(dato)));
-		});
-		return objectMaps;
-	}
-
-	public static List<Date> helpFechas(MongoCursor<Document> cursor) {
+	public List<Date> helpFechas(MongoCursor<Document> cursor) {
 		List<Date> list = new ArrayList<Date>();
 		try {
 			while (cursor.hasNext()) {
@@ -92,6 +85,17 @@ public class MongoDatoHistoricoHelper {
 			cursor.close();
 		}
 		return list;
+	}
+
+	@Override
+	public Map<String, Object> toMapForDelete(Point obj, Date fechaReferencia) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Point helpOne(Document one) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

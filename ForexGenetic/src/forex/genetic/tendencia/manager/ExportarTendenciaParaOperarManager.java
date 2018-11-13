@@ -43,9 +43,9 @@ public class ExportarTendenciaParaOperarManager {
 				.consultarTendenciasParaOperar(this.fechaInicio);
 		this.exportar(list, indId);
 
-		List<TendenciaParaOperarMaxMin> listMongo = this.mongoTendenciaParaOperarDAO
-				.consultarTendenciasParaOperar(this.fechaInicio);
-		this.exportar(listMongo, "Mongo_" + indId);
+//		List<? extends TendenciaParaOperar> listMongo = this.mongoTendenciaParaOperarDAO
+	//			.consultarTendenciasParaOperar(this.fechaInicio);
+		//this.exportar(listMongo, "Mongo_" + indId);
 	}
 
 	private void exportar(List<TendenciaParaOperarMaxMin> list, String name)

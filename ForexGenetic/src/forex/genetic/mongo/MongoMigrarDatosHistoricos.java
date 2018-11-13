@@ -27,7 +27,7 @@ import forex.genetic.delegate.MigracionDelegate;
  *
  * @author ricardorq85
  */
-public class ForexMigrarDatosHistoricos {
+public class MongoMigrarDatosHistoricos {
 
 	public static void main(String[] args)
 			throws IOException, ClassNotFoundException, InterruptedException, SQLException {
