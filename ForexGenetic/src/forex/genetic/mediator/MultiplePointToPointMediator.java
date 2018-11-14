@@ -1,5 +1,7 @@
 package forex.genetic.mediator;
 
+import static forex.genetic.util.LogUtil.logTime;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -13,13 +15,11 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.IDatoHistoricoDAO;
-import forex.genetic.dao.IGeneticDAO;
 import forex.genetic.dao.ITendenciaDAO;
 import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.mongodb.MongoGeneticDAO;
 import forex.genetic.delegate.GeneticDelegateBD;
 import forex.genetic.delegate.PoblacionDelegate;
-import forex.genetic.entities.Point;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
@@ -52,24 +52,26 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 		DataClient<?>[] dataClients = DriverDBFactory.createDataClient();
 		this.daosDatoHistorico = (IDatoHistoricoDAO[]) DriverDBFactory.createDAO("datoHistorico", dataClients);
 		this.daosTendencia = (ITendenciaDAO[]) DriverDBFactory.createDAO("tendencia", dataClients);
-		//this.daosParametro = (IGeneticDAO<Parametro>[]) DriverDBFactory.createDAO("parametro", dataClients);
+		// this.daosParametro = (IGeneticDAO<Parametro>[])
+		// DriverDBFactory.createDAO("parametro", dataClients);
 
-		sourceExportedHistoryDataPath = parametroDAO.consultarByName("SOURCE_EXPORTED_HISTORY_DATA_PATH")
-				.getParametroString();
-		processedExportedHistoryDataPath = parametroDAO.consultarByName("PROCESSED_EXPORTED_HISTORY_DATA_PATH")
-				.getParametroString();
-		exportedPropertyFileName = parametroDAO.consultarByName("EXPORTED_PROPERTY_FILE_NAME").getParametroString();
-		sourceEstrategiasPath = parametroDAO.consultarByName("SOURCE_ESTRATEGIAS_PATH").getParametroString();
+//		sourceExportedHistoryDataPath = parametroDAO.consultarByName("SOURCE_EXPORTED_HISTORY_DATA_PATH")
+		// .getParametroString();
+		// processedExportedHistoryDataPath =
+		// parametroDAO.consultarByName("PROCESSED_EXPORTED_HISTORY_DATA_PATH")
+//				.getParametroString();
+		// exportedPropertyFileName =
+		// parametroDAO.consultarByName("EXPORTED_PROPERTY_FILE_NAME").getParametroString();
+		// sourceEstrategiasPath =
+		// parametroDAO.consultarByName("SOURCE_ESTRATEGIAS_PATH").getParametroString();
 	}
 
 	@Override
 	public void start() throws IOException, SQLException {
 		while (true) {
-			for (int i = 0; i < daosDatoHistorico.length; i++) {
-				this.fechaHistoricaMaximaAnterior = daosDatoHistorico[i].getFechaHistoricaMaxima();
-				int imported = importarDatosHistoricos();
-				this.fechaHistoricaMaximaNueva = daosDatoHistorico[i].getFechaHistoricaMaxima();
-			}
+			this.fechaHistoricaMaximaAnterior = daosDatoHistorico[i].getFechaHistoricaMaxima();
+			int imported = importarDatosHistoricos();
+			this.fechaHistoricaMaximaNueva = daosDatoHistorico[i].getFechaHistoricaMaxima();
 			this.exportarDatosHistoricos();
 			this.setUltimaFechaTendencia(count);
 			LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
@@ -86,6 +88,15 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 				count = 1;
 			}
 		}
+	}
+
+	public int importarDatosHistoricos() throws GeneticDAOException, IOException {
+		logTime("Init Importar Datos Historicos", 1);
+		List<Path> files = copiarArchivosARuta();
+		ejecutarCarga(files);
+		logTime("End Importar Datos Historicos. fechaMaximaNueva=" + DateUtil.getDateString(fechaHistoricaMaximaNueva),
+				1);
+		return files.size();
 	}
 
 	protected void setUltimaFechaTendencia(int count) throws SQLException {
@@ -113,7 +124,7 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 		return spt;
 	}
 
-	private void ejecutarCarga(List<Path> files) throws FileNotFoundException, IOException {
+	protected void ejecutarCarga(List<Path> files) throws GeneticDAOException {
 		for (Path file : files) {
 			this.actualizarProperty(file);
 			PoblacionDelegate delegate = new PoblacionDelegate();

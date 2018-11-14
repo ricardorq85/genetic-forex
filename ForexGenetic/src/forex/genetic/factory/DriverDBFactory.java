@@ -53,9 +53,6 @@ public class DriverDBFactory extends GeneticFactory {
 			throws ClassNotFoundException, SQLException {
 		OracleGeneticDAO<? extends Object> dao = null;
 		OracleDataClient oracleDataClient = null;
-		if (dataClient == null) {
-			oracleDataClient = new OracleDataClient(JDBCUtil.getConnection());
-		}
 		if ("datoHistorico".equals(entidad)) {
 			dao = new OracleDatoHistoricoDAO(oracleDataClient.getClient());
 		} else if ("tendencia".equals(entidad)) {

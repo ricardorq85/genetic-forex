@@ -94,12 +94,13 @@ public class PointToPointMediator extends GeneticMediator {
 					count = 1;
 				}
 			}
-		} catch (SQLException | IOException | ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException | ParseException | GeneticException e) {
+		} catch (SQLException | IOException | ClassNotFoundException | NoSuchMethodException | InstantiationException
+				| IllegalAccessException | InvocationTargetException | ParseException | GeneticException e) {
 			throw new GeneticDAOException("Error start", e);
 		}
 	}
 
-	protected void setUltimaFechaTendencia(int count) throws SQLException {
+	protected void setUltimaFechaTendencia(int count) throws GeneticDAOException {
 		this.ultimaFechaBaseTendencia = tendenciaDAO.maxFechaBaseTendencia();
 		if ((this.ultimaFechaBaseTendencia == null) || (fechaHistoricaMaximaNueva.equals(ultimaFechaBaseTendencia))) {
 			int minutos = (int) (-(1440 * 0.7 * count + calcularFactorCount()));
@@ -119,7 +120,7 @@ public class PointToPointMediator extends GeneticMediator {
 		logTime("End Exportar Datos Historicos=" + fechaExportString, 1);
 	}
 
-	public int importarDatosHistoricos() throws IOException, SQLException {
+	public int importarDatosHistoricos() throws GeneticDAOException, IOException {
 		logTime("Init Importar Datos Historicos", 1);
 		List<Path> files = this.copiarArchivosARuta();
 		this.ejecutarCarga(files);
@@ -133,7 +134,7 @@ public class PointToPointMediator extends GeneticMediator {
 		return spt;
 	}
 
-	protected void ejecutarCarga(List<Path> files) throws FileNotFoundException, IOException {
+	protected void ejecutarCarga(List<Path> files) throws GeneticDAOException {
 		for (Path file : files) {
 			this.actualizarProperty(file);
 			PoblacionDelegate delegate = new PoblacionDelegate();
@@ -154,7 +155,7 @@ public class PointToPointMediator extends GeneticMediator {
 		PropertiesManager.setProperty(Constants.END_POBLACION, fileNumber);
 	}
 
-	private List<Path> copiarArchivosARuta() throws IOException {
+	protected List<Path> copiarArchivosARuta()  throws GeneticDAOException, IOException {
 		String targetPathName = System.getProperty("user.dir") + "\\files\\";
 		Path sourcePath = FileSystems.getDefault().getPath(sourceExportedHistoryDataPath);
 		CopyFileVisitor fileVisitor = new CopyFileVisitor(sourceExportedHistoryDataPath, targetPathName,

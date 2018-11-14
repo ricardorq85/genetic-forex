@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import forex.genetic.entities.Poblacion;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.facade.DatoHistoricoFacade;
 import forex.genetic.facade.PoblacionFacade;
 import forex.genetic.factory.ControllerFactory;
@@ -48,7 +49,7 @@ public class PoblacionDelegate {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public void cargarDatosHistoricos() throws FileNotFoundException, IOException {
+	public void cargarDatosHistoricos() throws GeneticDAOException {
 		int endPoblacion = PropertiesManager.getPropertyInt(Constants.END_POBLACION);
 		for (int poblacionIndex = PropertiesManager
 				.getPropertyInt(Constants.INITIAL_POBLACION); poblacionIndex <= endPoblacion
