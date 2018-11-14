@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.TendenciaDAO;
 import forex.genetic.dao.TendenciaUltimosDatosDAO;
+import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
@@ -31,12 +31,12 @@ import forex.genetic.util.jdbc.JDBCUtil;
  */
 public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellManager {
 
-	private TendenciaDAO tendenciaCompletaDAO, tendenciaUltimosDatosDAO;
+	private OracleTendenciaDAO tendenciaCompletaDAO, tendenciaUltimosDatosDAO;
 	private List<TendenciaParaOperarMaxMin> tendenciasResultado;
 
 	public ProcesarTendenciasGrupalManager() throws ClassNotFoundException, SQLException {
 		super();
-		tendenciaCompletaDAO = new TendenciaDAO(conn);
+		tendenciaCompletaDAO = new OracleTendenciaDAO(conn);
 		tendenciaUltimosDatosDAO = new TendenciaUltimosDatosDAO(conn);
 		tendenciasResultado = new ArrayList<>();
 	}
@@ -54,7 +54,7 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 			LogUtil.logTime("Dias exportacion=" + Arrays.toString(dias), 1);
 			Date lastFechaProcesoMaxima = null;
 			Date lastFechaBaseParaMaxima = null;
-			TendenciaDAO tendenciaProcesoDAO;
+			OracleTendenciaDAO tendenciaProcesoDAO;
 			while (fechaProceso.before(parametroFechaFin)) {
 				if (DateUtil.cumpleFechaParaTendenciaUltimosDatos(fechaProceso)) {
 					tendenciaProcesoDAO = tendenciaUltimosDatosDAO;

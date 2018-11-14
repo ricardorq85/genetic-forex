@@ -15,7 +15,7 @@ import forex.genetic.dao.EstrategiaDAO;
 import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.ProcesoPoblacionDAO;
-import forex.genetic.dao.TendenciaDAO;
+import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.util.LogUtil;
 
@@ -30,7 +30,7 @@ public abstract class BorradoManager {
 	protected IndividuoDAO individuoDAO;
 	protected OperacionesDAO operacionDAO;
 	protected ProcesoPoblacionDAO procesoDAO;
-	protected TendenciaDAO tendenciaDAO;
+	protected OracleTendenciaDAO tendenciaDAO;
 	protected EstrategiaDAO estrategiaDAO;
 
 	public BorradoManager(Connection conn, String tipoProceso) throws ClassNotFoundException, SQLException {
@@ -44,7 +44,7 @@ public abstract class BorradoManager {
 		this.individuoDAO = (individuoDAO == null) ? (new IndividuoDAO(conn)) : individuoDAO;
 		operacionDAO = new OperacionesDAO(conn);
 		procesoDAO = new ProcesoPoblacionDAO(conn);
-		tendenciaDAO = new TendenciaDAO(conn);
+		tendenciaDAO = new OracleTendenciaDAO(conn);
 		estrategiaDAO = new EstrategiaDAO(conn);
 	}
 

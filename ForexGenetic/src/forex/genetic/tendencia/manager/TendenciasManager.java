@@ -10,11 +10,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.ParametroDAO;
-import forex.genetic.dao.TendenciaDAO;
+import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.CalculoTendencia;
 import forex.genetic.entities.DiferenciaMaximaHistorico;
 import forex.genetic.entities.Estadistica;
@@ -140,9 +140,9 @@ public class TendenciasManager {
 			throws ClassNotFoundException, SQLException, GeneticException {
 		OperacionesManager operacionManager = new OperacionesManager(conn);
 		OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
-		DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
+		OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
 		ParametroDAO parametroDAO = new ParametroDAO(conn);
-		TendenciaDAO tendenciaDAO = new TendenciaDAO(conn);
+		OracleTendenciaDAO tendenciaDAO = new OracleTendenciaDAO(conn);
 		List<Point> points;
 		if (stepTendencia == 0) {
 			points = datoHistoricoDAO.consultarHistorico(DateUtil.adicionarMinutos(fechaInicio, 1),

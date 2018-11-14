@@ -1,47 +1,75 @@
-package forex.genetic.mediator.mongo;
+package forex.genetic.mediator;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
-import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
-import forex.genetic.dao.mongodb.MongoDefaultDAO;
+import forex.genetic.dao.IDatoHistoricoDAO;
+import forex.genetic.dao.IGeneticDAO;
+import forex.genetic.dao.ITendenciaDAO;
+import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.mongodb.MongoGeneticDAO;
-import forex.genetic.dao.mongodb.MongoParametroDAO;
+import forex.genetic.delegate.GeneticDelegateBD;
+import forex.genetic.delegate.PoblacionDelegate;
+import forex.genetic.entities.Point;
 import forex.genetic.entities.Tendencia;
-import forex.genetic.mediator.PointToPointMediator;
+import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.exception.GeneticException;
+import forex.genetic.factory.DriverDBFactory;
+import forex.genetic.factory.ProcesarTendenciasFactory;
+import forex.genetic.manager.IndividuoManager;
+import forex.genetic.manager.IndividuoXIndicadorManager;
+import forex.genetic.manager.PropertiesManager;
+import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
+import forex.genetic.tendencia.manager.TendenciaBuySellManager;
+import forex.genetic.util.Constants;
+import forex.genetic.util.DateUtil;
+import forex.genetic.util.FileUtil;
+import forex.genetic.util.LogUtil;
+import forex.genetic.util.jdbc.DataClient;
+import forex.genetic.util.jdbc.JDBCUtil;
 
-public class MongoPointToPointMediator extends PointToPointMediator {
+public class MultiplePointToPointMediator extends PointToPointMediator {
 
 	private int count = 1;
 	private Connection connection;
 	private Date fechaHistoricaMaximaAnterior, fechaHistoricaMaximaNueva, ultimaFechaBaseTendencia;
-	private MongoDatoHistoricoDAO datoHistoricoDAO;
+	private IDatoHistoricoDAO[] daosDatoHistorico;
+	private ITendenciaDAO[] daosTendencia;
+//	private ParametroGeneticDAO[] daosParametro;
 	private MongoGeneticDAO<Tendencia> tendenciaDAO;
-	private MongoParametroDAO parametroDAO;
 
 	@Override
-	public void init() throws ClassNotFoundException {
-		this.datoHistoricoDAO = new MongoDatoHistoricoDAO();
-		this.tendenciaDAO = new MongoDefaultDAO<Tendencia>("tendencia");
-		this.parametroDAO = new MongoParametroDAO();
+	public void init() throws GeneticDAOException {
+		DataClient<?>[] dataClients = DriverDBFactory.createDataClient();
+		this.daosDatoHistorico = (IDatoHistoricoDAO[]) DriverDBFactory.createDAO("datoHistorico", dataClients);
+		this.daosTendencia = (ITendenciaDAO[]) DriverDBFactory.createDAO("tendencia", dataClients);
+		//this.daosParametro = (IGeneticDAO<Parametro>[]) DriverDBFactory.createDAO("parametro", dataClients);
 
-		sourceExportedHistoryDataPath = parametroDAO
-				.consultarByName("SOURCE_EXPORTED_HISTORY_DATA_PATH").getParametroString();
-		processedExportedHistoryDataPath = parametroDAO
-				.consultarByName("PROCESSED_EXPORTED_HISTORY_DATA_PATH").getParametroString();
-		exportedPropertyFileName = parametroDAO.consultarByName("EXPORTED_PROPERTY_FILE_NAME")
+		sourceExportedHistoryDataPath = parametroDAO.consultarByName("SOURCE_EXPORTED_HISTORY_DATA_PATH")
 				.getParametroString();
-		sourceEstrategiasPath = parametroDAO.consultarByName("SOURCE_ESTRATEGIAS_PATH")
+		processedExportedHistoryDataPath = parametroDAO.consultarByName("PROCESSED_EXPORTED_HISTORY_DATA_PATH")
 				.getParametroString();
+		exportedPropertyFileName = parametroDAO.consultarByName("EXPORTED_PROPERTY_FILE_NAME").getParametroString();
+		sourceEstrategiasPath = parametroDAO.consultarByName("SOURCE_ESTRATEGIAS_PATH").getParametroString();
 	}
 
-	/*
 	@Override
 	public void start() throws IOException, SQLException {
 		while (true) {
-			this.fechaHistoricaMaximaAnterior = datoHistoricoDAO.getFechaHistoricaMaxima();
-			int imported = importarDatosHistoricos();
-			this.fechaHistoricaMaximaNueva = datoHistoricoDAO.getFechaHistoricaMaxima();
+			for (int i = 0; i < daosDatoHistorico.length; i++) {
+				this.fechaHistoricaMaximaAnterior = daosDatoHistorico[i].getFechaHistoricaMaxima();
+				int imported = importarDatosHistoricos();
+				this.fechaHistoricaMaximaNueva = daosDatoHistorico[i].getFechaHistoricaMaxima();
+			}
 			this.exportarDatosHistoricos();
 			this.setUltimaFechaTendencia(count);
 			LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
@@ -220,5 +248,5 @@ public class MongoPointToPointMediator extends PointToPointMediator {
 			manager.export(path);
 		}
 	}
-*/	
+
 }

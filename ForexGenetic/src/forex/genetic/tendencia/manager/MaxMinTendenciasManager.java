@@ -9,9 +9,9 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
 
-import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.ParametroDAO;
-import forex.genetic.dao.TendenciaDAO;
+import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.ProcesoTendencia;
@@ -35,9 +35,9 @@ public class MaxMinTendenciasManager {
      */
     public void procesarMaxMinTendencias() throws ClassNotFoundException, SQLException, ParseException {
         conn = JDBCUtil.getConnection();
-        DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
+        OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
         ParametroDAO parametroDAO = new ParametroDAO(conn);
-        TendenciaDAO tendenciaDAO = new TendenciaDAO(conn);
+        OracleTendenciaDAO tendenciaDAO = new OracleTendenciaDAO(conn);
         Date fechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");
         int step = Integer.parseInt(parametroDAO.getValorParametro("STEP_PROCESAR_TENDENCIA"));
         int rangoMaxMin = Integer.parseInt(parametroDAO.getValorParametro("RANGO_MAX_MIN_TENDENCIA"));

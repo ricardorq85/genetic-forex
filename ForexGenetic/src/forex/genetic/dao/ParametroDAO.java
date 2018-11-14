@@ -11,13 +11,16 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import forex.genetic.bo.Parametro;
+import forex.genetic.dao.oracle.OracleGeneticDAO;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *
  * @author ricardorq85
  */
-public class ParametroDAO {
+public class ParametroDAO extends OracleGeneticDAO<Parametro> {
 
 	/**
 	 *
@@ -29,7 +32,7 @@ public class ParametroDAO {
 	 * @param connection
 	 */
 	public ParametroDAO(Connection connection) {
-		this.connection = connection;
+		super(connection);
 	}
 
 	/**
@@ -147,5 +150,9 @@ public class ParametroDAO {
 		} finally {
 			JDBCUtil.close(stmtConsulta);
 		}
+	}
+
+	@Override
+	public void insertOrUpdate(Parametro obj) throws GeneticDAOException {
 	}
 }

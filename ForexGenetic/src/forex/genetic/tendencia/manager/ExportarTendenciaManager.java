@@ -5,8 +5,8 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.TendenciaProcesoBuySellDAO;
+import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.Regresion;
@@ -78,7 +78,7 @@ public class ExportarTendenciaManager {
 
 	private void calcularPuntosDiferenciaInicial(List<TendenciaParaOperar> tendencias) throws SQLException {
 		TendenciaParaOperar op = tendencias.get(0);
-		DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
+		OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
 		Date fechaConsultaHistorico = datoHistoricoDAO.getFechaHistoricaMaxima(procesoTendencia.getFechaBase());
 		List<Point> historico = datoHistoricoDAO.consultarHistorico(fechaConsultaHistorico, fechaConsultaHistorico);
 		Point point = null;

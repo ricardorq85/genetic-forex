@@ -24,11 +24,13 @@ import forex.genetic.util.LogUtil;
  */
 public class PoblacionDelegate {
 
-	private DatoHistoricoFacade facade;
+	private DatoHistoricoFacade dhFacade;
+	private PoblacionFacade poblacionFacade;
 
 	public PoblacionDelegate() {
 		super();
-		facade = (DatoHistoricoFacade) FacadeFactory.create("datoHistorico");
+		dhFacade = (DatoHistoricoFacade) FacadeFactory.create("datoHistorico");
+		poblacionFacade = (PoblacionFacade) FacadeFactory.create("individuo");
 	}
 
 	/**
@@ -38,8 +40,7 @@ public class PoblacionDelegate {
 	public void cargarPoblacion(Poblacion poblacion) {
 		IndicadorController indicadorController = ControllerFactory
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
-		PoblacionFacade facade = new PoblacionFacade();
-		facade.cargarPoblacion(indicadorController, poblacion);
+		poblacionFacade.cargarPoblacion(indicadorController, poblacion);
 	}
 
 	/**
@@ -59,7 +60,7 @@ public class PoblacionDelegate {
 			if (poblacionIndex < endPoblacion) {
 				nextPoblacionManager.load("" + (poblacionIndex + 1), false);
 			}
-			facade.cargarDatoHistorico(poblacionManager.getPoints());
+			dhFacade.cargarDatoHistorico(poblacionManager.getPoints());
 			LogUtil.logTime("Poblacion " + poblacionIndex + " Fecha = " + poblacionManager.getDateInterval(), 1);
 		}
 	}

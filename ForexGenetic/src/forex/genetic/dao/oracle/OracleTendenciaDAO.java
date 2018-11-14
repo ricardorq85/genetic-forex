@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.dao;
+package forex.genetic.dao.oracle;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,11 +12,13 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import forex.genetic.dao.ITendenciaDAO;
 import forex.genetic.dao.helper.TendenciaHelper;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.ParametroTendenciaGenetica;
 import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.Tendencia;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -26,25 +28,20 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class TendenciaDAO {
+public class OracleTendenciaDAO extends OracleGeneticDAO<Tendencia> implements ITendenciaDAO {
 
 	private String tabla;
 
 	/**
 	 *
-	 */
-	protected Connection connection = null;
-
-	/**
-	 *
 	 * @param connection
 	 */
-	public TendenciaDAO(Connection connection) {
+	public OracleTendenciaDAO(Connection connection) {
 		this(connection, "TENDENCIA");
 	}
 
-	public TendenciaDAO(Connection connection, String t) {
-		this.connection = connection;
+	public OracleTendenciaDAO(Connection connection, String t) {
+		super(connection);
 		this.tabla = t;
 	}
 
@@ -52,7 +49,7 @@ public class TendenciaDAO {
 	 *
 	 * @param tendencia
 	 */
-	public void insertTendencia(Tendencia tendencia) {
+	public void insert(Tendencia tendencia) {
 		PreparedStatement statement = null;
 		try {
 			String sql = "INSERT INTO " + tabla + " (FECHA_BASE, PRECIO_BASE, ID_INDIVIDUO, FECHA_TENDENCIA, PIPS, "
@@ -100,7 +97,7 @@ public class TendenciaDAO {
 	 *
 	 * @param tendencia
 	 */
-	public void updateTendencia(Tendencia tendencia) {
+	public void update(Tendencia tendencia) {
 		PreparedStatement statement = null;
 		try {
 			String sql = "UPDATE " + tabla + " SET PRECIO_BASE=?, FECHA_TENDENCIA=?, PIPS=?, "
@@ -150,15 +147,17 @@ public class TendenciaDAO {
 	 *
 	 * @param idIndividuo
 	 * @return
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
-	public int deleteTendencia(String idIndividuo) throws SQLException {
+	public int deleteTendencia(String idIndividuo) throws GeneticDAOException {
 		String sql = "DELETE FROM " + tabla + " WHERE ID_INDIVIDUO=?";
 		PreparedStatement stmtConsulta = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
 			stmtConsulta.setString(1, idIndividuo);
 			return stmtConsulta.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error Tendencia DAO", e);
 		} finally {
 			JDBCUtil.close(stmtConsulta);
 		}
@@ -168,9 +167,9 @@ public class TendenciaDAO {
 	 *
 	 * @param idIndividuo
 	 * @param fechaBase
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
-	public void deleteTendencia(String idIndividuo, Date fechaBase) throws SQLException {
+	public void deleteTendencia(String idIndividuo, Date fechaBase) throws GeneticDAOException {
 		String sql = "DELETE FROM " + tabla + " WHERE ID_INDIVIDUO=? AND FECHA_BASE=?";
 		PreparedStatement stmtConsulta = null;
 		try {
@@ -178,12 +177,14 @@ public class TendenciaDAO {
 			stmtConsulta.setString(1, idIndividuo);
 			stmtConsulta.setTimestamp(2, new Timestamp(fechaBase.getTime()));
 			stmtConsulta.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error Tendencia DAO", e);
 		} finally {
 			JDBCUtil.close(stmtConsulta);
 		}
 	}
 
-	public int deleteTendenciaMenorQue(Date fechaBase) throws SQLException {
+	public int deleteTendenciaMenorQue(Date fechaBase) throws GeneticDAOException {
 		String sql = "DELETE FROM " + tabla + " WHERE FECHA_BASE<?";
 		PreparedStatement stmtConsulta = null;
 		int affected = 0;
@@ -191,6 +192,8 @@ public class TendenciaDAO {
 			stmtConsulta = this.connection.prepareStatement(sql);
 			stmtConsulta.setTimestamp(1, new Timestamp(fechaBase.getTime()));
 			affected = stmtConsulta.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error Tendencia DAO", e);
 		} finally {
 			JDBCUtil.close(stmtConsulta);
 		}
@@ -200,9 +203,9 @@ public class TendenciaDAO {
 	/**
 	 *
 	 * @return
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
-	public List<Tendencia> consultarTendenciasActualizar() throws SQLException {
+	public List<Tendencia> consultarTendenciasActualizar() throws GeneticDAOException {
 		List<Tendencia> list = null;
 		String sql = "SELECT * FROM (SELECT * FROM " + tabla
 		// + " WHERE PROBABILIDAD IS NULL "
@@ -217,6 +220,8 @@ public class TendenciaDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			list = TendenciaHelper.createTendencia(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error Tendencia DAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -229,17 +234,19 @@ public class TendenciaDAO {
 	 *
 	 * @param fecha
 	 * @return
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
-	public Date nextFechaBase(Date fecha) throws SQLException {
+	public Date nextFechaBase(Date fecha) throws GeneticDAOException {
 		Date obj = null;
 		String sql = "SELECT MIN(FECHA_BASE) FROM " + tabla + " TEN WHERE FECHA_BASE>? ";
 
-		/*if (DateUtil.obtenerAnyo(fecha) > 2016) {
-			sql = sql + " AND EXISTS (SELECT 1 FROM DATO_ADICIONAL_TPO DATPO WHERE DATPO.FECHA_BASE=TEN.FECHA_BASE "
-					+ " AND DATPO.MAX_EXTREMO_SINFILTRAR IS NULL)"
-					+ " AND EXISTS (SELECT 1 FROM TENDENCIA_PARA_OPERAR TPO WHERE TPO.FECHA_BASE=TEN.FECHA_BASE) ";
-		}*/
+		/*
+		 * if (DateUtil.obtenerAnyo(fecha) > 2016) { sql = sql +
+		 * " AND EXISTS (SELECT 1 FROM DATO_ADICIONAL_TPO DATPO WHERE DATPO.FECHA_BASE=TEN.FECHA_BASE "
+		 * + " AND DATPO.MAX_EXTREMO_SINFILTRAR IS NULL)" +
+		 * " AND EXISTS (SELECT 1 FROM TENDENCIA_PARA_OPERAR TPO WHERE TPO.FECHA_BASE=TEN.FECHA_BASE) "
+		 * ; }
+		 */
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 
@@ -253,6 +260,8 @@ public class TendenciaDAO {
 					obj = new Date(resultado.getTimestamp(1).getTime());
 				}
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error Tendencia DAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -261,7 +270,7 @@ public class TendenciaDAO {
 		return obj;
 	}
 
-	public Date maxFechaBaseTendencia() throws SQLException {
+	public Date maxFechaBaseTendencia() throws GeneticDAOException {
 		Date obj = null;
 		String sql = "SELECT MAX(FECHA_BASE) FROM " + tabla;
 		PreparedStatement stmtConsulta = null;
@@ -274,6 +283,8 @@ public class TendenciaDAO {
 					obj = new Date(resultado.getTimestamp(1).getTime());
 				}
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error Tendencia DAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -282,7 +293,7 @@ public class TendenciaDAO {
 		return obj;
 	}
 
-	public Date maxFechaProcesoTendencia(DateInterval intervaloFechaBase) throws SQLException {
+	public Date maxFechaProcesoTendencia(DateInterval intervaloFechaBase) throws GeneticDAOException {
 		Date obj = null;
 		String sql = "SELECT MAX(FECHA) FROM " + tabla + " WHERE FECHA_BASE BETWEEN ? AND ?";
 		PreparedStatement stmtConsulta = null;
@@ -297,6 +308,8 @@ public class TendenciaDAO {
 					obj = new Date(resultado.getTimestamp(1).getTime());
 				}
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error Tendencia DAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -311,7 +324,7 @@ public class TendenciaDAO {
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean exists(Tendencia ten) throws SQLException {
+	public boolean exists(Tendencia ten) throws GeneticDAOException {
 		boolean exists = false;
 		String sql = "SELECT COUNT(*) FROM " + tabla + " WHERE ID_INDIVIDUO=? AND FECHA_BASE=? AND TIPO_CALCULO=?";
 		PreparedStatement stmtConsulta = null;
@@ -327,6 +340,8 @@ public class TendenciaDAO {
 			if (resultado.next()) {
 				exists = (resultado.getInt(1) > 0);
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error Tendencia DAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -338,9 +353,9 @@ public class TendenciaDAO {
 	 *
 	 * @param fecha
 	 * @return
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
-	public int count(java.util.Date fecha) throws SQLException {
+	public int count(java.util.Date fecha) throws GeneticDAOException {
 		int cantidad = 0;
 		String sql = "SELECT COUNT(*) FROM " + tabla + " WHERE FECHA_BASE=?";
 		PreparedStatement stmtConsulta = null;
@@ -354,6 +369,8 @@ public class TendenciaDAO {
 			if (resultado.next()) {
 				cantidad = resultado.getInt(1);
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error Tendencia DAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -369,7 +386,7 @@ public class TendenciaDAO {
 	 * @throws SQLException
 	 */
 	public ProcesoTendencia consultarProcesarTendencia(java.util.Date fecha, java.util.Date fecha2)
-			throws SQLException {
+			throws GeneticDAOException {
 		return this.consultarProcesarTendencia(fecha, fecha2, null);
 	}
 
@@ -379,10 +396,10 @@ public class TendenciaDAO {
 	 * @param fecha2
 	 * @param tipo
 	 * @return
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
 	public ProcesoTendencia consultarProcesarTendencia(java.util.Date fecha, java.util.Date fecha2, String tipo)
-			throws SQLException {
+			throws GeneticDAOException {
 		ProcesoTendencia procesoTendencia = null;
 		String sql = null;
 		if ("VALOR_PROBABLE".equalsIgnoreCase(tipo)) {
@@ -409,6 +426,8 @@ public class TendenciaDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			procesoTendencia = TendenciaHelper.createProcesoTendencia(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error Tendencia DAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -423,10 +442,10 @@ public class TendenciaDAO {
 	 * @param fecha2
 	 * @param groupByMinutes
 	 * @return
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
 	public List<ProcesoTendencia> consultarProcesarTendenciaDetalle(java.util.Date fecha, java.util.Date fecha2,
-			int groupByMinutes) throws SQLException {
+			int groupByMinutes) throws GeneticDAOException {
 		List<ProcesoTendencia> procesoTendenciaList = null;
 		String sql = null;
 		sql = PropertiesManager.getQueryProcesarTendenciasValorProbableDetalle();
@@ -443,6 +462,8 @@ public class TendenciaDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			procesoTendenciaList = TendenciaHelper.createProcesoTendenciaDetail(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error Tendencia DAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -457,10 +478,10 @@ public class TendenciaDAO {
 	 * @param fecha2
 	 * @param parametroTendenciaGenetica
 	 * @return
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
 	public List<ProcesoTendencia> consultarTendenciaGenetica(java.util.Date fecha, java.util.Date fecha2,
-			ParametroTendenciaGenetica parametroTendenciaGenetica) throws SQLException {
+			ParametroTendenciaGenetica parametroTendenciaGenetica) throws GeneticDAOException {
 		List<ProcesoTendencia> procesoTendenciaList = null;
 		String sql;
 		sql = PropertiesManager.getQueryTendenciaGenetica();
@@ -487,6 +508,8 @@ public class TendenciaDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			procesoTendenciaList = TendenciaHelper.createProcesoTendenciaDetail(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error Tendencia DAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -495,7 +518,8 @@ public class TendenciaDAO {
 		return procesoTendenciaList;
 	}
 
-	public List<Date> consultarXCantidadFechaBase(Date fechaInicio, int parametroMesesTendencia) throws SQLException {
+	public List<Date> consultarXCantidadFechaBase(Date fechaInicio, int parametroMesesTendencia)
+			throws GeneticDAOException {
 		String sql = "WITH	PARAMETROS AS (" + "	SELECT ? FE1, ? FE2 FROM DUAL),"
 				+ "	DIAS AS (SELECT TRUNC(DH.FECHA) FECHA FROM PARAMETROS P, DATOHISTORICO DH"
 				+ " WHERE DH.FECHA BETWEEN P.FE1 AND P.FE2 GROUP BY TRUNC(DH.FECHA)),"
@@ -515,6 +539,9 @@ public class TendenciaDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			fechas = TendenciaHelper.createFechasTendencia(resultado);
+
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error Tendencia DAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -522,7 +549,7 @@ public class TendenciaDAO {
 		return fechas;
 	}
 
-	public Date dummyTendencia(Date fecha, int rownum) throws SQLException {
+	public Date dummyTendencia(Date fecha, int rownum) throws GeneticDAOException {
 		Date obj = null;
 		String sql = "SELECT * FROM " + tabla + " WHERE FECHA_BASE>?-20 AND ROWNUM<=? ";
 		PreparedStatement stmtConsulta = null;
@@ -535,6 +562,8 @@ public class TendenciaDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			TendenciaHelper.createTendencia(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error Tendencia DAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -549,6 +578,12 @@ public class TendenciaDAO {
 
 	public void setTabla(String tabla) {
 		this.tabla = tabla;
+	}
+
+	@Override
+	public void insertOrUpdate(Tendencia obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+
 	}
 
 }

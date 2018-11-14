@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.ParametroDAO;
-import forex.genetic.dao.TendenciaDAO;
+import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.tendencia.manager.TendenciaBuySellManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -16,7 +16,7 @@ public class TendenciaFacade implements IGeneticFacade {
 
 	private TendenciaBuySellManager tendenciaManager;
 	private ParametroDAO parametroDAO;
-	private TendenciaDAO tendenciaDAO;
+	private OracleTendenciaDAO tendenciaDAO;
 	protected Connection conn = null;
 	private List<Date> fechasXCantidad;
 	private Date parametroFechaInicio;
@@ -26,7 +26,7 @@ public class TendenciaFacade implements IGeneticFacade {
 		conn = JDBCUtil.getConnection();
 		tendenciaManager = new TendenciaBuySellManager();
 		parametroDAO = new ParametroDAO(conn);
-		tendenciaDAO = new TendenciaDAO(conn);
+		tendenciaDAO = new OracleTendenciaDAO(conn);
 		parametroFechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_TENDENCIA");
 		parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
 		parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");

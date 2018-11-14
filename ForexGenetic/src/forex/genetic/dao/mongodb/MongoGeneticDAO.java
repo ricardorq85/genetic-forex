@@ -10,14 +10,14 @@ import com.mongodb.client.model.InsertManyOptions;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
 
-import forex.genetic.dao.GeneticDAO;
+import forex.genetic.dao.IGeneticDAO;
 import forex.genetic.dao.helper.mongodb.MongoMapper;
 import forex.genetic.dao.helper.mongodb.MongoMapperFactory;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.mongodb.ConnectionMongoDB;
 
-public abstract class MongoGeneticDAO<E> extends GeneticDAO<E> {
+public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 
 	private String collectionName = null;
 	protected MongoMapper<E> mapper;

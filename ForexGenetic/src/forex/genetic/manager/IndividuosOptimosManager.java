@@ -10,10 +10,10 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.EstrategiaDAO;
 import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.ParametroDAO;
+import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.IndividuoOptimo;
 import forex.genetic.factory.ControllerFactory;
@@ -40,7 +40,7 @@ public class IndividuosOptimosManager {
         conn = JDBCUtil.getConnection();
         ParametroDAO parametroDAO = new ParametroDAO(conn);
         IndividuoDAO individuoDAO = new IndividuoDAO(conn);
-        DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
+        OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
         EstrategiaDAO estrategiaDAO = new EstrategiaDAO(conn);
         Date fechaMaxHistorico = datoHistoricoDAO.getFechaHistoricaMaxima();
         Date fechaPeriodo = parametroDAO.getDateValorParametro("FECHA_INDIVIDUO_OPTIMO");

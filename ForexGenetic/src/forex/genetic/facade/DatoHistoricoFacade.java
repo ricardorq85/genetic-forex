@@ -8,8 +8,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.entities.Point;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -28,7 +28,7 @@ public class DatoHistoricoFacade implements IGeneticFacade {
 		Connection conn = null;
 		try {
 			conn = JDBCUtil.getConnection();
-			DatoHistoricoDAO dao = new DatoHistoricoDAO(conn);
+			OracleDatoHistoricoDAO dao = new OracleDatoHistoricoDAO(conn);
 			MongoDatoHistoricoDAO mongoDao = new MongoDatoHistoricoDAO(true);
 			int countError = 0;
 

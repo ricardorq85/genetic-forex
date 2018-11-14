@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.TendenciaParaOperarDAO;
 import forex.genetic.dao.mongodb.MongoTendenciaParaOperarDAO;
+import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.entities.DatoAdicionalTPO;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Extremos;
@@ -30,7 +30,7 @@ public class AgrupadorTendenciaManager {
 	private Connection conn;
 	private TendenciaParaOperarDAO tendenciaParaOperarDAO;
 	private MongoTendenciaParaOperarDAO mongoTendenciaParaOperarDAO;
-	private DatoHistoricoDAO datoHistoricoDAO;
+	private OracleDatoHistoricoDAO datoHistoricoDAO;
 
 	private Date fechaBase, maxFechaProceso;
 	private int numeroTendencias, cantidadTotalTendencias, numeroPendientesPositivas, numeroPendientesNegativas;
@@ -49,7 +49,7 @@ public class AgrupadorTendenciaManager {
 		this.tendenciasResultado = new ArrayList<>();
 		this.setFechaBase(fechaBase);
 		this.maxFechaProceso = maxFechaProceso;
-		this.datoHistoricoDAO = new DatoHistoricoDAO(conn);
+		this.datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
 		this.precioPonderado = datoHistoricoDAO.consultarPrecioPonderado(fechaBase);
 	}
 

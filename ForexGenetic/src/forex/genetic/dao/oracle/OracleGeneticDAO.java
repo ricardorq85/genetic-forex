@@ -3,10 +3,10 @@ package forex.genetic.dao.oracle;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import forex.genetic.dao.GeneticDAO;
+import forex.genetic.dao.IGeneticDAO;
 import forex.genetic.exception.GeneticDAOException;
 
-public abstract class OracleGeneticDAO<E> extends GeneticDAO<E> {
+public abstract class OracleGeneticDAO<E> implements IGeneticDAO<E> {
 
 	protected Connection connection;
 

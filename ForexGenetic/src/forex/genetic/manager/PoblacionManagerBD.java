@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.ProcesoPoblacionDAO;
+import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.thread.ProcesarIndividuoThreadBD;
 import forex.genetic.util.DateUtil;
@@ -26,7 +26,7 @@ public class PoblacionManagerBD {
 
 	private Connection conn;
 	private ProcesoPoblacionDAO poblacionDAO;
-	private DatoHistoricoDAO dhDAO;
+	private OracleDatoHistoricoDAO dhDAO;
 	private Date maxFechaHistorico;
 	private Date minFechaHistorico;
 	// private String[] vistas = { "FILTERED_PTFS", "FILTERED_EOP",
@@ -38,7 +38,7 @@ public class PoblacionManagerBD {
 		try {
 			conn = JDBCUtil.getConnection();
 			poblacionDAO = new ProcesoPoblacionDAO(conn);
-			dhDAO = new DatoHistoricoDAO(conn);
+			dhDAO = new OracleDatoHistoricoDAO(conn);
 			maxFechaHistorico = dhDAO.getFechaHistoricaMaxima();
 			minFechaHistorico = dhDAO.getFechaHistoricaMinima();
 		} catch (ClassNotFoundException e) {

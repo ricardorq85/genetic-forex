@@ -16,11 +16,12 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.ParametroDAO;
-import forex.genetic.dao.TendenciaDAO;
+import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.delegate.GeneticDelegateBD;
 import forex.genetic.delegate.PoblacionDelegate;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.ProcesarTendenciasFactory;
 import forex.genetic.manager.IndividuoManager;
@@ -40,56 +41,61 @@ public class PointToPointMediator extends GeneticMediator {
 	private int count = 1;
 	private Connection connection;
 	private Date fechaHistoricaMaximaAnterior, fechaHistoricaMaximaNueva, ultimaFechaBaseTendencia;
-	private DatoHistoricoDAO datoHistoricoDAO;
-	private TendenciaDAO tendenciaDAO;
+	private OracleDatoHistoricoDAO datoHistoricoDAO;
+	private OracleTendenciaDAO tendenciaDAO;
 	private ParametroDAO parametroDAO;
 	protected String sourceExportedHistoryDataPath;// =
-														// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\exported";
+													// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\exported";
 	protected String processedExportedHistoryDataPath;// =
-															// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\processed";
+														// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\processed";
 	protected String exportedPropertyFileName;// =
-													// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\Export.properties";
+												// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\Export.properties";
 	protected String sourceEstrategiasPath;// =
-												// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\estrategias\\live";
+											// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\estrategias\\live";
 
 	@Override
-	public void init() throws ClassNotFoundException, SQLException {
-		this.connection = JDBCUtil.getConnection();
-		this.datoHistoricoDAO = new DatoHistoricoDAO(connection);
-		this.tendenciaDAO = new TendenciaDAO(connection);
+	public void init() throws GeneticDAOException {
+		this.connection = JDBCUtil.getGeneticConnection();
+		this.datoHistoricoDAO = new OracleDatoHistoricoDAO(connection);
+		this.tendenciaDAO = new OracleTendenciaDAO(connection);
 		this.parametroDAO = new ParametroDAO(connection);
 
-		sourceExportedHistoryDataPath = parametroDAO
-				.getValorParametro("SOURCE_EXPORTED_HISTORY_DATA_PATH");
-		processedExportedHistoryDataPath = parametroDAO
-				.getValorParametro("PROCESSED_EXPORTED_HISTORY_DATA_PATH");
-		exportedPropertyFileName = parametroDAO.getValorParametro("EXPORTED_PROPERTY_FILE_NAME");
-		sourceEstrategiasPath = parametroDAO.getValorParametro("SOURCE_ESTRATEGIAS_PATH");
+		try {
+			sourceExportedHistoryDataPath = parametroDAO.getValorParametro("SOURCE_EXPORTED_HISTORY_DATA_PATH");
+
+			processedExportedHistoryDataPath = parametroDAO.getValorParametro("PROCESSED_EXPORTED_HISTORY_DATA_PATH");
+			exportedPropertyFileName = parametroDAO.getValorParametro("EXPORTED_PROPERTY_FILE_NAME");
+			sourceEstrategiasPath = parametroDAO.getValorParametro("SOURCE_ESTRATEGIAS_PATH");
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error init", e);
+		}
 	}
 
 	@Override
-	public void start()
-			throws SQLException, IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException,
-			IllegalAccessException, InvocationTargetException, ParseException, GeneticException {
-		while (true) {
-			this.fechaHistoricaMaximaAnterior = datoHistoricoDAO.getFechaHistoricaMaxima();
-			int imported = this.importarDatosHistoricos();
-			this.fechaHistoricaMaximaNueva = datoHistoricoDAO.getFechaHistoricaMaxima();
-			this.exportarDatosHistoricos();
-			this.setUltimaFechaTendencia(count);
-			LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
-					+ ",fechaHistoricaMaximaAnterior=" + DateUtil.getDateString(this.fechaHistoricaMaximaAnterior)
-					+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva) + ",count="
-					+ count, 1);
-			this.procesarIndividuos();
-			this.procesarTendencias();
-			this.exportarIndividuos();
-			this.crearNuevosIndividuos();
-			if (imported == 0) {
-				count++;
-			} else {
-				count = 1;
+	public void start() throws GeneticDAOException {
+		try {
+			while (true) {
+				this.fechaHistoricaMaximaAnterior = datoHistoricoDAO.getFechaHistoricaMaxima();
+				int imported = this.importarDatosHistoricos();
+				this.fechaHistoricaMaximaNueva = datoHistoricoDAO.getFechaHistoricaMaxima();
+				this.exportarDatosHistoricos();
+				this.setUltimaFechaTendencia(count);
+				LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
+						+ ",fechaHistoricaMaximaAnterior=" + DateUtil.getDateString(this.fechaHistoricaMaximaAnterior)
+						+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva)
+						+ ",count=" + count, 1);
+				this.procesarIndividuos();
+				this.procesarTendencias();
+				this.exportarIndividuos();
+				this.crearNuevosIndividuos();
+				if (imported == 0) {
+					count++;
+				} else {
+					count = 1;
+				}
 			}
+		} catch (SQLException | IOException | ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException | ParseException | GeneticException e) {
+			throw new GeneticDAOException("Error start", e);
 		}
 	}
 

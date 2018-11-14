@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.OperacionesDAO;
+import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Interval;
@@ -357,7 +357,7 @@ public class OperacionesManager {
 	}
 
 	public void calcularRetrocesoOrden(Order currentOrder) throws SQLException {
-		DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
+		OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
 		Point pointRetroceso = datoHistoricoDAO.consultarRetroceso(currentOrder);
 		if (pointRetroceso != null) {
 			boolean isBuy = (currentOrder.getTipo().equals(Constants.OperationType.BUY));

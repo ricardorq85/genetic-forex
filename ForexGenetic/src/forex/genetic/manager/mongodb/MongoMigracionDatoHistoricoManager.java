@@ -9,9 +9,9 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.dao.mongodb.MongoGeneticDAO;
+import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.entities.Point;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -22,11 +22,11 @@ import forex.genetic.util.LogUtil;
  */
 public class MongoMigracionDatoHistoricoManager extends MigracionManager<Point> {
 
-	private DatoHistoricoDAO datoHistoricoDAO;
+	private OracleDatoHistoricoDAO datoHistoricoDAO;
 
 	public MongoMigracionDatoHistoricoManager() throws ClassNotFoundException, SQLException {
 		super();
-		datoHistoricoDAO = new DatoHistoricoDAO(this.conn);
+		datoHistoricoDAO = new OracleDatoHistoricoDAO(this.conn);
 	}
 
 	public void migrate() throws SQLException {

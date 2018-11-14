@@ -10,7 +10,7 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 
-import forex.genetic.dao.TendenciaDAO;
+import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.util.DateUtil;
@@ -23,11 +23,11 @@ import forex.genetic.util.jdbc.JDBCUtil;
  */
 public class ProcesarTendenciasIndividualManager extends ProcesarTendenciasBuySellManager {
 
-	private TendenciaDAO tendenciaDAO;
+	private OracleTendenciaDAO tendenciaDAO;
 
 	public ProcesarTendenciasIndividualManager() throws ClassNotFoundException, SQLException {
 		super();
-		tendenciaDAO = new TendenciaDAO(conn);
+		tendenciaDAO = new OracleTendenciaDAO(conn);
 	}
 
 	public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, GeneticException,

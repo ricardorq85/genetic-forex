@@ -11,10 +11,10 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.ProcesoPoblacionDAO;
+import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
@@ -33,7 +33,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
 
 	private List<Individuo> individuos = null;
 	private Connection conn = null, connDDL = null;
-	private DatoHistoricoDAO daoHistorico;
+	private OracleDatoHistoricoDAO daoHistorico;
 	private OperacionesDAO daoOperaciones;
 	private IndividuoDAO daoIndividuo, daoIndividuoDDL;
 	private ProcesoPoblacionDAO daoProceso;
@@ -56,7 +56,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
 			LogUtil.logTime("Inicia proceso para " + super.getName(), 1);
 			conn = JDBCUtil.getConnection();
 			connDDL = JDBCUtil.getConnection();
-			daoHistorico = new DatoHistoricoDAO(conn);
+			daoHistorico = new OracleDatoHistoricoDAO(conn);
 			daoOperaciones = new OperacionesDAO(conn);
 			daoIndividuo = new IndividuoDAO(conn);			
 			daoProceso = new ProcesoPoblacionDAO(conn);

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.dao;
+package forex.genetic.dao.oracle;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,8 +13,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import forex.genetic.dao.IDatoHistoricoDAO;
 import forex.genetic.dao.helper.BasePointHelper;
-import forex.genetic.dao.oracle.OracleGeneticDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Order;
@@ -36,31 +36,27 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
+public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements IDatoHistoricoDAO {
 
 	/**
 	 *
 	 * @param connection
 	 */
-	public DatoHistoricoDAO(Connection connection) {
+	public OracleDatoHistoricoDAO(Connection connection) {
 		super(connection);
 	}
 
 	public void insertOrUpdate(Point point) throws GeneticDAOException {
-		try {
-			if (existHistorico(point)) {
-				updateDatoHistorico(point);
-				System.out.print("*");
-			} else {
-				insertDatoHistorico(point);
-				System.out.print(".");
-			}
-		} catch (SQLException e) {
-			throw new GeneticDAOException("Error en insertOrUpdate", e);
+		if (exists(point)) {
+			update(point);
+			System.out.print("*");
+		} else {
+			insert(point);
+			System.out.print(".");
 		}
 	}
 
-	public int consultarCantidadPuntos() throws SQLException {
+	public int consultarCantidadPuntos() throws GeneticDAOException {
 		int cantidad = 0;
 		String sql = "SELECT COUNT(*) REGISTROS FROM DATOHISTORICO";
 		Statement stmtConsulta = null;
@@ -71,6 +67,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 			if (resultado.next()) {
 				cantidad = resultado.getInt("REGISTROS");
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error consultarCantidadPuntos()", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -78,7 +76,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 		return cantidad;
 	}
 
-	public int consultarCantidadPuntos(DateInterval interval) throws SQLException {
+	public int consultarCantidadPuntos(DateInterval interval) throws GeneticDAOException {
 		int cantidad = 0;
 		String sql = "SELECT COUNT(*) REGISTROS FROM DATOHISTORICO WHERE FECHA BETWEEN ? AND ?";
 		PreparedStatement stmtConsulta = null;
@@ -91,6 +89,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 			if (resultado.next()) {
 				cantidad = resultado.getInt("REGISTROS");
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error consultarCantidadPuntos(DateInterval interval)", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -102,7 +102,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 	 *
 	 * @return @throws SQLException
 	 */
-	public Date getFechaHistoricaMinima() throws SQLException {
+	public Date getFechaHistoricaMinima() throws GeneticDAOException {
 		Date fechaHistorica = null;
 		String sql = "SELECT MIN(FECHA) FECHA_MINIMA_HISTORIA FROM DATOHISTORICO";
 		Statement stmtConsulta = null;
@@ -113,6 +113,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 			if (resultado.next()) {
 				fechaHistorica = new Date(resultado.getTimestamp(1).getTime());
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error getFechaHistoricaMinima()", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -126,7 +128,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 	 * @return
 	 * @throws SQLException
 	 */
-	public Date getFechaHistoricaMinima(Date fechaMayorQue) throws SQLException {
+	public Date getFechaHistoricaMinima(Date fechaMayorQue) throws GeneticDAOException {
 		Date fechaHistorica = null;
 		String sql = "SELECT MIN(FECHA) FECHA_MINIMA_HISTORIA FROM DATOHISTORICO " + " WHERE FECHA>?";
 		PreparedStatement stmtConsulta = null;
@@ -140,6 +142,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 					fechaHistorica = new Date(resultado.getTimestamp(1).getTime());
 				}
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error getFechaHistoricaMinima(Date fechaMayorQue)", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -147,7 +151,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 		return fechaHistorica;
 	}
 
-	public Date getFechaHistoricaMaxima(Date fecha) throws SQLException {
+	public Date getFechaHistoricaMaxima(Date fecha) throws GeneticDAOException {
 		Date fechaHistorica = null;
 		String sql = "SELECT MAX(FECHA) FECHA_MAXIMA_HISTORIA FROM DATOHISTORICO " + " WHERE FECHA<?";
 		PreparedStatement stmtConsulta = null;
@@ -161,6 +165,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 					fechaHistorica = new Date(resultado.getTimestamp(1).getTime());
 				}
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error getFechaHistoricaMaxima(Date fecha)", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -172,7 +178,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 	 *
 	 * @return @throws SQLException
 	 */
-	public Date getFechaHistoricaMaxima() throws SQLException {
+	public Date getFechaHistoricaMaxima() throws GeneticDAOException {
 		Date fechaHistorica = null;
 		String sql = "SELECT MAX(FECHA) FECHA_MAXIMA_HISTORIA FROM DATOHISTORICO";
 		// String sql = "SELECT TO_DATE('2009/04/24 22:51','YYYY/MM/DD HH24:MI')
@@ -185,6 +191,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 			if (resultado.next()) {
 				fechaHistorica = new Date(resultado.getTimestamp(1).getTime());
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error getFechaHistoricaMaxima()", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -199,7 +207,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Point> consultarHistorico(Date fechaBase1, Date fechaBase2) throws SQLException {
+	public List<Point> consultarHistorico(Date fechaBase1, Date fechaBase2) throws GeneticDAOException {
 		List<Point> points = null;
 		String sql = "SELECT PAR, MINUTOS, PAR_COMPARE, FECHA, "
 				+ " OPEN, LOW, HIGH, CLOSE, VOLUME, SPREAD, AVERAGE, MACD_VALUE, MACD_SIGNAL, "
@@ -221,6 +229,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 			resultado = stmtConsulta.executeQuery();
 
 			points = BasePointHelper.createPoints(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error consultarHistorico(Date fechaBase1, Date fechaBase2)", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -229,7 +239,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 		return points;
 	}
 
-	public List<Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2) throws SQLException {
+	public List<Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2) throws GeneticDAOException {
 		List<Point> points = null;
 		String sql = "SELECT PAR, MINUTOS, PAR_COMPARE, FECHA, "
 				+ " OPEN, LOW, HIGH, CLOSE, VOLUME, SPREAD, AVERAGE, MACD_VALUE, MACD_SIGNAL, "
@@ -252,6 +262,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 			resultado = stmtConsulta.executeQuery();
 
 			points = BasePointHelper.createPoints(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2)", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -260,7 +272,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 		return points;
 	}
 
-	public boolean existHistorico(Point point) throws SQLException {
+	public boolean exists(Point point) throws GeneticDAOException {
 		String sql = "SELECT 1 FROM DATOHISTORICO WHERE FECHA=? AND PAR=? AND MINUTOS=?";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
@@ -272,6 +284,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 			resultado = stmtConsulta.executeQuery();
 
 			return (resultado.next());
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error existHistorico(Point point)", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -285,7 +299,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Point> consultarHistorico(Date fechaBase) throws SQLException {
+	public List<Point> consultarHistorico(Date fechaBase) throws GeneticDAOException {
 		List<Point> points = null;
 		String sql = "SELECT * FROM (SELECT PAR, MINUTOS, PAR_COMPARE, FECHA, "
 				+ " OPEN, LOW, HIGH, CLOSE, VOLUME, SPREAD, AVERAGE, MACD_VALUE, MACD_SIGNAL, "
@@ -311,6 +325,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 			resultado = stmtConsulta.executeQuery();
 
 			points = BasePointHelper.createPoints(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error consultarHistorico(Date fechaBase)", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -324,7 +340,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 	 * @param point
 	 * @throws SQLException
 	 */
-	public void insertDatoHistorico(Point point) throws SQLException {
+	public void insert(Point point) throws GeneticDAOException {
 		String sql = "INSERT INTO DATOHISTORICO ( PAR, MINUTOS, PAR_COMPARE, FECHA, "
 				+ " OPEN, LOW, HIGH, CLOSE, VOLUME, SPREAD, AVERAGE, MACD_VALUE, MACD_SIGNAL, "
 				+ " COMPARE_VALUE, AVERAGE_COMPARE, SAR, ADX_VALUE, ADX_PLUS, ADX_MINUS, "
@@ -565,12 +581,14 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 			statement.setTimestamp(i++, new java.sql.Timestamp(new Date().getTime()));
 
 			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error insertDatoHistorico(Point point)", e);
 		} finally {
 			JDBCUtil.close(statement);
 		}
 	}
 
-	public void updateDatoHistorico(Point point) throws SQLException {
+	public void update(Point point) throws GeneticDAOException {
 		String sql = "UPDATE DATOHISTORICO SET PAR_COMPARE=?, "
 				+ " OPEN=?, LOW=?, HIGH=?, CLOSE=?, VOLUME=?, SPREAD=?, AVERAGE=?, MACD_VALUE=?, MACD_SIGNAL=?, "
 				+ " COMPARE_VALUE=?, AVERAGE_COMPARE=?, SAR=?, ADX_VALUE=?, ADX_PLUS=?, ADX_MINUS=?, "
@@ -815,6 +833,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 			statement.setTimestamp(i++, new java.sql.Timestamp(point.getDate().getTime()));
 
 			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error updateDatoHistorico(Point point)", e);
 		} finally {
 			JDBCUtil.close(statement);
 		}
@@ -828,7 +848,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Point> consultarPuntoByLow(Date fechaBase1, Date fechaBase2, double base) throws SQLException {
+	public List<Point> consultarPuntoByLow(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException {
 		List<Point> points = null;
 		String sql = "SELECT * FROM DATOHISTORICO " + " WHERE FECHA BETWEEN ? AND ? " + " AND HIGH >= ? "
 				+ " AND FECHA > (SELECT MIN(DH2.FECHA) FROM DATOHISTORICO DH2 " + " WHERE DH2.FECHA BETWEEN ? AND ? "
@@ -848,6 +868,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 
 			resultado = stmtConsulta.executeQuery();
 			points = BasePointHelper.createPoints(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error consultarPuntoByLow(Date fechaBase1, Date fechaBase2, double base)", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -864,7 +886,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Point> consultarPuntoByHigh(Date fechaBase1, Date fechaBase2, double base) throws SQLException {
+	public List<Point> consultarPuntoByHigh(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException {
 		List<Point> points = null;
 		String sql = "SELECT * FROM DATOHISTORICO " + " WHERE FECHA BETWEEN ? AND ? " + " AND LOW <= ? "
 				+ " AND FECHA > (SELECT MIN(DH2.FECHA) FROM DATOHISTORICO DH2 " + " WHERE DH2.FECHA BETWEEN ? AND ? "
@@ -886,6 +908,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 
 			resultado = stmtConsulta.executeQuery();
 			points = BasePointHelper.createPoints(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error consultarPuntoByHigh(Date fechaBase1, Date fechaBase2, double base)", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -901,7 +925,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 	 * @return
 	 * @throws SQLException
 	 */
-	public DoubleInterval consultarMaximoMinimo(Date fecha1, Date fecha2) throws SQLException {
+	public DoubleInterval consultarMaximoMinimo(Date fecha1, Date fecha2) throws GeneticDAOException {
 		String sql = "SELECT MIN(LOW) MINIMO, MAX(HIGH) MAXIMO FROM DATOHISTORICO " + " WHERE FECHA>=? AND FECHA<=?";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
@@ -920,6 +944,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 					maximoMinimo.setHighInterval(resultado.getDouble("MAXIMO"));
 				}
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error consultarMaximoMinimo(Date fecha1, Date fecha2)", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -933,7 +959,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 	 * @return
 	 * @throws SQLException
 	 */
-	public Point consultarRetroceso(Order orden) throws SQLException {
+	public Point consultarRetroceso(Order orden) throws GeneticDAOException {
 		StringBuilder sql = new StringBuilder();
 		boolean isBuy = (orden.getTipo().equals(Constants.OperationType.BUY));
 		if (((!isBuy) && (orden.getPips() > 0)) || ((isBuy) && (orden.getPips() < 0))) {
@@ -969,6 +995,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 
 			resultado = stmtConsulta.executeQuery();
 			points = BasePointHelper.createPoints(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error consultarRetroceso(Order orden)", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -986,7 +1014,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 	 * @return
 	 * @throws SQLException
 	 */
-	public double consultarMaximaDiferencia(Date fecha, String formatoAgrupador) throws SQLException {
+	public double consultarMaximaDiferencia(Date fecha, String formatoAgrupador) throws GeneticDAOException {
 		String sql = "SELECT AVG(MAX_DIFF) AVG_MAX_DIFF FROM (" + "  SELECT (MAX(DH.HIGH)-MIN(DH.LOW)) MAX_DIFF "
 				+ "  FROM DATOHISTORICO DH " + "  WHERE DH.FECHA<? " + "  GROUP BY TO_CHAR(DH.FECHA, ?))";
 		PreparedStatement stmtConsulta = null;
@@ -1000,6 +1028,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 			if (resultado.next()) {
 				maximaDiferencia = resultado.getDouble("AVG_MAX_DIFF") * PropertiesManager.getPairFactor();
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error consultarMaximaDiferencia(Date fecha, String formatoAgrupador)", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -1007,7 +1037,7 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 		return maximaDiferencia;
 	}
 
-	public double consultarPrecioPonderado(Date fecha) throws SQLException {
+	public double consultarPrecioPonderado(Date fecha) throws GeneticDAOException {
 		String sql = "SELECT ((DH.OPEN+DH.LOW+DH.HIGH+DH.CLOSE)/4) PRECIO " + "  FROM DATOHISTORICO DH "
 				+ "  WHERE DH.FECHA=? ";
 		PreparedStatement stmtConsulta = null;
@@ -1020,6 +1050,8 @@ public class DatoHistoricoDAO extends OracleGeneticDAO<Point> {
 			if (resultado.next()) {
 				precio = resultado.getDouble("PRECIO");
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error consultarPrecioPonderado(Date fecha)", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);

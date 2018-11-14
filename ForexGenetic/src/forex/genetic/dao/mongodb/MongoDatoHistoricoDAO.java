@@ -18,11 +18,15 @@ import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 
+import forex.genetic.dao.IDatoHistoricoDAO;
 import forex.genetic.dao.helper.mongodb.MongoDatoHistoricoMapper;
 import forex.genetic.entities.DateInterval;
+import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.IntervalIndicator;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
@@ -33,7 +37,7 @@ import forex.genetic.util.LogUtil;
  *
  * @author ricardorq85
  */
-public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> {
+public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDatoHistoricoDAO {
 
 	public MongoDatoHistoricoDAO() {
 		super("datoHistorico", true);
@@ -64,7 +68,8 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> {
 			StringBuilder indexNamePrefix = new StringBuilder("indicadores.").append(indicator.getName());
 			String[] nombresCalculados = indManager.getNombresCalculados();
 			for (int j = 0; j < nombresCalculados.length; j++) {
-				String indexName = new StringBuilder(indexNamePrefix).append(".").append(nombresCalculados[j]).toString();
+				String indexName = new StringBuilder(indexNamePrefix).append(".").append(nombresCalculados[j])
+						.toString();
 				LogUtil.logTime("Index: " + indexName, 1);
 				this.collection.createIndex(Indexes.ascending(indexName));
 			}
@@ -136,7 +141,103 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> {
 				.projection(Projections.fields(Projections.include("fechaHistorico"), Projections.excludeId()))
 				.sort(Sorts.orderBy(Sorts.ascending("fechaHistorico"))).iterator();
 
-		fechas = ((MongoDatoHistoricoMapper)mapper).helpFechas(cursor);
+		fechas = ((MongoDatoHistoricoMapper) mapper).helpFechas(cursor);
 		return fechas;
+	}
+
+	@Override
+	public int consultarCantidadPuntos() throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int consultarCantidadPuntos(DateInterval interval) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Date getFechaHistoricaMinima(Date fechaMayorQue) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Date getFechaHistoricaMaxima(Date fecha) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Point> consultarHistorico(Date fechaBase1, Date fechaBase2) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean existHistorico(Point point) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public List<Point> consultarHistorico(Date fechaBase) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void insertDatoHistorico(Point point) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateDatoHistorico(Point point) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Point> consultarPuntoByLow(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Point> consultarPuntoByHigh(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DoubleInterval consultarMaximoMinimo(Date fecha1, Date fecha2) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Point consultarRetroceso(Order orden) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double consultarMaximaDiferencia(Date fecha, String formatoAgrupador) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double consultarPrecioPonderado(Date fecha) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.ParametroDAO;
-import forex.genetic.dao.TendenciaDAO;
 import forex.genetic.dao.TendenciaUltimosDatosDAO;
+import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.Estadistica;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
@@ -28,8 +28,8 @@ public class TendenciaBuySellManager extends TendenciasManager {
 	private ParametroDAO parametroDAO;
 	private OperacionesManager operacionManager;
 	private OperacionesTendenciaDAO operacionesDAO;
-	private DatoHistoricoDAO datoHistoricoDAO;
-	private TendenciaDAO tendenciaDAO, tendenciaUltimosDatosDAO;
+	private OracleDatoHistoricoDAO datoHistoricoDAO;
+	private OracleTendenciaDAO tendenciaDAO, tendenciaUltimosDatosDAO;
 	private Date fechaComparacion;
 
 	public TendenciaBuySellManager() throws ClassNotFoundException, SQLException {
@@ -41,8 +41,8 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		parametroDAO = new ParametroDAO(conn);
 		operacionManager = new OperacionesManager(conn);
 		operacionesDAO = new OperacionesTendenciaDAO(conn);
-		datoHistoricoDAO = new DatoHistoricoDAO(conn);
-		tendenciaDAO = new TendenciaDAO(conn);
+		datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
+		tendenciaDAO = new OracleTendenciaDAO(conn);
 		tendenciaUltimosDatosDAO = new TendenciaUltimosDatosDAO(conn);
 		this.fechaComparacion = DateUtil.calcularFechaComparacionParaTendenciaUltimosDatos();
 		LogUtil.logTime("Borrando tendencias ultimos datos...", 1);
@@ -120,7 +120,7 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		conn.commit();
 	}
 	
-	public void guardarTendencia(Tendencia tendencia, TendenciaDAO dao) throws SQLException {
+	public void guardarTendencia(Tendencia tendencia, OracleTendenciaDAO dao) throws SQLException {
 		if (dao.exists(tendencia)) {
 			dao.updateTendencia(tendencia);
 		} else {

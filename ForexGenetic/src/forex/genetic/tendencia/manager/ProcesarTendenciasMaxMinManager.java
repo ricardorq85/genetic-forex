@@ -12,12 +12,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.ParametroDAO;
-import forex.genetic.dao.TendenciaDAO;
 import forex.genetic.dao.TendenciaProcesadaDAO;
+import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
@@ -52,9 +52,9 @@ public class ProcesarTendenciasMaxMinManager {
         OperacionesManager operacionManager = new OperacionesManager();
         TendenciasManager tendenciasManager = new TendenciasManager();
         OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
-        DatoHistoricoDAO datoHistoricoDAO = new DatoHistoricoDAO(conn);
+        OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
         ParametroDAO parametroDAO = new ParametroDAO(conn);
-        TendenciaDAO tendenciaDAO = new TendenciaDAO(conn);
+        OracleTendenciaDAO tendenciaDAO = new OracleTendenciaDAO(conn);
         IndividuoDAO individuoDAO = new IndividuoDAO(conn);
         TendenciaProcesadaDAO procesoTendenciaDAO = new TendenciaProcesadaDAO(conn);
         Date fechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");

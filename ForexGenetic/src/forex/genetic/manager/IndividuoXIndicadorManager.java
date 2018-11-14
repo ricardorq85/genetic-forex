@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.DatoHistoricoDAO;
 import forex.genetic.dao.IndicatorDAO;
 import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.ParametroDAO;
+import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Individuo;
@@ -44,7 +44,7 @@ public class IndividuoXIndicadorManager {
 
 	private Connection conn = null;
 	private final IndividuoDAO individuoDAO;
-	private final DatoHistoricoDAO dhDAO;
+	private final OracleDatoHistoricoDAO dhDAO;
 	private final IndicatorDAO indicadorDAO;
 	private final OperacionesDAO operacionesDAO;
 	private ParametroDAO parametroDAO;
@@ -64,7 +64,7 @@ public class IndividuoXIndicadorManager {
 			throws ClassNotFoundException, SQLException {
 		conn = JDBCUtil.getConnection();
 		individuoDAO = new IndividuoDAO(conn);
-		dhDAO = new DatoHistoricoDAO(conn);
+		dhDAO = new OracleDatoHistoricoDAO(conn);
 		indicadorDAO = new IndicatorDAO(conn);
 		parametroDAO = new ParametroDAO(conn);
 		operacionesDAO = new OperacionesDAO(conn);

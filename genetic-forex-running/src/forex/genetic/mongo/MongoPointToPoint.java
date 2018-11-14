@@ -18,7 +18,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
-import forex.genetic.mediator.mongo.MongoPointToPointMediator;
+import forex.genetic.mediator.MultiplePointToPointMediator;
 
 /**
  *
@@ -45,7 +45,7 @@ public class MongoPointToPoint {
 		logTime("Inicio: " + id, 1);
 		setId(Long.toString(id));
 		try {
-			MongoPointToPointMediator mediator = new MongoPointToPointMediator();
+			MultiplePointToPointMediator mediator = new MultiplePointToPointMediator();
 			mediator.init();
 			// mediator.start();
 		} catch (ClassNotFoundException ex) {
