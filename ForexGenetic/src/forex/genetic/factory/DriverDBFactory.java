@@ -9,9 +9,12 @@ import forex.genetic.dao.mongodb.MongoParametroDAO;
 import forex.genetic.dao.mongodb.MongoTendenciaDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.dao.oracle.OracleGeneticDAO;
-import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
+import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.manager.IGeneticManager;
+import forex.genetic.manager.mongodb.MongoProcesoIndividuoManager;
+import forex.genetic.manager.oracle.OracleProcesoIndividuoManager;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -31,7 +34,7 @@ public class DriverDBFactory extends GeneticFactory {
 		}
 		return dc;
 	}
-	
+
 	public static IGeneticDAO<? extends Object>[] createDAO(String entidad, DataClient<?>[] dataClient) {
 		IGeneticDAO<?>[] daos = new IGeneticDAO[drivers.length];
 		for (int i = 0; i < drivers.length; i++) {
@@ -49,10 +52,47 @@ public class DriverDBFactory extends GeneticFactory {
 		return daos;
 	}
 
+	public static IGeneticManager[] createManager(String entidad) {
+		IGeneticManager[] instances = new IGeneticManager[drivers.length];
+		for (int i = 0; i < drivers.length; i++) {
+			if ("oracle".equals(drivers[i])) {
+				instances[i] = createOracleManager(entidad);
+			} else if ("mongodb".equals(drivers[i])) {
+				instances[i] = createMongoManager(entidad);
+			}
+		}
+		return instances;
+	}
+
+	private static IGeneticManager createOracleManager(String entidad) {
+		IGeneticManager instance = null;
+		if ("procesoIndividuo".equals(entidad)) {
+			instance = new OracleProcesoIndividuoManager();
+		} else {
+			throw new IllegalArgumentException(
+					new StringBuilder("Entidad no soportada para crear MANAGER: ").append(entidad).toString());
+		}
+		return instance;
+	}
+
+	private static IGeneticManager createMongoManager(String entidad) {
+		IGeneticManager instance = null;
+		if ("procesoIndividuo".equals(entidad)) {
+			instance = new MongoProcesoIndividuoManager();
+		} else {
+			throw new IllegalArgumentException(
+					new StringBuilder("Entidad no soportada para crear MANAGER: ").append(entidad).toString());
+		}
+		return instance;
+	}
+
 	private static OracleGeneticDAO<? extends Object> createOracleDAO(String entidad, DataClient<?> dataClient)
 			throws ClassNotFoundException, SQLException {
 		OracleGeneticDAO<? extends Object> dao = null;
-		OracleDataClient oracleDataClient = null;
+		OracleDataClient oracleDataClient = (OracleDataClient) dataClient;
+		if (dataClient == null) {
+			oracleDataClient = new OracleDataClient(JDBCUtil.getConnection());
+		}
 		if ("datoHistorico".equals(entidad)) {
 			dao = new OracleDatoHistoricoDAO(oracleDataClient.getClient());
 		} else if ("tendencia".equals(entidad)) {
@@ -73,7 +113,7 @@ public class DriverDBFactory extends GeneticFactory {
 		} else if ("tendencia".equals(entidad)) {
 			dao = new MongoTendenciaDAO();
 		} else if ("parametro".equals(entidad)) {
-			dao = new MongoParametroDAO();			
+			dao = new MongoParametroDAO();
 		} else {
 			throw new IllegalArgumentException(
 					new StringBuilder("Entidad no soportada para crear DAO: ").append(entidad).toString());

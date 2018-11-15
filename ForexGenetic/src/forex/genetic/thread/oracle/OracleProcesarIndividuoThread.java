@@ -2,7 +2,7 @@
 close * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.thread;
+package forex.genetic.thread.oracle;
 
 import java.io.FileNotFoundException;
 import java.sql.Connection;
@@ -11,10 +11,11 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.IndividuoDAO;
-import forex.genetic.dao.OperacionesDAO;
-import forex.genetic.dao.ProcesoPoblacionDAO;
+import forex.genetic.dao.IProcesoEjecucionDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleIndividuoDAO;
+import forex.genetic.dao.oracle.OracleOperacionesDAO;
+import forex.genetic.dao.oracle.OracleProcesoEjecucionDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
@@ -30,14 +31,14 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class ProcesarIndividuoThreadBD extends Thread {
+public class OracleProcesarIndividuoThread extends Thread {
 
 	private List<Individuo> individuos = null;
 	private Connection conn = null, connDDL = null;
 	private OracleDatoHistoricoDAO daoHistorico;
-	private OperacionesDAO daoOperaciones;
-	private IndividuoDAO daoIndividuo, daoIndividuoDDL;
-	private ProcesoPoblacionDAO daoProceso;
+	private OracleOperacionesDAO daoOperaciones;
+	private OracleIndividuoDAO daoIndividuo, daoIndividuoDDL;
+	private IProcesoEjecucionDAO daoProceso;
 	private Date maxFechaHistorico = null;
 	private Date minFechaHistorico = null;
 
@@ -46,7 +47,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
 	 * @param name
 	 * @param individuos
 	 */
-	public ProcesarIndividuoThreadBD(String name, List<Individuo> individuos) {
+	public OracleProcesarIndividuoThread(String name, List<Individuo> individuos) {
 		super(name);
 		this.individuos = individuos;
 	}
@@ -58,11 +59,11 @@ public class ProcesarIndividuoThreadBD extends Thread {
 			conn = JDBCUtil.getConnection();
 			connDDL = JDBCUtil.getConnection();
 			daoHistorico = new OracleDatoHistoricoDAO(conn);
-			daoOperaciones = new OperacionesDAO(conn);
-			daoIndividuo = new IndividuoDAO(conn);			
-			daoProceso = new ProcesoPoblacionDAO(conn);
+			daoOperaciones = new OracleOperacionesDAO(conn);
+			daoIndividuo = new OracleIndividuoDAO(conn);			
+			daoProceso = new OracleProcesoEjecucionDAO(conn);
 			
-			daoIndividuoDDL = new IndividuoDAO(connDDL);
+			daoIndividuoDDL = new OracleIndividuoDAO(connDDL);
 			for (Individuo individuo : individuos) {
 				runIndividuo(individuo);
 			}
@@ -228,12 +229,12 @@ public class ProcesarIndividuoThreadBD extends Thread {
 		return fechaRetorno;
 	}
 
-	private void updateProceso(Date fechaHistorico, String idIndividuo) throws SQLException {
+	private void updateProceso(Date fechaHistorico, String idIndividuo) throws GeneticDAOException {
 		int processed = daoProceso.updateProceso(fechaHistorico, idIndividuo);
 		if (processed == 0) {
 			daoProceso.insertProceso(fechaHistorico, idIndividuo);
 		}
-		conn.commit();
+		daoProceso.commit();
 	}
 
 	private Date getLastDate(Date lastDate, Date fechaInicialHistorico) {

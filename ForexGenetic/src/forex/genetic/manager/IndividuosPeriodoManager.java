@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Random;
 
 import forex.genetic.dao.EstrategiaOperacionPeriodoDAO;
-import forex.genetic.dao.OperacionesDAO;
+import forex.genetic.dao.oracle.OracleOperacionesDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
@@ -31,7 +31,7 @@ public class IndividuosPeriodoManager {
 	private Connection conn = null;
 	private InclusionesManager inclusionesManager;
 	private OracleParametroDAO parametroDAO;
-	private OperacionesDAO operacionesDAO;
+	private OracleOperacionesDAO operacionesDAO;
 	private EstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO;
 	private static final String[] ORDERS = { "NVL(PIPS_SEMANA,0)", "NVL(PIPS_MES,0)", "NVL(PIPS_ANYO,0)",
 			"PIPS_TOTALES" };
@@ -51,7 +51,7 @@ public class IndividuosPeriodoManager {
 		inclusionesManager = new InclusionesManager();
 		conn = JDBCUtil.getConnection();
 		parametroDAO = new OracleParametroDAO(conn);
-		operacionesDAO = new OperacionesDAO(conn);
+		operacionesDAO = new OracleOperacionesDAO(conn);
 		estrategiaOperacionPeriodoDAO = new EstrategiaOperacionPeriodoDAO(conn);
 		this.inclusionesManager.setEstrategiaOperacionPeriodoDAO(estrategiaOperacionPeriodoDAO);
 

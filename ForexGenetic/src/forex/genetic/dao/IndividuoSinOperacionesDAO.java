@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.helper.IndividuoHelper;
+import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.util.jdbc.JDBCUtil;
 
@@ -19,7 +20,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class IndividuoSinOperacionesDAO extends IndividuoDAO {
+public class IndividuoSinOperacionesDAO extends OracleIndividuoDAO {
 
 	public IndividuoSinOperacionesDAO(Connection connection) {
 		super(connection);

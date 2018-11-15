@@ -1,16 +1,22 @@
 package forex.genetic.dao.mongodb;
 
+import java.util.Date;
+import java.util.List;
+
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.Sorts;
 
+import forex.genetic.dao.IIndividuoDAO;
 import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.entities.mongo.MongoIndividuo;
 
-public class MongoIndividuoDAO extends MongoGeneticDAO<IndividuoEstrategia> {
+public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implements IIndividuoDAO<MongoIndividuo> {
 
 	public MongoIndividuoDAO() {
 		super("individuo", true);
@@ -23,8 +29,8 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<IndividuoEstrategia> {
 		this.collection.createIndex(Indexes.ascending("idIndividuo"), indexOptions);
 	}
 
-	public IndividuoEstrategia consultarById(String idIndividuo) {
-		IndividuoEstrategia obj = null;
+	public MongoIndividuo consultarById(String idIndividuo) {
+		MongoIndividuo obj = null;
 		MongoCursor<Document> cursor = this.collection.find(Filters.eq("idIndividuo", idIndividuo)).iterator();
 		if (cursor.hasNext()) {
 			obj = mapper.helpOne(cursor.next());
@@ -33,20 +39,11 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<IndividuoEstrategia> {
 	}
 
 	@Override
-	public boolean exists(IndividuoEstrategia obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void insert(IndividuoEstrategia obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void update(IndividuoEstrategia obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		
+	public List<? extends IndividuoEstrategia> getByProcesoEjecucion(String filtroAdicional, Date fechaHistorico) {
+		Bson filtro = Filters.ne("procesoEjecucion.maxfechaHistorico", fechaHistorico);
+		Bson ordenador = Sorts.orderBy(Sorts.ascending("procesoEjecucion.maxFechaHistorico"),
+				Sorts.descending("idIndividuo"));
+		MongoCursor<Document> cursor = collection.find(filtro).sort(ordenador).limit(10).iterator();
+		return mapper.helpList(cursor);
 	}
 }

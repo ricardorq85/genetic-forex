@@ -14,9 +14,9 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.IndicatorDAO;
-import forex.genetic.dao.IndividuoDAO;
-import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleIndividuoDAO;
+import forex.genetic.dao.oracle.OracleOperacionesDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
@@ -44,10 +44,10 @@ import forex.genetic.util.jdbc.JDBCUtil;
 public class IndividuoXIndicadorManager {
 
 	private Connection conn = null;
-	private final IndividuoDAO individuoDAO;
+	private final OracleIndividuoDAO individuoDAO;
 	private final OracleDatoHistoricoDAO dhDAO;
 	private final IndicatorDAO indicadorDAO;
-	private final OperacionesDAO operacionesDAO;
+	private final OracleOperacionesDAO operacionesDAO;
 	private OracleParametroDAO parametroDAO;
 	private Date fechaMinima, fechaMaxima;
 	private int parametroMeses, parametroRetroceso, parametroPips, parametroCantidadMutar, parametroCantidadCruzar;
@@ -64,11 +64,11 @@ public class IndividuoXIndicadorManager {
 	public IndividuoXIndicadorManager(Date fechaMinima, Date fechaMaxima, int maximoMeses)
 			throws ClassNotFoundException, SQLException, GeneticDAOException {
 		conn = JDBCUtil.getConnection();
-		individuoDAO = new IndividuoDAO(conn);
+		individuoDAO = new OracleIndividuoDAO(conn);
 		dhDAO = new OracleDatoHistoricoDAO(conn);
 		indicadorDAO = new IndicatorDAO(conn);
 		parametroDAO = new OracleParametroDAO(conn);
-		operacionesDAO = new OperacionesDAO(conn);
+		operacionesDAO = new OracleOperacionesDAO(conn);
 		this.fechaMinima = fechaMinima;
 		this.fechaMaxima = fechaMaxima;
 		if (fechaMinima == null) {

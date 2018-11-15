@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.dao;
+package forex.genetic.dao.oracle;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,12 +12,14 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import forex.genetic.dao.IOperacionesDAO;
 import forex.genetic.dao.helper.OperacionHelper;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Estadistica;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.ParametroOperacionPeriodo;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -26,15 +28,13 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class OperacionesDAO {
+public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOperacionesDAO {
 
-	protected Connection connection = null;
-
-	public OperacionesDAO(Connection connection) {
-		this.connection = connection;
+	public OracleOperacionesDAO(Connection connection) {
+		super(connection);
 	}
 
-	public List<DateInterval> consultarVigencias(Date fechaPeriodo) throws SQLException {
+	public List<DateInterval> consultarVigencias(Date fechaPeriodo) throws GeneticDAOException {
 		List<DateInterval> vigencias;
 		String sql = "SELECT DISTINCT VIGENCIA1, VIGENCIA2 FROM TMP_TOFILESTRING " + " WHERE VIGENCIA1>? "
 				+ " ORDER BY VIGENCIA1 ASC, VIGENCIA2 ASC ";
@@ -49,6 +49,8 @@ public class OperacionesDAO {
 
 			vigencias = OperacionHelper.vigencias(resultado);
 
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -57,7 +59,7 @@ public class OperacionesDAO {
 		return vigencias;
 	}
 
-	public List<Individuo> consultarOperacionesXPeriodo(Date fechaInicial, Date fechaFinal) throws SQLException {
+	public List<Individuo> consultarOperacionesXPeriodo(Date fechaInicial, Date fechaFinal) throws GeneticDAOException {
 		List<Individuo> ordenes;
 		String sql = "SELECT OPER.* FROM OPERACION OPER "
 				+ " INNER JOIN TMP_TOFILESTRING TFS ON TFS.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
@@ -77,6 +79,8 @@ public class OperacionesDAO {
 
 			ordenes = OperacionHelper.operaciones(resultado);
 
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -85,7 +89,7 @@ public class OperacionesDAO {
 		return ordenes;
 	}
 
-	public double consultarPipsXAgrupacion(String agrupador) throws SQLException {
+	public double consultarPipsXAgrupacion(String agrupador) throws GeneticDAOException {
 		double pips = 0;
 		String sql = " SELECT SUM(PIPS) PIPS FROM ( " + " SELECT SUM(OPER.PIPS)/COUNT(*) PIPS FROM OPERACION OPER "
 				+ " INNER JOIN TMP_TOFILESTRING TFS ON TFS.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
@@ -102,6 +106,8 @@ public class OperacionesDAO {
 			if (resultado.next()) {
 				pips = resultado.getDouble("PIPS");
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -114,9 +120,9 @@ public class OperacionesDAO {
 	 *
 	 * @param individuo
 	 * @return
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
-	public Estadistica consultarEstadisticasIndividuo(Individuo individuo) throws SQLException {
+	public Estadistica consultarEstadisticasIndividuo(Individuo individuo) throws GeneticDAOException {
 		Estadistica estadistica = null;
 		String sql = "SELECT * FROM DETALLE_ESTADISTICAS WHERE ID_INDIVIDUO=?";
 
@@ -130,6 +136,8 @@ public class OperacionesDAO {
 
 			estadistica = OperacionHelper.createEstadistica(resultado);
 
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -142,9 +150,9 @@ public class OperacionesDAO {
 	 *
 	 * @param fechaBase
 	 * @return
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
-	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase) throws SQLException {
+	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase) throws GeneticDAOException {
 		return this.consultarIndividuoOperacionActiva(fechaBase, 500);
 	}
 
@@ -153,9 +161,9 @@ public class OperacionesDAO {
 	 * @param fechaBase
 	 * @param filas
 	 * @return
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
-	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, int filas) throws SQLException {
+	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, int filas) throws GeneticDAOException {
 		return this.consultarIndividuoOperacionActiva(fechaBase, null, filas);
 	}
 
@@ -165,18 +173,18 @@ public class OperacionesDAO {
 	 * @param fechaFin
 	 * @param filas
 	 * @return
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
 	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, Date fechaFin, int filas)
-			throws SQLException {
+			throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT * FROM ( " + " SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, "
 				+ " OPER.OPEN_PRICE, OPER.SPREAD, OPER.LOTE, OPER.PIPS, OPER.TIPO " + " FROM OPERACION OPER "
 				+ "     INNER JOIN PROCESO PROC ON PROC.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
 				+ "     AND (PROC.FECHA_HISTORICO>=?) "
 				+ " WHERE OPER.FECHA_APERTURA<? AND (OPER.FECHA_CIERRE IS NULL OR OPER.FECHA_CIERRE>?)"
-				+ " AND OPER.FECHA_APERTURA>?-30" 
-				//+ " AND OPER.TIPO = 'SELL'"
+				+ " AND OPER.FECHA_APERTURA>?-30"
+				// + " AND OPER.TIPO = 'SELL'"
 				+ " AND OPER.ID_INDIVIDUO NOT IN (SELECT ID_INDIVIDUO FROM TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
 				// + " AND OPER.ID_INDIVIDUO IN (SELECT ID_INDIVIDUO FROM
 				// TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
@@ -192,12 +200,10 @@ public class OperacionesDAO {
 		 * "SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.OPEN_PRICE, OPER.SPREAD, OPER.LOTE, OPER.PIPS, OPER.TIPO "
 		 * + " FROM OPERACION OPER" + " WHERE " + "  SYSDATE>=? " +
 		 * " AND OPER.FECHA_APERTURA<? AND (OPER.FECHA_CIERRE IS NULL OR OPER.FECHA_CIERRE>?)"
-		 * + " AND OPER.FECHA_APERTURA>?-30" 
-		 //* + " AND OPER.TIPO = 'SELL'" +
+		 * + " AND OPER.FECHA_APERTURA>?-30" //* + " AND OPER.TIPO = 'SELL'" +
 		 * " AND (OPER.ID_INDIVIDUO NOT IN (SELECT ID_INDIVIDUO FROM TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO"
-		 * + " AND TEND.FECHA_BASE=? AND (TIPO_TENDENCIA=? OR 1=1)) " +
-		 * " OR 1=1)" + " AND OPER.ID_INDIVIDUO='1341461434490.61685'" +
-		 * " AND ROWNUM < ?";
+		 * + " AND TEND.FECHA_BASE=? AND (TIPO_TENDENCIA=? OR 1=1)) " + " OR 1=1)" +
+		 * " AND OPER.ID_INDIVIDUO='1341461434490.61685'" + " AND ROWNUM < ?";
 		 */
 
 		PreparedStatement stmtConsulta = null;
@@ -218,6 +224,8 @@ public class OperacionesDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			list = OperacionHelper.individuosOperacionActiva(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -230,15 +238,17 @@ public class OperacionesDAO {
 	 *
 	 * @param idIndividuo
 	 * @return
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
-	public int deleteOperaciones(String idIndividuo) throws SQLException {
+	public int deleteOperaciones(String idIndividuo) throws GeneticDAOException {
 		String sql = "DELETE FROM OPERACION WHERE ID_INDIVIDUO=?";
 		PreparedStatement stmtConsulta = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
 			stmtConsulta.setString(1, idIndividuo);
 			return stmtConsulta.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 		} finally {
 			JDBCUtil.close(stmtConsulta);
 		}
@@ -249,9 +259,9 @@ public class OperacionesDAO {
 	 * @param individuo
 	 * @param operacion
 	 * @param fechaApertura
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
-	public void updateOperacion(Individuo individuo, Order operacion, Date fechaApertura) throws SQLException {
+	public void updateOperacion(Individuo individuo, Order operacion, Date fechaApertura) throws GeneticDAOException {
 		String sql = "UPDATE OPERACION SET FECHA_CIERRE=?, PIPS=?, FECHA=? "
 				+ " WHERE ID_INDIVIDUO=? AND FECHA_APERTURA=?";
 
@@ -264,6 +274,8 @@ public class OperacionesDAO {
 			statement.setString(4, individuo.getId());
 			statement.setTimestamp(5, new Timestamp(operacion.getOpenDate().getTime()));
 			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 		} finally {
 			JDBCUtil.close(statement);
 		}
@@ -273,9 +285,9 @@ public class OperacionesDAO {
 	 *
 	 * @param individuo
 	 * @param operacion
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
-	public void updateMaximosReprocesoOperacion(Individuo individuo, Order operacion) throws SQLException {
+	public void updateMaximosReprocesoOperacion(Individuo individuo, Order operacion) throws GeneticDAOException {
 		String sql = "UPDATE OPERACION SET MAX_PIPS_RETROCESO=?, MAX_VALUE_RETROCESO=?, MAX_FECHA_RETROCESO=?, FECHA=? "
 				+ " WHERE ID_INDIVIDUO=? AND FECHA_APERTURA=?";
 
@@ -293,6 +305,8 @@ public class OperacionesDAO {
 			statement.setString(5, individuo.getId());
 			statement.setTimestamp(6, new Timestamp(operacion.getOpenDate().getTime()));
 			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 		} finally {
 			JDBCUtil.close(statement);
 		}
@@ -302,9 +316,9 @@ public class OperacionesDAO {
 	 *
 	 * @param individuo
 	 * @param operaciones
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
-	public void insertOperaciones(Individuo individuo, List<Order> operaciones) throws SQLException {
+	public void insertOperaciones(Individuo individuo, List<Order> operaciones) throws GeneticDAOException {
 		String sql = "INSERT INTO OPERACION(ID_INDIVIDUO, TAKE_PROFIT, STOP_LOSS, "
 				+ " FECHA_APERTURA, FECHA_CIERRE, SPREAD, OPEN_PRICE, PIPS, LOTE, TIPO, FECHA) "
 				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?)";
@@ -330,6 +344,8 @@ public class OperacionesDAO {
 				statement.setString(10, order.getTipo().name());
 				statement.setTimestamp(11, new Timestamp(new java.util.Date().getTime()));
 				statement.executeUpdate();
+			} catch (SQLException e) {
+				throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 			} finally {
 				JDBCUtil.close(statement);
 			}
@@ -341,16 +357,16 @@ public class OperacionesDAO {
 	 * @param ind
 	 * @param fechaMaximo
 	 * @return
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
-	public Individuo consultarOperacionesIndividuoRetroceso(Individuo ind, Date fechaMaximo) throws SQLException {
+	public Individuo consultarOperacionesIndividuoRetroceso(Individuo ind, Date fechaMaximo)
+			throws GeneticDAOException {
 		List<Order> list = null;
 		String sql = "SELECT OPER.ID_INDIVIDUO, OPER.TAKE_PROFIT, OPER.STOP_LOSS, "
-					+ " OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.SPREAD, OPER.OPEN_PRICE, OPER.LOTE, OPER.PIPS, "
+				+ " OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.SPREAD, OPER.OPEN_PRICE, OPER.LOTE, OPER.PIPS, "
 				+ " OPER.TIPO, OPER.MAX_PIPS_RETROCESO, OPER.MAX_VALUE_RETROCESO, OPER.MAX_FECHA_RETROCESO "
-				+ " FROM OPERACION OPER "
-				+ " WHERE "
-				//+ " OPER.TIPO='SELL' AND "
+				+ " FROM OPERACION OPER " + " WHERE "
+				// + " OPER.TIPO='SELL' AND "
 				+ " ID_INDIVIDUO=? AND FECHA_APERTURA<=? AND MAX_PIPS_RETROCESO IS NULL";
 
 		PreparedStatement stmtConsulta = null;
@@ -363,6 +379,8 @@ public class OperacionesDAO {
 
 			list = OperacionHelper.operacionesIndividuo(resultado);
 
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -375,9 +393,9 @@ public class OperacionesDAO {
 	 *
 	 * @param fechaMaximo
 	 * @return
-	 * @throws SQLException
+	 * @throws GeneticDAOException
 	 */
-	public List<Individuo> consultarOperacionesIndividuoRetroceso(Date fechaMaximo) throws SQLException {
+	public List<Individuo> consultarOperacionesIndividuoRetroceso(Date fechaMaximo) throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT OPER.ID_INDIVIDUO, OPER.TAKE_PROFIT, OPER.STOP_LOSS, "
 				+ " OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.SPREAD, OPER.OPEN_PRICE, OPER.LOTE, OPER.PIPS, "
@@ -394,6 +412,8 @@ public class OperacionesDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			list = OperacionHelper.operaciones(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -402,18 +422,20 @@ public class OperacionesDAO {
 		return list;
 	}
 
-	public int cleanOperacionesPeriodo() throws SQLException {
+	public int cleanOperacionesPeriodo() throws GeneticDAOException {
 		String sql = "TRUNCATE TABLE TMP_TOFILESTRING";
 		PreparedStatement stmtConsulta = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
 			return stmtConsulta.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 		} finally {
 			JDBCUtil.close(stmtConsulta);
 		}
 	}
 
-	private String temporal(ParametroOperacionPeriodo param) throws SQLException {
+	private String temporal(ParametroOperacionPeriodo param) throws GeneticDAOException {
 		String sql = " SELECT PRE.ID_INDIVIDUO, SUM(" + param.getFirstOrder() + "), " + " SUM(" + param.getSecondOrder()
 				+ "), " + "  PRE.FECHA_SEMANA, PRE.FECHA_SEMANA+7 " + " FROM PREVIO_TOFILESTRING PRE "
 				+ " WHERE PRE.TIPO_OPERACION='" + param.getTipoOperacion().name() + "'"
@@ -432,7 +454,7 @@ public class OperacionesDAO {
 		return sql;
 	}
 
-	public int insertOperacionesPeriodo(ParametroOperacionPeriodo param) throws SQLException {
+	public int insertOperacionesPeriodo(ParametroOperacionPeriodo param) throws GeneticDAOException {
 		String sql = "INSERT INTO TMP_TOFILESTRING (ID_INDIVIDUO, CRITERIO_ORDER1, CRITERIO_ORDER2, VIGENCIA1, VIGENCIA2, FECHA_ORDER1, FECHA_ORDER2) "
 				+ " SELECT PRE.ID_INDIVIDUO, SUM(" + param.getFirstOrder() + "), " + " SUM(" + param.getSecondOrder()
 				+ "), " + "  PRE.FECHA_SEMANA, PRE.FECHA_SEMANA+7, ?, ? " + " FROM PREVIO_TOFILESTRING PRE "
@@ -470,33 +492,35 @@ public class OperacionesDAO {
 			stmtConsulta.setDate(++index, new java.sql.Date(param.getFechaFinal().getTime()));
 
 			return stmtConsulta.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 		} finally {
 			JDBCUtil.close(stmtConsulta);
 		}
 	}
 
-	public void actualizarOperacionesPositivasYNegativas() throws SQLException {
+	public void actualizarOperacionesPositivasYNegativas() throws GeneticDAOException {
 		try {
 			JDBCUtil.refreshMaterializedView(this.connection, "OPERACION_POSITIVAS", "C");
 			JDBCUtil.refreshMaterializedView(this.connection, "OPERACION_NEGATIVAS", "C");
-			//this.dropVistaMaterializada("OPERACION_POSITIVAS");
-			//this.dropVistaMaterializada("OPERACION_NEGATIVAS");
+			// this.dropVistaMaterializada("OPERACION_POSITIVAS");
+			// this.dropVistaMaterializada("OPERACION_NEGATIVAS");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		//this.actualizarOperacionesPositivas();
-		//this.actualizarOperacionesNegativas();
+		// this.actualizarOperacionesPositivas();
+		// this.actualizarOperacionesNegativas();
 	}
 
-	private void actualizarOperacionesNegativas() throws SQLException {
+	private void actualizarOperacionesNegativas() throws GeneticDAOException {
 		this.crearVistaMaterializadaNegativas();
 	}
 
-	private void actualizarOperacionesPositivas() throws SQLException {
+	private void actualizarOperacionesPositivas() throws GeneticDAOException {
 		this.crearVistaMaterializadaPositivas();
 	}
 
-	private void crearVistaMaterializadaPositivas() throws SQLException {
+	private void crearVistaMaterializadaPositivas() throws GeneticDAOException {
 		String sql = "CREATE MATERIALIZED VIEW OPERACION_POSITIVAS AS "
 				+ " SELECT OPER.TAKE_PROFIT, OPER.STOP_LOSS, OPER.FECHA_APERTURA, OPER.PIPS, OPER.MAX_PIPS_RETROCESO, OPER.OPEN_PRICE"
 				+ " FROM OPERACION OPER" + "  WHERE OPER.PIPS>=200 AND OPER.FECHA_CIERRE IS NOT NULL"
@@ -505,12 +529,14 @@ public class OperacionesDAO {
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
 			stmtConsulta.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 		} finally {
 			JDBCUtil.close(stmtConsulta);
 		}
 	}
 
-	private void crearVistaMaterializadaNegativas() throws SQLException {
+	private void crearVistaMaterializadaNegativas() throws GeneticDAOException {
 		String sql = "CREATE MATERIALIZED VIEW OPERACION_NEGATIVAS AS "
 				+ " SELECT OPER.TAKE_PROFIT, OPER.STOP_LOSS, OPER.FECHA_APERTURA, OPER.PIPS, OPER.MAX_PIPS_RETROCESO, OPER.OPEN_PRICE "
 				+ " FROM OPERACION OPER " + "  WHERE OPER.PIPS<=-200 AND OPER.FECHA_CIERRE IS NOT NULL "
@@ -519,20 +545,42 @@ public class OperacionesDAO {
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
 			stmtConsulta.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 		} finally {
 			JDBCUtil.close(stmtConsulta);
 		}
 	}
 
-	private void dropVistaMaterializada(String name) throws SQLException {
+	private void dropVistaMaterializada(String name) throws GeneticDAOException {
 		String sql = "DROP MATERIALIZED VIEW " + name;
 		PreparedStatement stmtConsulta = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
 			stmtConsulta.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
 		} finally {
 			JDBCUtil.close(stmtConsulta);
 		}
+	}
+
+	@Override
+	public boolean exists(Order obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void insert(Order obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(Order obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

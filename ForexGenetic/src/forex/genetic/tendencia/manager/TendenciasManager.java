@@ -10,9 +10,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.IndividuoDAO;
-import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleIndividuoDAO;
+import forex.genetic.dao.oracle.OracleOperacionesDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.CalculoTendencia;
@@ -139,7 +139,7 @@ public class TendenciasManager {
 	private void calcularTendenciasFacade(Date fechaInicio, Date fechaFin, int stepTendencia, int filasTendencia)
 			throws ClassNotFoundException, SQLException, GeneticException {
 		OperacionesManager operacionManager = new OperacionesManager(conn);
-		OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
+		OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
 		OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
 		OracleParametroDAO parametroDAO = new OracleParametroDAO(conn);
 		OracleTendenciaDAO tendenciaDAO = new OracleTendenciaDAO(conn);
@@ -522,7 +522,7 @@ public class TendenciasManager {
 		 * calculada. Mayor pips calculados: menor probabilidad, mayor duración
 		 * calculada: menor probabilidad
 		 */
-		IndividuoDAO idao = new IndividuoDAO(conn);
+		OracleIndividuoDAO idao = new OracleIndividuoDAO(conn);
 		int count = idao.getCountIndicadoresOpen(individuo);
 		probExternaCalculada += (((double) count / indicadorControllerCalculo.getIndicatorNumber())
 				* probNumIndicadores);

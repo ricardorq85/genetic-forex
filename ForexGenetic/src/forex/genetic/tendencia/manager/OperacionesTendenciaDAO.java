@@ -8,13 +8,13 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.helper.OperacionHelper;
+import forex.genetic.dao.oracle.OracleOperacionesDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.util.Constants;
 import forex.genetic.util.jdbc.JDBCUtil;
 
-public class OperacionesTendenciaDAO extends OperacionesDAO {
+public class OperacionesTendenciaDAO extends OracleOperacionesDAO {
 
 	public OperacionesTendenciaDAO(Connection connection) {
 		super(connection);

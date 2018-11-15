@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleOperacionesDAO;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Interval;
@@ -300,7 +300,7 @@ public class OperacionesManager {
 	 * @throws GeneticDAOException 
 	 */
 	public void procesarMaximosRetroceso(Date fechaMaximo) throws ClassNotFoundException, SQLException, GeneticDAOException {
-		OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
+		OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
 		List<Individuo> individuos = operacionesDAO.consultarOperacionesIndividuoRetroceso(fechaMaximo);
 		while ((individuos != null) && (!individuos.isEmpty())) {
 			for (Individuo individuo : individuos) {
@@ -328,7 +328,7 @@ public class OperacionesManager {
 	 */
 	public void procesarMaximosRetroceso(Individuo individuo, Date fechaMaximo)
 			throws ClassNotFoundException, SQLException, GeneticDAOException {
-		OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
+		OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
 		individuo = operacionesDAO.consultarOperacionesIndividuoRetroceso(individuo, fechaMaximo);
 
 		if (individuo.getOpenIndicators() == null) {
@@ -348,7 +348,7 @@ public class OperacionesManager {
 	 * @throws GeneticDAOException 
 	 */
 	public void procesarMaximosReproceso(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
-		OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
+		OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
 		List<Order> ordenes = individuo.getOrdenes();
 		for (Order currentOrder : ordenes) {
 			if ((currentOrder != null) && (currentOrder.getOpenDate() != null)

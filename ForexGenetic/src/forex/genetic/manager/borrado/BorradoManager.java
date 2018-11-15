@@ -12,9 +12,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 import forex.genetic.dao.EstrategiaDAO;
-import forex.genetic.dao.IndividuoDAO;
-import forex.genetic.dao.OperacionesDAO;
-import forex.genetic.dao.ProcesoPoblacionDAO;
+import forex.genetic.dao.IProcesoEjecucionDAO;
+import forex.genetic.dao.oracle.OracleIndividuoDAO;
+import forex.genetic.dao.oracle.OracleOperacionesDAO;
+import forex.genetic.dao.oracle.OracleProcesoEjecucionDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.exception.GeneticDAOException;
@@ -28,9 +29,9 @@ public abstract class BorradoManager {
 
 	protected String tipoProceso = "DEFAULT";
 	protected Connection conn;
-	protected IndividuoDAO individuoDAO;
-	protected OperacionesDAO operacionDAO;
-	protected ProcesoPoblacionDAO procesoDAO;
+	protected OracleIndividuoDAO individuoDAO;
+	protected OracleOperacionesDAO operacionDAO;
+	protected IProcesoEjecucionDAO procesoDAO;
 	protected OracleTendenciaDAO tendenciaDAO;
 	protected EstrategiaDAO estrategiaDAO;
 
@@ -38,13 +39,13 @@ public abstract class BorradoManager {
 		this(conn, null, tipoProceso);
 	}
 
-	public BorradoManager(Connection conn, IndividuoDAO individuoDAO, String tipoProceso)
+	public BorradoManager(Connection conn, OracleIndividuoDAO individuoDAO, String tipoProceso)
 			throws ClassNotFoundException, SQLException {
 		this.tipoProceso = tipoProceso;
 		this.conn = conn;
-		this.individuoDAO = (individuoDAO == null) ? (new IndividuoDAO(conn)) : individuoDAO;
-		operacionDAO = new OperacionesDAO(conn);
-		procesoDAO = new ProcesoPoblacionDAO(conn);
+		this.individuoDAO = (individuoDAO == null) ? (new OracleIndividuoDAO(conn)) : individuoDAO;
+		operacionDAO = new OracleOperacionesDAO(conn);
+		procesoDAO = new OracleProcesoEjecucionDAO(conn);
 		tendenciaDAO = new OracleTendenciaDAO(conn);
 		estrategiaDAO = new EstrategiaDAO(conn);
 	}

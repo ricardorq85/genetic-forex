@@ -11,8 +11,8 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.EstrategiaDAO;
-import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.IndividuoOptimo;
@@ -41,7 +41,7 @@ public class IndividuosOptimosManager {
     public void obtenerIndividuosOptimos() throws ClassNotFoundException, SQLException, ParseException, GeneticDAOException {
         conn = JDBCUtil.getConnection();
         OracleParametroDAO parametroDAO = new OracleParametroDAO(conn);
-        IndividuoDAO individuoDAO = new IndividuoDAO(conn);
+        OracleIndividuoDAO individuoDAO = new OracleIndividuoDAO(conn);
         OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
         EstrategiaDAO estrategiaDAO = new EstrategiaDAO(conn);
         Date fechaMaxHistorico = datoHistoricoDAO.getFechaHistoricaMaxima();

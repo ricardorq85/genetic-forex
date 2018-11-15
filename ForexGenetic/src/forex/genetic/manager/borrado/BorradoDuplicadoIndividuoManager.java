@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import forex.genetic.dao.IndividuoDAO;
+import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.LogUtil;
@@ -23,7 +23,7 @@ public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 		super(conn, "DUPLICADO_INDIVIDUO");
 	}
 	
-	public BorradoDuplicadoIndividuoManager(Connection conn, IndividuoDAO individuoDAO, String tipoProceso)
+	public BorradoDuplicadoIndividuoManager(Connection conn, OracleIndividuoDAO individuoDAO, String tipoProceso)
 			throws ClassNotFoundException, SQLException {
 		super(conn, individuoDAO, tipoProceso);
 	}

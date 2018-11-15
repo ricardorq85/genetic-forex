@@ -2,60 +2,57 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.manager;
+package forex.genetic.manager.oracle;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.ProcesoPoblacionDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleProcesoEjecucionDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
-import forex.genetic.thread.ProcesarIndividuoThreadBD;
+import forex.genetic.manager.ProcesoIndividuoManager;
+import forex.genetic.manager.PropertiesManager;
+import forex.genetic.thread.oracle.OracleProcesarIndividuoThread;
 import forex.genetic.util.LogUtil;
+import forex.genetic.util.ThreadUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *
  * @author ricardorq85
  */
-public class PoblacionManagerBD {
+public class OracleProcesoIndividuoManager extends ProcesoIndividuoManager {
 
 	private Connection conn;
-	private ProcesoPoblacionDAO poblacionDAO;
-	private OracleDatoHistoricoDAO dhDAO;
-	private Date maxFechaHistorico;
-	private Date minFechaHistorico;
-	// private String[] vistas = { "FILTERED_PTFS", "FILTERED_EOP",
-	// "FILTERED_PARALELAS_EOP", "FILTERED_PARA_OPERAR_SELL",
-	// "FILTERED_PARA_OPERAR_BUY", "FILTERED_PARA_OPERAR_BOTH" };
 
-	public PoblacionManagerBD() {
-		super();
+	public OracleProcesoIndividuoManager() {
 		try {
 			conn = JDBCUtil.getConnection();
-			poblacionDAO = new ProcesoPoblacionDAO(conn);
+			poblacionDAO = new OracleProcesoEjecucionDAO(conn);
 			dhDAO = new OracleDatoHistoricoDAO(conn);
-			maxFechaHistorico = dhDAO.getFechaHistoricaMaxima();
-			minFechaHistorico = dhDAO.getFechaHistoricaMinima();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} catch (GeneticDAOException e) {
-			e.printStackTrace();
 		}
 	}
 
-	public void process() {
+	public void process() throws GeneticBusinessException {
 		this.process(false);
 	}
 
-	public void process(boolean onlyOne) {
+	public void process(boolean onlyOne) throws GeneticBusinessException {
 		boolean any;
+		try {
+			maxFechaHistorico = dhDAO.getFechaHistoricaMaxima();
+			minFechaHistorico = dhDAO.getFechaHistoricaMinima();
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException("process fechas", e);
+		}
 		try {
 			do {
 				any = false;
@@ -66,10 +63,10 @@ public class PoblacionManagerBD {
 					LogUtil.logTime("Obteniendo individuos para el filtro " + countFiltro + ": " + filtroAdicional, 1);
 					List<Individuo> individuos = poblacionDAO.getIndividuos(filtroAdicional, maxFechaHistorico);
 					if ((individuos != null) && (!individuos.isEmpty())) {
-						ProcesarIndividuoThreadBD procesarIndividuoThread = new ProcesarIndividuoThreadBD(
+						OracleProcesarIndividuoThread procesarIndividuoThread = new OracleProcesarIndividuoThread(
 								"FILTRO_ADICIONAL_" + countFiltro, individuos);
 						procesarIndividuoThread.setMaxFechaHistorico(maxFechaHistorico);
-						//procesarIndividuoThread.setMaxFechaHistorico(DateUtil.adicionarMinutos(maxFechaHistorico,1));
+						// procesarIndividuoThread.setMaxFechaHistorico(DateUtil.adicionarMinutos(maxFechaHistorico,1));
 						procesarIndividuoThread.setMinFechaHistorico(minFechaHistorico);
 						procesarIndividuoThread.start();
 						threads.add(procesarIndividuoThread);
@@ -86,12 +83,10 @@ public class PoblacionManagerBD {
 						filtroAdicional = null;
 					}
 				}
-				for (Thread thread : threads) {
-					thread.join();
-				}
+				ThreadUtil.joinThreads(threads);
 				this.consolidarIndividuo();
 			} while (any && !onlyOne);
-		} catch (InterruptedException | SQLException ex) {
+		} catch (SQLException | GeneticDAOException ex) {
 			ex.printStackTrace();
 		} finally {
 			JDBCUtil.close(conn);

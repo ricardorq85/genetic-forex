@@ -10,9 +10,9 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.mongodb.MongoGeneticDAO;
 import forex.genetic.dao.mongodb.MongoIndividuoDAO;
+import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.exception.GeneticDAOException;
@@ -25,7 +25,7 @@ import forex.genetic.manager.controller.IndicadorController;
  */
 public class MongoMigracionIndividuosManager extends MigracionManager<IndividuoEstrategia> {
 
-	private IndividuoDAO individuoDAO;
+	private OracleIndividuoDAO individuoDAO;
 
 	/**
 	 * @throws SQLException
@@ -35,7 +35,7 @@ public class MongoMigracionIndividuosManager extends MigracionManager<IndividuoE
 	 */
 	public MongoMigracionIndividuosManager() throws ClassNotFoundException, GeneticDAOException {
 		super();
-		individuoDAO = new IndividuoDAO(this.conn);
+		individuoDAO = new OracleIndividuoDAO(this.conn);
 	}
 
 	public void migrate() throws GeneticDAOException {

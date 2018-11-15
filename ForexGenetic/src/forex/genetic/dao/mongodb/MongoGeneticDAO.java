@@ -61,7 +61,7 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 	public void setCollectionName(String collectionName) {
 		this.collectionName = collectionName;
 	}
-	
+
 	public long delete(E obj, Date fechaReferencia) {
 		Document doc = new Document(mapper.toMapForDelete(obj, fechaReferencia));
 		DeleteResult result = this.collection.deleteMany(doc);
@@ -69,12 +69,47 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 	}
 
 	@Override
-	public void closeConnection() throws GeneticDAOException {
+	public void close() throws GeneticDAOException {
 	}
 
 	@Override
 	public void commit() throws GeneticDAOException {
 	}
 
-	
+	@Override
+	public boolean exists(E obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void insert(E obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void update(E obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean isClosed() throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void restoreConnection() throws GeneticDAOException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void rollback() throws GeneticDAOException {
+		// TODO Auto-generated method stub
+
+	}
+
 }

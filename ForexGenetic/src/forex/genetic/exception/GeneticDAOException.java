@@ -6,7 +6,6 @@ public class GeneticDAOException extends GeneticException {
 
 	public GeneticDAOException(String message, Throwable cause) {
 		super(message, cause);
-		// TODO Auto-generated constructor stub
 	}
 
 }

@@ -12,9 +12,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.IndividuoDAO;
-import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleIndividuoDAO;
+import forex.genetic.dao.oracle.OracleOperacionesDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.Individuo;
@@ -42,11 +42,11 @@ public class OldProcesarTendenciasManager {
     public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, NumberFormatException, GeneticDAOException {
         conn = JDBCUtil.getConnection();
         OperacionesManager operacionManager = new OperacionesManager();
-        OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
+        OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
         OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
         OracleParametroDAO parametroDAO = new OracleParametroDAO(conn);
         OracleTendenciaDAO tendenciaDAO = new OracleTendenciaDAO(conn);
-        IndividuoDAO individuoDAO = new IndividuoDAO(conn);
+        OracleIndividuoDAO individuoDAO = new OracleIndividuoDAO(conn);
         Date fechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");
         int step = Integer.parseInt(parametroDAO.getValorParametro("STEP_PROCESAR_TENDENCIA"));
         

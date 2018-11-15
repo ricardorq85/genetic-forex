@@ -9,26 +9,27 @@ import java.util.Map;
 import org.bson.Document;
 
 import forex.genetic.entities.DoubleInterval;
-import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Interval;
+import forex.genetic.entities.dto.ProcesoEjecucionDTO;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
+import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.factory.MonedaFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.Constants;
 
-public class MongoIndividuoMapper extends MongoMapper<IndividuoEstrategia> {
+public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 
 	@Override
-	public Map<String, Object> toPrimaryKeyMap(IndividuoEstrategia obj) {
+	public Map<String, Object> toPrimaryKeyMap(MongoIndividuo obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		objectMap.put("idIndividuo", obj.getId());
 		return objectMap;
 	}
 
-	public Map<String, Object> toMap(IndividuoEstrategia obj) {
+	public Map<String, Object> toMap(MongoIndividuo obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		objectMap.put("idIndividuo", obj.getId());
 		objectMap.put("idParent1", obj.getIdParent1());
@@ -49,6 +50,12 @@ public class MongoIndividuoMapper extends MongoMapper<IndividuoEstrategia> {
 		objectMap.put("openIndicadores", getMapIndicadores(obj.getOpenIndicators()));
 		objectMap.put("closeIndicadores", getMapIndicadores(obj.getCloseIndicators()));
 
+		Map<String, Object> procesoEjecucion = new HashMap<String, Object>();
+		procesoEjecucion.put("maxFechaHistorico", obj.getProcesoEjecucion().getMaxFechaHistorico());
+		procesoEjecucion.put("fechaAperturaActiva", obj.getProcesoEjecucion().getFechaAperturaActiva());
+
+		objectMap.put("procesoEjecucion", procesoEjecucion);
+
 		return objectMap;
 	}
 
@@ -65,8 +72,8 @@ public class MongoIndividuoMapper extends MongoMapper<IndividuoEstrategia> {
 	}
 
 	@Override
-	public IndividuoEstrategia helpOne(Document one) {
-		IndividuoEstrategia obj = new IndividuoEstrategia(one.getString("idIndividuo"));
+	public MongoIndividuo helpOne(Document one) {
+		MongoIndividuo obj = new MongoIndividuo(one.getString("idIndividuo"));
 		obj.setTakeProfit(one.getInteger("takeProfit"));
 		obj.setStopLoss(one.getInteger("stopLoss"));
 		obj.setLot(one.getDouble("lot"));
@@ -81,6 +88,12 @@ public class MongoIndividuoMapper extends MongoMapper<IndividuoEstrategia> {
 		obj.setOpenIndicators(getListIndicadores((List<Map<String, Object>>) one.get("openIndicadores")));
 		obj.setCloseIndicators(getListIndicadores((List<Map<String, Object>>) one.get("closeIndicadores")));
 
+		Map<String, Date> mapProcesoEjecucion = (Map<String, Date>)one.get("procesoEjecucion");
+		ProcesoEjecucionDTO procesoEjecucion = new ProcesoEjecucionDTO();
+		procesoEjecucion.setMaxFechaHistorico(mapProcesoEjecucion.get("maxFechaHistorico"));
+		procesoEjecucion.setFechaAperturaActiva(mapProcesoEjecucion.get("fechaAperturaActiva"));
+		
+		obj.setProcesoEjecucion(procesoEjecucion);
 		return obj;
 	}
 
@@ -119,7 +132,7 @@ public class MongoIndividuoMapper extends MongoMapper<IndividuoEstrategia> {
 	}
 
 	@Override
-	public Map<String, Object> toMapForDelete(IndividuoEstrategia obj, Date fechaReferencia) {
+	public Map<String, Object> toMapForDelete(MongoIndividuo obj, Date fechaReferencia) {
 		throw new UnsupportedOperationException();
 	}
 }

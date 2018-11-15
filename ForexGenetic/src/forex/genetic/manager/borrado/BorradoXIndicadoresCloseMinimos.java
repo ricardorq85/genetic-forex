@@ -9,7 +9,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import forex.genetic.dao.IndividuoDAO;
+import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.entities.Individuo;
 
 /**
@@ -25,7 +25,7 @@ public class BorradoXIndicadoresCloseMinimos extends BorradoManager {
 	@Override
 	public List<Individuo> consultarIndividuos(Individuo individuo) throws ClassNotFoundException, SQLException {
 		List<Individuo> individuos;
-		IndividuoDAO individuoDAO = new IndividuoDAO(conn);
+		OracleIndividuoDAO individuoDAO = new OracleIndividuoDAO(conn);
 		if (individuo == null) {
 			individuos = individuoDAO.consultarIndividuosIndicadoresCloseMinimos(2);
 		} else {

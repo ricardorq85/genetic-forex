@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.dao;
+package forex.genetic.dao.oracle;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -14,12 +14,15 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import forex.genetic.dao.IIndividuoDAO;
 import forex.genetic.dao.helper.IndividuoHelper;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.IndividuoOptimo;
+import forex.genetic.entities.Order;
 import forex.genetic.entities.indicator.IntervalIndicator;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
@@ -32,16 +35,10 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class IndividuoDAO {
+public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> implements IIndividuoDAO<IndividuoEstrategia> {
 
-	protected Connection connection = null;
-
-	/**
-	 *
-	 * @param connection
-	 */
-	public IndividuoDAO(Connection connection) {
-		this.connection = connection;
+	public OracleIndividuoDAO(Connection connection) {
+		super(connection);
 	}
 
 	public int duracionPromedioMinutos(String idIndividuo) throws SQLException {
@@ -952,19 +949,28 @@ public class IndividuoDAO {
 		return list;
 	}
 
-	public List<Individuo> consultarIndividuosParaBorrar(int param) throws SQLException {
-		return null;
+	@Override
+	public boolean exists(IndividuoEstrategia obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
-	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, int param) throws SQLException {
-		return null;
+	@Override
+	public void insert(IndividuoEstrategia obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
 	}
 
-	public List<Individuo> consultarIndividuosParaBorrar(Date fechaLimite) throws SQLException {
-		return null;
+	@Override
+	public void update(IndividuoEstrategia obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
 	}
 
-	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, Date fechaLimite) throws SQLException {
+	@Override
+	public List<? extends IndividuoEstrategia> getByProcesoEjecucion(String filtroAdicional, Date fechaHistorico)
+			throws GeneticDAOException {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

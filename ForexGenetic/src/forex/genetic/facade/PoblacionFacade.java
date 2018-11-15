@@ -6,21 +6,18 @@ package forex.genetic.facade;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import forex.genetic.dao.IndividuoDAO;
-import forex.genetic.dao.ProcesoPoblacionDAO;
+import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
-import forex.genetic.manager.PoblacionManagerBD;
-import forex.genetic.manager.PropertiesManager;
+import forex.genetic.factory.DriverDBFactory;
+import forex.genetic.manager.ProcesoIndividuoManager;
 import forex.genetic.manager.controller.IndicadorController;
-import forex.genetic.thread.ProcesarIndividuoThread;
 import forex.genetic.util.LogUtil;
+import forex.genetic.util.ThreadUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -30,7 +27,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
 public class PoblacionFacade implements IGeneticFacade {
 
 	/**
-	 * @throws GeneticDAOException 
+	 * @throws GeneticDAOException
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 *
@@ -40,43 +37,25 @@ public class PoblacionFacade implements IGeneticFacade {
 	}
 
 	public void process(boolean onlyOne) {
-		PoblacionManagerBD manager = new PoblacionManagerBD();
-		manager.process(onlyOne);
-	}
-
-	/**
-	 *
-	 */
-	public void process2() {
-		List<Thread> threads = new ArrayList<Thread>();
-		try {
-			int countFiltro = 1;
-			String filtroAdicional = PropertiesManager.getPropertyString("FILTRO_ADICIONAL_" + countFiltro);
-			while (filtroAdicional != null) {
-				Connection conn = JDBCUtil.getConnection();
-				ProcesoPoblacionDAO dao = new ProcesoPoblacionDAO(conn);
-				List<String> individuos = null;// dao.getIndividuos(filtroAdicional);
-				ProcesarIndividuoThread procesarIndividuoThread = new ProcesarIndividuoThread(
-						"FILTRO_ADICIONAL_" + countFiltro, dao, individuos);
-				procesarIndividuoThread.start();
-				threads.add(procesarIndividuoThread);
-
-				countFiltro++;
-				try {
-					filtroAdicional = PropertiesManager.getPropertyString("FILTRO_ADICIONAL_" + countFiltro);
-				} catch (IllegalArgumentException ex) {
-					filtroAdicional = null;
+		ProcesoIndividuoManager[] managers = (ProcesoIndividuoManager[]) DriverDBFactory
+				.createManager("procesoIndividuo");
+		Thread[] threads = new Thread[managers.length];
+		for (int i = 0; i < managers.length; i++) {
+			ProcesoIndividuoManager manager = managers[i];
+			Runnable runner = new Runnable() {
+				@Override
+				public void run() {
+					try {
+						manager.process(onlyOne);
+					} catch (GeneticBusinessException e) {
+						e.printStackTrace();
+					}
 				}
-			}
-			for (int i = 0; i < threads.size(); i++) {
-				Thread thread = threads.get(i);
-				thread.join();
-			}
-		} catch (InterruptedException ex) {
-			Logger.getLogger(PoblacionFacade.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (ClassNotFoundException | SQLException ex) {
-			ex.printStackTrace();
+			};
+			threads[i] = new Thread(runner);
+			threads[i].start();
 		}
+		ThreadUtil.joinThreads(threads);
 	}
 
 	/**
@@ -88,7 +67,7 @@ public class PoblacionFacade implements IGeneticFacade {
 		Connection conn = null;
 		try {
 			conn = JDBCUtil.getConnection();
-			IndividuoDAO dao = new IndividuoDAO(conn);
+			OracleIndividuoDAO dao = new OracleIndividuoDAO(conn);
 
 			List<IndividuoEstrategia> individuos = poblacion.getIndividuos();
 			int countError = 0;

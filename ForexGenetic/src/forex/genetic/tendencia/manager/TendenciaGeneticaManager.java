@@ -13,8 +13,8 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.IndividuoTendenciaDAO;
-import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleOperacionesDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.AnalyzeProcesoTendencia;
@@ -50,7 +50,7 @@ public class TendenciaGeneticaManager {
 
     private Connection conn = null;
     private OperacionesManager operacionManager = null;
-    private OperacionesDAO operacionesDAO = null;
+    private OracleOperacionesDAO operacionesDAO = null;
     private OracleDatoHistoricoDAO datoHistoricoDAO = null;
     private OracleParametroDAO parametroDAO = null;
     private OracleTendenciaDAO tendenciaDAO = null;
@@ -71,7 +71,7 @@ public class TendenciaGeneticaManager {
         this.indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.IndividuoTendencia);
         conn = JDBCUtil.getConnection();
         operacionManager = new OperacionesManager();
-        operacionesDAO = new OperacionesDAO(conn);
+        operacionesDAO = new OracleOperacionesDAO(conn);
         datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
         parametroDAO = new OracleParametroDAO(conn);
         tendenciaDAO = new OracleTendenciaDAO(conn);
