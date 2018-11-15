@@ -3,7 +3,6 @@ package forex.genetic.factory;
 import java.sql.SQLException;
 
 import forex.genetic.dao.IGeneticDAO;
-import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.dao.mongodb.MongoGeneticDAO;
 import forex.genetic.dao.mongodb.MongoParametroDAO;
@@ -11,6 +10,7 @@ import forex.genetic.dao.mongodb.MongoTendenciaDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.dao.oracle.OracleGeneticDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
+import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
@@ -58,7 +58,7 @@ public class DriverDBFactory extends GeneticFactory {
 		} else if ("tendencia".equals(entidad)) {
 			dao = new OracleTendenciaDAO(oracleDataClient.getClient());
 		} else if ("parametro".equals(entidad)) {
-			dao = new ParametroDAO(oracleDataClient.getClient());
+			dao = new OracleParametroDAO(oracleDataClient.getClient());
 		} else {
 			throw new IllegalArgumentException(
 					new StringBuilder("Entidad no soportada para crear DAO: ").append(entidad).toString());

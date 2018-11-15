@@ -17,39 +17,36 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.logging.Logger;
 
-import forex.genetic.tendencia.manager.MaxMinTendenciasManager;
+import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.manager.RetrocesosManager;
 
 /**
  *
  * @author ricardorq85
  */
-public class ForexMaxMinTendencias {
+public class ForexRetrocesos {
 
     /**
      * @param args the command line arguments
-     * @throws java.text.ParseException
+     * @throws java.sql.SQLException
+     * @throws GeneticDAOException 
      */
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, ParseException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, SQLException, GeneticDAOException {
         long id = currentTimeMillis();
         load().join();
-        logTime("ForexMaxMinTendencias: " + id, 1);
+        logTime("ForexRetrocesos: " + id, 1);
         String name = getPropertyString(LOG_PATH)
-                + "MaxMinTendencias_" + id + "_log.log";
+                + "Retrocesos_" + id + "_log.log";
         PrintStream out = new PrintStream(name, Charset.defaultCharset().name());
         setOut(out);
         setErr(out);
         logTime("Inicio: " + id, 1);
         setId(Long.toString(id));
-        try {
-            MaxMinTendenciasManager manager = new MaxMinTendenciasManager();
-            manager.procesarMaxMinTendencias();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        RetrocesosManager manager = new RetrocesosManager();
+        manager.procesarMaximosRetroceso();
         logTime("Fin: " + id, 1);
     }
-    private static final Logger LOG = Logger.getLogger(ForexMaxMinTendencias.class.getName());
+    private static final Logger LOG = Logger.getLogger(ForexRetrocesos.class.getName());
 }

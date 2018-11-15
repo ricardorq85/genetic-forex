@@ -182,27 +182,9 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	}
 
 	@Override
-	public boolean existHistorico(Point point) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public List<Point> consultarHistorico(Date fechaBase) throws GeneticDAOException {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void insertDatoHistorico(Point point) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateDatoHistorico(Point point) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -239,5 +221,23 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	public double consultarPrecioPonderado(Date fecha) throws GeneticDAOException {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public boolean exists(Point obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void insert(Point obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(Point obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -5,6 +5,8 @@
 package forex.genetic;
 
 import static forex.genetic.delegate.GeneticDelegate.setId;
+import static forex.genetic.manager.PropertiesManager.getOperationType;
+import static forex.genetic.manager.PropertiesManager.getPair;
 import static forex.genetic.manager.PropertiesManager.getPropertyString;
 import static forex.genetic.manager.PropertiesManager.load;
 import static forex.genetic.util.Constants.LOG_PATH;
@@ -18,34 +20,41 @@ import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 
-import forex.genetic.delegate.GeneticDelegateBD;
+import forex.genetic.delegate.PoblacionDelegate;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.proxy.ProcesosAlternosProxy;
 
 /**
  *
  * @author ricardorq85
  */
-public class ForexGeneticBD {
+public class ForexInsertDatosHistoricos {
 
 	/**
+	 *
 	 * @param args
-	 *            the command line arguments
-	 * @throws java.lang.InterruptedException
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 * @throws InterruptedException
+	 * @throws GeneticDAOException 
 	 */
-	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, GeneticDAOException {
 		long id = currentTimeMillis();
 		load().join();
-		logTime("ForexGeneticBD.java ProcesarOperaciones: " + id, 1);
-		StringBuilder name = new StringBuilder(getPropertyString(LOG_PATH));
-		name.append("ProcesarOperaciones_").append(id).append("_log.log");
+		logTime("ForexInsertDatosHistoricos: " + id, 1);
+		setId("" + id);
+		StringBuilder name = new StringBuilder();
+		name.append(getPropertyString(LOG_PATH)).append("InsertDatosHistoricos_");
+		name.append(getOperationType()).append(getPair()).append(id).append(".log");
 		PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
 		setOut(out);
 		setErr(out);
-		logTime("Inicio: " + id, 1);
-		setId(Long.toString(id));
-		GeneticDelegateBD delegate = new GeneticDelegateBD();
-		delegate.process();
-		logTime("Fin: " + id, 1);
+		
+		PoblacionDelegate delegate = new PoblacionDelegate();
+		logTime("Init Insert Datos Historicos", 1);
+		delegate.cargarDatosHistoricos();
+		logTime("End Insert Datos Historicos", 1);
+		
 		logTime("Lanzando Procesos alternos...", 1);
 		try {
 			ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(id);
@@ -53,7 +62,6 @@ public class ForexGeneticBD {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		delegate.getFileOutManager().close();
-		logTime("Fin Proceso alternos", 1);
+		logTime("End Proceso alternos", 1);
 	}
 }

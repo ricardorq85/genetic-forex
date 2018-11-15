@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.LogUtil;
 
 /**
@@ -25,8 +26,9 @@ public class BorradoDuplicadoOperacionesManager extends BorradoDuplicadoIndividu
 	 *
 	 * @param tipoProceso
 	 * @throws ClassNotFoundException
+	 * @throws GeneticDAOException 
 	 */
-	protected void borrarDuplicados() throws ClassNotFoundException, SQLException {
+	protected void borrarDuplicados() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		try {
 			List<Individuo> individuosPadres = individuoDAO.consultarIndividuosPadreRepetidos(tipoProceso);
 			LogUtil.logTime("Individuos padres consultados: " + individuosPadres.size(), 1);
@@ -52,7 +54,7 @@ public class BorradoDuplicadoOperacionesManager extends BorradoDuplicadoIndividu
 		}
 	}	
 
-	protected void borrarDuplicados(Individuo individuo) throws ClassNotFoundException, SQLException {
+	protected void borrarDuplicados(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
 		try {
 			int count = 0;
 			List<Individuo> individuosRepetidos = individuoDAO.consultarIndividuoHijoRepetidoOperaciones(individuo);

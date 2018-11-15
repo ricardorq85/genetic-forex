@@ -7,6 +7,7 @@ package forex.genetic.dao.mongodb;
 import com.mongodb.client.model.IndexOptions;
 
 import forex.genetic.entities.DatoAdicionalTPO;
+import forex.genetic.exception.GeneticDAOException;
 
 /**
  *
@@ -26,6 +27,24 @@ public class MongoDatoAdicionalTPODAO extends MongoGeneticDAO<DatoAdicionalTPO> 
 
 //		this.collection.createIndex(Indexes.ascending("periodo", "fechaBase", "tipoOperacion", "tipoExportacion"),
 	//			indexOptions);
+	}
+
+	@Override
+	public boolean exists(DatoAdicionalTPO obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void insert(DatoAdicionalTPO obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(DatoAdicionalTPO obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

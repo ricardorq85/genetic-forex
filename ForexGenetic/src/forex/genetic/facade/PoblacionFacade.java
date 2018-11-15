@@ -15,6 +15,7 @@ import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.ProcesoPoblacionDAO;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.PoblacionManagerBD;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.controller.IndicadorController;
@@ -29,11 +30,12 @@ import forex.genetic.util.jdbc.JDBCUtil;
 public class PoblacionFacade implements IGeneticFacade {
 
 	/**
+	 * @throws GeneticDAOException 
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 *
 	 */
-	public void process() {
+	public void process() throws GeneticDAOException {
 		this.process(false);
 	}
 

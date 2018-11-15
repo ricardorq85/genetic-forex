@@ -10,6 +10,7 @@ import java.util.List;
 
 import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.LogUtil;
 
 /**
@@ -28,7 +29,7 @@ public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 	}
 
 	@Override
-	public void borrarIndividuos() throws ClassNotFoundException, SQLException {
+	public void borrarIndividuos() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		borrarDuplicados();
 	}
 
@@ -38,7 +39,7 @@ public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 	}
 
 	@Override
-	public void validarYBorrarIndividuo(Individuo individuo) throws ClassNotFoundException, SQLException {
+	public void validarYBorrarIndividuo(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
 		borrarDuplicados(individuo);
 	}
 
@@ -46,8 +47,9 @@ public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 	 *
 	 * @param tipoProceso
 	 * @throws ClassNotFoundException
+	 * @throws GeneticDAOException 
 	 */
-	protected void borrarDuplicados() throws ClassNotFoundException, SQLException {
+	protected void borrarDuplicados() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		try {
 			int count = 0;
 			List<Individuo> individuosRepetidos = individuoDAO.consultarIndividuosRepetidos();
@@ -63,7 +65,7 @@ public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 		}
 	}
 
-	protected void deleteRepetidos(List<Individuo> individuosRepetidos) throws SQLException {
+	protected void deleteRepetidos(List<Individuo> individuosRepetidos) throws SQLException, GeneticDAOException {
 		if (individuosRepetidos.size() > 0) {
 			LogUtil.logTime("Individuos repetidos consultados: " + individuosRepetidos.size(), 1);
 		}
@@ -71,7 +73,7 @@ public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 		conn.commit();
 	}
 
-	protected void borrarDuplicados(Individuo individuo) throws ClassNotFoundException, SQLException {
+	protected void borrarDuplicados(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
 		try {
 			int count = 0;
 			List<Individuo> individuosRepetidos = individuoDAO.consultarIndividuoHijoRepetido(individuo);

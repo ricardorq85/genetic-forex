@@ -6,12 +6,13 @@ import java.util.Date;
 
 import forex.genetic.entities.Extremos;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.Constants.OperationType;
 
 public class AgrupadorTendenciaFactorDatosManager extends AgrupadorTendenciaManager {
 
 	public AgrupadorTendenciaFactorDatosManager(Date fechaBase, Date maxFechaProceso, Connection conn)
-			throws SQLException {
+			throws SQLException, GeneticDAOException {
 		super(fechaBase, maxFechaProceso, conn);
 	}
 

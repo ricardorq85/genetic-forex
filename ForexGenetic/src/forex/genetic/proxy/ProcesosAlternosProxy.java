@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.borrado.BorradoCantidadOperacionesExageradasManager;
 import forex.genetic.manager.borrado.BorradoDuplicadoIndividuoBorradoManager;
 import forex.genetic.manager.borrado.BorradoDuplicadoIndividuoManager;
@@ -40,7 +41,7 @@ public class ProcesosAlternosProxy {
 	}
 
 	public void procesar()
-			throws ClassNotFoundException, SQLException, FileNotFoundException, UnsupportedEncodingException {
+			throws ClassNotFoundException, SQLException, FileNotFoundException, UnsupportedEncodingException, GeneticDAOException {
 		managers = new ArrayList<>();
 		managers.add(new BorradoDuplicadoIndividuoManager(conn));
 		managers.add(new BorradoDuplicadoIndividuoBorradoManager(conn));
@@ -69,7 +70,7 @@ public class ProcesosAlternosProxy {
 		logTime("Fin Procesos alternos", 1);
 	}
 
-	public void procesar(Individuo individuo) throws ClassNotFoundException, FileNotFoundException {
+	public void procesar(Individuo individuo) throws ClassNotFoundException, FileNotFoundException, GeneticDAOException {
 		try {
 			managers = new ArrayList<>();
 			managers.add(new BorradoDuplicadoIndividuoManager(conn));		

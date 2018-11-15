@@ -15,19 +15,20 @@ import static java.lang.System.setOut;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.logging.Logger;
 
-import forex.genetic.exception.GeneticException;
-import forex.genetic.mediator.PointToPointMediator;
+import forex.genetic.entities.ParametroOperacionPeriodo;
+import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.manager.IndividuosPeriodoManager;
 
 /**
  *
  * @author ricardorq85
  */
-public class ForexPointToPoint {
+public class ForexIndividuosPeriodo {
 
 	/**
 	 * @param args
@@ -35,25 +36,28 @@ public class ForexPointToPoint {
 	 * @throws java.lang.InterruptedException
 	 */
 	public static void main(String[] args)
-			throws IOException, ClassNotFoundException, InterruptedException, ParseException, NoSuchMethodException {
+			throws IOException, ClassNotFoundException, InterruptedException, ParseException {
 		long id = currentTimeMillis();
 		load().join();
-		String prefix = "PointToPoint";
-		logTime(prefix + ": " + id, 1);
-		String name = getPropertyString(LOG_PATH) + prefix + id + ".log";
-		PrintStream out = new PrintStream(name, Charset.defaultCharset().name());
+		logTime("ForexIndividuosXPeriodo: " + id, 1);
+		StringBuilder name = new StringBuilder(getPropertyString(LOG_PATH));
+		name.append("IndividuosXPeriodo_").append(id).append("_log.log");
+		PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
 		setOut(out);
 		setErr(out);
 		logTime("Inicio: " + id, 1);
 		setId(Long.toString(id));
 		try {
-			PointToPointMediator mediator = new PointToPointMediator();
-			mediator.init();
-			mediator.start();
-		} catch (SQLException | InstantiationException | IllegalAccessException | InvocationTargetException
-				| GeneticException ex) {
+			IndividuosPeriodoManager manager = new IndividuosPeriodoManager();
+			manager.ejecutarIndividuosXPeriodo(new ParametroOperacionPeriodo(), 0);
+		} catch (SQLException ex) {
 			ex.printStackTrace();
+		} catch (GeneticDAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		logTime("Fin: " + id, 1);
 	}
+
+	private static final Logger LOG = Logger.getLogger(ForexIndividuosPeriodo.class.getName());
 }

@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -44,8 +45,9 @@ public class RetrocesosManager {
      *
      * @throws ClassNotFoundException
      * @throws SQLException
+     * @throws GeneticDAOException 
      */
-    public void procesarMaximosRetroceso() throws ClassNotFoundException, SQLException {
+    public void procesarMaximosRetroceso() throws ClassNotFoundException, SQLException, GeneticDAOException {
         conn = JDBCUtil.getConnection();
         try {
             OperacionesManager operacionManager = new OperacionesManager(conn);

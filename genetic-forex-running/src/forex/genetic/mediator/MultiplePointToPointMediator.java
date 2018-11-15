@@ -1,41 +1,23 @@
 package forex.genetic.mediator;
 
-import static forex.genetic.util.LogUtil.logTime;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.List;
 
 import forex.genetic.dao.IDatoHistoricoDAO;
+import forex.genetic.dao.IParametroDAO;
 import forex.genetic.dao.ITendenciaDAO;
-import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.mongodb.MongoGeneticDAO;
-import forex.genetic.delegate.GeneticDelegateBD;
-import forex.genetic.delegate.PoblacionDelegate;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.DriverDBFactory;
-import forex.genetic.factory.ProcesarTendenciasFactory;
-import forex.genetic.manager.IndividuoManager;
-import forex.genetic.manager.IndividuoXIndicadorManager;
-import forex.genetic.manager.PropertiesManager;
-import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
-import forex.genetic.tendencia.manager.TendenciaBuySellManager;
-import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
-import forex.genetic.util.FileUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
-import forex.genetic.util.jdbc.JDBCUtil;
 
 public class MultiplePointToPointMediator extends PointToPointMediator {
 
@@ -44,7 +26,7 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 	private Date fechaHistoricaMaximaAnterior, fechaHistoricaMaximaNueva, ultimaFechaBaseTendencia;
 	private IDatoHistoricoDAO[] daosDatoHistorico;
 	private ITendenciaDAO[] daosTendencia;
-//	private ParametroGeneticDAO[] daosParametro;
+	private IParametroDAO[] daosParametro;
 	private MongoGeneticDAO<Tendencia> tendenciaDAO;
 
 	@Override
@@ -52,100 +34,49 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 		DataClient<?>[] dataClients = DriverDBFactory.createDataClient();
 		this.daosDatoHistorico = (IDatoHistoricoDAO[]) DriverDBFactory.createDAO("datoHistorico", dataClients);
 		this.daosTendencia = (ITendenciaDAO[]) DriverDBFactory.createDAO("tendencia", dataClients);
-		// this.daosParametro = (IGeneticDAO<Parametro>[])
-		// DriverDBFactory.createDAO("parametro", dataClients);
+		this.daosParametro = (IParametroDAO[]) DriverDBFactory.createDAO("parametro", dataClients);
 
-//		sourceExportedHistoryDataPath = parametroDAO.consultarByName("SOURCE_EXPORTED_HISTORY_DATA_PATH")
-		// .getParametroString();
-		// processedExportedHistoryDataPath =
-		// parametroDAO.consultarByName("PROCESSED_EXPORTED_HISTORY_DATA_PATH")
-//				.getParametroString();
-		// exportedPropertyFileName =
-		// parametroDAO.consultarByName("EXPORTED_PROPERTY_FILE_NAME").getParametroString();
-		// sourceEstrategiasPath =
-		// parametroDAO.consultarByName("SOURCE_ESTRATEGIAS_PATH").getParametroString();
+		sourceExportedHistoryDataPath = daosParametro[0].getValorParametro("SOURCE_EXPORTED_HISTORY_DATA_PATH");
+		processedExportedHistoryDataPath = daosParametro[0].getValorParametro("PROCESSED_EXPORTED_HISTORY_DATA_PATH");
+		exportedPropertyFileName = daosParametro[0].getValorParametro("EXPORTED_PROPERTY_FILE_NAME");
+		sourceEstrategiasPath = daosParametro[0].getValorParametro("SOURCE_ESTRATEGIAS_PATH");
 	}
 
 	@Override
-	public void start() throws IOException, SQLException {
-		while (true) {
-			this.fechaHistoricaMaximaAnterior = daosDatoHistorico[i].getFechaHistoricaMaxima();
-			int imported = importarDatosHistoricos();
-			this.fechaHistoricaMaximaNueva = daosDatoHistorico[i].getFechaHistoricaMaxima();
-			this.exportarDatosHistoricos();
-			this.setUltimaFechaTendencia(count);
-			LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
-					+ ",fechaHistoricaMaximaAnterior=" + DateUtil.getDateString(this.fechaHistoricaMaximaAnterior)
-					+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva) + ",count="
-					+ count, 1);
-			this.procesarIndividuos();
-			this.procesarTendencias();
-			this.exportarIndividuos();
-			this.crearNuevosIndividuos();
-			if (imported == 0) {
-				count++;
-			} else {
-				count = 1;
+	public void start() throws GeneticDAOException {
+		try {
+			while (true) {
+				int imported = 0;
+				for (int j = 0; j < daosDatoHistorico.length; j++) {
+					this.fechaHistoricaMaximaAnterior = DateUtil.obtenerFechaMinima(
+							daosDatoHistorico[j].getFechaHistoricaMaxima(), fechaHistoricaMaximaAnterior);
+					imported = importarDatosHistoricos();
+					this.fechaHistoricaMaximaNueva = DateUtil.obtenerFechaMinima(
+							daosDatoHistorico[j].getFechaHistoricaMaxima(), fechaHistoricaMaximaNueva);
+				}
+				this.exportarDatosHistoricos();
+				this.setUltimaFechaTendencia(count);
+				LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
+						+ ",fechaHistoricaMaximaAnterior=" + DateUtil.getDateString(this.fechaHistoricaMaximaAnterior)
+						+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva)
+						+ ",count=" + count, 1);
+				procesarIndividuos();
+				procesarTendencias();
+				exportarIndividuos();
+				crearNuevosIndividuos();
+				if (imported == 0) {
+					count++;
+				} else {
+					count = 1;
+				}
 			}
+		} catch (SQLException | IOException | ClassNotFoundException | NoSuchMethodException | InstantiationException
+				| IllegalAccessException | InvocationTargetException | ParseException | GeneticException e) {
+			throw new GeneticDAOException("Error start", e);
 		}
 	}
 
-	public int importarDatosHistoricos() throws GeneticDAOException, IOException {
-		logTime("Init Importar Datos Historicos", 1);
-		List<Path> files = copiarArchivosARuta();
-		ejecutarCarga(files);
-		logTime("End Importar Datos Historicos. fechaMaximaNueva=" + DateUtil.getDateString(fechaHistoricaMaximaNueva),
-				1);
-		return files.size();
-	}
-
-	protected void setUltimaFechaTendencia(int count) throws SQLException {
-		this.ultimaFechaBaseTendencia = tendenciaDAO.maxFechaBaseTendencia();
-		if ((this.ultimaFechaBaseTendencia == null) || (fechaHistoricaMaximaNueva.equals(ultimaFechaBaseTendencia))) {
-			int minutos = (int) (-(1440 * 0.7 * count + calcularFactorCount()));
-			this.ultimaFechaBaseTendencia = DateUtil.adicionarMinutos(fechaHistoricaMaximaNueva, minutos);
-		}
-	}
-
-	private int calcularFactorCount() {
-		return (count + 1);
-	}
-
-	private void exportarDatosHistoricos() throws SQLException, IOException {
-		logTime("Init Exportar Datos Historicos", 1);
-		Date fechaExport = DateUtil.adicionarMinutos(this.fechaHistoricaMaximaNueva, 1);
-		String fechaExportString = DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaExport);
-		FileUtil.save(exportedPropertyFileName, "FECHA_INICIO=" + fechaExportString + ",FECHA_FIN=");
-		logTime("End Exportar Datos Historicos=" + fechaExportString, 1);
-	}
-
-	private String[] getFileParameters(String fileName) {
-		String[] spt = fileName.split("-");
-		return spt;
-	}
-
-	protected void ejecutarCarga(List<Path> files) throws GeneticDAOException {
-		for (Path file : files) {
-			this.actualizarProperty(file);
-			PoblacionDelegate delegate = new PoblacionDelegate();
-			logTime("Init Insert Datos Historicos", 1);
-			delegate.cargarDatosHistoricos();
-			logTime("End Insert Datos Historicos", 1);
-		}
-	}
-
-	private void actualizarProperty(Path file) {
-		String fileName = file.getFileName().toFile().getName();
-		logTime("File:" + fileName, 1);
-		String[] fileParameters = getFileParameters(fileName);
-		String fileId = fileParameters[1];
-		PropertiesManager.setFileId(fileId);
-		String fileNumber = fileParameters[2].split("\\.")[0];
-		PropertiesManager.setProperty(Constants.INITIAL_POBLACION, fileNumber);
-		PropertiesManager.setProperty(Constants.END_POBLACION, fileNumber);
-	}
-
-	private void procesarIndividuos() throws FileNotFoundException {
+/*	private void procesarIndividuos() throws FileNotFoundException {
 		logTime("Init Procesar Individuos", 1);
 		GeneticDelegateBD delegate = new GeneticDelegateBD();
 		delegate.process(true);
@@ -154,7 +85,7 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 
 	private void procesarTendencias() throws SQLException, ClassNotFoundException {
 		logTime("Init Procesar Tendencias", 1);
-		ParametroDAO parametroDAO = new ParametroDAO(connection);
+		OracleParametroDAO parametroDAO = new OracleParametroDAO(connection);
 		int parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
 		int parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
 		Date fechaBaseFinal = fechaHistoricaMaximaNueva;
@@ -259,5 +190,5 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 			manager.export(path);
 		}
 	}
-
+*/
 }

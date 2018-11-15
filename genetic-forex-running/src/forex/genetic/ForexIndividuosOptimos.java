@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.logging.Logger;
 
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.IndividuosOptimosManager;
 
 /**
@@ -49,7 +50,10 @@ public class ForexIndividuosOptimos {
                 manager.obtenerIndividuosOptimos();
             } catch (SQLException ex) {
                 ex.printStackTrace();
-            }
+            } catch (GeneticDAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         logTime("Fin: " + id, 1);
     }

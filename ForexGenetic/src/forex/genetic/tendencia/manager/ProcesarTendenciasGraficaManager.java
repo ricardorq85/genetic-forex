@@ -14,9 +14,9 @@ import java.util.List;
 
 import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.OperacionesDAO;
-import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
+import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.AnalyzeProcesoTendencia;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Individuo;
@@ -54,7 +54,7 @@ public class ProcesarTendenciasGraficaManager {
         TendenciasManager tendenciasManager = new TendenciasManager();
         OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
         OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
-        ParametroDAO parametroDAO = new ParametroDAO(conn);
+        OracleParametroDAO parametroDAO = new OracleParametroDAO(conn);
         OracleTendenciaDAO tendenciaDAO = new OracleTendenciaDAO(conn);
         IndividuoDAO individuoDAO = new IndividuoDAO(conn);
         Date fechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");

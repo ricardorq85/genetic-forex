@@ -19,6 +19,7 @@ import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.OperacionesManager;
 import forex.genetic.proxy.ProcesosAlternosProxy;
 import forex.genetic.util.DateUtil;
@@ -67,12 +68,15 @@ public class ProcesarIndividuoThreadBD extends Thread {
 			}
 		} catch (SQLException | ClassNotFoundException ex) {
 			ex.printStackTrace();
+		} catch (GeneticDAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			JDBCUtil.close(conn);
 		}
 	}
 
-	protected void runIndividuo(Individuo individuo) throws ClassNotFoundException {
+	protected void runIndividuo(Individuo individuo) throws ClassNotFoundException, GeneticDAOException {
 		try {
 			daoIndividuoDDL.insertarIndividuoIndicadoresColumnas(individuo.getId());
 			connDDL.commit();
@@ -108,7 +112,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
 		}
 	}
 
-	private boolean validarYBorrarIndividuoInvalido(Individuo individuo) {
+	private boolean validarYBorrarIndividuoInvalido(Individuo individuo) throws GeneticDAOException {
 		boolean borrado = false;
 		try {
 			ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(0);
@@ -130,7 +134,7 @@ public class ProcesarIndividuoThreadBD extends Thread {
 	}
 
 	private Date procesarIndividuo(Individuo individuo, DateInterval intervaloFechasIndividuo)
-			throws SQLException, ClassNotFoundException, ParseException {
+			throws SQLException, ClassNotFoundException, ParseException, GeneticDAOException {
 		List<Point> points;
 		Date fechaInicialHistorico;
 		int indexFecha = 0;

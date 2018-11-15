@@ -13,6 +13,7 @@ import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.controller.OperationController;
 import forex.genetic.util.Constants;
 import forex.genetic.util.Constants.OperationType;
@@ -296,8 +297,9 @@ public class OperacionesManager {
 	 * @param fechaMaximo
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
+	 * @throws GeneticDAOException 
 	 */
-	public void procesarMaximosRetroceso(Date fechaMaximo) throws ClassNotFoundException, SQLException {
+	public void procesarMaximosRetroceso(Date fechaMaximo) throws ClassNotFoundException, SQLException, GeneticDAOException {
 		OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
 		List<Individuo> individuos = operacionesDAO.consultarOperacionesIndividuoRetroceso(fechaMaximo);
 		while ((individuos != null) && (!individuos.isEmpty())) {
@@ -322,9 +324,10 @@ public class OperacionesManager {
 	 * @param fechaMaximo
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
+	 * @throws GeneticDAOException 
 	 */
 	public void procesarMaximosRetroceso(Individuo individuo, Date fechaMaximo)
-			throws ClassNotFoundException, SQLException {
+			throws ClassNotFoundException, SQLException, GeneticDAOException {
 		OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
 		individuo = operacionesDAO.consultarOperacionesIndividuoRetroceso(individuo, fechaMaximo);
 
@@ -342,8 +345,9 @@ public class OperacionesManager {
 	 * @param individuo
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
+	 * @throws GeneticDAOException 
 	 */
-	public void procesarMaximosReproceso(Individuo individuo) throws ClassNotFoundException, SQLException {
+	public void procesarMaximosReproceso(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
 		OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
 		List<Order> ordenes = individuo.getOrdenes();
 		for (Order currentOrder : ordenes) {
@@ -356,7 +360,7 @@ public class OperacionesManager {
 		conn.commit();
 	}
 
-	public void calcularRetrocesoOrden(Order currentOrder) throws SQLException {
+	public void calcularRetrocesoOrden(Order currentOrder) throws SQLException, GeneticDAOException {
 		OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
 		Point pointRetroceso = datoHistoricoDAO.consultarRetroceso(currentOrder);
 		if (pointRetroceso != null) {

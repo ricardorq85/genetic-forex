@@ -23,6 +23,7 @@ import com.mongodb.client.model.Indexes;
 
 import forex.genetic.dao.helper.mongodb.MongoTendenciaParaOperarMapper;
 import forex.genetic.entities.TendenciaParaOperar;
+import forex.genetic.exception.GeneticDAOException;
 
 /**
  *
@@ -66,6 +67,24 @@ public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO<TendenciaParaOp
 		list = ((MongoTendenciaParaOperarMapper)mapper).helpList(cursor);
 
 		return list;
+	}
+
+	@Override
+	public boolean exists(TendenciaParaOperar obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void insert(TendenciaParaOperar obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(TendenciaParaOperar obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

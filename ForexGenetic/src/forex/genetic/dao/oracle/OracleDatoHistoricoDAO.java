@@ -46,16 +46,6 @@ public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements I
 		super(connection);
 	}
 
-	public void insertOrUpdate(Point point) throws GeneticDAOException {
-		if (exists(point)) {
-			update(point);
-			System.out.print("*");
-		} else {
-			insert(point);
-			System.out.print(".");
-		}
-	}
-
 	public int consultarCantidadPuntos() throws GeneticDAOException {
 		int cantidad = 0;
 		String sql = "SELECT COUNT(*) REGISTROS FROM DATOHISTORICO";

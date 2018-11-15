@@ -13,8 +13,8 @@ import java.util.List;
 import forex.genetic.dao.ProcesoPoblacionDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.thread.ProcesarIndividuoThreadBD;
-import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
@@ -44,6 +44,8 @@ public class PoblacionManagerBD {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (GeneticDAOException e) {
 			e.printStackTrace();
 		}
 	}

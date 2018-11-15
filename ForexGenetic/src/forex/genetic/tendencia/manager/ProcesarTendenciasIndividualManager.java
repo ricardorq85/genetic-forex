@@ -12,6 +12,7 @@ import java.util.Date;
 
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -25,7 +26,7 @@ public class ProcesarTendenciasIndividualManager extends ProcesarTendenciasBuySe
 
 	private OracleTendenciaDAO tendenciaDAO;
 
-	public ProcesarTendenciasIndividualManager() throws ClassNotFoundException, SQLException {
+	public ProcesarTendenciasIndividualManager() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		super();
 		tendenciaDAO = new OracleTendenciaDAO(conn);
 	}

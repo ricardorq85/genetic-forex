@@ -14,14 +14,15 @@ import java.util.List;
 
 import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.OperacionesDAO;
-import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
+import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.indicator.Indicator;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.OperacionesManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants;
@@ -38,12 +39,12 @@ public class OldProcesarTendenciasManager {
     public static final String TIPO_TENDENCIA = "ESTADISTICAS";
     private Connection conn = null;
     
-    public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException {
+    public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, NumberFormatException, GeneticDAOException {
         conn = JDBCUtil.getConnection();
         OperacionesManager operacionManager = new OperacionesManager();
         OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
         OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
-        ParametroDAO parametroDAO = new ParametroDAO(conn);
+        OracleParametroDAO parametroDAO = new OracleParametroDAO(conn);
         OracleTendenciaDAO tendenciaDAO = new OracleTendenciaDAO(conn);
         IndividuoDAO individuoDAO = new IndividuoDAO(conn);
         Date fechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");

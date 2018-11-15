@@ -4,9 +4,9 @@ import java.util.Date;
 
 import forex.genetic.delegate.GeneticDelegate;
 import forex.genetic.manager.PropertiesManager;
+import forex.genetic.util.Constants.OperationType;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.NumberUtil;
-import forex.genetic.util.Constants.OperationType;
 
 public class TendenciaParaOperar {
 

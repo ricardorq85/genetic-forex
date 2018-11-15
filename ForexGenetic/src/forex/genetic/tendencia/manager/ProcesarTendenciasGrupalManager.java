@@ -20,6 +20,7 @@ import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -34,7 +35,7 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 	private OracleTendenciaDAO tendenciaCompletaDAO, tendenciaUltimosDatosDAO;
 	private List<TendenciaParaOperarMaxMin> tendenciasResultado;
 
-	public ProcesarTendenciasGrupalManager() throws ClassNotFoundException, SQLException {
+	public ProcesarTendenciasGrupalManager() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		super();
 		tendenciaCompletaDAO = new OracleTendenciaDAO(conn);
 		tendenciaUltimosDatosDAO = new TendenciaUltimosDatosDAO(conn);
@@ -111,7 +112,7 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 		}
 	}
 
-	public void procesarDummy() throws SQLException {
+	public void procesarDummy() throws SQLException, GeneticDAOException {
 		for (int i = 1; i < 10; i++) {
 			tendenciaCompletaDAO.dummyTendencia(parametroFechaInicio, i * 10);
 		}
@@ -119,7 +120,7 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 
 	protected ProcesoTendenciaFiltradaBuySell procesarExporter(float tiempoTendencia, Date fechaBase)
 			throws ClassNotFoundException, SQLException, NoSuchMethodException, InstantiationException,
-			IllegalAccessException, InvocationTargetException {
+			IllegalAccessException, InvocationTargetException, GeneticDAOException {
 		String periodo = tiempoTendencia + "D";
 		double tiempoTendenciaMinutos = (tiempoTendencia) * 24 * 60;
 		ProcesoTendenciaFiltradaBuySell procesoTendencia = new ProcesoTendenciaFiltradaBuySell(periodo,

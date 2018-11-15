@@ -16,8 +16,8 @@ import java.util.List;
 import forex.genetic.dao.IndicatorDAO;
 import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.OperacionesDAO;
-import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Individuo;
@@ -28,6 +28,7 @@ import forex.genetic.entities.RangoOperacionIndividuo;
 import forex.genetic.entities.RangoOperacionIndividuoIndicador;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
@@ -47,7 +48,7 @@ public class IndividuoXIndicadorManager {
 	private final OracleDatoHistoricoDAO dhDAO;
 	private final IndicatorDAO indicadorDAO;
 	private final OperacionesDAO operacionesDAO;
-	private ParametroDAO parametroDAO;
+	private OracleParametroDAO parametroDAO;
 	private Date fechaMinima, fechaMaxima;
 	private int parametroMeses, parametroRetroceso, parametroPips, parametroCantidadMutar, parametroCantidadCruzar;
 	private int maximoMeses;
@@ -56,17 +57,17 @@ public class IndividuoXIndicadorManager {
 			.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 	private static boolean primeraVez = true;
 
-	public IndividuoXIndicadorManager() throws ClassNotFoundException, SQLException {
+	public IndividuoXIndicadorManager() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		this(null, null, 12);
 	}
 
 	public IndividuoXIndicadorManager(Date fechaMinima, Date fechaMaxima, int maximoMeses)
-			throws ClassNotFoundException, SQLException {
+			throws ClassNotFoundException, SQLException, GeneticDAOException {
 		conn = JDBCUtil.getConnection();
 		individuoDAO = new IndividuoDAO(conn);
 		dhDAO = new OracleDatoHistoricoDAO(conn);
 		indicadorDAO = new IndicatorDAO(conn);
-		parametroDAO = new ParametroDAO(conn);
+		parametroDAO = new OracleParametroDAO(conn);
 		operacionesDAO = new OperacionesDAO(conn);
 		this.fechaMinima = fechaMinima;
 		this.fechaMaxima = fechaMaxima;
@@ -84,7 +85,7 @@ public class IndividuoXIndicadorManager {
 		parametroCantidadCruzar = parametroDAO.getIntValorParametro("CANTIDAD_CRUZAR");
 	}
 
-	public void crearIndividuos() throws SQLException, ClassNotFoundException {
+	public void crearIndividuos() throws SQLException, ClassNotFoundException, GeneticDAOException {
 		if (primeraVez) {
 			this.configurarAmbiente();
 			primeraVez = false;

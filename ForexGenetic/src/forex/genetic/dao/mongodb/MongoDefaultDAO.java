@@ -6,6 +6,8 @@ package forex.genetic.dao.mongodb;
 
 import com.mongodb.client.model.IndexOptions;
 
+import forex.genetic.exception.GeneticDAOException;
+
 /**
  *
  * @author ricardorq85
@@ -26,6 +28,24 @@ public class MongoDefaultDAO<T> extends MongoGeneticDAO<T> {
 
 		//this.collection.createIndex(Indexes.ascending("moneda", "periodo", "fechaHistorico"), indexOptions);
 		//this.collection.createIndex(Indexes.ascending("fechaHistorico"), indexOptions);
+	}
+
+	@Override
+	public boolean exists(T obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void insert(T obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(T obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import forex.genetic.dao.mongodb.MongoGeneticDAO;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -24,12 +25,16 @@ public abstract class MigracionManager<E> {
 	 * @throws ClassNotFoundException
 	 *
 	 */
-	public MigracionManager() throws ClassNotFoundException, SQLException {
-		conn = JDBCUtil.getConnection();
+	public MigracionManager() throws ClassNotFoundException, GeneticDAOException {
+		try {
+			conn = JDBCUtil.getConnection();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error migracion manager", e);
+		}
 		mongoDestinoDAO = getDestinoDAO();
 	}
 	
 	protected abstract MongoGeneticDAO<E> getDestinoDAO();
 
-	public abstract void migrate() throws SQLException;
+	public abstract void migrate() throws GeneticDAOException;
 }

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.mongo;
+package forex.genetic;
 
 import static forex.genetic.delegate.GeneticDelegate.setId;
 import static forex.genetic.manager.PropertiesManager.getPropertyString;
@@ -13,44 +13,42 @@ import static java.lang.System.currentTimeMillis;
 import static java.lang.System.setErr;
 import static java.lang.System.setOut;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.sql.SQLException;
 
-import forex.genetic.mediator.MultiplePointToPointMediator;
+import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.facade.TendenciaFacade;
 
 /**
  *
  * @author ricardorq85
  */
-public class MongoPointToPoint {
+public class ForexTendencias {
 
 	/**
-	 * @param args the command line arguments
-	 * @throws                              java.lang.InterruptedException
-	 * @throws UnsupportedEncodingException
-	 * @throws FileNotFoundException
+	 * @param args
+	 *            the command line arguments
+	 * @throws java.lang.InterruptedException
 	 */
-	public static void main(String[] args)
-			throws InterruptedException, FileNotFoundException, UnsupportedEncodingException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 		long id = currentTimeMillis();
 		load().join();
-		String prefix = "PointToPoint";
-		logTime(prefix + ": " + id, 1);
-		String name = getPropertyString(LOG_PATH) + prefix + id + ".log";
+		logTime("Tendencias: " + id, 1);
+		String name = getPropertyString(LOG_PATH) + "Tendencias_" + id + ".log";
 		PrintStream out = new PrintStream(name, Charset.defaultCharset().name());
 		setOut(out);
 		setErr(out);
 		logTime("Inicio: " + id, 1);
 		setId(Long.toString(id));
 		try {
-			MultiplePointToPointMediator mediator = new MultiplePointToPointMediator();
-			mediator.init();
-			// mediator.start();
-		} catch (ClassNotFoundException ex) {
+			TendenciaFacade facade = new TendenciaFacade();
+			facade.procesarTendencias();
+		} catch (SQLException | GeneticDAOException ex) {
 			ex.printStackTrace();
 		}
 		logTime("Fin: " + id, 1);
 	}
+
 }

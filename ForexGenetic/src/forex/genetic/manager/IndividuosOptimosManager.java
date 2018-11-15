@@ -12,10 +12,11 @@ import java.util.List;
 
 import forex.genetic.dao.EstrategiaDAO;
 import forex.genetic.dao.IndividuoDAO;
-import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.IndividuoOptimo;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.util.DateUtil;
@@ -35,10 +36,11 @@ public class IndividuosOptimosManager {
      * @throws ClassNotFoundException
      * @throws SQLException
      * @throws ParseException
+     * @throws GeneticDAOException 
      */
-    public void obtenerIndividuosOptimos() throws ClassNotFoundException, SQLException, ParseException {
+    public void obtenerIndividuosOptimos() throws ClassNotFoundException, SQLException, ParseException, GeneticDAOException {
         conn = JDBCUtil.getConnection();
-        ParametroDAO parametroDAO = new ParametroDAO(conn);
+        OracleParametroDAO parametroDAO = new OracleParametroDAO(conn);
         IndividuoDAO individuoDAO = new IndividuoDAO(conn);
         OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
         EstrategiaDAO estrategiaDAO = new EstrategiaDAO(conn);

@@ -29,4 +29,15 @@ public abstract class OracleGeneticDAO<E> implements IGeneticDAO<E> {
 			throw new GeneticDAOException("Error cerrando conexion", e);
 		}
 	}
+
+	public void insertOrUpdate(E obj) throws GeneticDAOException {
+		if (exists(obj)) {
+			update(obj);
+			System.out.print("*");
+		} else {
+			insert(obj);
+			System.out.print(".");
+		}
+	}
+
 }

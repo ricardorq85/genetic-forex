@@ -22,6 +22,7 @@ import java.sql.SQLException;
 
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.delegate.MigracionDelegate;
+import forex.genetic.exception.GeneticDAOException;
 
 /**
  *
@@ -30,24 +31,24 @@ import forex.genetic.delegate.MigracionDelegate;
 public class MongoMigrarDatosHistoricos {
 
 	public static void main(String[] args)
-			throws IOException, ClassNotFoundException, InterruptedException, SQLException {
+			throws IOException, ClassNotFoundException, InterruptedException, SQLException, GeneticDAOException {
 		long id = currentTimeMillis();
 		load().join();
-		logTime("ForexMigrarDatosHistoricos: " + id, 1);
+		logTime("MongoMigrarDatosHistoricos: " + id, 1);
 		setId("" + id);
 		StringBuilder name = new StringBuilder();
-		name.append(getPropertyString(LOG_PATH)).append("MigrarDatosHistoricos_");
+		name.append(getPropertyString(LOG_PATH)).append("MongoMigrarDatosHistoricos_");
 		name.append(getOperationType()).append(getPair()).append(id).append(".log");
 		PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
 		setOut(out);
 		setErr(out);
 
-		Object t = new MongoDatoHistoricoDAO(true);
+		//Object t = new MongoDatoHistoricoDAO(true);
 		MigracionDelegate delegate = new MigracionDelegate();
 		logTime("Init Migrar Datos Historicos", 1);
 		delegate.migrarDatosHistoricos();
 		logTime("End Migrar Datos Historicos", 1);
-		delegate.migrarIndividuos();
+		//delegate.migrarIndividuos();
 //		MongoTendenciaParaOperarDAO tendenciaParaOperarDAO = new MongoTendenciaParaOperarDAO();
 		// Date fecha = tendenciaParaOperarDAO.getFechaBaseMinima();
 		// logTime(DateUtil.getDateString(fecha), 1);

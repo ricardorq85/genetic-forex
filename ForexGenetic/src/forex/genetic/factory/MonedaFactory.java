@@ -3,23 +3,24 @@ package forex.genetic.factory;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import forex.genetic.dao.ParametroDAO;
+import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.Moneda;
 import forex.genetic.entities.MonedaEURJPY;
 import forex.genetic.entities.MonedaUSDCAD;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 public class MonedaFactory {
 
 	private static Connection conn;
-	private static ParametroDAO parametroDAO;
+	private static OracleParametroDAO parametroDAO;
 	private static boolean consultado = false;
 	private static Moneda moneda;
 
 	static {
 		try {
 			conn = JDBCUtil.getConnection();
-			parametroDAO = new ParametroDAO(conn);
+			parametroDAO = new OracleParametroDAO(conn);
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
@@ -32,7 +33,7 @@ public class MonedaFactory {
 			if (parametroDAO != null) {
 				try {
 					m = parametroDAO.getValorParametro(nombreParametro);
-				} catch (SQLException e) {
+				} catch (GeneticDAOException e) {
 					m = null;
 					e.printStackTrace();
 				}

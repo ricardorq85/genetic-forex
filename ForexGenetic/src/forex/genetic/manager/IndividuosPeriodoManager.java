@@ -1,7 +1,6 @@
 package forex.genetic.manager;
 
 import static forex.genetic.util.LogUtil.logAvance;
-import static forex.genetic.util.LogUtil.logEnter;
 import static forex.genetic.util.LogUtil.logTime;
 
 import java.sql.Connection;
@@ -13,11 +12,12 @@ import java.util.Random;
 
 import forex.genetic.dao.EstrategiaOperacionPeriodoDAO;
 import forex.genetic.dao.OperacionesDAO;
-import forex.genetic.dao.ParametroDAO;
+import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.ParametroOperacionPeriodo;
 import forex.genetic.entities.PipsAgrupado;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -30,7 +30,7 @@ public class IndividuosPeriodoManager {
 
 	private Connection conn = null;
 	private InclusionesManager inclusionesManager;
-	private ParametroDAO parametroDAO;
+	private OracleParametroDAO parametroDAO;
 	private OperacionesDAO operacionesDAO;
 	private EstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO;
 	private static final String[] ORDERS = { "NVL(PIPS_SEMANA,0)", "NVL(PIPS_MES,0)", "NVL(PIPS_ANYO,0)",
@@ -46,11 +46,11 @@ public class IndividuosPeriodoManager {
 	private String[] vistas = { "FILTERED_PTFS", "FILTERED_EOP", "FILTERED_PARA_OPERAR_SELL",
 			"FILTERED_PARA_OPERAR_BUY" };
 
-	public IndividuosPeriodoManager() throws ClassNotFoundException, SQLException {
+	public IndividuosPeriodoManager() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		super();
 		inclusionesManager = new InclusionesManager();
 		conn = JDBCUtil.getConnection();
-		parametroDAO = new ParametroDAO(conn);
+		parametroDAO = new OracleParametroDAO(conn);
 		operacionesDAO = new OperacionesDAO(conn);
 		estrategiaOperacionPeriodoDAO = new EstrategiaOperacionPeriodoDAO(conn);
 		this.inclusionesManager.setEstrategiaOperacionPeriodoDAO(estrategiaOperacionPeriodoDAO);

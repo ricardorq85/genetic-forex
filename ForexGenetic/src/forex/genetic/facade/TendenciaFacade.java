@@ -5,8 +5,9 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
+import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.tendencia.manager.TendenciaBuySellManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -15,17 +16,17 @@ import forex.genetic.util.jdbc.JDBCUtil;
 public class TendenciaFacade implements IGeneticFacade {
 
 	private TendenciaBuySellManager tendenciaManager;
-	private ParametroDAO parametroDAO;
+	private OracleParametroDAO parametroDAO;
 	private OracleTendenciaDAO tendenciaDAO;
 	protected Connection conn = null;
 	private List<Date> fechasXCantidad;
 	private Date parametroFechaInicio;
 	private int parametroStepTendencia, parametroFilasTendencia, parametroMesesTendencia, parametroNumXCantidad;
 
-	public TendenciaFacade() throws ClassNotFoundException, SQLException {
+	public TendenciaFacade() throws GeneticDAOException, ClassNotFoundException, SQLException {
 		conn = JDBCUtil.getConnection();
 		tendenciaManager = new TendenciaBuySellManager();
-		parametroDAO = new ParametroDAO(conn);
+		parametroDAO = new OracleParametroDAO(conn);
 		tendenciaDAO = new OracleTendenciaDAO(conn);
 		parametroFechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_TENDENCIA");
 		parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
@@ -41,7 +42,7 @@ public class TendenciaFacade implements IGeneticFacade {
 		}
 	}
 
-	public void procesarTendencias() throws ClassNotFoundException, SQLException {
+	public void procesarTendencias() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		this.tendenciaManager.calcularTendencias(parametroFechaInicio, parametroFilasTendencia);
 		if (parametroMesesTendencia > 0) {
 			this.procesarTendenciasXCantidad();
@@ -49,7 +50,7 @@ public class TendenciaFacade implements IGeneticFacade {
 		this.procesarTendenciasXFecha();
 	}
 
-	private void procesarTendenciasXCantidad() throws ClassNotFoundException, SQLException {
+	private void procesarTendenciasXCantidad() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		Date fechaBaseFinal = parametroFechaInicio;
 		int minutosUnDia = 1 * 24 * 60;
 		for (int i = 0; i < parametroNumXCantidad && i < fechasXCantidad.size(); i++) {
@@ -62,7 +63,7 @@ public class TendenciaFacade implements IGeneticFacade {
 		}
 	}
 
-	private void procesarTendenciasXFecha() throws ClassNotFoundException, SQLException {
+	private void procesarTendenciasXFecha() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		Date fechaBaseFinal = parametroFechaInicio;
 		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
 		while (fechaBaseFinal.after(DateUtil.adicionarDias(fechaBaseFinal, -30))) {

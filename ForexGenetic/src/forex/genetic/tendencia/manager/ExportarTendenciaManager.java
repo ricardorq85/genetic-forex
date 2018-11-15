@@ -11,6 +11,7 @@ import forex.genetic.entities.Point;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.Regresion;
 import forex.genetic.entities.TendenciaParaOperar;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.Constants.OperationType;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -42,14 +43,14 @@ public class ExportarTendenciaManager {
 		}
 	}
 
-	public void procesar() throws ClassNotFoundException, SQLException {
+	public void procesar() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		this.procesarRegresion();
 		if ((this.procesoTendencia.getRegresion() != null) && (this.procesoTendencia.isRegresionValida())) {
 			this.procesarTendencia();
 		}
 	}
 
-	protected void procesarTendencia() throws SQLException {
+	protected void procesarTendencia() throws SQLException, GeneticDAOException {
 		List<TendenciaParaOperar> tendencias = this.consultarTendencias();
 		if ((tendencias != null) && (!tendencias.isEmpty())) {
 			this.calcularPuntosDiferenciaInicial(tendencias);
@@ -76,7 +77,7 @@ public class ExportarTendenciaManager {
 		return tendencias;
 	}
 
-	private void calcularPuntosDiferenciaInicial(List<TendenciaParaOperar> tendencias) throws SQLException {
+	private void calcularPuntosDiferenciaInicial(List<TendenciaParaOperar> tendencias) throws SQLException, GeneticDAOException {
 		TendenciaParaOperar op = tendencias.get(0);
 		OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
 		Date fechaConsultaHistorico = datoHistoricoDAO.getFechaHistoricaMaxima(procesoTendencia.getFechaBase());

@@ -16,38 +16,41 @@ import static java.lang.System.setOut;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
+import java.text.ParseException;
 
-import forex.genetic.facade.TendenciaFacade;
+import forex.genetic.exception.GeneticException;
+import forex.genetic.mediator.PointToPointMediator;
 
 /**
  *
  * @author ricardorq85
  */
-public class ForexTendencias {
+public class ForexPointToPoint {
 
 	/**
 	 * @param args
 	 *            the command line arguments
 	 * @throws java.lang.InterruptedException
 	 */
-	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+	public static void main(String[] args)
+			throws IOException, ClassNotFoundException, InterruptedException, ParseException, NoSuchMethodException {
 		long id = currentTimeMillis();
 		load().join();
-		logTime("Tendencias: " + id, 1);
-		String name = getPropertyString(LOG_PATH) + "Tendencias_" + id + ".log";
+		String prefix = "PointToPoint";
+		logTime(prefix + ": " + id, 1);
+		String name = getPropertyString(LOG_PATH) + prefix + id + ".log";
 		PrintStream out = new PrintStream(name, Charset.defaultCharset().name());
 		setOut(out);
 		setErr(out);
 		logTime("Inicio: " + id, 1);
 		setId(Long.toString(id));
 		try {
-			TendenciaFacade facade = new TendenciaFacade();
-			facade.procesarTendencias();
-		} catch (SQLException ex) {
+			PointToPointMediator mediator = new PointToPointMediator();
+			mediator.init();
+			mediator.start();
+		} catch (GeneticException ex) {
 			ex.printStackTrace();
 		}
 		logTime("Fin: " + id, 1);
 	}
-
 }

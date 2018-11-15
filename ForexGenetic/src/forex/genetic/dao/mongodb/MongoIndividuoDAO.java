@@ -8,6 +8,7 @@ import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 
 import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.exception.GeneticDAOException;
 
 public class MongoIndividuoDAO extends MongoGeneticDAO<IndividuoEstrategia> {
 
@@ -29,5 +30,23 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<IndividuoEstrategia> {
 			obj = mapper.helpOne(cursor.next());
 		}
 		return obj;
+	}
+
+	@Override
+	public boolean exists(IndividuoEstrategia obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void insert(IndividuoEstrategia obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(IndividuoEstrategia obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
 	}
 }

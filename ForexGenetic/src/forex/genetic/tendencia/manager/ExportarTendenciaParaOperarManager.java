@@ -8,10 +8,11 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.TendenciaParaOperarDAO;
 import forex.genetic.dao.mongodb.MongoTendenciaParaOperarDAO;
+import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.IndividuoManager;
 import forex.genetic.util.jdbc.JDBCUtil;
 
@@ -21,22 +22,22 @@ public class ExportarTendenciaParaOperarManager {
 	private MongoTendenciaParaOperarDAO mongoTendenciaParaOperarDAO;
 
 	private TendenciaParaOperarDAO tendenciaParaOperarDAO;
-	private ParametroDAO parametroDAO;
+	private OracleParametroDAO parametroDAO;
 
 	private Date fechaInicio;
 	private static String sourceEstrategiasPath;
 
-	public ExportarTendenciaParaOperarManager() throws SQLException, ClassNotFoundException {
+	public ExportarTendenciaParaOperarManager() throws SQLException, ClassNotFoundException, GeneticDAOException {
 		connection = JDBCUtil.getConnection();
 		this.tendenciaParaOperarDAO = new TendenciaParaOperarDAO(connection);
 		this.mongoTendenciaParaOperarDAO = new MongoTendenciaParaOperarDAO();
-		this.parametroDAO = new ParametroDAO(connection);
+		this.parametroDAO = new OracleParametroDAO(connection);
 		ExportarTendenciaParaOperarManager.sourceEstrategiasPath = parametroDAO
 				.getValorParametro("SOURCE_ESTRATEGIAS_PATH");
 		this.fechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_EXPORTACION");
 	}
 
-	public void exportar() throws SQLException, ClassNotFoundException, IOException {
+	public void exportar() throws SQLException, ClassNotFoundException, IOException, GeneticDAOException {
 		String indId = IndividuoManager.nextId();
 
 		List<TendenciaParaOperarMaxMin> list = this.tendenciaParaOperarDAO
@@ -44,12 +45,12 @@ public class ExportarTendenciaParaOperarManager {
 		this.exportar(list, indId);
 
 //		List<? extends TendenciaParaOperar> listMongo = this.mongoTendenciaParaOperarDAO
-	//			.consultarTendenciasParaOperar(this.fechaInicio);
-		//this.exportar(listMongo, "Mongo_" + indId);
+		// .consultarTendenciasParaOperar(this.fechaInicio);
+		// this.exportar(listMongo, "Mongo_" + indId);
 	}
 
 	private void exportar(List<TendenciaParaOperarMaxMin> list, String name)
-			throws IOException, ClassNotFoundException, SQLException {
+			throws IOException, ClassNotFoundException, SQLException, GeneticDAOException {
 		ProcesarTendenciasGrupalManager grupalManager = new ProcesarTendenciasGrupalManager();
 		grupalManager.setTendenciasResultado(list);
 

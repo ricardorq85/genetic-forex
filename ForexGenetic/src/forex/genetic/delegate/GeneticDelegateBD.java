@@ -32,7 +32,7 @@ public class GeneticDelegateBD extends GeneticDelegate {
 		this.process(false);
 		return null;
 	}
-
+ 
 	public void process(boolean onlyOne) {
 		PoblacionFacade facade = new PoblacionFacade();
 		facade.process(onlyOne);

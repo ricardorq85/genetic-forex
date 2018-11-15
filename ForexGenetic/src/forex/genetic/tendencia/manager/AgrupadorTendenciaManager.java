@@ -17,6 +17,7 @@ import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
 import forex.genetic.entities.Regresion;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants.OperationType;
 import forex.genetic.util.DateUtil;
@@ -40,7 +41,7 @@ public class AgrupadorTendenciaManager {
 	private double stepLote = 0.01D;
 	private double maxLote = 0.1D;
 
-	public AgrupadorTendenciaManager(Date fechaBase, Date maxFechaProceso, Connection conn) throws SQLException {
+	public AgrupadorTendenciaManager(Date fechaBase, Date maxFechaProceso, Connection conn) throws SQLException, GeneticDAOException {
 		super();
 		this.conn = conn;
 		this.tendenciaParaOperarDAO = new TendenciaParaOperarDAO(conn);

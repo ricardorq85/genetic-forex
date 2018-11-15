@@ -3,6 +3,7 @@ package forex.genetic.dao.mongodb;
 import com.mongodb.client.model.IndexOptions;
 
 import forex.genetic.entities.Tendencia;
+import forex.genetic.exception.GeneticDAOException;
 
 /**
  *
@@ -24,6 +25,24 @@ public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> {
 
 		//this.collection.createIndex(Indexes.ascending("moneda", "periodo", "fechaHistorico"), indexOptions);
 		//this.collection.createIndex(Indexes.ascending("fechaHistorico"), indexOptions);
+	}
+
+	@Override
+	public boolean exists(Tendencia obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void insert(Tendencia obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(Tendencia obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

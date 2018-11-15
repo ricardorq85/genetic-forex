@@ -12,8 +12,8 @@ import java.util.List;
 
 import forex.genetic.dao.IndividuoDAO;
 import forex.genetic.dao.OperacionesDAO;
-import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
+import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.CalculoTendencia;
 import forex.genetic.entities.DiferenciaMaximaHistorico;
@@ -79,7 +79,7 @@ public class TendenciasManager {
 		if (conn == null) {
 			conn = JDBCUtil.getConnection();
 		}
-		ParametroDAO parametroDAO = new ParametroDAO(conn);
+		OracleParametroDAO parametroDAO = new OracleParametroDAO(conn);
 		Date fechaInicio = DateUtil.adicionarMinutos(parametroDAO.getDateValorParametro("FECHA_INICIO_TENDENCIA"), -1);
 		int stepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
 		this.calcularTendenciasFacade(fechaInicio, null, stepTendencia, -1);
@@ -113,7 +113,7 @@ public class TendenciasManager {
 		if (conn == null) {
 			conn = JDBCUtil.getConnection();
 		}
-		ParametroDAO parametroDAO = new ParametroDAO(conn);
+		OracleParametroDAO parametroDAO = new OracleParametroDAO(conn);
 		int stepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
 		this.calcularTendenciasFacade(fechaInicio, fechaFin, stepTendencia, filasTendencia);
 	}
@@ -141,7 +141,7 @@ public class TendenciasManager {
 		OperacionesManager operacionManager = new OperacionesManager(conn);
 		OperacionesDAO operacionesDAO = new OperacionesDAO(conn);
 		OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
-		ParametroDAO parametroDAO = new ParametroDAO(conn);
+		OracleParametroDAO parametroDAO = new OracleParametroDAO(conn);
 		OracleTendenciaDAO tendenciaDAO = new OracleTendenciaDAO(conn);
 		List<Point> points;
 		if (stepTendencia == 0) {
@@ -267,9 +267,9 @@ public class TendenciasManager {
 							tendencia.setFecha(new Date());
 							tendencia.setTipoCalculo("DEFAULT_"+k);
 							if (tendenciaDAO.exists(tendencia)) {
-								tendenciaDAO.updateTendencia(tendencia);
+								tendenciaDAO.update(tendencia);
 							} else {
-								tendenciaDAO.insertTendencia(tendencia);
+								tendenciaDAO.insert(tendencia);
 							}
 						}
 						conn.commit();

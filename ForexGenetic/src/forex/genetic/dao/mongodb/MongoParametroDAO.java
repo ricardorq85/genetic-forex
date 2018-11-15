@@ -8,6 +8,7 @@ import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 
 import forex.genetic.bo.Parametro;
+import forex.genetic.exception.GeneticDAOException;
 
 public class MongoParametroDAO extends MongoGeneticDAO<Parametro> {
 
@@ -29,5 +30,23 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> {
 			obj = mapper.helpOne(cursor.next());
 		}
 		return obj;
+	}
+
+	@Override
+	public boolean exists(Parametro obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void insert(Parametro obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(Parametro obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
 	}
 }

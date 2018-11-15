@@ -16,9 +16,9 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 
-import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
+import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.delegate.GeneticDelegateBD;
 import forex.genetic.delegate.PoblacionDelegate;
 import forex.genetic.exception.GeneticDAOException;
@@ -43,7 +43,7 @@ public class PointToPointMediator extends GeneticMediator {
 	private Date fechaHistoricaMaximaAnterior, fechaHistoricaMaximaNueva, ultimaFechaBaseTendencia;
 	private OracleDatoHistoricoDAO datoHistoricoDAO;
 	private OracleTendenciaDAO tendenciaDAO;
-	private ParametroDAO parametroDAO;
+	private OracleParametroDAO parametroDAO;
 	protected String sourceExportedHistoryDataPath;// =
 													// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\exported";
 	protected String processedExportedHistoryDataPath;// =
@@ -58,17 +58,12 @@ public class PointToPointMediator extends GeneticMediator {
 		this.connection = JDBCUtil.getGeneticConnection();
 		this.datoHistoricoDAO = new OracleDatoHistoricoDAO(connection);
 		this.tendenciaDAO = new OracleTendenciaDAO(connection);
-		this.parametroDAO = new ParametroDAO(connection);
+		this.parametroDAO = new OracleParametroDAO(connection);
 
-		try {
-			sourceExportedHistoryDataPath = parametroDAO.getValorParametro("SOURCE_EXPORTED_HISTORY_DATA_PATH");
-
-			processedExportedHistoryDataPath = parametroDAO.getValorParametro("PROCESSED_EXPORTED_HISTORY_DATA_PATH");
-			exportedPropertyFileName = parametroDAO.getValorParametro("EXPORTED_PROPERTY_FILE_NAME");
-			sourceEstrategiasPath = parametroDAO.getValorParametro("SOURCE_ESTRATEGIAS_PATH");
-		} catch (SQLException e) {
-			throw new GeneticDAOException("Error init", e);
-		}
+		sourceExportedHistoryDataPath = parametroDAO.getValorParametro("SOURCE_EXPORTED_HISTORY_DATA_PATH");
+		processedExportedHistoryDataPath = parametroDAO.getValorParametro("PROCESSED_EXPORTED_HISTORY_DATA_PATH");
+		exportedPropertyFileName = parametroDAO.getValorParametro("EXPORTED_PROPERTY_FILE_NAME");
+		sourceEstrategiasPath = parametroDAO.getValorParametro("SOURCE_ESTRATEGIAS_PATH");
 	}
 
 	@Override
@@ -112,7 +107,7 @@ public class PointToPointMediator extends GeneticMediator {
 		return (count + 1);
 	}
 
-	private void exportarDatosHistoricos() throws SQLException, IOException {
+	protected void exportarDatosHistoricos() throws SQLException, IOException {
 		logTime("Init Exportar Datos Historicos", 1);
 		Date fechaExport = DateUtil.adicionarMinutos(this.fechaHistoricaMaximaNueva, 1);
 		String fechaExportString = DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaExport);
@@ -155,7 +150,7 @@ public class PointToPointMediator extends GeneticMediator {
 		PropertiesManager.setProperty(Constants.END_POBLACION, fileNumber);
 	}
 
-	protected List<Path> copiarArchivosARuta()  throws GeneticDAOException, IOException {
+	protected List<Path> copiarArchivosARuta() throws GeneticDAOException, IOException {
 		String targetPathName = System.getProperty("user.dir") + "\\files\\";
 		Path sourcePath = FileSystems.getDefault().getPath(sourceExportedHistoryDataPath);
 		CopyFileVisitor fileVisitor = new CopyFileVisitor(sourceExportedHistoryDataPath, targetPathName,
@@ -164,16 +159,16 @@ public class PointToPointMediator extends GeneticMediator {
 		return fileVisitor.getCopiedFiles();
 	}
 
-	private void procesarIndividuos() throws FileNotFoundException {
+	protected void procesarIndividuos() throws FileNotFoundException {
 		logTime("Init Procesar Individuos", 1);
 		GeneticDelegateBD delegate = new GeneticDelegateBD();
 		delegate.process(true);
 		logTime("End Procesar Individuos", 1);
 	}
 
-	private void procesarTendencias() throws SQLException, ClassNotFoundException {
+	protected void procesarTendencias() throws SQLException, ClassNotFoundException, GeneticDAOException {
 		logTime("Init Procesar Tendencias", 1);
-		ParametroDAO parametroDAO = new ParametroDAO(connection);
+		OracleParametroDAO parametroDAO = new OracleParametroDAO(connection);
 		int parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
 		int parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
 		Date fechaBaseFinal = fechaHistoricaMaximaNueva;
@@ -207,7 +202,7 @@ public class PointToPointMediator extends GeneticMediator {
 		logTime("End Procesar Tendencias", 1);
 	}
 
-	private void exportarIndividuos()
+	protected void exportarIndividuos()
 			throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
 			InvocationTargetException, SQLException, ParseException, GeneticException, IOException {
 		// this.refrescarDatosTendencia();
@@ -244,7 +239,7 @@ public class PointToPointMediator extends GeneticMediator {
 		return (countFile > 0);
 	}
 
-	private void crearNuevosIndividuos() throws ClassNotFoundException, SQLException {
+	protected void crearNuevosIndividuos() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		logTime("Init Crear individuos x indicador", 1);
 		IndividuoXIndicadorManager manager = new IndividuoXIndicadorManager(ultimaFechaBaseTendencia,
 				fechaHistoricaMaximaNueva, 12);

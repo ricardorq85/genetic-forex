@@ -17,6 +17,7 @@ import forex.genetic.dao.OperacionesDAO;
 import forex.genetic.dao.ProcesoPoblacionDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.LogUtil;
 
 /**
@@ -51,15 +52,15 @@ public abstract class BorradoManager {
 	protected abstract List<Individuo> consultarIndividuos(Individuo individuo)
 			throws ClassNotFoundException, SQLException;
 
-	public void borrarIndividuos() throws ClassNotFoundException, SQLException {
+	public void borrarIndividuos() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		procesarBorradoIndividuos(null);
 	}
 
-	public void validarYBorrarIndividuo(Individuo individuo) throws ClassNotFoundException, SQLException {
+	public void validarYBorrarIndividuo(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
 		procesarBorradoIndividuos(individuo);
 	}
 
-	protected void procesarBorradoIndividuos(Individuo individuo) throws ClassNotFoundException, SQLException {
+	protected void procesarBorradoIndividuos(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
 		try {
 			List<Individuo> individuos = this.consultarIndividuos(individuo);
 			int count = 0;
@@ -76,7 +77,7 @@ public abstract class BorradoManager {
 		}
 	}
 
-	protected void smartDelete(List<Individuo> individuos) throws SQLException {
+	protected void smartDelete(List<Individuo> individuos) throws SQLException, GeneticDAOException {
 		for (Individuo individuo : individuos) {
 			int r_proceso = procesoDAO.deleteProceso(individuo.getId());
 			logTime("->Individuo: " + individuo.getId() + ". Borrados PROCESO = " + r_proceso, 1);

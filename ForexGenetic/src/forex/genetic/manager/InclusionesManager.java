@@ -7,11 +7,12 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.EstrategiaOperacionPeriodoDAO;
-import forex.genetic.dao.ParametroDAO;
+import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.DoubleRandomInterval;
 import forex.genetic.entities.IntegerRandomInterval;
 import forex.genetic.entities.ParametroOperacionPeriodo;
 import forex.genetic.entities.RandomInterval;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.NumberUtil;
 import forex.genetic.util.RandomUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -23,7 +24,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
 public class InclusionesManager {
 
 	private Connection conn = null;
-	private ParametroDAO parametroDAO;
+	private OracleParametroDAO parametroDAO;
 	private EstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO;
 	private int minimoInclusiones = 1000;
 	private static final int MINIMO_PIPS_SEMANA = -2000, MAXIMO_PIPS_SEMANA = 200, MINIMO_PIPS_MES = -2000,
@@ -40,10 +41,10 @@ public class InclusionesManager {
 			MINIMO_PENDIENTE_MES = -2000, MAXIMO_PENDIENTE_MES = 100, MINIMO_PENDIENTE_ANYO = -100,
 			MAXIMO_PENDIENTE_ANYO = 10, MINIMO_PENDIENTE_TOTALES = -100, MAXIMO_PENDIENTE_TOTALES = 1;
 
-	public InclusionesManager() throws ClassNotFoundException, SQLException {
+	public InclusionesManager() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		super();
 		conn = JDBCUtil.getConnection();
-		parametroDAO = new ParametroDAO(conn);
+		parametroDAO = new OracleParametroDAO(conn);
 		minimoInclusiones = parametroDAO.getIntValorParametro("MINIMO_INCLUSIONES");
 	}
 

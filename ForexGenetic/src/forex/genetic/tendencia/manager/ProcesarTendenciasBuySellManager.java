@@ -12,8 +12,9 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
 
-import forex.genetic.dao.ParametroDAO;
+import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -26,18 +27,18 @@ import forex.genetic.util.jdbc.JDBCUtil;
 public abstract class ProcesarTendenciasBuySellManager {
 
 	protected Connection conn = null;
-	protected ParametroDAO parametroDAO;
+	protected OracleParametroDAO parametroDAO;
 	protected Date parametroFechaInicio;
 	protected int parametroStep;
 	protected Date parametroFechaFin;
 	protected String tipoTendencia;
 	protected float[] parametroDiasTendencia;
 
-	public ProcesarTendenciasBuySellManager() throws SQLException, ClassNotFoundException {
+	public ProcesarTendenciasBuySellManager() throws SQLException, ClassNotFoundException, GeneticDAOException {
 		conn = JDBCUtil.getConnection();
 		this.tipoTendencia = "BUY_SELL_20170204-2";
 
-		parametroDAO = new ParametroDAO(conn);
+		parametroDAO = new OracleParametroDAO(conn);
 		parametroFechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");
 		parametroFechaFin = parametroDAO.getDateValorParametro("FECHA_FIN_PROCESAR_TENDENCIA");
 		parametroStep = parametroDAO.getIntValorParametro("STEP_PROCESAR_TENDENCIA");
@@ -83,7 +84,7 @@ public abstract class ProcesarTendenciasBuySellManager {
 
 	protected ExportarTendenciaManager procesarExporter(ProcesoTendenciaBuySell paraProcesar)
 			throws ClassNotFoundException, SQLException, NoSuchMethodException, InstantiationException,
-			IllegalAccessException, InvocationTargetException {
+			IllegalAccessException, InvocationTargetException, GeneticDAOException {
 		ExportarTendenciaManager exporter = getExporter(paraProcesar.getFechaBase());
 		exporter.setProcesoTendencia(paraProcesar);
 		exporter.procesar();

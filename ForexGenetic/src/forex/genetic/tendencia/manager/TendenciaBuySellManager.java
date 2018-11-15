@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.ParametroDAO;
 import forex.genetic.dao.TendenciaUltimosDatosDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
+import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.Estadistica;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
@@ -16,6 +16,7 @@ import forex.genetic.entities.ParametroConsultaEstadistica;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.entities.TendenciaEstadistica;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.OperacionesManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -25,20 +26,20 @@ import forex.genetic.util.jdbc.JDBCUtil;
 public class TendenciaBuySellManager extends TendenciasManager {
 
 	private static final double FACTOR_NUMERO_RANDOM_TENDENCIAS = 0.3;
-	private ParametroDAO parametroDAO;
+	private OracleParametroDAO parametroDAO;
 	private OperacionesManager operacionManager;
 	private OperacionesTendenciaDAO operacionesDAO;
 	private OracleDatoHistoricoDAO datoHistoricoDAO;
 	private OracleTendenciaDAO tendenciaDAO, tendenciaUltimosDatosDAO;
 	private Date fechaComparacion;
 
-	public TendenciaBuySellManager() throws ClassNotFoundException, SQLException {
+	public TendenciaBuySellManager() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		setup();
 	}
 
-	public void setup() throws ClassNotFoundException, SQLException {
+	public void setup() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		conn = JDBCUtil.getConnection();
-		parametroDAO = new ParametroDAO(conn);
+		parametroDAO = new OracleParametroDAO(conn);
 		operacionManager = new OperacionesManager(conn);
 		operacionesDAO = new OperacionesTendenciaDAO(conn);
 		datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
@@ -52,12 +53,12 @@ public class TendenciaBuySellManager extends TendenciasManager {
 	}
 
 	public List<TendenciaEstadistica> calcularTendencias(Date fechaBaseInicial, Date fechaBaseFinal, int filas)
-			throws SQLException {
+			throws SQLException, GeneticDAOException {
 		return this.calcularTendencias(1, fechaBaseInicial, fechaBaseFinal, filas);
 	}
 
 	public List<TendenciaEstadistica> calcularTendencias(int cantidadVeces, Date fechaBaseInicial, Date fechaBaseFinal,
-			int filas) throws SQLException {
+			int filas) throws SQLException, GeneticDAOException {
 		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
 		List<Point> pointsFechaTendencia = datoHistoricoDAO.consultarHistoricoOrderByPrecio(fechaBaseInicial,
 				fechaBaseFinal);
@@ -75,7 +76,7 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		return listaTendencias;
 	}
 
-	public List<TendenciaEstadistica> calcularTendencias(Date fechaBase, int filas) throws SQLException {
+	public List<TendenciaEstadistica> calcularTendencias(Date fechaBase, int filas) throws SQLException, GeneticDAOException {
 		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
 		List<Point> pointsFechaTendencia = datoHistoricoDAO.consultarHistorico(fechaBase, fechaBase);
 		if ((pointsFechaTendencia != null) && (!pointsFechaTendencia.isEmpty())) {
@@ -112,7 +113,7 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		return listaTendencias;
 	}
 
-	public void guardarTendencia(Tendencia tendencia) throws SQLException {
+	public void guardarTendencia(Tendencia tendencia) throws SQLException, GeneticDAOException {
 		guardarTendencia(tendencia, tendenciaDAO);
 		if (tendencia.getFechaBase().after(fechaComparacion)) {
 			guardarTendencia(tendencia,  tendenciaUltimosDatosDAO);
@@ -120,33 +121,34 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		conn.commit();
 	}
 	
-	public void guardarTendencia(Tendencia tendencia, OracleTendenciaDAO dao) throws SQLException {
+	public void guardarTendencia(Tendencia tendencia, OracleTendenciaDAO dao) throws SQLException, GeneticDAOException {
+		dao.insertOrUpdate(tendencia);
 		if (dao.exists(tendencia)) {
-			dao.updateTendencia(tendencia);
+			dao.update(tendencia);
 		} else {
-			dao.insertTendencia(tendencia);
+			dao.insert(tendencia);
 		}
 	}
 
-	public void borrarTendencia(String idIndividuo, Date fechaBase) throws SQLException {
+	public void borrarTendencia(String idIndividuo, Date fechaBase) throws SQLException, GeneticDAOException {
 		tendenciaDAO.deleteTendencia(idIndividuo, fechaBase);
 		conn.commit();
 	}
 
 	public TendenciaEstadistica calcularTendencia(Point currentPoint, Date fechaBase, String idIndividuo)
-			throws SQLException, CloneNotSupportedException, ClassNotFoundException {
+			throws SQLException, CloneNotSupportedException, ClassNotFoundException, GeneticDAOException {
 		Individuo individuo = operacionesDAO.consultarIndividuoOperacionActiva(idIndividuo, fechaBase, 2);
 		return this.calcularTendencia(currentPoint, individuo);
 	}
 
 	public TendenciaEstadistica calcularTendencia(Date fechaBase, String idIndividuo)
-			throws SQLException, CloneNotSupportedException, ClassNotFoundException {
+			throws SQLException, CloneNotSupportedException, ClassNotFoundException, GeneticDAOException {
 		Individuo individuo = operacionesDAO.consultarIndividuoOperacionActiva(idIndividuo, fechaBase, 2);
 		return this.calcularTendencia(fechaBase, individuo);
 	}
 
 	public TendenciaEstadistica calcularTendencia(Date fechaBase, Individuo individuo)
-			throws SQLException, CloneNotSupportedException, ClassNotFoundException {
+			throws SQLException, CloneNotSupportedException, ClassNotFoundException, GeneticDAOException {
 		TendenciaEstadistica tendenciaEstadistica = null;
 		List<Point> pointsFechaTendencia = datoHistoricoDAO.consultarHistorico(fechaBase, fechaBase);
 		if ((pointsFechaTendencia != null) && (!pointsFechaTendencia.isEmpty())) {
@@ -156,7 +158,7 @@ public class TendenciaBuySellManager extends TendenciasManager {
 	}
 
 	public TendenciaEstadistica calcularTendencia(Point pointFecha, Individuo individuo)
-			throws SQLException, CloneNotSupportedException, ClassNotFoundException {
+			throws SQLException, CloneNotSupportedException, ClassNotFoundException, GeneticDAOException {
 		TendenciaEstadistica tendencia = null;
 		Date fechaBase = pointFecha.getDate();
 		if (individuo != null) {
@@ -212,7 +214,7 @@ public class TendenciaBuySellManager extends TendenciasManager {
 	}
 
 	private Order getOrdenActual(Point currentPoint, Individuo individuo, Date fecha)
-			throws SQLException, CloneNotSupportedException {
+			throws SQLException, CloneNotSupportedException, GeneticDAOException {
 		Order ordenActual = individuo.getCurrentOrder().clone();
 		double pipsActuales = operacionManager.calcularPips(currentPoint, ordenActual) - ordenActual.getOpenSpread();
 		long duracionActual = DateUtil.calcularDuracionMillis(ordenActual.getOpenDate(), fecha) / 1000 / 60;
@@ -223,7 +225,7 @@ public class TendenciaBuySellManager extends TendenciasManager {
 	}
 
 	private Estadistica consultarEstadisticasIndividuo(ParametroConsultaEstadistica parametroConsultaEstadistica)
-			throws SQLException {
+			throws SQLException, GeneticDAOException {
 		parametroDAO.updateDateValorParametro("FECHA_ESTADISTICAS", parametroConsultaEstadistica.getFecha());
 		if (parametroConsultaEstadistica.getRetroceso() == null) {
 			parametroDAO.updateValorParametro("RETROCESO_ESTADISTICAS", null);
