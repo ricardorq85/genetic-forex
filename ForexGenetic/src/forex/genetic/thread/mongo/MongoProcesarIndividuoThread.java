@@ -4,7 +4,6 @@ close * To change this template, choose Tools | Templates
  */
 package forex.genetic.thread.mongo;
 
-import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -25,7 +24,6 @@ import forex.genetic.entities.Point;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.OperacionesManager;
-import forex.genetic.proxy.ProcesosAlternosProxy;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -87,7 +85,9 @@ public class MongoProcesarIndividuoThread extends Thread {
 				while (processed && !fechaMenorOIgualQue.after(this.maxFechaHistorico)
 						&& fechaMenorOIgualQue.after(fechaMayorQue)) {
 					DateInterval intervaloFechasIndividuo = new DateInterval(fechaMayorQue, fechaMenorOIgualQue);
+					
 					Date lastProcessedDate = procesarIndividuo(individuo, intervaloFechasIndividuo);
+					
 					processed = (lastProcessedDate != null);
 					if (processed) {
 						fechaMayorQue = lastProcessedDate;

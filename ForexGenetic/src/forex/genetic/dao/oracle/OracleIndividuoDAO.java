@@ -20,7 +20,6 @@ import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.IndividuoOptimo;
-import forex.genetic.entities.Order;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.PropertiesManager;
@@ -35,13 +34,14 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> implements IIndividuoDAO<IndividuoEstrategia> {
+public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia>
+		implements IIndividuoDAO<IndividuoEstrategia> {
 
 	public OracleIndividuoDAO(Connection connection) {
 		super(connection);
 	}
 
-	public int duracionPromedioMinutos(String idIndividuo) throws SQLException {
+	public int duracionPromedioMinutos(String idIndividuo) throws GeneticDAOException {
 		String sql = "SELECT ROUND(AVG(OPER.FECHA_CIERRE-OPER.FECHA_APERTURA)*24*60) DURACION FROM OPERACION OPER\n"
 				+ " WHERE ID_INDIVIDUO = ? ";
 		PreparedStatement stmtConsulta = null;
@@ -56,6 +56,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 					duracion = resultado.getInt("DURACION");
 				}
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -63,7 +65,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 		return duracion;
 	}
 
-	public List<Date> consultarPuntosApertura(Date fechaMayorQue, String idIndividuo) throws SQLException {
+	public List<Date> consultarPuntosApertura(Date fechaMayorQue, String idIndividuo) throws GeneticDAOException {
 		List<Date> fechas;
 		String sql = "SELECT DH.FECHA-1/24/60 FECHA " + " FROM DATOHISTORICO DH"
 				+ "  INNER JOIN INDIVIDUO_INDICADORES IC ON IC.ID=? AND "
@@ -101,6 +103,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			stmtConsulta.setTimestamp(2, new Timestamp(fechaMayorQue.getTime()));
 			resultado = stmtConsulta.executeQuery();
 			fechas = IndividuoHelper.createFechas(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -108,7 +112,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 		return fechas;
 	}
 
-	public List<Date> consultarPuntosApertura(DateInterval rango, String idIndividuo) throws SQLException {
+	public List<Date> consultarPuntosApertura(DateInterval rango, String idIndividuo) throws GeneticDAOException {
 		List<Date> fechas;
 		String sql = "SELECT DH.FECHA-1/24/60 FECHA " + " FROM DATOHISTORICO DH"
 				+ "  INNER JOIN INDIVIDUO_INDICADORES IC ON IC.ID=? AND "
@@ -147,6 +151,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			stmtConsulta.setTimestamp(3, new Timestamp(rango.getHighInterval().getTime()));
 			resultado = stmtConsulta.executeQuery();
 			fechas = IndividuoHelper.createFechas(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -154,7 +160,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 		return fechas;
 	}
 
-	public void crearVistaIndicadoresIndividuo(String viewName, String idIndividuo) throws SQLException {
+	public void crearVistaIndicadoresIndividuo(String viewName, String idIndividuo) throws GeneticDAOException {
 		String sql = "CREATE OR REPLACE VIEW " + viewName + " AS " + "SELECT IND.*,  "
 				+ "  II_MA.INTERVALO_INFERIOR INFERIOR_MA, II_MA.INTERVALO_SUPERIOR SUPERIOR_MA, "
 				+ "  II_MACD.INTERVALO_INFERIOR INFERIOR_MACD, II_MACD.INTERVALO_SUPERIOR SUPERIOR_MACD, "
@@ -204,13 +210,15 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 		try {
 			statement = this.connection.createStatement();
 			statement.execute(sql);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(statement);
 		}
 	}
 
-	public void insertarIndividuoIndicadoresColumnas(String idIndividuo) throws SQLException {
+	public void insertarIndividuoIndicadoresColumnas(String idIndividuo) throws GeneticDAOException {
 		String sql = "INSERT INTO INDIVIDUO_INDICADORES(ID, PARENT_ID_1, PARENT_ID_2, TAKE_PROFIT, STOP_LOSS, "
 				+ "  	LOTE, INITIAL_BALANCE, CREATION_DATE, TIPO_OPERACION,TIPO_INDIVIDUO,MONEDA,"
 				+ "  	OPEN_INFERIOR_MA,OPEN_SUPERIOR_MA,OPEN_INFERIOR_MACD,OPEN_SUPERIOR_MACD,OPEN_INFERIOR_COMPARE,OPEN_SUPERIOR_COMPARE,OPEN_INFERIOR_ADX,OPEN_SUPERIOR_ADX,OPEN_INFERIOR_BOLLINGER,OPEN_SUPERIOR_BOLLINGER,OPEN_INFERIOR_ICHISIGNAL,OPEN_SUPERIOR_ICHISIGNAL,OPEN_INFERIOR_ICHITREND,OPEN_SUPERIOR_ICHITREND,OPEN_INFERIOR_MOMENTUM,OPEN_SUPERIOR_MOMENTUM,OPEN_INFERIOR_RSI,OPEN_SUPERIOR_RSI,OPEN_INFERIOR_SAR,OPEN_SUPERIOR_SAR,OPEN_INFERIOR_MA1200,OPEN_SUPERIOR_MA1200,OPEN_INFERIOR_MACD20X,OPEN_SUPERIOR_MACD20X,OPEN_INFERIOR_COMPARE1200,OPEN_SUPERIOR_COMPARE1200,OPEN_INFERIOR_ADX168,OPEN_SUPERIOR_ADX168,OPEN_INFERIOR_BOLLINGER240,OPEN_SUPERIOR_BOLLINGER240,OPEN_INFERIOR_ICHISIGNAL6,OPEN_SUPERIOR_ICHISIGNAL6,OPEN_INFERIOR_ICHITREND6,OPEN_SUPERIOR_ICHITREND6,OPEN_INFERIOR_MOMENTUM1200,OPEN_SUPERIOR_MOMENTUM1200,OPEN_INFERIOR_RSI84,OPEN_SUPERIOR_RSI84,OPEN_INFERIOR_SAR1200,OPEN_SUPERIOR_SAR1200, "
@@ -305,6 +313,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			statement = connection.prepareStatement(sql);
 			statement.setString(1, idIndividuo);
 			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(statement);
 		}
@@ -316,7 +326,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Individuo> consultarIndividuosPadreRepetidos(String tipoProceso) throws SQLException {
+	public List<Individuo> consultarIndividuosPadreRepetidos(String tipoProceso) throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT * FROM (SELECT IND.ID ID_INDIVIDUO, IND.PARENT_ID_1 ID_INDIVIDUO_PADRE "
 				+ " FROM INDIVIDUO IND "
@@ -331,6 +341,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -339,7 +351,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 		return list;
 	}
 
-	public List<Individuo> consultarIndividuosStopLossInconsistente(int sl) throws SQLException {
+	public List<Individuo> consultarIndividuosStopLossInconsistente(int sl) throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT IND.* FROM INDIVIDUO IND " + " WHERE IND.STOP_LOSS<=? "
 				+ " AND IND.TAKE_PROFIT>IND.STOP_LOSS*4 " + " AND EXISTS ( "
@@ -354,6 +366,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosBase(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -362,7 +376,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 		return list;
 	}
 
-	public List<Individuo> consultarIndividuosStopLossInconsistente(int sl, String idIndividuo) throws SQLException {
+	public List<Individuo> consultarIndividuosStopLossInconsistente(int sl, String idIndividuo)
+			throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT IND.* FROM INDIVIDUO IND " + " WHERE IND.STOP_LOSS<=? "
 				+ " AND IND.TAKE_PROFIT>IND.STOP_LOSS*4 " + " AND EXISTS ( "
@@ -378,6 +393,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosBase(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -386,7 +403,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 		return list;
 	}
 
-	public List<Individuo> consultarIndividuosCantidadLimite(double porcentajeLimite) throws SQLException {
+	public List<Individuo> consultarIndividuosCantidadLimite(double porcentajeLimite) throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT IND.* " + " FROM INDIVIDUO IND "
 				+ " INNER JOIN (SELECT OPER.ID_INDIVIDUO, COUNT(*) CANT FROM FOREX.OPERACION OPER GROUP BY OPER.ID_INDIVIDUO) OP ON OP.ID_INDIVIDUO=IND.ID "
@@ -401,6 +418,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosBase(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -410,7 +429,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 	}
 
 	public List<Individuo> consultarIndividuosCantidadLimite(double porcentajeLimite, String idIndividuo)
-			throws SQLException {
+			throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT IND.* " + " FROM INDIVIDUO IND "
 				+ " INNER JOIN (SELECT OPER.ID_INDIVIDUO, COUNT(*) CANT FROM FOREX.OPERACION OPER GROUP BY OPER.ID_INDIVIDUO) OP ON OP.ID_INDIVIDUO=IND.ID "
@@ -426,6 +445,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosBase(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -441,7 +462,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 	 * @param idPadre
 	 * @throws SQLException
 	 */
-	public void smartDelete(String idIndividuo, String causaBorrado, String idPadre) throws SQLException {
+	public void smartDelete(String idIndividuo, String causaBorrado, String idPadre) throws GeneticDAOException {
 		CallableStatement cstmt = null;
 		try {
 			cstmt = this.connection.prepareCall("{call SMART_DELETE(?,?,?)}");
@@ -449,6 +470,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			cstmt.setString(2, causaBorrado);
 			cstmt.setString(3, idPadre);
 			cstmt.execute();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(cstmt);
 		}
@@ -460,7 +483,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Individuo> consultarIndividuosRepetidosOperaciones(Individuo individuoPadre) throws SQLException {
+	public List<Individuo> consultarIndividuosRepetidosOperaciones(Individuo individuoPadre)
+			throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT ID_INDIVIDUO2 ID_INDIVIDUO, ID_INDIVIDUO1 ID_INDIVIDUO_PADRE "
 				+ " FROM INDIVIDUOS_REPETIDOS_OPER"
@@ -474,6 +498,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -481,7 +507,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 		return list;
 	}
 
-	public List<Individuo> consultarIndividuosRepetidos() throws SQLException {
+	public List<Individuo> consultarIndividuosRepetidos() throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT ID_INDIVIDUO2 ID_INDIVIDUO, ID_INDIVIDUO1 ID_INDIVIDUO_PADRE "
 				+ " FROM INDIVIDUOS_REPETIDOS WHERE ROWNUM < 300";
@@ -492,6 +518,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -499,7 +527,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 		return list;
 	}
 
-	public Individuo consultarIndividuo(String idIndividuo) throws SQLException {
+	public Individuo consultarIndividuo(String idIndividuo) throws GeneticDAOException {
 		Individuo individuo = null;
 		String sql = "SELECT IND.ID ID_INDIVIDUO, IND.PARENT_ID_1 ID_INDIVIDUO_PADRE FROM INDIVIDUO IND WHERE IND.ID = ?";
 		PreparedStatement stmtConsulta = null;
@@ -513,6 +541,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			if (!list.isEmpty()) {
 				individuo = list.get(0);
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -520,7 +550,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 		return individuo;
 	}
 
-	public List<Individuo> consultarIndividuoHijoRepetidoOperaciones(Individuo individuoHijo) throws SQLException {
+	public List<Individuo> consultarIndividuoHijoRepetidoOperaciones(Individuo individuoHijo)
+			throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT ID_INDIVIDUO2 ID_INDIVIDUO, ID_INDIVIDUO1 ID_INDIVIDUO_PADRE "
 				+ " FROM INDIVIDUOS_REPETIDOS_OPER"
@@ -534,6 +565,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -541,7 +574,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 		return list;
 	}
 
-	public List<Individuo> consultarIndividuoHijoRepetido(Individuo individuoHijo) throws SQLException {
+	public List<Individuo> consultarIndividuoHijoRepetido(Individuo individuoHijo) throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT ID_INDIVIDUO2 ID_INDIVIDUO, ID_INDIVIDUO1 ID_INDIVIDUO_PADRE "
 				+ " FROM INDIVIDUOS_REPETIDOS " + " WHERE ID_INDIVIDUO2 = ?";
@@ -553,6 +586,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -565,7 +600,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 	 * @param individuo
 	 * @throws SQLException
 	 */
-	public void consultarDetalleIndividuoProceso(Individuo individuo, Date fechaHistorico) throws SQLException {
+	public void consultarDetalleIndividuoProceso(Individuo individuo, Date fechaHistorico) throws GeneticDAOException {
 		String sql = "SELECT IND2.ID ID_INDIVIDUO, IND2.PARENT_ID_1, IND2.PARENT_ID_2, IND2.TAKE_PROFIT, IND2.STOP_LOSS, "
 				+ "IND2.LOTE, IND2.INITIAL_BALANCE, IND2.CREATION_DATE, IND2.TIPO_OPERACION TIPO_OPERACION_INDIVIDUO, IND_MAXIMOS.FECHA_HISTORICO,"
 				+ "IIND3.ID_INDICADOR, IIND3.INTERVALO_INFERIOR, IIND3.INTERVALO_SUPERIOR, IIND3.TIPO TIPO_INDICADOR,"
@@ -591,6 +626,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 
 			IndividuoHelper.detalleIndividuo(individuo, resultado);
 
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -604,7 +641,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 	 * @throws SQLException
 	 */
 	public void consultarDetalleIndividuo(IndicadorController indicadorController, Individuo individuo)
-			throws SQLException {
+			throws GeneticDAOException {
 		StringBuilder sql = new StringBuilder();
 		sql.append(
 				"SELECT IND2.ID ID_INDIVIDUO, IND2.PARENT_ID_1, IND2.PARENT_ID_2, IND2.TAKE_PROFIT, IND2.STOP_LOSS, ");
@@ -627,6 +664,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 
 			IndividuoHelper.detalleIndividuo(individuo, resultado, indicadorController);
 
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -638,7 +677,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 	 * @param individuo
 	 * @throws SQLException
 	 */
-	public void insertIndividuo(IndividuoEstrategia individuo) throws SQLException {
+	public void insertIndividuo(IndividuoEstrategia individuo) throws GeneticDAOException {
 		String sql = "INSERT INTO INDIVIDUO(ID, PARENT_ID_1, PARENT_ID_2, "
 				+ " TAKE_PROFIT, STOP_LOSS, LOTE, INITIAL_BALANCE, CREATION_DATE, "
 				+ " TIPO_OPERACION, TIPO_INDIVIDUO, MONEDA) " + " VALUES (?,?,?,?,?,?,?,?,?,?,?)";
@@ -668,6 +707,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			statement.setString(11, individuo.getMoneda().getMoneda());
 
 			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(statement);
 		}
@@ -681,7 +722,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 	 * @throws SQLException
 	 */
 	public void insertIndicadorIndividuo(IndicadorController indicadorController, IndividuoEstrategia individuo)
-			throws SQLException {
+			throws GeneticDAOException {
 		StringBuilder sql = new StringBuilder();
 		sql.append("INSERT INTO ");
 		sql.append(indicadorController.getNombreTabla());
@@ -727,6 +768,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 				statement.setString(5, "CLOSE");
 				statement.executeUpdate();
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(statement);
 		}
@@ -736,7 +779,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 	 *
 	 * @return @throws SQLException
 	 */
-	public List<IndividuoOptimo> consultarIndividuosOptimos() throws SQLException {
+	public List<IndividuoOptimo> consultarIndividuosOptimos() throws GeneticDAOException {
 		List<IndividuoOptimo> list = null;
 
 		StringBuilder sql = new StringBuilder();
@@ -749,6 +792,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosOptimos(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -763,7 +808,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 	 * @return
 	 * @throws SQLException
 	 */
-	public int getCountIndicadoresOpen(Individuo individuo) throws SQLException {
+	public int getCountIndicadoresOpen(Individuo individuo) throws GeneticDAOException {
 		int count = 0;
 		String sql = "SELECT COUNT(*) FROM INDICADOR_INDIVIDUO II "
 				+ " WHERE II.TIPO='OPEN' AND II.INTERVALO_INFERIOR IS NOT NULL " + " AND II.ID_INDIVIDUO=?";
@@ -776,6 +821,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			if (resultado.next()) {
 				count = resultado.getInt(1);
 			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -783,7 +830,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 		return count;
 	}
 
-	public List<Individuo> consultarIndividuosResumenSemanal(Date fechaInicial, Date fechaFinal) throws SQLException {
+	public List<Individuo> consultarIndividuosResumenSemanal(Date fechaInicial, Date fechaFinal)
+			throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT DISTINCT ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE " + " FROM FILTERED_PARA_OPERAR_SELL PTFS "
 				+ " WHERE PTFS.FECHA_SEMANA BETWEEN ? AND ? " + " UNION ALL "
@@ -800,6 +848,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -807,11 +857,12 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 
 		return list;
 	}
-	
-	public List<Individuo> consultarIndividuosRandom(Date fechaInicial, Date fechaFinal, int cantidad) throws SQLException {
+
+	public List<Individuo> consultarIndividuosRandom(Date fechaInicial, Date fechaFinal, int cantidad)
+			throws GeneticDAOException {
 		List<Individuo> list = null;
-		String sql = "SELECT IND.ID ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE  FROM INDIVIDUO IND INNER JOIN OPERACION OPER ON OPER.ID_INDIVIDUO=IND.ID " + 
-				"   AND OPER.FECHA_APERTURA BETWEEN ? AND ? AND IND.ID LIKE ? AND ROWNUM < ?";
+		String sql = "SELECT IND.ID ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE  FROM INDIVIDUO IND INNER JOIN OPERACION OPER ON OPER.ID_INDIVIDUO=IND.ID "
+				+ "   AND OPER.FECHA_APERTURA BETWEEN ? AND ? AND IND.ID LIKE ? AND ROWNUM < ?";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 		try {
@@ -824,18 +875,20 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
 		}
 
 		return list;
-	}	
+	}
 
-	public List<Individuo> consultarIndividuosRandom(int cantidad) throws SQLException {
+	public List<Individuo> consultarIndividuosRandom(int cantidad) throws GeneticDAOException {
 		List<Individuo> list = null;
-		String sql = "SELECT IND.ID ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE  FROM INDIVIDUO IND " + 
-				"   WHERE IND.ID LIKE ? AND ROWNUM < ?";
+		String sql = "SELECT IND.ID ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE  FROM INDIVIDUO IND "
+				+ "   WHERE IND.ID LIKE ? AND ROWNUM < ?";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 		try {
@@ -846,15 +899,17 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
 		}
 
 		return list;
-	}	
+	}
 
-	public List<Individuo> consultarIndividuosIndicadoresCloseMinimos(int minimo) throws SQLException {
+	public List<Individuo> consultarIndividuosIndicadoresCloseMinimos(int minimo) throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT II.ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE FROM FOREX.INDICADOR_INDIVIDUO II"
 				+ " WHERE II.TIPO='CLOSE' AND II.INTERVALO_INFERIOR IS NOT NULL" + " GROUP BY II.ID_INDIVIDUO "
@@ -868,6 +923,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -876,7 +933,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 		return list;
 	}
 
-	public List<Individuo> consultarIndividuosIndicadoresCloseMinimos(int minimo, String id) throws SQLException {
+	public List<Individuo> consultarIndividuosIndicadoresCloseMinimos(int minimo, String id)
+			throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT II.ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE FROM FOREX.INDICADOR_INDIVIDUO II"
 				+ " WHERE II.TIPO='CLOSE' AND II.INTERVALO_INFERIOR IS NOT NULL " + " AND II.ID_INDIVIDUO=?"
@@ -891,6 +949,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -900,7 +960,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 
 	}
 
-	public List<Individuo> consultarIndividuosIntervaloIndicadores() throws SQLException {
+	public List<Individuo> consultarIndividuosIntervaloIndicadores() throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT DISTINCT II.ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE " + " FROM INDICADOR_INDIVIDUO II "
 				+ " INNER JOIN INTERVALO_INDICADOR_PROCESADOS II_PROC ON II.ID_INDICADOR=II_PROC.ID_INDICADOR AND II.TIPO=II_PROC.TIPO "
@@ -916,6 +976,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -924,7 +986,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 		return list;
 	}
 
-	public List<Individuo> consultarIndividuosIntervaloIndicadores(String idIndividuo) throws SQLException {
+	public List<Individuo> consultarIndividuosIntervaloIndicadores(String idIndividuo) throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT DISTINCT II.ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE " + " FROM INDICADOR_INDIVIDUO II "
 				+ " INNER JOIN INTERVALO_INDICADOR_PROCESADOS II_PROC ON II.ID_INDICADOR=II_PROC.ID_INDICADOR AND II.TIPO=II_PROC.TIPO "
@@ -941,6 +1003,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -958,17 +1022,17 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 	@Override
 	public void insert(IndividuoEstrategia obj) throws GeneticDAOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void update(IndividuoEstrategia obj) throws GeneticDAOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public List<? extends IndividuoEstrategia> getByProcesoEjecucion(String filtroAdicional, Date fechaHistorico)
+	public List<? extends IndividuoEstrategia> getListByProcesoEjecucion(String filtroAdicional, Date fechaHistorico)
 			throws GeneticDAOException {
 		// TODO Auto-generated method stub
 		return null;

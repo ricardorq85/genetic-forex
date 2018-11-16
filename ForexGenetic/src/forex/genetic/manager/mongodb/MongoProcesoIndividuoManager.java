@@ -42,7 +42,8 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 				int countFiltro = 1;
 				while (countFiltro == 1) {
 					LogUtil.logTime("Obteniendo individuos para el filtro " + countFiltro, 1);
-					List<MongoIndividuo> individuos = individuoDAO.getByProcesoEjecucion(null, maxFechaHistorico);
+					@SuppressWarnings("unchecked")
+					List<MongoIndividuo> individuos = individuoDAO.getListByProcesoEjecucion(null, maxFechaHistorico);
 					if ((individuos != null) && (!individuos.isEmpty())) {
 						MongoProcesarIndividuoThread procesarIndividuoThread = new MongoProcesarIndividuoThread(
 								"Mongo_" + countFiltro, individuos);
@@ -61,7 +62,7 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 					thread.join();
 				}
 			} while (any && !onlyOne);
-		} catch (InterruptedException | SQLException | GeneticDAOException ex) {
+		} catch (InterruptedException | GeneticDAOException ex) {
 			ex.printStackTrace();
 		}
 	}

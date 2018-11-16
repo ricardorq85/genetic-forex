@@ -76,7 +76,7 @@ public class PoblacionFacade implements IGeneticFacade {
 					IndividuoEstrategia individuo = individuo1;
 					dao.insertIndividuo(individuo);
 					dao.insertIndicadorIndividuo(indicadorController, individuo);
-				} catch (SQLException ex) {
+				} catch (GeneticDAOException ex) {
 					// ex.printStackTrace();
 					countError++;
 				}
