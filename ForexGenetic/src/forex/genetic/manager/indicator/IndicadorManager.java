@@ -183,5 +183,7 @@ public abstract class IndicadorManager<E> {
 	 */
 	public abstract double getValue(E indicator, Point prevPoint, Point point);
 
-	public abstract Map<String, Object> getCalculatedValues(E prevIndicator, E indicator, Point prevPoint, Point point);
+	public abstract Map<String, Double> getCalculatedValues(E prevIndicator, E indicator, Point prevPoint, Point point);
+	public abstract E getIndicatorInstance();
+	public abstract E getIndicatorInstance(Map<String, Object> values);
 }

@@ -53,28 +53,6 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 	}
 
 	@Override
-	public int duracionPromedioMinutos(String idIndividuo) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		// Accumulators.avg(fieldName, expression);
-//		Aggregates.group(id, fieldAccumulators);
-		// Projections
-
-		return 0;
-	}
-
-	@Override
-	@Deprecated
-	public List<Date> consultarPuntosApertura(Date fechaMayorQue, String idIndividuo) throws GeneticDAOException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	@Deprecated
-	public List<Date> consultarPuntosApertura(DateInterval rango, String idIndividuo) throws GeneticDAOException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public void crearVistaIndicadoresIndividuo(String viewName, String idIndividuo) throws GeneticDAOException {
 		// TODO Auto-generated method stub
 

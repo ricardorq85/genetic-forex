@@ -28,7 +28,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOperacionesDAO {
+public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOperacionesDAO<Order> {
 
 	public OracleOperacionesDAO(Connection connection) {
 		super(connection);
@@ -318,7 +318,7 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 	 * @param operaciones
 	 * @throws GeneticDAOException
 	 */
-	public void insertOperaciones(Individuo individuo, List<Order> operaciones) throws GeneticDAOException {
+	public void insert(Individuo individuo, List<? extends Order> operaciones) throws GeneticDAOException {
 		String sql = "INSERT INTO OPERACION(ID_INDIVIDUO, TAKE_PROFIT, STOP_LOSS, "
 				+ " FECHA_APERTURA, FECHA_CIERRE, SPREAD, OPEN_PRICE, PIPS, LOTE, TIPO, FECHA) "
 				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?)";
@@ -545,7 +545,31 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 			JDBCUtil.close(stmtConsulta);
 		}
 	}
-
+	
+	public long duracionPromedioMinutos(String idIndividuo) throws GeneticDAOException {
+		String sql = "SELECT ROUND(AVG(OPER.FECHA_CIERRE-OPER.FECHA_APERTURA)*24*60) DURACION FROM OPERACION OPER\n"
+				+ " WHERE ID_INDIVIDUO = ? ";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		long duracion = 0;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setString(1, idIndividuo);
+			resultado = stmtConsulta.executeQuery();
+			if (resultado.next()) {
+				if (resultado.getObject("DURACION") != null) {
+					duracion = resultado.getLong("DURACION");
+				}
+			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException("OracleIndividuoDAO", e);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+		return duracion;
+	}
+	
 	private void dropVistaMaterializada(String name) throws GeneticDAOException {
 		String sql = "DROP MATERIALIZED VIEW " + name;
 		PreparedStatement stmtConsulta = null;
@@ -576,5 +600,6 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

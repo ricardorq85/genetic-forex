@@ -69,12 +69,6 @@ public abstract class IntervalIndicatorManager<E extends IntervalIndicator> exte
 
 	/**
 	 *
-	 * @return
-	 */
-	public abstract IntervalIndicator getIndicatorInstance();
-
-	/**
-	 *
 	 * @param obj1
 	 * @param obj2
 	 * @return

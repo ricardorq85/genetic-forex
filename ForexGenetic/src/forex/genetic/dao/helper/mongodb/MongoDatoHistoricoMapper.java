@@ -60,7 +60,7 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 			Point prevPoint = datoHistorico.getPrevPoint();
 			if (indicadoresBase.get(i) != null) {
 				Indicator prevIndicator = (prevPoint != null) ? prevPoint.getIndicators().get(i) : null;
-				Map<String, Object> values = indicadorManager.getCalculatedValues(prevIndicator, indicadoresBase.get(i),
+				Map<String, Double> values = indicadorManager.getCalculatedValues(prevIndicator, indicadoresBase.get(i),
 						datoHistorico.getPrevPoint(), datoHistorico);
 				Map<String, Object> indMap = new HashMap<String, Object>();
 				indMap.put(indicadoresBase.get(i).getName(), values);
@@ -113,21 +113,11 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 			List<Map<String, Object>> indicadoresMap = (List<Map<String, Object>>) one.get("indicadores");
 			List<IntervalIndicator> indicadores = new ArrayList<IntervalIndicator>(
 					indicadorController.getIndicatorNumber());
-
 			for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
-				/*
-				 * IndicadorManager<Indicator> indicadorManager =
-				 * indicadorController.getManagerInstance(i); Point prevPoint =
-				 * datoHistorico.getPrevPoint(); if (indicadoresBase.get(i) != null) { Indicator
-				 * prevIndicator = (prevPoint != null) ? prevPoint.getIndicators().get(i) :
-				 * null; Map<String, Object> values =
-				 * indicadorManager.getCalculatedValues(prevIndicator, indicadoresBase.get(i),
-				 * datoHistorico.getPrevPoint(), datoHistorico); Map<String, Object> indMap =
-				 * new HashMap<String, Object>(); indMap.put(indicadoresBase.get(i).getName(),
-				 * values); indicadores.add(indMap); } else { indicadores.add(null); }
-				 */
+				IndicadorManager<Indicator> indicadorManager = indicadorController.getManagerInstance(i);
+				IntervalIndicator indicador = (IntervalIndicator)indicadorManager.getIndicatorInstance(indicadoresMap.get(i));
+				indicadores.add(indicador);
 			}
-
 			obj.setIndicators(indicadores);
 		}
 

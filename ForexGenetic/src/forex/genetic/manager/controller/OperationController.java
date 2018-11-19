@@ -11,6 +11,7 @@ import java.util.List;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Interval;
+import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.factory.ControllerFactory;
@@ -206,7 +207,7 @@ public class OperationController {
 		return calculateStopLossPrice(points.get(index), operationType);
 	}
 
-	public double calculateStopLossPrice(Point currentPoint, Constants.OperationType operationType) {		
+	public double calculateStopLossPrice(Point currentPoint, Constants.OperationType operationType) {
 		double value;
 		if (operationType.equals(Constants.OperationType.BUY)) {
 			value = currentPoint.getLow();
@@ -233,6 +234,30 @@ public class OperationController {
 			value = currentPoint.getHigh();
 		} else {
 			value = currentPoint.getLow();
+		}
+		return value;
+	}
+
+	public double calculateClosePriceByTakeProfit(Order order) {
+		double value = 0.0D;
+		if (order.getTipo().equals(Constants.OperationType.BUY)) {
+			value = order.getOpenOperationValue() + (order.getOpenSpread() / PropertiesManager.getPairFactor())
+					+ (order.getTakeProfit() / PropertiesManager.getPairFactor());
+		} else {
+			value = order.getOpenOperationValue() - (order.getOpenSpread() / PropertiesManager.getPairFactor())
+					- (order.getTakeProfit() / PropertiesManager.getPairFactor());
+		}
+		return value;
+	}
+
+	public double calculateClosePriceByStopLoss(Order order) {
+		double value = 0.0D;
+		if (order.getTipo().equals(Constants.OperationType.BUY)) {
+			value = order.getOpenOperationValue() + (order.getOpenSpread() / PropertiesManager.getPairFactor())
+					- (order.getStopLoss() / PropertiesManager.getPairFactor());
+		} else {
+			value = order.getOpenOperationValue() - (order.getOpenSpread() / PropertiesManager.getPairFactor())
+					+ (order.getStopLoss() / PropertiesManager.getPairFactor());
 		}
 		return value;
 	}

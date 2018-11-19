@@ -112,8 +112,8 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 	}
 
 	@Override
-	public Map<String, Object> getCalculatedValues(Adx prevIndicator, Adx indicator, Point prevPoint, Point point) {
-		Map<String, Object> objectMap = new HashMap<String, Object>();
+	public Map<String, Double> getCalculatedValues(Adx prevIndicator, Adx indicator, Point prevPoint, Point point) {
+		Map<String, Double> objectMap = new HashMap<String, Double>();
 		if (!NumberUtil.isInfiniteOrNan(indicator.getAdxValue())) {
 			objectMap.put("adxValue", indicator.getAdxValue());
 		}
@@ -132,4 +132,20 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 		}
 		return objectMap;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Adx getIndicatorInstance(Map<String, Object> indMap) {
+		Adx instance = getIndicatorInstance();
+		if (indMap != null) {
+			if (indMap.containsKey(instance.getName())) {
+				Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
+				instance.setAdxValue(values.get("adxValue"));
+				instance.setAdxMinus(values.get("adxMinus"));
+				instance.setAdxPlus(values.get("adxPlus"));
+			}
+		}
+		return instance;
+	}
+
 }

@@ -177,7 +177,7 @@ public class OldProcesarTendenciasManager {
                             }
                             fechaCierre = order.getCloseDate();
                             if (fechaCierre != null) {
-                                operacionesDAO.insertOperaciones(individuo, Collections.singletonList(order));
+                                operacionesDAO.insert(individuo, Collections.singletonList(order));
                                 lastDate = null;
                             }
                             conn.commit();

@@ -118,9 +118,9 @@ public class MaIndicatorManager extends IntervalIndicatorManager<Average> {
 	}
 
 	@Override
-	public Map<String, Object> getCalculatedValues(Average prevIndicator, Average indicator, Point prevPoint,
+	public Map<String, Double> getCalculatedValues(Average prevIndicator, Average indicator, Point prevPoint,
 			Point point) {
-		Map<String, Object> objectMap = new HashMap<String, Object>();
+		Map<String, Double> objectMap = new HashMap<String, Double>();
 		if (!NumberUtil.isInfiniteOrNan(indicator.getAverage())) {
 			objectMap.put("average", indicator.getAverage());
 		}
@@ -131,5 +131,18 @@ public class MaIndicatorManager extends IntervalIndicatorManager<Average> {
 			}
 		}
 		return objectMap;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Average getIndicatorInstance(Map<String, Object> indMap) {
+		Average instance = getIndicatorInstance();
+		if (indMap != null) {
+			if (indMap.containsKey(instance.getName())) {
+				Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
+				instance.setAverage(values.get("average"));
+			}
+		}
+		return instance;
 	}
 }

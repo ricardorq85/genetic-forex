@@ -113,8 +113,8 @@ public class RsiIndicatorManager extends IntervalIndicatorManager<Rsi> {
 	}
 
 	@Override
-	public Map<String, Object> getCalculatedValues(Rsi prevIndicator, Rsi indicator, Point prevPoint, Point point) {
-		Map<String, Object> objectMap = new HashMap<String, Object>();
+	public Map<String, Double> getCalculatedValues(Rsi prevIndicator, Rsi indicator, Point prevPoint, Point point) {
+		Map<String, Double> objectMap = new HashMap<String, Double>();
 		if (!NumberUtil.isInfiniteOrNan(indicator.getRsi())) {
 			objectMap.put("rsi", indicator.getRsi());
 		}
@@ -126,4 +126,16 @@ public class RsiIndicatorManager extends IntervalIndicatorManager<Rsi> {
 		return objectMap;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Rsi getIndicatorInstance(Map<String, Object> indMap) {
+		Rsi instance = getIndicatorInstance();
+		if (indMap != null) {
+			if (indMap.containsKey(instance.getName())) {
+				Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
+				instance.setRsi(values.get("rsi"));
+			}
+		}
+		return instance;
+	}
 }

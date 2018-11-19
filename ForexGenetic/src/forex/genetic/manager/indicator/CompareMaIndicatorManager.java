@@ -17,7 +17,7 @@ import forex.genetic.util.NumberUtil;
  *
  * @author ricardorq85
  */
-public class CompareMaIndicatorManager extends IntervalIndicatorManager<Average> {
+public class CompareMaIndicatorManager extends MaIndicatorManager {
 
 	public CompareMaIndicatorManager(boolean priceDependence, boolean obligatory, String name) {
 		super(priceDependence, obligatory, name);
@@ -104,11 +104,14 @@ public class CompareMaIndicatorManager extends IntervalIndicatorManager<Average>
 		return s;
 	}
 
+	public String[] getNombresCalculados() {
+		return new String[] { "calculado"};
+	}
+
 	@Override
-	public Map<String, Object> getCalculatedValues(Average prevIndicator, Average indicator, Point prevPoint,
+	public Map<String, Double> getCalculatedValues(Average prevIndicator, Average indicator, Point prevPoint,
 			Point point) {
-		Map<String, Object> objectMap = null;
-		objectMap = new HashMap<String, Object>();
+		Map<String, Double> objectMap = new HashMap<String, Double>();
 		if (!NumberUtil.isInfiniteOrNan(indicator.getAverage())) {
 			objectMap.put("average", indicator.getAverage());
 		}

@@ -103,9 +103,9 @@ public class BollingerIndicatorManager extends IntervalIndicatorManager<Bollinge
 	}
 
 	@Override
-	public Map<String, Object> getCalculatedValues(Bollinger prevIndicator, Bollinger indicator, Point prevPoint,
+	public Map<String, Double> getCalculatedValues(Bollinger prevIndicator, Bollinger indicator, Point prevPoint,
 			Point point) {
-		Map<String, Object> objectMap = new HashMap<String, Object>();
+		Map<String, Double> objectMap = new HashMap<String, Double>();
 		if (!NumberUtil.isInfiniteOrNan(indicator.getLower())) {
 			objectMap.put("lower", indicator.getLower());
 		}
@@ -118,5 +118,19 @@ public class BollingerIndicatorManager extends IntervalIndicatorManager<Bollinge
 			}
 		}
 		return objectMap;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Bollinger getIndicatorInstance(Map<String, Object> indMap) {
+		Bollinger instance = getIndicatorInstance();
+		if (indMap != null) {
+			if (indMap.containsKey(instance.getName())) {
+				Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
+				instance.setLower(values.get("lower"));
+				instance.setUpper(values.get("upper"));
+			}
+		}
+		return instance;
 	}
 }

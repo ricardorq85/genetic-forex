@@ -11,7 +11,6 @@ import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.Momentum;
-import forex.genetic.entities.indicator.Rsi;
 import forex.genetic.util.NumberUtil;
 
 /**
@@ -114,9 +113,9 @@ public class MomentumIndicatorManager extends IntervalIndicatorManager<Momentum>
 	}
 
 	@Override
-	public Map<String, Object> getCalculatedValues(Momentum prevIndicator, Momentum indicator, Point prevPoint,
+	public Map<String, Double> getCalculatedValues(Momentum prevIndicator, Momentum indicator, Point prevPoint,
 			Point point) {
-		Map<String, Object> objectMap = new HashMap<String, Object>();
+		Map<String, Double> objectMap = new HashMap<String, Double>();
 		if (!NumberUtil.isInfiniteOrNan(indicator.getMomentum())) {
 			objectMap.put("momentum", indicator.getMomentum());
 		}
@@ -128,4 +127,16 @@ public class MomentumIndicatorManager extends IntervalIndicatorManager<Momentum>
 		return objectMap;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Momentum getIndicatorInstance(Map<String, Object> indMap) {
+		Momentum instance = getIndicatorInstance();
+		if (indMap != null) {
+			if (indMap.containsKey(instance.getName())) {
+				Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
+				instance.setMomentum(values.get("momentum"));
+			}
+		}
+		return instance;
+	}
 }

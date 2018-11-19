@@ -105,22 +105,25 @@ public class DummyIndicatorManager extends IndicadorIndividuoManager<Object> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    /**
-     *
-     * @param indicator
-     * @param prevPoint
-     * @param point
-     * @return
-     */
-    @Override
-    public double getValue(Object indicator, Point prevPoint, Point point) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	@Override
+	public double getValue(Object indicator, Point prevPoint, Point point) {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
 
 	@Override
-	public Map<String, Object> getCalculatedValues(Object prevIndicator, Object indicator, Point prevPoint,
+	public Map<String, Double> getCalculatedValues(Object prevIndicator, Object indicator, Point prevPoint,
 			Point point) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
+
+	@Override
+	public Object getIndicatorInstance() {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public Object getIndicatorInstance(Map<String, Object> values) {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
 }

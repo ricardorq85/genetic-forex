@@ -202,7 +202,7 @@ public class IndividuoHelper {
                 IntervalIndicatorManager indManager = (IntervalIndicatorManager) indController.getManagerInstance(i);
                 if (indManager.getId().equalsIgnoreCase(idIndicador)) {
                     found = true;
-                    IntervalIndicator indicator = indManager.getIndicatorInstance();
+                    IntervalIndicator indicator = (IntervalIndicator) indManager.getIndicatorInstance();
                     Interval<Double> interval = new DoubleInterval(indManager.getId());
                     interval.setLowInterval(resultado.getDouble("INTERVALO_INFERIOR"));
                     interval.setHighInterval(resultado.getDouble("INTERVALO_SUPERIOR"));

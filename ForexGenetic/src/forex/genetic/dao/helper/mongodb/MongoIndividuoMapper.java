@@ -32,8 +32,12 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 
 	@Override
 	public Map<String, Object> toMap(MongoIndividuo obj) {
-		Map<String, Object> objectMap = this.toMapIndividuoEstrategia(obj);
+		Map<String, Object> objectMap = toMapIndividuoEstrategia(obj);
+		objectMap.put("procesoEjecucion", toMapProcesoEjecucion(obj));
+		return objectMap;
+	}
 
+	public Map<String, Object> toMapProcesoEjecucion(MongoIndividuo obj) {
 		Map<String, Object> procesoEjecucion = new HashMap<String, Object>();
 		if (obj.getProcesoEjecucion() != null) {
 			procesoEjecucion.put("maxFechaHistorico", obj.getProcesoEjecucion().getMaxFechaHistorico());
@@ -43,9 +47,11 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 			} else {
 				procesoEjecucion.put("fechaProceso", new Date());
 			}
+			procesoEjecucion.put("openPriceActiva", obj.getProcesoEjecucion().getOpenPriceActiva());
+			procesoEjecucion.put("spreadActiva", obj.getProcesoEjecucion().getSpreadActiva());
+			procesoEjecucion.put("tipoOperacionActiva", obj.getProcesoEjecucion().getTipoOperacionActiva());
 		}
-		objectMap.put("procesoEjecucion", procesoEjecucion);
-		return objectMap;
+		return procesoEjecucion;
 	}
 
 	private Map<String, Object> toMapIndividuoEstrategia(IndividuoEstrategia obj) {
@@ -102,11 +108,14 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 		obj.setCloseIndicators(getListIndicadores((List<Map<String, Object>>) one.get("closeIndicadores")));
 
 		if (one.get("procesoEjecucion") != null) {
-			Map<String, Date> mapProcesoEjecucion = (Map<String, Date>) one.get("procesoEjecucion");
+			Map<String, Object> mapProcesoEjecucion = (Map<String, Object>) one.get("procesoEjecucion");
 			ProcesoEjecucionDTO procesoEjecucion = new ProcesoEjecucionDTO();
-			procesoEjecucion.setMaxFechaHistorico(mapProcesoEjecucion.get("maxFechaHistorico"));
-			procesoEjecucion.setFechaAperturaActiva(mapProcesoEjecucion.get("fechaAperturaActiva"));
-			procesoEjecucion.setFechaProceso(mapProcesoEjecucion.get("fechaProceso"));
+			procesoEjecucion.setMaxFechaHistorico((Date)mapProcesoEjecucion.get("maxFechaHistorico"));
+			procesoEjecucion.setFechaAperturaActiva((Date)mapProcesoEjecucion.get("fechaAperturaActiva"));
+			procesoEjecucion.setFechaProceso((Date)mapProcesoEjecucion.get("fechaProceso"));
+			procesoEjecucion.setOpenPriceActiva((double)mapProcesoEjecucion.get("openPriceActiva"));
+			procesoEjecucion.setSpreadActiva((double)mapProcesoEjecucion.get("spreadActiva"));
+			procesoEjecucion.setTipoOperacionActiva((String)mapProcesoEjecucion.get("tipoOperacionActiva"));
 			obj.setProcesoEjecucion(procesoEjecucion);
 		}
 		return obj;
@@ -124,7 +133,7 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 				if ((indicadoresMap != null) && (indicadoresMap.size() > i)) {
 					Map<String, Object> mapIndicador = indicadoresMap.get(i);
 					if (mapIndicador != null) {
-						IntervalIndicator indicator = managerInstance.getIndicatorInstance();
+						IntervalIndicator indicator = (IntervalIndicator) managerInstance.getIndicatorInstance();
 						Interval<Double> interval = new DoubleInterval(managerInstance.getId());
 						Map<String, Double> mapIntervalo = (Map<String, Double>) mapIndicador.get(indicator.getName());
 						if (mapIntervalo != null) {

@@ -112,9 +112,9 @@ public class IchimokuSignalIndicatorManager extends IchimokuIndicatorManager {
 	}
 
 	@Override
-	public Map<String, Object> getCalculatedValues(Ichimoku prevIndicator, Ichimoku indicator, Point prevPoint,
+	public Map<String, Double> getCalculatedValues(Ichimoku prevIndicator, Ichimoku indicator, Point prevPoint,
 			Point point) {
-		Map<String, Object> objectMap = new HashMap<String, Object>();
+		Map<String, Double> objectMap = new HashMap<String, Double>();
 		if (!NumberUtil.isInfiniteOrNan(indicator.getChinkouSpan())) {
 			objectMap.put("chinkouSpan", indicator.getChinkouSpan());
 		}
@@ -133,4 +133,18 @@ public class IchimokuSignalIndicatorManager extends IchimokuIndicatorManager {
 		return objectMap;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Ichimoku getIndicatorInstance(Map<String, Object> indMap) {
+		Ichimoku instance = getIndicatorInstance();
+		if (indMap != null) {
+			if (indMap.containsKey(instance.getName())) {
+				Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
+				instance.setChinkouSpan(values.get("chinkouSpan"));
+				instance.setKijunSen(values.get("kijunSen"));
+				instance.setTenkanSen(values.get("tenkanSen"));
+			}
+		}
+		return instance;
+	}
 }

@@ -60,9 +60,9 @@ public class OracleProcesarIndividuoThread extends Thread {
 			connDDL = JDBCUtil.getConnection();
 			daoHistorico = new OracleDatoHistoricoDAO(conn);
 			daoOperaciones = new OracleOperacionesDAO(conn);
-			daoIndividuo = new OracleIndividuoDAO(conn);			
+			daoIndividuo = new OracleIndividuoDAO(conn);
 			daoProceso = new OracleProcesoEjecucionDAO(conn);
-			
+
 			daoIndividuoDDL = new OracleIndividuoDAO(connDDL);
 			for (Individuo individuo : individuos) {
 				runIndividuo(individuo);
@@ -139,8 +139,8 @@ public class OracleProcesarIndividuoThread extends Thread {
 		List<Point> points;
 		Date fechaInicialHistorico;
 		int indexFecha = 0;
-		int duracionPromedio = Math.max(3000, daoIndividuo.duracionPromedioMinutos(individuo.getId()));
-		List<Date> fechas = daoIndividuo.consultarPuntosApertura(intervaloFechasIndividuo, individuo.getId());
+		long duracionPromedio = Math.max(3000, daoOperaciones.duracionPromedioMinutos(individuo.getId()));
+		List<Date> fechas = daoHistorico.consultarPuntosApertura(intervaloFechasIndividuo, individuo.getId());
 		LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + intervaloFechasIndividuo.toString()
 				+ ",Fechas consultadas: " + fechas.size(), 1);
 		if (individuo.getFechaApertura() == null) {
@@ -152,13 +152,13 @@ public class OracleProcesarIndividuoThread extends Thread {
 				indexFecha = proximaFechaApertura(fechas, intervaloFechasIndividuo.getLowInterval(), indexFecha);
 				fechaInicialHistorico = fechas.get(indexFecha);
 				points = daoHistorico.consultarHistorico(fechaInicialHistorico,
-						DateUtil.adicionarMinutos(fechaInicialHistorico, duracionPromedio));
+						DateUtil.adicionarMinutos(fechaInicialHistorico, (int) duracionPromedio));
 			}
 		} else {
 			fechaInicialHistorico = intervaloFechasIndividuo.getLowInterval();
 			Date nextFechaHistorico = daoHistorico.getFechaHistoricaMinima(fechaInicialHistorico);
 			points = daoHistorico.consultarHistorico(fechaInicialHistorico,
-					DateUtil.adicionarMinutos(nextFechaHistorico, duracionPromedio));
+					DateUtil.adicionarMinutos(nextFechaHistorico, (int) duracionPromedio));
 		}
 
 		daoIndividuo.consultarDetalleIndividuoProceso(individuo, this.maxFechaHistorico);
@@ -175,7 +175,7 @@ public class OracleProcesarIndividuoThread extends Thread {
 				fechaRetorno = lastDate;
 				LogUtil.logTime("Procesar Individuo;" + this.getName() + ";" + individuo.getId() + ";lastDate="
 						+ DateUtil.getDateString(lastDate), 1);
-				List<Order> ordenes = operacionesManager.calcularOperaciones(points, individuo);
+				List<Order> ordenes = (List<Order>) operacionesManager.calcularOperaciones(points, individuo);
 				Order updateOrder = null;
 				if (individuo.getFechaApertura() != null) {
 					if (ordenes.get(0).getCloseDate() != null) {
@@ -185,7 +185,7 @@ public class OracleProcesarIndividuoThread extends Thread {
 					ordenes.remove(0);
 					individuo.setFechaApertura(null);
 				}
-				daoOperaciones.insertOperaciones(individuo, ordenes);
+				daoOperaciones.insert(individuo, ordenes);
 				this.updateProceso(lastDate, individuo.getId());
 				if (updateOrder != null) {
 					ordenes.add(updateOrder);
@@ -194,7 +194,7 @@ public class OracleProcesarIndividuoThread extends Thread {
 				operacionesManager.procesarMaximosReproceso(individuo);
 				if (individuo.getCurrentOrder() != null) {
 					individuo.setFechaApertura(individuo.getCurrentOrder().getOpenDate());
-					duracionPromedio = Math.max(3000, daoIndividuo.duracionPromedioMinutos(individuo.getId()));
+					duracionPromedio = Math.max(3000, daoOperaciones.duracionPromedioMinutos(individuo.getId()));
 				}
 			} else {
 				lastDate = fechaInicialHistorico;
@@ -213,14 +213,14 @@ public class OracleProcesarIndividuoThread extends Thread {
 					indexFecha = index;
 					fechaInicialHistorico = fechas.get(indexFecha);
 					points = daoHistorico.consultarHistorico(fechaInicialHistorico,
-							DateUtil.adicionarMinutos(fechaInicialHistorico, duracionPromedio));
+							DateUtil.adicionarMinutos(fechaInicialHistorico, (int) duracionPromedio));
 				}
 			} else {
 				fechaInicialHistorico = getLastDate(lastDate, fechaInicialHistorico);
 				Date nextFechaHistorico = daoHistorico.getFechaHistoricaMinima(fechaInicialHistorico);
 				if (nextFechaHistorico != null) {
 					points = daoHistorico.consultarHistorico(fechaInicialHistorico,
-							DateUtil.adicionarMinutos(nextFechaHistorico, duracionPromedio));
+							DateUtil.adicionarMinutos(nextFechaHistorico, (int) duracionPromedio));
 				} else {
 					break;
 				}

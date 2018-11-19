@@ -7,7 +7,6 @@ package forex.genetic.dao;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.IndividuoOptimo;
@@ -18,18 +17,10 @@ import forex.genetic.manager.controller.IndicadorController;
  *
  * @author ricardorq85
  */
-public interface IIndividuoDAO<E> extends IGeneticDAO<E> {
+public interface IIndividuoDAO<E extends IndividuoEstrategia> extends IGeneticDAO<E> {
 
 	public List<? extends IndividuoEstrategia> getListByProcesoEjecucion(String filtroAdicional, Date fechaHistorico)
 			throws GeneticDAOException;
-
-	public int duracionPromedioMinutos(String idIndividuo) throws GeneticDAOException;
-
-	@Deprecated
-	public List<Date> consultarPuntosApertura(Date fechaMayorQue, String idIndividuo) throws GeneticDAOException;
-
-	@Deprecated
-	public List<Date> consultarPuntosApertura(DateInterval rango, String idIndividuo) throws GeneticDAOException;
 
 	public void crearVistaIndicadoresIndividuo(String viewName, String idIndividuo) throws GeneticDAOException;
 

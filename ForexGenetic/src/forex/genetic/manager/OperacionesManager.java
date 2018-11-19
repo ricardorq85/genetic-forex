@@ -93,7 +93,7 @@ public class OperacionesManager {
 	 * @param individuo
 	 * @return
 	 */
-	public List<Order> calcularOperaciones(List<Point> points, Individuo individuo) {
+	public List<? extends Order> calcularOperaciones(List<Point> points, Individuo individuo) {
 		List<Order> ordenes = new ArrayList<>();
 		double takeProfit = individuo.getTakeProfit();
 		double stopLoss = individuo.getStopLoss();

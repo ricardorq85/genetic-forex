@@ -9,7 +9,6 @@ import java.util.Map;
 
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
-import forex.genetic.entities.indicator.Adx;
 import forex.genetic.entities.indicator.Ichimoku;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.util.NumberUtil;
@@ -128,9 +127,9 @@ public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
 	}
 
 	@Override
-	public Map<String, Object> getCalculatedValues(Ichimoku prevIndicator, Ichimoku indicator, Point prevPoint,
+	public Map<String, Double> getCalculatedValues(Ichimoku prevIndicator, Ichimoku indicator, Point prevPoint,
 			Point point) {
-		Map<String, Object> objectMap = new HashMap<String, Object>();
+		Map<String, Double> objectMap = new HashMap<String, Double>();
 		if (!NumberUtil.isInfiniteOrNan(indicator.getSenkouSpanA())) {
 			objectMap.put("senkouSpanA", indicator.getSenkouSpanA());
 		}
@@ -148,4 +147,17 @@ public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
 		return objectMap;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Ichimoku getIndicatorInstance(Map<String, Object> indMap) {
+		Ichimoku instance = getIndicatorInstance();
+		if (indMap != null) {
+			if (indMap.containsKey(instance.getName())) {
+				Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
+				instance.setSenkouSpanA(values.get("senkouSpanA"));
+				instance.setSenkouSpanB(values.get("senkouSpanB"));
+			}
+		}
+		return instance;
+	}
 }

@@ -18,6 +18,7 @@ import forex.genetic.manager.OperacionesManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.controller.OperationController;
 import forex.genetic.util.Constants;
+import forex.genetic.util.Constants.CloseType;
 import forex.genetic.util.Constants.OperationType;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -34,8 +35,7 @@ public class MongoOperacionesManager extends OperacionesManager {
 	public MongoOperacionesManager() {
 	}
 
-
-	public List<Order> calcularOperaciones(List<Point> points, Individuo individuo) {
+	public List<? extends Order> calcularOperaciones(List<Point> points, Individuo individuo) {
 		List<Order> ordenes = new ArrayList<>();
 		double takeProfit = individuo.getTakeProfit();
 		double stopLoss = individuo.getStopLoss();
@@ -50,8 +50,6 @@ public class MongoOperacionesManager extends OperacionesManager {
 			if (!activeOperation) {
 				boolean operate = true; //operationController.operateOpen(individuo, points, i);
 				if (operate) {
-					// boolean operate2 =
-					// indicatorController.operateOpen(individuo, points, i);
 					openOperationValue = operationController.calculateOpenPrice(individuo, points, i);
 					individuo.setOpenOperationValue(openOperationValue);
 					operate = !Double.isNaN(openOperationValue);
@@ -66,6 +64,8 @@ public class MongoOperacionesManager extends OperacionesManager {
 						currentOrder.setTakeProfit(takeProfit);
 						currentOrder.setStopLoss(stopLoss);
 						currentOrder.setTipo(individuo.getTipoOperacion());
+						currentOrder.setClosePriceByTakeProfit(operationController.calculateClosePriceByTakeProfit(currentOrder));
+						currentOrder.setClosePriceByStopLoss(operationController.calculateClosePriceByStopLoss(currentOrder));						
 						individuo.setCurrentOrder(currentOrder);
 					}
 				}
@@ -149,6 +149,7 @@ public class MongoOperacionesManager extends OperacionesManager {
 						: (-operationController.calculateClosePrice(individuo, points, i) + openOperationValue)
 								* PropertiesManager.getPairFactor();
 				currentOrder.setCloseByTakeStop(false);
+				currentOrder.setTipoCierre(CloseType.INDICADORES);
 				pips = (pips - currentOrder.getOpenSpread());
 			} else {
 				double stopLossPips = (currentOrder.getTipo().equals(Constants.OperationType.BUY))
@@ -167,8 +168,10 @@ public class MongoOperacionesManager extends OperacionesManager {
 				if (operate) {
 					currentOrder.setCloseByTakeStop(true);
 					if (takeProfitPips >= (takeProfit)) {
+						currentOrder.setTipoCierre(CloseType.TAKE_PROFIT);
 						pips = (takeProfit);
 					} else if (stopLossPips <= -(stopLoss)) {
+						currentOrder.setTipoCierre(CloseType.STOP_LOSS);
 						pips = -(stopLoss);
 					}
 				}

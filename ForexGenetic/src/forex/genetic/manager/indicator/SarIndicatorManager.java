@@ -132,8 +132,8 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
 	}
 
 	@Override
-	public Map<String, Object> getCalculatedValues(Sar prevIndicator, Sar indicator, Point prevPoint, Point point) {
-		Map<String, Object> objectMap = new HashMap<String, Object>();
+	public Map<String, Double> getCalculatedValues(Sar prevIndicator, Sar indicator, Point prevPoint, Point point) {
+		Map<String, Double> objectMap = new HashMap<String, Double>();
 		if (!NumberUtil.isInfiniteOrNan(indicator.getSar())) {
 			objectMap.put("sar", indicator.getSar());
 		}
@@ -144,6 +144,19 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
 			}
 		}
 		return objectMap;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Sar getIndicatorInstance(Map<String, Object> indMap) {
+		Sar instance = getIndicatorInstance();
+		if (indMap != null) {
+			if (indMap.containsKey(instance.getName())) {
+				Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
+				instance.setSar(values.get("sar"));
+			}
+		}
+		return instance;
 	}
 
 }

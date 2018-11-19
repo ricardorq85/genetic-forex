@@ -267,7 +267,7 @@ public class ProcesarTendenciasValorProbableManager {
                             individuoDAO.insertIndividuo(individuo);
                             first = false;
                         }
-                        operacionesDAO.insertOperaciones(individuo, Collections.singletonList(order));
+                        operacionesDAO.insert(individuo, Collections.singletonList(order));
                         lastDate = null;
                         LogUtil.logTime("Orden Cerrada: " + order.toString(), 1);
                         conn.commit();
@@ -303,7 +303,7 @@ public class ProcesarTendenciasValorProbableManager {
                 individuoDAO.insertIndividuo(individuo);
                 first = false;
             }
-            operacionesDAO.insertOperaciones(individuo, Collections.singletonList(order));
+            operacionesDAO.insert(individuo, Collections.singletonList(order));
             LogUtil.logTime("Orden Sin Cerrar: " + order.toString(), 1);
             conn.commit();
             //conn.rollback();            

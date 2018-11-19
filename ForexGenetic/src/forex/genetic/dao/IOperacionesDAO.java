@@ -18,7 +18,7 @@ import forex.genetic.exception.GeneticDAOException;
  *
  * @author ricardorq85
  */
-public interface IOperacionesDAO extends IGeneticDAO<Order> {
+public interface IOperacionesDAO<E extends Order> extends IGeneticDAO<E> {
 
 	public List<DateInterval> consultarVigencias(Date fechaPeriodo) throws GeneticDAOException;
 
@@ -37,11 +37,11 @@ public interface IOperacionesDAO extends IGeneticDAO<Order> {
 
 	public int deleteOperaciones(String idIndividuo) throws GeneticDAOException;
 
-	public void updateOperacion(Individuo individuo, Order operacion, Date fechaApertura) throws GeneticDAOException;
+	public void updateOperacion(Individuo individuo, E operacion, Date fechaApertura) throws GeneticDAOException;
 
-	public void updateMaximosReprocesoOperacion(Individuo individuo, Order operacion) throws GeneticDAOException;
+	public void updateMaximosReprocesoOperacion(Individuo individuo, E operacion) throws GeneticDAOException;
 
-	public void insertOperaciones(Individuo individuo, List<Order> operaciones) throws GeneticDAOException;
+	public void insert(Individuo individuo, List<? extends Order> operaciones) throws GeneticDAOException;
 
 	public Individuo consultarOperacionesIndividuoRetroceso(Individuo ind, Date fechaMaximo) throws GeneticDAOException;
 
@@ -53,4 +53,5 @@ public interface IOperacionesDAO extends IGeneticDAO<Order> {
 
 	public void actualizarOperacionesPositivasYNegativas() throws GeneticDAOException;
 
+	public long duracionPromedioMinutos(String idIndividuo) throws GeneticDAOException;
 }

@@ -50,7 +50,14 @@ public interface IDatoHistoricoDAO extends IGeneticDAO<Point> {
 
 	public double consultarPrecioPonderado(Date fecha) throws GeneticDAOException;
 
-	public List<? extends Point> consultarPuntosApertura(IndividuoEstrategia individuo, DateInterval rango)
+	public Point consultarProximoPuntoApertura(IndividuoEstrategia individuo, DateInterval rango)
 			throws GeneticDAOException;
 
+	public Point consultarPuntoCierre(IndividuoEstrategia individuo, Date fechaBase) throws GeneticDAOException;
+
+	public Point consultarPuntoAnterior(Date fecha) throws GeneticDAOException;
+
+	public List<Date> consultarPuntosApertura(Date fechaMayorQue, String idIndividuo) throws GeneticDAOException;
+
+	public List<Date> consultarPuntosApertura(DateInterval rango, String idIndividuo) throws GeneticDAOException;
 }

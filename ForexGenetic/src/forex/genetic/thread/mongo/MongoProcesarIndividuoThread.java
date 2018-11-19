@@ -6,6 +6,7 @@ package forex.genetic.thread.mongo;
 
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 
 	private List<MongoIndividuo> individuos = null;
 	private IDatoHistoricoDAO daoDatoHistorico;
-	private IOperacionesDAO daoOperaciones;
+	private IOperacionesDAO<Order> daoOperaciones;
 	private IIndividuoDAO daoIndividuo, daoIndividuoDDL;
 	private Date maxFechaHistorico = null;
 	private Date minFechaHistorico = null;
@@ -80,8 +81,6 @@ public class MongoProcesarIndividuoThread extends Thread {
 			ex.printStackTrace();
 		} catch (GeneticDAOException e) {
 			e.printStackTrace();
-		} finally {
-			JDBCUtil.close(conn);
 		}
 	}
 
@@ -115,11 +114,9 @@ public class MongoProcesarIndividuoThread extends Thread {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			System.err.println(ex.getMessage() + ": " + individuo.getId());
-			JDBCUtil.rollback(conn);
 		} catch (ParseException ex) {
 			ex.printStackTrace();
 			System.err.println(ex.getMessage() + ": " + individuo.getId());
-			JDBCUtil.rollback(conn);
 		}
 	}
 
@@ -139,36 +136,39 @@ public class MongoProcesarIndividuoThread extends Thread {
 			throws SQLException, ClassNotFoundException, ParseException, GeneticDAOException {
 		List<Point> points;
 		Date fechaInicialHistorico;
-		int indexFecha = 0;
-		int duracionPromedio = Math.max(3000, daoIndividuo.duracionPromedioMinutos(individuo.getId()));
-		List<? extends Point> puntosApertura = daoDatoHistorico.consultarPuntosApertura(individuo,
-				intervaloFechasIndividuo);
-		LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + intervaloFechasIndividuo.toString()
-				+ ",Fechas consultadas: " + puntosApertura.size(), 1);
+
+		Point puntoCierre = null;
+		Point puntoApertura = daoDatoHistorico.consultarProximoPuntoApertura(individuo, intervaloFechasIndividuo);
+		long duracionPromedioIndividuo = Math.max(3000, daoOperaciones.duracionPromedioMinutos(individuo.getId()));
+
+		LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + intervaloFechasIndividuo.toString(), 1);
+
 		ProcesoEjecucionDTO procesoEjecucionIndividuo = individuo.getProcesoEjecucion();
 		if (procesoEjecucionIndividuo.getFechaAperturaActiva() == null) {
-			if (puntosApertura.isEmpty()) {
+			if (puntoApertura == null) {
 				LogUtil.logTime(super.getName() + ": Individuo sin operaciones: " + individuo.getId(), 2);
-				updateProceso(individuo, intervaloFechasIndividuo.getHighInterval());
+				updateProcesoIndividuo(individuo, intervaloFechasIndividuo.getHighInterval());
 				return intervaloFechasIndividuo.getHighInterval();
 			} else {
 //				indexFecha = proximaFechaApertura(fechas, intervaloFechasIndividuo.getLowInterval(), indexFecha);
-				indexFecha = 0;
 //				fechaInicialHistorico = fechas.get(indexFecha);
-				fechaInicialHistorico = puntosApertura.get(indexFecha).getDate();
+				fechaInicialHistorico = puntoApertura.getDate();
 //				points = daoDatoHistorico.consultarHistorico(fechaInicialHistorico,
 //						DateUtil.adicionarMinutos(fechaInicialHistorico, duracionPromedio));
 			}
 		} else {
-			fechaInicialHistorico = intervaloFechasIndividuo.getLowInterval();
-//			Date nextFechaHistorico = daoDatoHistorico.getFechaHistoricaMinima(fechaInicialHistorico);
-//			points = daoDatoHistorico.consultarHistorico(fechaInicialHistorico,
-//					DateUtil.adicionarMinutos(nextFechaHistorico, duracionPromedio));
+			procesarOperacionActiva(individuo, intervaloFechasIndividuo);
 		}
 
+		Point puntoAnterior = daoDatoHistorico.consultarPuntoAnterior(puntoApertura.getDate());
 //		daoIndividuo.consultarDetalleIndividuoProceso(individuo, this.maxFechaHistorico);
 		OperacionesManager operacionesManager = new OperacionesManager();
 		Date lastDate = fechaInicialHistorico;
+		if (puntoAnterior != null) {
+			points = new ArrayList<Point>(2);
+			points.add(puntoAnterior);
+			points.add(puntoApertura);
+		}
 		if ((points != null) && (!points.isEmpty())) {
 			lastDate = points.get(points.size() - 1).getDate();
 		}
@@ -180,7 +180,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 				fechaRetorno = lastDate;
 				LogUtil.logTime("Procesar Individuo;" + this.getName() + ";" + individuo.getId() + ";lastDate="
 						+ DateUtil.getDateString(lastDate), 1);
-				List<Order> ordenes = operacionesManager.calcularOperaciones(points, individuo);
+				List<? extends Order> ordenes = operacionesManager.calcularOperaciones(points, individuo);
 				Order updateOrder = null;
 				if (individuo.getFechaApertura() != null) {
 					if (ordenes.get(0).getCloseDate() != null) {
@@ -190,8 +190,8 @@ public class MongoProcesarIndividuoThread extends Thread {
 					ordenes.remove(0);
 					individuo.setFechaApertura(null);
 				}
-				daoOperaciones.insertOperaciones(individuo, ordenes);
-				this.updateProceso(lastDate, individuo.getId());
+				daoOperaciones.insert(individuo, ordenes);
+				this.updateProcesoIndividuo(individuo, lastDate);
 				if (updateOrder != null) {
 					ordenes.add(updateOrder);
 				}
@@ -199,7 +199,8 @@ public class MongoProcesarIndividuoThread extends Thread {
 				operacionesManager.procesarMaximosReproceso(individuo);
 				if (individuo.getCurrentOrder() != null) {
 					individuo.setFechaApertura(individuo.getCurrentOrder().getOpenDate());
-					duracionPromedio = Math.max(3000, daoIndividuo.duracionPromedioMinutos(individuo.getId()));
+					duracionPromedioIndividuo = Math.max(3000,
+							daoOperaciones.duracionPromedioMinutos(individuo.getId()));
 				}
 			} else {
 				lastDate = fechaInicialHistorico;
@@ -212,7 +213,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 			if (individuo.getFechaApertura() == null) {
 				int index = proximaFechaApertura(fechas, lastDate, indexFecha);
 				if (((index > 0) && (index == indexFecha)) || (index >= fechas.size())) {
-					this.updateProceso(intervaloFechasIndividuo.getHighInterval(), individuo.getId());
+					this.updateProcesoIndividuo(individuo, intervaloFechasIndividuo.getHighInterval());
 					break;
 				} else {
 					indexFecha = index;
@@ -234,8 +235,22 @@ public class MongoProcesarIndividuoThread extends Thread {
 		return fechaRetorno;
 	}
 
+	private void procesarOperacionActiva(MongoIndividuo individuo, DateInterval intervaloFechasIndividuo)
+			throws GeneticDAOException {
+		ProcesoEjecucionDTO procesoEjecucionIndividuo = individuo.getProcesoEjecucion();
+		if (procesoEjecucionIndividuo.getFechaAperturaActiva() == null) {
+			return;
+		}
+		Date fechaInicialPuntoCierre = DateUtil.obtenerFechaMaxima(procesoEjecucionIndividuo.getFechaAperturaActiva(),
+				intervaloFechasIndividuo.getLowInterval());
+		Point puntoCierre = daoDatoHistorico.consultarPuntoCierre(individuo, fechaInicialPuntoCierre);
+		if (puntoCierre == null) {
+			return;
+		}
+	}
+
 	@SuppressWarnings("unchecked")
-	private void updateProceso(MongoIndividuo individuo, Date fechaHistorico) throws GeneticDAOException {
+	private void updateProcesoIndividuo(MongoIndividuo individuo, Date fechaHistorico) throws GeneticDAOException {
 		ProcesoEjecucionDTO procesoEjecucionIndividuo = individuo.getProcesoEjecucion();
 		if (procesoEjecucionIndividuo == null) {
 			procesoEjecucionIndividuo = new ProcesoEjecucionDTO();

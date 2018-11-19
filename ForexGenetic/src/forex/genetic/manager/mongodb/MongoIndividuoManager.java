@@ -2,13 +2,13 @@ package forex.genetic.manager.mongodb;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.dao.mongodb.MongoIndividuoDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.Point;
 import forex.genetic.util.DateUtil;
 
 public class MongoIndividuoManager {
@@ -21,29 +21,27 @@ public class MongoIndividuoManager {
 		dhDAO = new MongoDatoHistoricoDAO(true);
 	}
 
-	public List<Date> consultarPuntosApertura(List<? extends IndividuoEstrategia> individuos) {
+	public List<? extends Point> consultarPuntosApertura(List<? extends IndividuoEstrategia> individuos) {
 		final DateInterval rango = new DateInterval();
-		List<Date> fechas = new ArrayList<Date>();
+		List<Point> puntosTotales = new ArrayList<Point>();
 		try {
 			rango.setLowInterval(DateUtil.obtenerFecha("2009/01/01 00:00"));
 			rango.setHighInterval(DateUtil.obtenerFecha("2009/06/01 00:00"));
 
 			IndividuoEstrategia ind = dao.consultarById("1394755200000.14");
 			// individuos.stream().forEach(ind -> {
-			List<Date> fechas2 = dhDAO.consultarPuntosApertura(rango, ind);
-			if ((fechas2 != null) && (!fechas2.isEmpty())) {
+			Point punto = dhDAO.consultarProximoPuntoApertura(ind, rango);
+			if (punto != null) {
 				System.out.println("Individuo con fechas consultadas:" + ind.getId());
-				fechas2.stream().forEach(fe -> {
-					System.out.println(DateUtil.getDateString(fe));
-				});
-				fechas.addAll(fechas2);
+				System.out.println(DateUtil.getDateString(punto.getDate()));
+				puntosTotales.add(punto);
 			}
 			// });
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return fechas;
+		return puntosTotales;
 	}
 
 }

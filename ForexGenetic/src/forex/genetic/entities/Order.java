@@ -44,6 +44,7 @@ public class Order implements Serializable, Cloneable {
 	private Date maxFechaRetroceso = null;
 	DoubleInterval maxMinHistoriaApertura = null;
 	private long duracionMinutos;
+	
 
 	/**
 	 *
@@ -226,7 +227,7 @@ public class Order implements Serializable, Cloneable {
 	 * @return
 	 */
 	public Date getCloseDate() {
-		return (this.closeDate = closeDate != null ? new Date(closeDate.getTime()) : null);
+		return ((this.closeDate != null) ? new Date(closeDate.getTime()) : null);
 	}
 
 	/**
@@ -234,7 +235,7 @@ public class Order implements Serializable, Cloneable {
 	 * @param closeDate
 	 */
 	public void setCloseDate(Date closeDate) {
-		this.closeDate = closeDate != null ? new Date(closeDate.getTime()) : null;
+		this.closeDate = (closeDate != null) ? new Date(closeDate.getTime()) : null;
 	}
 
 	/**
@@ -306,7 +307,7 @@ public class Order implements Serializable, Cloneable {
 	 * @return
 	 */
 	public Date getOpenDate() {
-		return (this.openDate = openDate != null ? new Date(openDate.getTime()) : null);
+		return ((this.openDate != null) ? new Date(openDate.getTime()) : null);
 	}
 
 	/**
@@ -314,7 +315,7 @@ public class Order implements Serializable, Cloneable {
 	 * @param openDate
 	 */
 	public void setOpenDate(Date openDate) {
-		this.openDate = openDate != null ? new Date(openDate.getTime()) : null;
+		this.openDate = (openDate != null) ? new Date(openDate.getTime()) : null;
 	}
 
 	/**

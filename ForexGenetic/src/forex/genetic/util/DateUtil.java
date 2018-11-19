@@ -172,7 +172,7 @@ public class DateUtil {
 	 * @return
 	 * @throws ParseException
 	 */
-	public static Date obtenerFechaMaxima(Date f1, Date f2) throws ParseException {
+	public static Date obtenerFechaMaxima(Date f1, Date f2) {
 		if ((f1 != null) && (f2 == null)) {
 			return f1;
 		}
@@ -249,12 +249,10 @@ public class DateUtil {
 		return fecha;
 	}
 
-	/**
-	 *
-	 * @param fechaMenor
-	 * @param fechaMayor
-	 * @return
-	 */
+	public static long calcularDuracionMinutos(Date fechaMenor, Date fechaMayor) {
+		return (calcularDuracionMillis(fechaMenor, fechaMayor) / 1000 / 60);
+	}
+
 	public static long calcularDuracionMillis(Date fechaMenor, Date fechaMayor) {
 		long resultado = 0L;
 		GregorianCalendar gcMayor = new GregorianCalendar();

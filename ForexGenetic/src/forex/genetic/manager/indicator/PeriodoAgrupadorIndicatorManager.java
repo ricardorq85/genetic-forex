@@ -139,10 +139,13 @@ public class PeriodoAgrupadorIndicatorManager extends IntervalIndicatorManager<P
 	}
 
 	@Override
-	public Map<String, Object> getCalculatedValues(PeriodoAgrupador prevIndicator, PeriodoAgrupador indicator,
+	public Map<String, Double> getCalculatedValues(PeriodoAgrupador prevIndicator, PeriodoAgrupador indicator,
 			Point prevPoint, Point point) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
+	@Override
+	public PeriodoAgrupador getIndicatorInstance(Map<String, Object> values) {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
 }

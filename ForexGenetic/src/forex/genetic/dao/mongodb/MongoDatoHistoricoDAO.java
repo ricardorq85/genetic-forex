@@ -9,7 +9,6 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
@@ -40,7 +39,7 @@ import forex.genetic.util.LogUtil;
 public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDatoHistoricoDAO {
 
 	public MongoDatoHistoricoDAO() {
-		super("datoHistorico", true);
+		this(true);
 	}
 
 	public MongoDatoHistoricoDAO(boolean configure) {
@@ -61,8 +60,8 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		IndicadorController indicadorController = ControllerFactory
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 		for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
-			IntervalIndicatorManager<IntervalIndicator> indManager = (IntervalIndicatorManager) indicadorController
-					.getManagerInstance(i);
+			IntervalIndicatorManager<IntervalIndicator> indManager = ((IntervalIndicatorManager) indicadorController
+					.getManagerInstance(i));
 			IntervalIndicator indicator = indManager.getIndicatorInstance();
 			StringBuilder indexNamePrefix = new StringBuilder("indicadores.").append(indicator.getName());
 			String[] nombresCalculados = indManager.getNombresCalculados();
@@ -94,6 +93,7 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		return doc.getDate("maxDate");
 	}
 
+	@Override
 	public Point consultarPuntoCierre(IndividuoEstrategia individuo, Date fechaBase) {
 		List<Bson> filtros = new ArrayList<>();
 		filtros.add(Filters.gt("fechaHistorico", fechaBase));
@@ -105,17 +105,15 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		LogUtil.logTime(
 				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
 
-		Document doc = this.collection.find(bsonFiltrosCompletos)
-				.projection(Projections.exclude("indicadores")).sort(Sorts.orderBy(Sorts.ascending("fechaHistorico")))
-				.limit(1).first();
+		Document doc = this.collection.find(bsonFiltrosCompletos).projection(Projections.exclude("indicadores"))
+				.sort(Sorts.orderBy(Sorts.ascending("fechaHistorico"))).limit(1).first();
 
 		Point p = getMapper().helpOne(doc);
 		return p;
 	}
 
-	public List<? extends Point> consultarPuntosApertura(IndividuoEstrategia individuo, DateInterval rango) {
-		List<? extends Point> puntos = null;
-
+	@Override
+	public Point consultarProximoPuntoApertura(IndividuoEstrategia individuo, DateInterval rango) {
 		List<Bson> filtros = new ArrayList<>();
 		filtros.add(Filters.gt("fechaHistorico", rango.getLowInterval()));
 		filtros.add(Filters.lte("fechaHistorico", rango.getHighInterval()));
@@ -127,14 +125,11 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		LogUtil.logTime(
 				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
 
-		MongoCursor<Document> cursor = this.collection.find(bsonFiltrosCompletos)
-				// .projection(Projections.fields(Projections.include("fechaHistorico"),
-				// Projections.excludeId()))
-				.projection(Projections.exclude("indicadores")).sort(Sorts.orderBy(Sorts.ascending("fechaHistorico")))
-				.iterator();
+		Document doc = this.collection.find(bsonFiltrosCompletos).projection(Projections.exclude("indicadores"))
+				.sort(Sorts.orderBy(Sorts.ascending("fechaHistorico"))).limit(1).first();
 
-		puntos = getMapper().helpList(cursor);
-		return puntos;
+		Point p = getMapper().helpOne(doc);
+		return p;
 	}
 
 	private void adicionarFiltroIndicadores(List<? extends Indicator> indicadores, List<Bson> filtros) {
@@ -170,98 +165,90 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	}
 
 	@Override
-	public int consultarCantidadPuntos() throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return 0;
+	public Point consultarPuntoAnterior(Date fecha) throws GeneticDAOException {
+		Document doc = this.collection.find(Filters.lt("fechaHistorico", fecha))
+				.projection(Projections.exclude("indicadores")).sort(Sorts.orderBy(Sorts.descending("fechaHistorico")))
+				.limit(1).first();
+
+		Point p = getMapper().helpOne(doc);
+		return p;
 	}
 
 	@Override
-	public int consultarCantidadPuntos(DateInterval interval) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return 0;
+	public List<Date> consultarPuntosApertura(Date fechaMayorQue, String idIndividuo) throws GeneticDAOException {
+		throw new UnsupportedOperationException(
+				"MongoDatoHistoricoDAO.consultarPuntosApertura no soportado. Se debe usar consultarProximoPuntoApertura");
 	}
 
 	@Override
-	public Date getFechaHistoricaMinima(Date fechaMayorQue) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Date getFechaHistoricaMaxima(Date fecha) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Point> consultarHistorico(Date fechaBase1, Date fechaBase2) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Point> consultarHistorico(Date fechaBase) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Point> consultarPuntoByLow(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Point> consultarPuntoByHigh(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public DoubleInterval consultarMaximoMinimo(Date fecha1, Date fecha2) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Point consultarRetroceso(Order orden) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public double consultarMaximaDiferencia(Date fecha, String formatoAgrupador) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return 0;
+	public List<Date> consultarPuntosApertura(DateInterval rango, String idIndividuo) throws GeneticDAOException {
+		throw new UnsupportedOperationException(
+				"MongoDatoHistoricoDAO.consultarPuntosApertura no soportado. Se debe usar consultarProximoPuntoApertura");
 	}
 
 	@Override
 	public double consultarPrecioPonderado(Date fecha) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
-	public boolean exists(Point obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return false;
+	public double consultarMaximaDiferencia(Date fecha, String formatoAgrupador) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
-	public void insert(Point obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
+	public int consultarCantidadPuntos() throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
-	public void update(Point obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
+	public int consultarCantidadPuntos(DateInterval interval) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
+
+	@Override
+	public Date getFechaHistoricaMinima(Date fechaMayorQue) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public Date getFechaHistoricaMaxima(Date fecha) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public List<Point> consultarHistorico(Date fechaBase1, Date fechaBase2) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public List<Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public List<Point> consultarHistorico(Date fechaBase) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public List<Point> consultarPuntoByLow(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public List<Point> consultarPuntoByHigh(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public DoubleInterval consultarMaximoMinimo(Date fecha1, Date fecha2) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public Point consultarRetroceso(Order orden) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
 }

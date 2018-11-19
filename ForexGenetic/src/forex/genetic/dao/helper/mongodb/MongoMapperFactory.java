@@ -11,7 +11,9 @@ public class MongoMapperFactory {
 			return new MongoDatoAdicionalTPOMapper();
 		} else if ("tendenciaParaOperar".equals(collectionName)) {
 			return new MongoTendenciaParaOperarMapper();
+		} else if ("operacion".equals(collectionName)) {
+			return new MongoOperacionMapper();			
 		}
-		return null;
+		throw new IllegalArgumentException("collectionName no soportado: " + collectionName);
 	}
 }
