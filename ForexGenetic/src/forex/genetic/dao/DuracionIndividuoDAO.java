@@ -13,6 +13,7 @@ import java.util.List;
 import forex.genetic.dao.helper.IndividuoHelper;
 import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -26,7 +27,7 @@ public class DuracionIndividuoDAO extends OracleIndividuoDAO {
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuosParaBorrar(int minutos) throws SQLException {
+	public List<Individuo> consultarIndividuosParaBorrar(int minutos) throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT OPER.ID_INDIVIDUO, "
 				+ " NULL ID_INDIVIDUO_PADRE"
@@ -43,6 +44,8 @@ public class DuracionIndividuoDAO extends OracleIndividuoDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException(null, e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -52,7 +55,7 @@ public class DuracionIndividuoDAO extends OracleIndividuoDAO {
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, int minutos) throws SQLException {
+	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, int minutos) throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT OPER.ID_INDIVIDUO, "
 				+ " NULL ID_INDIVIDUO_PADRE"
@@ -70,6 +73,8 @@ public class DuracionIndividuoDAO extends OracleIndividuoDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException(null, e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);

@@ -35,12 +35,12 @@ public abstract class BorradoManager {
 	protected OracleTendenciaDAO tendenciaDAO;
 	protected EstrategiaDAO estrategiaDAO;
 
-	public BorradoManager(Connection conn, String tipoProceso) throws ClassNotFoundException, SQLException {
+	public BorradoManager(Connection conn, String tipoProceso) throws ClassNotFoundException {
 		this(conn, null, tipoProceso);
 	}
 
 	public BorradoManager(Connection conn, OracleIndividuoDAO individuoDAO, String tipoProceso)
-			throws ClassNotFoundException, SQLException {
+			throws ClassNotFoundException {
 		this.tipoProceso = tipoProceso;
 		this.conn = conn;
 		this.individuoDAO = (individuoDAO == null) ? (new OracleIndividuoDAO(conn)) : individuoDAO;
@@ -51,17 +51,17 @@ public abstract class BorradoManager {
 	}
 
 	protected abstract List<Individuo> consultarIndividuos(Individuo individuo)
-			throws ClassNotFoundException, SQLException;
+			throws ClassNotFoundException, GeneticDAOException;
 
-	public void borrarIndividuos() throws ClassNotFoundException, SQLException, GeneticDAOException {
+	public void borrarIndividuos() throws ClassNotFoundException, GeneticDAOException {
 		procesarBorradoIndividuos(null);
 	}
 
-	public void validarYBorrarIndividuo(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
+	public void validarYBorrarIndividuo(Individuo individuo) throws ClassNotFoundException, GeneticDAOException {
 		procesarBorradoIndividuos(individuo);
 	}
 
-	protected void procesarBorradoIndividuos(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
+	protected void procesarBorradoIndividuos(Individuo individuo) throws ClassNotFoundException, GeneticDAOException {
 		try {
 			List<Individuo> individuos = this.consultarIndividuos(individuo);
 			int count = 0;
@@ -78,7 +78,7 @@ public abstract class BorradoManager {
 		}
 	}
 
-	protected void smartDelete(List<Individuo> individuos) throws SQLException, GeneticDAOException {
+	protected void smartDelete(List<Individuo> individuos) throws GeneticDAOException {
 		for (Individuo individuo : individuos) {
 			int r_proceso = procesoDAO.deleteProceso(individuo.getId());
 			logTime("->Individuo: " + individuo.getId() + ". Borrados PROCESO = " + r_proceso, 1);
@@ -92,7 +92,7 @@ public abstract class BorradoManager {
 			} catch (SQLException e) {
 			}
 			individuoDAO.smartDelete(individuo.getId(), tipoProceso, individuo.getIdParent1());
-			conn.commit();
+			individuoDAO.commit();
 		}
 	}
 

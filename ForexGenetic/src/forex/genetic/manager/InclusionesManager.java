@@ -48,7 +48,7 @@ public class InclusionesManager {
 		minimoInclusiones = parametroDAO.getIntValorParametro("MINIMO_INCLUSIONES");
 	}
 
-	public List<ParametroOperacionPeriodo> consultarInclusiones(Date fechaInicio, String tipoOperacion) throws SQLException {
+	public List<ParametroOperacionPeriodo> consultarInclusiones(Date fechaInicio, String tipoOperacion) throws GeneticDAOException {
 		List<ParametroOperacionPeriodo> inclusionesTemporal = estrategiaOperacionPeriodoDAO.consultarInclusiones();
 		List<ParametroOperacionPeriodo> inclusionesTemporal2 = estrategiaOperacionPeriodoDAO.consultarInclusionesxIndividuos(fechaInicio, minimoInclusiones, tipoOperacion);
 		inclusionesTemporal.addAll(inclusionesTemporal2);

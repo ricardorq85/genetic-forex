@@ -25,8 +25,10 @@ public interface IIndividuoDAO<E> extends IGeneticDAO<E> {
 
 	public int duracionPromedioMinutos(String idIndividuo) throws GeneticDAOException;
 
+	@Deprecated
 	public List<Date> consultarPuntosApertura(Date fechaMayorQue, String idIndividuo) throws GeneticDAOException;
 
+	@Deprecated
 	public List<Date> consultarPuntosApertura(DateInterval rango, String idIndividuo) throws GeneticDAOException;
 
 	public void crearVistaIndicadoresIndividuo(String viewName, String idIndividuo) throws GeneticDAOException;
@@ -87,4 +89,13 @@ public interface IIndividuoDAO<E> extends IGeneticDAO<E> {
 	public List<Individuo> consultarIndividuosIntervaloIndicadores() throws GeneticDAOException;
 
 	public List<Individuo> consultarIndividuosIntervaloIndicadores(String idIndividuo) throws GeneticDAOException;
+
+	public List<Individuo> consultarIndividuosParaBorrar(Date fechaLimite) throws GeneticDAOException;
+
+	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, Date fechaLimite)
+			throws GeneticDAOException;
+
+	public List<Individuo> consultarIndividuosParaBorrar(int minutos) throws GeneticDAOException;
+
+	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, int minutos) throws GeneticDAOException;
 }

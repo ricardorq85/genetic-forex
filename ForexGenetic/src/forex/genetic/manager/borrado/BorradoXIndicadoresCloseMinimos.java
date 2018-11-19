@@ -11,6 +11,7 @@ import java.util.List;
 
 import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticDAOException;
 
 /**
  *
@@ -23,7 +24,7 @@ public class BorradoXIndicadoresCloseMinimos extends BorradoManager {
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuos(Individuo individuo) throws ClassNotFoundException, SQLException {
+	public List<Individuo> consultarIndividuos(Individuo individuo) throws GeneticDAOException {
 		List<Individuo> individuos;
 		OracleIndividuoDAO individuoDAO = new OracleIndividuoDAO(conn);
 		if (individuo == null) {

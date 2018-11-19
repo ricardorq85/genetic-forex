@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import forex.genetic.dao.helper.mongodb.MongoIndividuoMapper;
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.dao.mongodb.MongoIndividuoDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.manager.PoblacionManager;
 import forex.genetic.util.DateUtil;
 
@@ -23,7 +25,7 @@ public class RandomFillIndividuoManager {
 		dhDAO = new MongoDatoHistoricoDAO(true);
 	}
 
-	public List<Date> consultarPuntosApertura(List<IndividuoEstrategia> individuos) {
+	public List<Date> consultarPuntosApertura(List<MongoIndividuo> individuos) {
 		final DateInterval rango = new DateInterval();
 		List<Date> fechas = new ArrayList<Date>();
 
@@ -47,10 +49,11 @@ public class RandomFillIndividuoManager {
 		return fechas;
 	}
 
-	public List<IndividuoEstrategia> fill(List<Point> points) {
+	public List<MongoIndividuo> fill(List<Point> points) {
 		List<IndividuoEstrategia> datos = this.generate(points);
-		dao.insertMany(datos);
-		return datos;
+		List<MongoIndividuo> mongoDatos = ((MongoIndividuoMapper)dao.getMapper()).toMongoIndividuo(datos);
+		dao.insertMany(mongoDatos);
+		return mongoDatos;
 	}
 
 	private List<IndividuoEstrategia> generate(List<Point> points) {

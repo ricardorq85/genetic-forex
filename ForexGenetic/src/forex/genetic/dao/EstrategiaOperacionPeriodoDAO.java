@@ -13,9 +13,12 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.helper.EstrategiaOperacionPeriodoHelper;
+import forex.genetic.dao.oracle.OracleGeneticDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.ParametroOperacionPeriodo;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
@@ -23,15 +26,13 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class EstrategiaOperacionPeriodoDAO {
-
-	protected Connection connection = null;
+public class EstrategiaOperacionPeriodoDAO extends OracleGeneticDAO<ParametroOperacionPeriodo> {
 
 	public EstrategiaOperacionPeriodoDAO(Connection connection) {
-		this.connection = connection;
+		super(connection);
 	}
 
-	public boolean existe(ParametroOperacionPeriodo param) throws SQLException {
+	public boolean existe(ParametroOperacionPeriodo param) throws GeneticDAOException {
 		String sql = "SELECT 1 FROM ESTRATEGIA_OPERACION_PERIODO E "
 				+ " WHERE E.FILTRO_PIPS_X_SEMANA=? AND E.FILTRO_PIPS_X_MES=? "
 				+ " AND E.FILTRO_PIPS_X_ANYO=? AND E.FILTRO_PIPS_TOTALES=? "
@@ -66,6 +67,8 @@ public class EstrategiaOperacionPeriodoDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			return (resultado.next());
+		} catch (SQLException e) {
+			throw new GeneticDAOException(null, e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -95,7 +98,7 @@ public class EstrategiaOperacionPeriodoDAO {
 		return param;
 	}
 
-	public List<ParametroOperacionPeriodo> consultarInclusiones() throws SQLException {
+	public List<ParametroOperacionPeriodo> consultarInclusiones() throws GeneticDAOException {
 		List<ParametroOperacionPeriodo> inclusiones;
 		String sql = "SELECT DISTINCT " + " FILTRO_PIPS_X_SEMANA R_SEMANA, FILTRO_PIPS_X_MES R_MES, "
 				+ " FILTRO_PIPS_X_ANYO R_ANYO, FILTRO_PIPS_TOTALES R_TOTALES,"
@@ -117,6 +120,8 @@ public class EstrategiaOperacionPeriodoDAO {
 
 			inclusiones = EstrategiaOperacionPeriodoHelper.inclusiones(resultado);
 
+		} catch (SQLException e) {
+			throw new GeneticDAOException(null, e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -126,7 +131,7 @@ public class EstrategiaOperacionPeriodoDAO {
 	}
 
 	public List<ParametroOperacionPeriodo> consultarInclusionesxIndividuos(Date fechaInicio, int cantidad,
-			String tipoOperacion) throws SQLException {
+			String tipoOperacion) throws GeneticDAOException {
 		List<ParametroOperacionPeriodo> inclusiones;
 		String sql = "SELECT DISTINCT " + " PIPS_SEMANA R_SEMANA, PIPS_MES R_MES, "
 				+ " PIPS_ANYO R_ANYO, PIPS_TOTALES R_TOTALES, " + " R2_SEMANA R2_SEMANA, R2_MES R2_MES, "
@@ -150,6 +155,8 @@ public class EstrategiaOperacionPeriodoDAO {
 
 			inclusiones = EstrategiaOperacionPeriodoHelper.inclusiones(resultado);
 
+		} catch (SQLException e) {
+			throw new GeneticDAOException(null, e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -198,9 +205,10 @@ public class EstrategiaOperacionPeriodoDAO {
 	 *
 	 * @param individuo
 	 * @param operaciones
+	 * @throws GeneticDAOException
 	 * @throws SQLException
 	 */
-	public int insert(ParametroOperacionPeriodo param) throws SQLException {
+	public int insertParametroOperacionPeriodo(ParametroOperacionPeriodo param) throws GeneticDAOException {
 		String sql = "INSERT INTO ESTRATEGIA_OPERACION_PERIODO(ID, "
 				+ " FILTRO_PIPS_X_SEMANA, FILTRO_PIPS_X_MES, FILTRO_PIPS_X_ANYO, FILTRO_PIPS_TOTALES, "
 				+ " FILTRO_R2_SEMANA, FILTRO_R2_MES, FILTRO_R2_ANYO, FILTRO_R2_TOTALES, "
@@ -253,6 +261,8 @@ public class EstrategiaOperacionPeriodoDAO {
 			}
 			statement.setString(index++, param.getVersion());
 			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new GeneticDAOException(null, e);
 		} finally {
 			JDBCUtil.close(statement);
 		}
@@ -280,8 +290,8 @@ public class EstrategiaOperacionPeriodoDAO {
 		return id;
 	}
 
-	public void insertOperacionesPeriodo(ParametroOperacionPeriodo param, Individuo individuo, List<Order> operaciones)
-			throws SQLException {
+	public void insertOperacionesPeriodo(ParametroOperacionPeriodo param, Individuo individuo,
+			List<Order> operaciones) throws GeneticDAOException {
 		String sql = "INSERT INTO OPERACION_ESTRATEGIA_PERIODO(ID_INDIVIDUO, TAKE_PROFIT, STOP_LOSS, "
 				+ " FECHA_APERTURA, FECHA_CIERRE, SPREAD, OPEN_PRICE, PIPS, LOTE, TIPO, FECHA, ESTRATEGIA_PERIODO) "
 				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -308,9 +318,29 @@ public class EstrategiaOperacionPeriodoDAO {
 				statement.setTimestamp(11, new Timestamp(new java.util.Date().getTime()));
 				statement.setInt(12, param.getId());
 				statement.executeUpdate();
+			} catch (SQLException e) {
+				throw new GeneticDAOException(null, e);
 			} finally {
 				JDBCUtil.close(statement);
 			}
 		}
+	}
+
+	@Override
+	public boolean exists(ParametroOperacionPeriodo obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void insert(ParametroOperacionPeriodo obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(ParametroOperacionPeriodo obj) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		
 	}
 }

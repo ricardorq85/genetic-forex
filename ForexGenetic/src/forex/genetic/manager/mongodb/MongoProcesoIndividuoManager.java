@@ -4,7 +4,6 @@
  */
 package forex.genetic.manager.mongodb;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,6 @@ import forex.genetic.dao.mongodb.MongoIndividuoDAO;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.ProcesoIndividuoManager;
-import forex.genetic.manager.PropertiesManager;
 import forex.genetic.thread.mongo.MongoProcesarIndividuoThread;
 import forex.genetic.util.LogUtil;
 
@@ -43,7 +41,7 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 				while (countFiltro == 1) {
 					LogUtil.logTime("Obteniendo individuos para el filtro " + countFiltro, 1);
 					@SuppressWarnings("unchecked")
-					List<MongoIndividuo> individuos = individuoDAO.getListByProcesoEjecucion(null, maxFechaHistorico);
+					List<MongoIndividuo> individuos = (List<MongoIndividuo>)individuoDAO.getListByProcesoEjecucion(null, maxFechaHistorico);
 					if ((individuos != null) && (!individuos.isEmpty())) {
 						MongoProcesarIndividuoThread procesarIndividuoThread = new MongoProcesarIndividuoThread(
 								"Mongo_" + countFiltro, individuos);

@@ -64,7 +64,7 @@ public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO<TendenciaParaOp
 		}
 		filter.append("activa", 1);
 		MongoCursor<Document> cursor = this.collection.find(filter).sort(orderBy(ascending("fechaBase"))).iterator();
-		list = ((MongoTendenciaParaOperarMapper)mapper).helpList(cursor);
+		list = ((MongoTendenciaParaOperarMapper)getMapper()).helpList(cursor);
 
 		return list;
 	}

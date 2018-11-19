@@ -13,6 +13,7 @@ import java.util.List;
 
 import forex.genetic.dao.IndividuoSinOperacionesDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.DateUtil;
 
 /**
@@ -26,7 +27,7 @@ public class BorradoIndividuoSinOperacionesManager extends BorradoManager {
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuos(Individuo individuo) throws ClassNotFoundException, SQLException {
+	public List<Individuo> consultarIndividuos(Individuo individuo) throws ClassNotFoundException, GeneticDAOException {
 		List<Individuo> individuos;
 		Date fechaLimite;
 		try {

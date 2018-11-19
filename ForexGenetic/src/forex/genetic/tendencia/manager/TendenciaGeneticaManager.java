@@ -120,7 +120,7 @@ public class TendenciaGeneticaManager {
         return threadProcessGeneracion.getNewPoblacion();
     }
 
-    private Poblacion consultarPoblacion() throws SQLException {
+    private Poblacion consultarPoblacion() throws GeneticDAOException  {
         Poblacion poblacion = new Poblacion();
         List<Individuo> individuosConsultados = individuoDAO.consultarIndividuosTendencia(50);
         for (Individuo individuo : individuosConsultados) {

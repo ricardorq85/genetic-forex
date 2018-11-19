@@ -127,16 +127,16 @@ public class IndividuoXIndicadorManager {
 		}
 	}
 
-	private void configurarAmbiente() throws SQLException {
+	private void configurarAmbiente() throws GeneticDAOException {
 		this.configurarOperacionPositivasYNegativas();
 	}
 
-	private void configurarOperacionPositivasYNegativas() throws SQLException {
+	private void configurarOperacionPositivasYNegativas() throws GeneticDAOException {
 		logTime("Configurando operaciones positivas y negativas", 1);
 		operacionesDAO.actualizarOperacionesPositivasYNegativas();
 	}
 
-	private boolean crearIndividuos(RangoOperacionIndividuo rangoOperacionIndividuo) throws SQLException {
+	private boolean crearIndividuos(RangoOperacionIndividuo rangoOperacionIndividuo) throws GeneticDAOException {
 		boolean rangoValido = rangoOperacionIndividuo.isRangoValido();
 		boolean found_any = false;
 		logTime(rangoOperacionIndividuo.toString(), 2);
@@ -162,8 +162,7 @@ public class IndividuoXIndicadorManager {
 		return found_any;
 	}
 
-	private void cruzarIndividuos(RangoOperacionIndividuo rangoOperacionIndividuo, Poblacion poblacionBase)
-			throws SQLException {
+	private void cruzarIndividuos(RangoOperacionIndividuo rangoOperacionIndividuo, Poblacion poblacionBase) {
 		List<Individuo> individuosResumen = null;
 		try {
 			// individuosResumen =
@@ -171,7 +170,7 @@ public class IndividuoXIndicadorManager {
 			// rangoOperacionIndividuo.getFechaFiltro2());
 			individuosResumen = individuoDAO.consultarIndividuosRandom(rangoOperacionIndividuo.getFechaFiltro(),
 					rangoOperacionIndividuo.getFechaFiltro2(), parametroCantidadCruzar * 2);
-		} catch (SQLException e) {
+		} catch (GeneticDAOException e) {
 			e.printStackTrace();
 		}
 
@@ -235,12 +234,12 @@ public class IndividuoXIndicadorManager {
 		return poblacionMutados;
 	}
 
-	private void insertIndividuo(IndividuoEstrategia individuo) throws SQLException {
+	private void insertIndividuo(IndividuoEstrategia individuo) throws GeneticDAOException {
 		if (individuo != null) {
 			individuoDAO.insertIndividuo(individuo);
 			individuoDAO.insertIndicadorIndividuo(indicadorController, individuo);
 			individuoDAO.insertarIndividuoIndicadoresColumnas(individuo.getId());
-			conn.commit();
+			individuoDAO.commit();
 			logTime("Individuo insertado a BD:" + individuo.getId(), 1);
 		}
 	}

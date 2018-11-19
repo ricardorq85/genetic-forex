@@ -2,14 +2,13 @@ package forex.genetic.mediator;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
 
 import forex.genetic.dao.IDatoHistoricoDAO;
+import forex.genetic.dao.IGeneticDAO;
 import forex.genetic.dao.IParametroDAO;
-import forex.genetic.dao.ITendenciaDAO;
 import forex.genetic.dao.mongodb.MongoGeneticDAO;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.exception.GeneticDAOException;
@@ -22,24 +21,23 @@ import forex.genetic.util.jdbc.DataClient;
 public class MultiplePointToPointMediator extends PointToPointMediator {
 
 	private int count = 1;
-	private Connection connection;
-	private Date fechaHistoricaMaximaAnterior, fechaHistoricaMaximaNueva, ultimaFechaBaseTendencia;
-	private IDatoHistoricoDAO[] daosDatoHistorico;
-	private ITendenciaDAO[] daosTendencia;
-	private IParametroDAO[] daosParametro;
+	private IGeneticDAO[] daosDatoHistorico;
+	private IGeneticDAO[] daosTendencia;
+	private IGeneticDAO[] daosParametro;
 	private MongoGeneticDAO<Tendencia> tendenciaDAO;
 
 	@Override
 	public void init() throws GeneticDAOException {
 		DataClient<?>[] dataClients = DriverDBFactory.createDataClient();
-		this.daosDatoHistorico = (IDatoHistoricoDAO[]) DriverDBFactory.createDAO("datoHistorico", dataClients);
-		this.daosTendencia = (ITendenciaDAO[]) DriverDBFactory.createDAO("tendencia", dataClients);
-		this.daosParametro = (IParametroDAO[]) DriverDBFactory.createDAO("parametro", dataClients);
+		this.daosDatoHistorico = DriverDBFactory.createDAO("datoHistorico", dataClients);
+		this.daosTendencia = DriverDBFactory.createDAO("tendencia", dataClients);
+		this.daosParametro = DriverDBFactory.createDAO("parametro", dataClients);
 
-		sourceExportedHistoryDataPath = daosParametro[0].getValorParametro("SOURCE_EXPORTED_HISTORY_DATA_PATH");
-		processedExportedHistoryDataPath = daosParametro[0].getValorParametro("PROCESSED_EXPORTED_HISTORY_DATA_PATH");
-		exportedPropertyFileName = daosParametro[0].getValorParametro("EXPORTED_PROPERTY_FILE_NAME");
-		sourceEstrategiasPath = daosParametro[0].getValorParametro("SOURCE_ESTRATEGIAS_PATH");
+		IParametroDAO parametroDAO = ((IParametroDAO)daosParametro[0]);
+		sourceExportedHistoryDataPath = parametroDAO.getValorParametro("SOURCE_EXPORTED_HISTORY_DATA_PATH");
+		processedExportedHistoryDataPath = parametroDAO.getValorParametro("PROCESSED_EXPORTED_HISTORY_DATA_PATH");
+		exportedPropertyFileName = parametroDAO.getValorParametro("EXPORTED_PROPERTY_FILE_NAME");
+		sourceEstrategiasPath = parametroDAO.getValorParametro("SOURCE_ESTRATEGIAS_PATH");
 	}
 
 	@Override
@@ -47,12 +45,13 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 		try {
 			while (true) {
 				int imported = 0;
-				for (int j = 0; j < daosDatoHistorico.length; j++) {
-					this.fechaHistoricaMaximaAnterior = DateUtil.obtenerFechaMinima(
-							daosDatoHistorico[j].getFechaHistoricaMaxima(), fechaHistoricaMaximaAnterior);
+				for (int j = 1; j < daosDatoHistorico.length; j++) {
+					IDatoHistoricoDAO daoDatoHistorico = ((IDatoHistoricoDAO)daosDatoHistorico[j]);
+					fechaHistoricaMaximaAnterior = DateUtil.obtenerFechaMinima(
+							daoDatoHistorico.getFechaHistoricaMaxima(), fechaHistoricaMaximaAnterior);
 					imported = importarDatosHistoricos();
 					this.fechaHistoricaMaximaNueva = DateUtil.obtenerFechaMinima(
-							daosDatoHistorico[j].getFechaHistoricaMaxima(), fechaHistoricaMaximaNueva);
+							daoDatoHistorico.getFechaHistoricaMaxima(), fechaHistoricaMaximaNueva);
 				}
 				this.exportarDatosHistoricos();
 				this.setUltimaFechaTendencia(count);
@@ -76,14 +75,7 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 		}
 	}
 
-/*	private void procesarIndividuos() throws FileNotFoundException {
-		logTime("Init Procesar Individuos", 1);
-		GeneticDelegateBD delegate = new GeneticDelegateBD();
-		delegate.process(true);
-		logTime("End Procesar Individuos", 1);
-	}
-
-	private void procesarTendencias() throws SQLException, ClassNotFoundException {
+/*	private void procesarTendencias() throws SQLException, ClassNotFoundException {
 		logTime("Init Procesar Tendencias", 1);
 		OracleParametroDAO parametroDAO = new OracleParametroDAO(connection);
 		int parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");

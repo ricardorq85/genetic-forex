@@ -22,6 +22,7 @@ import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.Tendencia;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.OperacionesManager;
@@ -212,8 +213,8 @@ public class TendenciasManager {
 						}
 						if (operacion.getOpenDate().compareTo(fechaProceso) < 0) {
 							pipsActuales = operacionManager.calcularPips(historico, (historico.size() - 1), operacion);
-							duracionActual = DateUtil.calcularDuracionMillis(operacion.getOpenDate(), fechaProceso) / 1000
-									/ 60;
+							duracionActual = DateUtil.calcularDuracionMillis(operacion.getOpenDate(), fechaProceso)
+									/ 1000 / 60;
 							if (duracionActual < 0) {
 								throw new GeneticException(
 										"Duracion<0;Individuo=" + individuo.getId() + ";FechaApertura="
@@ -265,7 +266,7 @@ public class TendenciasManager {
 								tendencia.setProbabilidad(tendencia.getProbabilidadPositivos());
 							}
 							tendencia.setFecha(new Date());
-							tendencia.setTipoCalculo("DEFAULT_"+k);
+							tendencia.setTipoCalculo("DEFAULT_" + k);
 							if (tendenciaDAO.exists(tendencia)) {
 								tendenciaDAO.update(tendencia);
 							} else {
@@ -462,10 +463,9 @@ public class TendenciasManager {
 		}
 
 		/*
-		 * NO usado porque el calculo de la duracion según los pips recorridos
-		 * da como resultado una duración muyy larga cuando el movimiento de
-		 * los pips actuales es muy poco. Por ejemplo si ha recorrido 1 pips en
-		 * 900 minutos.
+		 * NO usado porque el calculo de la duracion según los pips recorridos da como
+		 * resultado una duración muyy larga cuando el movimiento de los pips actuales
+		 * es muy poco. Por ejemplo si ha recorrido 1 pips en 900 minutos.
 		 */
 		if (duracionPromedio == 0) {
 			duracionPromedio = duracionActual;
@@ -500,8 +500,7 @@ public class TendenciasManager {
 
 	private void calcularProbabilidadExterna(Individuo individuo, CalculoTendencia calculoTendencia,
 			double pipsCalculados, double duracionCalculada, Estadistica estadistica, Estadistica estadisticaActual,
-			int tipoCalculo, double pipsActuales, DiferenciaMaximaHistorico diferenciaMaximaHistorico)
-					throws SQLException {
+			int tipoCalculo, double pipsActuales, DiferenciaMaximaHistorico diferenciaMaximaHistorico) throws GeneticDAOException {
 		// TENER EN CUENTA: NUMERO DE INDICADORES, PIPS PROMEDIO EN OPERACIONES,
 		// MUY AL PRINCIPIO ES ADIVINAR, SI LLEVA MUCHOS PIPS YA TAMPOCO ES BUEN
 		// PUNTO PARA OPERAR
@@ -591,8 +590,8 @@ public class TendenciasManager {
 		double pipsCalculadosXMes = Math.abs(pipsCalculadosXSemana * 4.33);
 
 		/*
-		 * Se tiene en cuenta el movimiento historico de la moneda por
-		 * diferentes periodos de tiempo: minutos, hora, dias, semana, mes.
+		 * Se tiene en cuenta el movimiento historico de la moneda por diferentes
+		 * periodos de tiempo: minutos, hora, dias, semana, mes.
 		 */
 		probExternaCalculada += (Math.max(0.0D,
 				(1.0D - (pipsCalculadosXMinuto) / diferenciaMaximaHistorico.getMovHistxMinuto())) * probMovHistorico

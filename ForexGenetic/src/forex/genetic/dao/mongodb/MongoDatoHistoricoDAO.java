@@ -19,12 +19,12 @@ import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 
 import forex.genetic.dao.IDatoHistoricoDAO;
-import forex.genetic.dao.helper.mongodb.MongoDatoHistoricoMapper;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.ControllerFactory;
@@ -55,7 +55,6 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		this.collection.createIndex(Indexes.ascending("fechaHistorico"), indexOptions);
 
 		this.configureIndexIndicators();
-
 	}
 
 	private void configureIndexIndicators() {
@@ -95,21 +94,58 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		return doc.getDate("maxDate");
 	}
 
-	public List<Date> consultarPuntosApertura(DateInterval rango, IndividuoEstrategia individuo) {
-		List<Date> fechas = null;
+	public Point consultarPuntoCierre(IndividuoEstrategia individuo, Date fechaBase) {
+		List<Bson> filtros = new ArrayList<>();
+		filtros.add(Filters.gt("fechaHistorico", fechaBase));
+
+		adicionarFiltroIndicadores(individuo.getCloseIndicators(), filtros);
+
+		Bson bsonFiltrosCompletos = Filters.and(filtros);
+		LogUtil.logTime("idIndividuo=" + individuo.getId(), 1);
+		LogUtil.logTime(
+				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
+
+		Document doc = this.collection.find(bsonFiltrosCompletos)
+				.projection(Projections.exclude("indicadores")).sort(Sorts.orderBy(Sorts.ascending("fechaHistorico")))
+				.limit(1).first();
+
+		Point p = getMapper().helpOne(doc);
+		return p;
+	}
+
+	public List<? extends Point> consultarPuntosApertura(IndividuoEstrategia individuo, DateInterval rango) {
+		List<? extends Point> puntos = null;
 
 		List<Bson> filtros = new ArrayList<>();
 		filtros.add(Filters.gt("fechaHistorico", rango.getLowInterval()));
 		filtros.add(Filters.lte("fechaHistorico", rango.getHighInterval()));
 
+		adicionarFiltroIndicadores(individuo.getOpenIndicators(), filtros);
+
+		Bson bsonFiltrosCompletos = Filters.and(filtros);
+		LogUtil.logTime("idIndividuo=" + individuo.getId(), 1);
+		LogUtil.logTime(
+				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
+
+		MongoCursor<Document> cursor = this.collection.find(bsonFiltrosCompletos)
+				// .projection(Projections.fields(Projections.include("fechaHistorico"),
+				// Projections.excludeId()))
+				.projection(Projections.exclude("indicadores")).sort(Sorts.orderBy(Sorts.ascending("fechaHistorico")))
+				.iterator();
+
+		puntos = getMapper().helpList(cursor);
+		return puntos;
+	}
+
+	private void adicionarFiltroIndicadores(List<? extends Indicator> indicadores, List<Bson> filtros) {
 		IndicadorController indicadorController = ControllerFactory
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
-		for (int i = 0; i < individuo.getOpenIndicators().size(); i++) {
+		for (int i = 0; i < indicadores.size(); i++) {
 			IndicadorManager<?> managerInstance = indicadorController.getManagerInstance(i);
 			String[] nombreCalculado = managerInstance.getNombresCalculados();
 			List<Bson> filtrosDatosCalculados = new ArrayList<>();
 			for (int j = 0; j < nombreCalculado.length; j++) {
-				IntervalIndicator intervalIndicator = ((IntervalIndicator) individuo.getOpenIndicators().get(i));
+				IntervalIndicator intervalIndicator = ((IntervalIndicator) indicadores.get(i));
 				if ((intervalIndicator != null) && (intervalIndicator.getInterval() != null)
 						&& (intervalIndicator.getInterval().getLowInterval() != null)
 						&& (intervalIndicator.getInterval().getHighInterval() != null)) {
@@ -131,18 +167,6 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 				filtros.addAll(filtrosDatosCalculados);
 			}
 		}
-
-		Bson bsonFiltrosCompletos = Filters.and(filtros);
-		LogUtil.logTime("idIndividuo=" + individuo.getId(), 1);
-		LogUtil.logTime(
-				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
-
-		MongoCursor<Document> cursor = this.collection.find(bsonFiltrosCompletos)
-				.projection(Projections.fields(Projections.include("fechaHistorico"), Projections.excludeId()))
-				.sort(Sorts.orderBy(Sorts.ascending("fechaHistorico"))).iterator();
-
-		fechas = ((MongoDatoHistoricoMapper) mapper).helpFechas(cursor);
-		return fechas;
 	}
 
 	@Override
@@ -232,12 +256,12 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	@Override
 	public void insert(Point obj) throws GeneticDAOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void update(Point obj) throws GeneticDAOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
+import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.exception.GeneticDAOException;
@@ -33,7 +34,7 @@ public interface IDatoHistoricoDAO extends IGeneticDAO<Point> {
 
 	public List<Point> consultarHistorico(Date fechaBase1, Date fechaBase2) throws GeneticDAOException;
 
-	public List<Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2) throws GeneticDAOException;	
+	public List<Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2) throws GeneticDAOException;
 
 	public List<Point> consultarHistorico(Date fechaBase) throws GeneticDAOException;
 
@@ -48,4 +49,8 @@ public interface IDatoHistoricoDAO extends IGeneticDAO<Point> {
 	public double consultarMaximaDiferencia(Date fecha, String formatoAgrupador) throws GeneticDAOException;
 
 	public double consultarPrecioPonderado(Date fecha) throws GeneticDAOException;
+
+	public List<? extends Point> consultarPuntosApertura(IndividuoEstrategia individuo, DateInterval rango)
+			throws GeneticDAOException;
+
 }

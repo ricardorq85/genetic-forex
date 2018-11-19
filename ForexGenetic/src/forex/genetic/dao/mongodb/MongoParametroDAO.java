@@ -27,7 +27,7 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> {
 		Parametro obj = null;
 		MongoCursor<Document> cursor = this.collection.find(Filters.eq("nombre", nombre)).iterator();
 		if (cursor.hasNext()) {
-			obj = mapper.helpOne(cursor.next());
+			obj = getMapper().helpOne(cursor.next());
 		}
 		return obj;
 	}

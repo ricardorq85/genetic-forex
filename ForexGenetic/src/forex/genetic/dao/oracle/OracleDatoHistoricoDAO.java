@@ -17,6 +17,7 @@ import forex.genetic.dao.IDatoHistoricoDAO;
 import forex.genetic.dao.helper.BasePointHelper;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
+import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Adx;
@@ -1048,4 +1049,5 @@ public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements I
 		}
 		return precio;
 	}
+
 }

@@ -14,6 +14,7 @@ import java.util.List;
 import forex.genetic.dao.helper.IndividuoHelper;
 import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -27,12 +28,11 @@ public class IndividuoSinOperacionesDAO extends OracleIndividuoDAO {
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuosParaBorrar(Date fechaLimite) throws SQLException {
+	public List<Individuo> consultarIndividuosParaBorrar(Date fechaLimite) throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT IND.* FROM INDIVIDUO IND"
 				+ " INNER JOIN PROCESO P ON P.ID_INDIVIDUO=IND.ID AND P.FECHA_HISTORICO>=?"
-				+ " WHERE (SELECT COUNT(*) FROM OPERACION OPER WHERE OPER.ID_INDIVIDUO=IND.ID)<10"
-				+ " AND ROWNUM<1000";
+				+ " WHERE (SELECT COUNT(*) FROM OPERACION OPER WHERE OPER.ID_INDIVIDUO=IND.ID)<10" + " AND ROWNUM<1000";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
 
@@ -42,6 +42,8 @@ public class IndividuoSinOperacionesDAO extends OracleIndividuoDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosBase(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException(null, e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -51,8 +53,7 @@ public class IndividuoSinOperacionesDAO extends OracleIndividuoDAO {
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, Date fechaLimite)
-			throws SQLException {
+	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, Date fechaLimite) throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT IND.* FROM INDIVIDUO IND"
 				+ " INNER JOIN PROCESO P ON P.ID_INDIVIDUO=IND.ID AND P.FECHA_HISTORICO>=?"
@@ -67,6 +68,8 @@ public class IndividuoSinOperacionesDAO extends OracleIndividuoDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosBase(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException(null, e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -74,5 +77,5 @@ public class IndividuoSinOperacionesDAO extends OracleIndividuoDAO {
 
 		return list;
 	}
-	
+
 }

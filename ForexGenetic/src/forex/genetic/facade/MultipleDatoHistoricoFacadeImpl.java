@@ -6,7 +6,7 @@ package forex.genetic.facade;
 
 import java.util.List;
 
-import forex.genetic.dao.IDatoHistoricoDAO;
+import forex.genetic.dao.IGeneticDAO;
 import forex.genetic.entities.Point;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.DriverDBFactory;
@@ -26,9 +26,9 @@ public class MultipleDatoHistoricoFacadeImpl extends DatoHistoricoFacade {
 	 */
 	public void cargarDatoHistorico(List<Point> points) throws GeneticDAOException {
 		DataClient<?>[] dataClients = DriverDBFactory.createDataClient();
-		IDatoHistoricoDAO[] daos = (IDatoHistoricoDAO[]) DriverDBFactory.createDAO("datoHistorico", dataClients);
+		IGeneticDAO[] daos = DriverDBFactory.createDAO("datoHistorico", dataClients);
 		int countError = 0;
-		for (int k = 0; k < daos.length; k++) {
+		for (int k = 1; k < daos.length; k++) {
 			LogUtil.logTime(new StringBuilder("DAO:").append(daos[k].getClass()).toString(), 1);
 			try {
 				for (int i = 0; i < points.size(); i++) {

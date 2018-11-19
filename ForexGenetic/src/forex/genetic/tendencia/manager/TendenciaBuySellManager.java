@@ -85,7 +85,7 @@ public class TendenciaBuySellManager extends TendenciasManager {
 		return listaTendencias;
 	}
 
-	public List<TendenciaEstadistica> calcularTendencias(Point puntoTendencia, int filas) throws SQLException {
+	public List<TendenciaEstadistica> calcularTendencias(Point puntoTendencia, int filas) throws GeneticDAOException {
 		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
 		if ((puntoTendencia != null)) {
 			// LogUtil.logEnter(1);

@@ -40,7 +40,7 @@ public class PointToPointMediator extends GeneticMediator {
 
 	private int count = 1;
 	private Connection connection;
-	private Date fechaHistoricaMaximaAnterior, fechaHistoricaMaximaNueva, ultimaFechaBaseTendencia;
+	protected Date fechaHistoricaMaximaAnterior, fechaHistoricaMaximaNueva, ultimaFechaBaseTendencia;
 	private OracleDatoHistoricoDAO datoHistoricoDAO;
 	private OracleTendenciaDAO tendenciaDAO;
 	private OracleParametroDAO parametroDAO;
@@ -227,7 +227,7 @@ public class PointToPointMediator extends GeneticMediator {
 		logTime("End Exportar Individuos", 1);
 	}
 
-	private void refrescarDatosTendencia() throws SQLException {
+	private void refrescarDatosTendencia() throws GeneticDAOException {
 		String mv = "TENDENCIA_ULTIMOMES";
 		logTime("Refrescando vista materializada: " + mv, 1);
 		JDBCUtil.refreshMaterializedView(this.connection, mv, "C");

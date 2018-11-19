@@ -135,24 +135,26 @@ public class JDBCUtil {
 		}
 	}
 
-	public static void refreshMaterializedView(Connection conn, String viewName) throws SQLException {
+	public static void refreshMaterializedView(Connection conn, String viewName) throws GeneticDAOException {
 		refreshMaterializedView(conn, viewName, "F");
 	}
 
 	public static void refreshMaterializedView(Connection conn, String viewName, String refreshType)
-			throws SQLException {
+			throws GeneticDAOException {
 		CallableStatement cstmt = null;
 		try {
 			cstmt = conn.prepareCall("{call DBMS_SNAPSHOT.REFRESH(?,?)}");
 			cstmt.setString(1, viewName);
 			cstmt.setString(2, refreshType);
 			cstmt.execute();
+		} catch (SQLException e) {
+			throw new GeneticDAOException(null, e);
 		} finally {
 			JDBCUtil.close(cstmt);
 		}
 	}
 
-	public static void refreshMaterializedViews(Connection conn, String[] vistas) throws SQLException {
+	public static void refreshMaterializedViews(Connection conn, String[] vistas) throws GeneticDAOException {
 		for (String viewName : vistas) {
 			JDBCUtil.refreshMaterializedView(conn, viewName, "F");
 		}

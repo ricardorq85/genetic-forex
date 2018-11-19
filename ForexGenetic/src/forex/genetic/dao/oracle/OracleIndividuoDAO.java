@@ -1037,4 +1037,29 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia>
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List<Individuo> consultarIndividuosParaBorrar(Date fechaLimite) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, Date fechaLimite)
+			throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Individuo> consultarIndividuosParaBorrar(int minutos) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, int minutos) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

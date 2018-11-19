@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticDAOException;
 
 /**
  *
@@ -22,7 +23,7 @@ public class BorradoInconsistentesStopLossManager extends BorradoManager {
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuos(Individuo individuo) throws ClassNotFoundException, SQLException {
+	public List<Individuo> consultarIndividuos(Individuo individuo) throws ClassNotFoundException, GeneticDAOException {
 		List<Individuo> individuos;
 		if (individuo == null) {
 			individuos = individuoDAO.consultarIndividuosStopLossInconsistente(200);

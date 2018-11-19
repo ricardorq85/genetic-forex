@@ -19,7 +19,7 @@ import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.util.DateUtil;
 
 public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
-	
+
 	@Override
 	public Map<String, Object> toPrimaryKeyMap(Point obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
@@ -46,8 +46,12 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 		objectMap.put("closeCompare", datoHistorico.getCloseCompare());
 		objectMap.put("fechaRegistro", new Date());
 
-		List<Map<String, Object>> indicadores = new ArrayList<Map<String, Object>>();
+		objectMap.put("indicadores", toMapIndicadores(datoHistorico));
+		return objectMap;
+	}
 
+	private List<Map<String, Object>> toMapIndicadores(Point datoHistorico) {
+		List<Map<String, Object>> indicadores = new ArrayList<Map<String, Object>>();
 		List<IntervalIndicator> indicadoresBase = ((List<IntervalIndicator>) datoHistorico.getIndicators());
 		IndicadorController indicadorController = ControllerFactory
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
@@ -65,13 +69,7 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 				indicadores.add(null);
 			}
 		}
-//		indicadoresBase.stream().forEach((indicador) -> {
-		// indicadores.add(indicador.toMap(datoHistorico));
-		// });
-
-		objectMap.put("indicadores", indicadores);
-
-		return objectMap;
+		return indicadores;
 	}
 
 	public List<Date> helpFechas(MongoCursor<Document> cursor) {
@@ -94,8 +92,46 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 
 	@Override
 	public Point helpOne(Document one) {
-		// TODO Auto-generated method stub
-		return null;
+		Point obj = null;
+		if ((one != null) && (!one.isEmpty())) {
+			obj = new Point();
+			obj.setMoneda(one.getString("moneda"));
+			obj.setPeriodo(one.getInteger("periodo"));
+			obj.setMonedaComparacion(one.getString("monedaComparacion"));
+			obj.setDate(one.getDate("fechaHistorico"));
+			obj.setLow(one.getDouble("low"));
+			obj.setOpen(one.getDouble("open"));
+			obj.setHigh(one.getDouble("high"));
+			obj.setClose(one.getDouble("close"));
+			obj.setVolume(one.getInteger("volume"));
+			obj.setSpread(one.getDouble("spread"));
+			obj.setCloseCompare(one.getDouble("closeCompare"));
+
+			IndicadorController indicadorController = ControllerFactory
+					.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+
+			List<Map<String, Object>> indicadoresMap = (List<Map<String, Object>>) one.get("indicadores");
+			List<IntervalIndicator> indicadores = new ArrayList<IntervalIndicator>(
+					indicadorController.getIndicatorNumber());
+
+			for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
+				/*
+				 * IndicadorManager<Indicator> indicadorManager =
+				 * indicadorController.getManagerInstance(i); Point prevPoint =
+				 * datoHistorico.getPrevPoint(); if (indicadoresBase.get(i) != null) { Indicator
+				 * prevIndicator = (prevPoint != null) ? prevPoint.getIndicators().get(i) :
+				 * null; Map<String, Object> values =
+				 * indicadorManager.getCalculatedValues(prevIndicator, indicadoresBase.get(i),
+				 * datoHistorico.getPrevPoint(), datoHistorico); Map<String, Object> indMap =
+				 * new HashMap<String, Object>(); indMap.put(indicadoresBase.get(i).getName(),
+				 * values); indicadores.add(indMap); } else { indicadores.add(null); }
+				 */
+			}
+
+			obj.setIndicators(indicadores);
+		}
+
+		return obj;
 	}
 
 }

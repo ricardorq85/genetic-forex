@@ -62,7 +62,7 @@ public class IndividuosPeriodoManager {
 		parametroTiposOperacion = parametroDAO.getArrayStringParametro("TIPOS_OPERACION");
 	}
 
-	public int procesarIndividuosXPeriodo() throws SQLException {
+	public int procesarIndividuosXPeriodo() throws GeneticDAOException {
 		int inclusionesAcumuladas = 0;
 		int diasProceso = parametroDiasProceso;
 		this.configurarAmbiente();
@@ -111,15 +111,15 @@ public class IndividuosPeriodoManager {
 		return inclusionesAcumuladas;
 	}
 
-	private void configurarAmbiente() throws SQLException {
+	private void configurarAmbiente() throws GeneticDAOException {
 		JDBCUtil.refreshMaterializedViews(conn, vistas);
 	}
 
-	private void consolidarEstrategias() throws SQLException {
+	private void consolidarEstrategias() throws GeneticDAOException {
 		JDBCUtil.refreshMaterializedViews(conn, vistas);
 	}
 
-	public int procesarIndividuosXPeriodo(ParametroOperacionPeriodo param) throws SQLException {
+	public int procesarIndividuosXPeriodo(ParametroOperacionPeriodo param) throws GeneticDAOException {
 		if (estrategiaOperacionPeriodoDAO.existe(param)) {
 			logTime("Ya procesado:" + param.toString(), 3);
 			logAvance(1);
@@ -129,7 +129,7 @@ public class IndividuosPeriodoManager {
 			logTime("Registros borrados.", 2);
 
 			int insertados = operacionesDAO.insertOperacionesPeriodo(param);
-			conn.commit();
+			operacionesDAO.commit();
 			logTime(param.getTipoOperacion() + ". Registro insertados TMP_TOFILESTRING: " + insertados, 1);
 
 			if (insertados > 0) {
@@ -142,10 +142,10 @@ public class IndividuosPeriodoManager {
 		}
 	}
 
-	private void procesarIndividuoYOperaciones(ParametroOperacionPeriodo param, int insertados) throws SQLException {
+	private void procesarIndividuoYOperaciones(ParametroOperacionPeriodo param, int insertados) throws GeneticDAOException {
 		List<Individuo> ordenesCreadas = this.ejecutarIndividuosXPeriodo(param, insertados);
 		if (param.isResultadoValido()) {
-			int id = estrategiaOperacionPeriodoDAO.insert(param);
+			int id = estrategiaOperacionPeriodoDAO.insertParametroOperacionPeriodo(param);
 			param.setId(id);
 			//logEnter(1);
 			logTime(param.getId() + ": " + param.getTipoOperacion() + ", Cantidad=" + param.getCantidad()
@@ -153,7 +153,7 @@ public class IndividuosPeriodoManager {
 			for (Individuo ind : ordenesCreadas) {
 				estrategiaOperacionPeriodoDAO.insertOperacionesPeriodo(param, ind, ind.getOrdenes());
 			}
-			conn.commit();
+			estrategiaOperacionPeriodoDAO.commit();
 			logTime(param.toString(), 2);
 		} else {
 			logAvance("C", 1);
@@ -161,7 +161,7 @@ public class IndividuosPeriodoManager {
 	}
 
 	public List<Individuo> ejecutarIndividuosXPeriodo(ParametroOperacionPeriodo param, int insertados)
-			throws SQLException {
+			throws GeneticDAOException {
 		Date fechaPeriodo = param.getFechaInicial();
 		List<Individuo> ordenesCreadas = new ArrayList<>();
 		double pips = 0.0D;

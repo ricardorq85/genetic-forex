@@ -500,16 +500,10 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 	}
 
 	public void actualizarOperacionesPositivasYNegativas() throws GeneticDAOException {
-		try {
-			JDBCUtil.refreshMaterializedView(this.connection, "OPERACION_POSITIVAS", "C");
-			JDBCUtil.refreshMaterializedView(this.connection, "OPERACION_NEGATIVAS", "C");
-			// this.dropVistaMaterializada("OPERACION_POSITIVAS");
-			// this.dropVistaMaterializada("OPERACION_NEGATIVAS");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		// this.actualizarOperacionesPositivas();
-		// this.actualizarOperacionesNegativas();
+		JDBCUtil.refreshMaterializedView(this.connection, "OPERACION_POSITIVAS", "C");
+		JDBCUtil.refreshMaterializedView(this.connection, "OPERACION_NEGATIVAS", "C");
+		// this.dropVistaMaterializada("OPERACION_POSITIVAS");
+		// this.dropVistaMaterializada("OPERACION_NEGATIVAS");
 	}
 
 	private void actualizarOperacionesNegativas() throws GeneticDAOException {

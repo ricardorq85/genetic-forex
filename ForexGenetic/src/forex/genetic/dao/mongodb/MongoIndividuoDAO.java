@@ -7,7 +7,6 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
@@ -39,7 +38,7 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		MongoIndividuo obj = null;
 		MongoCursor<Document> cursor = this.collection.find(Filters.eq("idIndividuo", idIndividuo)).iterator();
 		if (cursor.hasNext()) {
-			obj = mapper.helpOne(cursor.next());
+			obj = getMapper().helpOne(cursor.next());
 		}
 		return obj;
 	}
@@ -50,41 +49,41 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		Bson ordenador = Sorts.orderBy(Sorts.ascending("procesoEjecucion.maxFechaHistorico"),
 				Sorts.descending("idIndividuo"));
 		MongoCursor<Document> cursor = collection.find(filtro).sort(ordenador).limit(10).iterator();
-		return mapper.helpList(cursor);
+		return getMapper().helpList(cursor);
 	}
 
 	@Override
 	public int duracionPromedioMinutos(String idIndividuo) throws GeneticDAOException {
 		// TODO Auto-generated method stub
-		//Accumulators.avg(fieldName, expression);
-		Aggregates.group(id, fieldAccumulators);
-		//Projections
-		
+		// Accumulators.avg(fieldName, expression);
+//		Aggregates.group(id, fieldAccumulators);
+		// Projections
+
 		return 0;
 	}
 
 	@Override
+	@Deprecated
 	public List<Date> consultarPuntosApertura(Date fechaMayorQue, String idIndividuo) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
+	@Deprecated
 	public List<Date> consultarPuntosApertura(DateInterval rango, String idIndividuo) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void crearVistaIndicadoresIndividuo(String viewName, String idIndividuo) throws GeneticDAOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void insertarIndividuoIndicadoresColumnas(String idIndividuo) throws GeneticDAOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -122,7 +121,7 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 	@Override
 	public void smartDelete(String idIndividuo, String causaBorrado, String idPadre) throws GeneticDAOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -160,27 +159,27 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 	@Override
 	public void consultarDetalleIndividuoProceso(Individuo individuo, Date fechaHistorico) throws GeneticDAOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void consultarDetalleIndividuo(IndicadorController indicadorController, Individuo individuo)
 			throws GeneticDAOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void insertIndividuo(IndividuoEstrategia individuo) throws GeneticDAOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void insertIndicadorIndividuo(IndicadorController indicadorController, IndividuoEstrategia individuo)
 			throws GeneticDAOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -236,6 +235,31 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 
 	@Override
 	public List<Individuo> consultarIndividuosIntervaloIndicadores(String idIndividuo) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Individuo> consultarIndividuosParaBorrar(Date fechaLimite) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, Date fechaLimite)
+			throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Individuo> consultarIndividuosParaBorrar(int minutos) throws GeneticDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, int minutos) throws GeneticDAOException {
 		// TODO Auto-generated method stub
 		return null;
 	}

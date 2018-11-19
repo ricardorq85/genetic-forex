@@ -28,7 +28,7 @@ public class BorradoDuplicadoOperacionesManager extends BorradoDuplicadoIndividu
 	 * @throws ClassNotFoundException
 	 * @throws GeneticDAOException 
 	 */
-	protected void borrarDuplicados() throws ClassNotFoundException, SQLException, GeneticDAOException {
+	protected void borrarDuplicados() throws ClassNotFoundException, GeneticDAOException {
 		try {
 			List<Individuo> individuosPadres = individuoDAO.consultarIndividuosPadreRepetidos(tipoProceso);
 			LogUtil.logTime("Individuos padres consultados: " + individuosPadres.size(), 1);
@@ -54,15 +54,13 @@ public class BorradoDuplicadoOperacionesManager extends BorradoDuplicadoIndividu
 		}
 	}	
 
-	protected void borrarDuplicados(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
+	protected void borrarDuplicados(Individuo individuo) throws ClassNotFoundException, GeneticDAOException {
 		try {
 			int count = 0;
 			List<Individuo> individuosRepetidos = individuoDAO.consultarIndividuoHijoRepetidoOperaciones(individuo);
 			deleteRepetidos(individuosRepetidos);
 			count += individuosRepetidos.size();
 			LogUtil.logTime("Individuos borrados: " + count, 1);
-		} catch (SQLException ex) {
-			ex.printStackTrace();
 		} finally {
 		}
 	}

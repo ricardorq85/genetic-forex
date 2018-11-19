@@ -13,6 +13,7 @@ import java.util.List;
 import forex.genetic.dao.helper.IndividuoHelper;
 import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -35,7 +36,7 @@ public class IndividuoTendenciaDAO extends OracleIndividuoDAO {
      * @return
      * @throws SQLException
      */
-    public List<Individuo> consultarIndividuosTendencia(int cantidad) throws SQLException {
+    public List<Individuo> consultarIndividuosTendencia(int cantidad) throws GeneticDAOException {
         List<Individuo> list = null;
         String sql = "SELECT * FROM ( "
                 + "  SELECT OPER.ID_INDIVIDUO, NULL ID_INDIVIDUO_PADRE, SUM (PIPS) PIPS "
@@ -57,7 +58,9 @@ public class IndividuoTendenciaDAO extends OracleIndividuoDAO {
             resultado = stmtConsulta.executeQuery();
 
             list = IndividuoHelper.createIndividuosById(resultado);
-        } finally {
+        } catch (SQLException e) {
+			throw new GeneticDAOException(null, e);
+		} finally {
             JDBCUtil.close(resultado);
             JDBCUtil.close(stmtConsulta);
         }

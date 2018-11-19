@@ -6,6 +6,7 @@ public class ProcesoEjecucionDTO {
 
 	private Date maxFechaHistorico;
 	private Date fechaAperturaActiva;
+	private Date fechaProceso;
 
 	public Date getMaxFechaHistorico() {
 		return maxFechaHistorico;
@@ -21,6 +22,14 @@ public class ProcesoEjecucionDTO {
 
 	public void setFechaAperturaActiva(Date fechaAperturaActiva) {
 		this.fechaAperturaActiva = fechaAperturaActiva;
+	}
+
+	public Date getFechaProceso() {
+		return fechaProceso;
+	}
+
+	public void setFechaProceso(Date fechaProceso) {
+		this.fechaProceso = fechaProceso;
 	}
 
 }

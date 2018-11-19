@@ -13,6 +13,7 @@ import java.util.List;
 import forex.genetic.dao.helper.IndividuoHelper;
 import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -29,7 +30,7 @@ public class IndividuoBorradoDAO extends OracleIndividuoDAO {
 		super(connection);
 	}
 
-	public List<Individuo> consultarIndividuosRepetidos() throws SQLException {
+	public List<Individuo> consultarIndividuosRepetidos() throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT ID_INDIVIDUO2 ID_INDIVIDUO, ID_INDIVIDUO1 ID_INDIVIDUO_PADRE "
 				+ " FROM INDIVIDUOS_REPETIDOS_BORRADOS WHERE ROWNUM < 300";
@@ -40,6 +41,8 @@ public class IndividuoBorradoDAO extends OracleIndividuoDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException(null, e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
@@ -47,7 +50,7 @@ public class IndividuoBorradoDAO extends OracleIndividuoDAO {
 		return list;
 	}
 
-	public List<Individuo> consultarIndividuoHijoRepetido(Individuo individuoHijo) throws SQLException {
+	public List<Individuo> consultarIndividuoHijoRepetido(Individuo individuoHijo) throws GeneticDAOException {
 		List<Individuo> list = null;
 		String sql = "SELECT ID_INDIVIDUO2 ID_INDIVIDUO, ID_INDIVIDUO1 ID_INDIVIDUO_PADRE "
 				+ " FROM INDIVIDUOS_REPETIDOS_BORRADOS " + " WHERE ID_INDIVIDUO2 = ?";
@@ -59,6 +62,8 @@ public class IndividuoBorradoDAO extends OracleIndividuoDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			list = IndividuoHelper.createIndividuosById(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException(null, e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);

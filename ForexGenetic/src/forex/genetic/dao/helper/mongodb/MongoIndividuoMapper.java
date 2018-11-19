@@ -9,6 +9,7 @@ import java.util.Map;
 import org.bson.Document;
 
 import forex.genetic.entities.DoubleInterval;
+import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.dto.ProcesoEjecucionDTO;
 import forex.genetic.entities.indicator.Indicator;
@@ -29,7 +30,25 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 		return objectMap;
 	}
 
+	@Override
 	public Map<String, Object> toMap(MongoIndividuo obj) {
+		Map<String, Object> objectMap = this.toMapIndividuoEstrategia(obj);
+
+		Map<String, Object> procesoEjecucion = new HashMap<String, Object>();
+		if (obj.getProcesoEjecucion() != null) {
+			procesoEjecucion.put("maxFechaHistorico", obj.getProcesoEjecucion().getMaxFechaHistorico());
+			procesoEjecucion.put("fechaAperturaActiva", obj.getProcesoEjecucion().getFechaAperturaActiva());
+			if (obj.getProcesoEjecucion().getFechaProceso() != null) {
+				procesoEjecucion.put("fechaProceso", obj.getProcesoEjecucion().getFechaProceso());
+			} else {
+				procesoEjecucion.put("fechaProceso", new Date());
+			}
+		}
+		objectMap.put("procesoEjecucion", procesoEjecucion);
+		return objectMap;
+	}
+
+	private Map<String, Object> toMapIndividuoEstrategia(IndividuoEstrategia obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		objectMap.put("idIndividuo", obj.getId());
 		objectMap.put("idParent1", obj.getIdParent1());
@@ -49,12 +68,6 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 
 		objectMap.put("openIndicadores", getMapIndicadores(obj.getOpenIndicators()));
 		objectMap.put("closeIndicadores", getMapIndicadores(obj.getCloseIndicators()));
-
-		Map<String, Object> procesoEjecucion = new HashMap<String, Object>();
-		procesoEjecucion.put("maxFechaHistorico", obj.getProcesoEjecucion().getMaxFechaHistorico());
-		procesoEjecucion.put("fechaAperturaActiva", obj.getProcesoEjecucion().getFechaAperturaActiva());
-
-		objectMap.put("procesoEjecucion", procesoEjecucion);
 
 		return objectMap;
 	}
@@ -88,12 +101,14 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 		obj.setOpenIndicators(getListIndicadores((List<Map<String, Object>>) one.get("openIndicadores")));
 		obj.setCloseIndicators(getListIndicadores((List<Map<String, Object>>) one.get("closeIndicadores")));
 
-		Map<String, Date> mapProcesoEjecucion = (Map<String, Date>)one.get("procesoEjecucion");
-		ProcesoEjecucionDTO procesoEjecucion = new ProcesoEjecucionDTO();
-		procesoEjecucion.setMaxFechaHistorico(mapProcesoEjecucion.get("maxFechaHistorico"));
-		procesoEjecucion.setFechaAperturaActiva(mapProcesoEjecucion.get("fechaAperturaActiva"));
-		
-		obj.setProcesoEjecucion(procesoEjecucion);
+		if (one.get("procesoEjecucion") != null) {
+			Map<String, Date> mapProcesoEjecucion = (Map<String, Date>) one.get("procesoEjecucion");
+			ProcesoEjecucionDTO procesoEjecucion = new ProcesoEjecucionDTO();
+			procesoEjecucion.setMaxFechaHistorico(mapProcesoEjecucion.get("maxFechaHistorico"));
+			procesoEjecucion.setFechaAperturaActiva(mapProcesoEjecucion.get("fechaAperturaActiva"));
+			procesoEjecucion.setFechaProceso(mapProcesoEjecucion.get("fechaProceso"));
+			obj.setProcesoEjecucion(procesoEjecucion);
+		}
 		return obj;
 	}
 
@@ -134,5 +149,14 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 	@Override
 	public Map<String, Object> toMapForDelete(MongoIndividuo obj, Date fechaReferencia) {
 		throw new UnsupportedOperationException();
+	}
+
+	public List<MongoIndividuo> toMongoIndividuo(List<? extends IndividuoEstrategia> list) {
+		List<MongoIndividuo> mongoList = new ArrayList<MongoIndividuo>(list.size());
+		for (IndividuoEstrategia individuoEstrategia : list) {
+			MongoIndividuo mongoIndividuo = helpOne(new Document(toMapIndividuoEstrategia(individuoEstrategia)));
+			mongoList.add(mongoIndividuo);
+		}
+		return mongoList;
 	}
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import forex.genetic.dao.helper.OperacionHelper;
 import forex.genetic.dao.oracle.OracleOperacionesDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.Constants;
 import forex.genetic.util.jdbc.JDBCUtil;
 
@@ -63,7 +64,7 @@ public class OperacionesTendenciaDAO extends OracleOperacionesDAO {
 		return individuo;
 	}
 
-	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, int filas) throws SQLException {
+	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, int filas) throws GeneticDAOException {
 		List<Individuo> individuos = null;
 		StringBuilder sqlBuffer = new StringBuilder(this.getQuery());
 		//sqlBuffer.append(" ORDER BY PROC.FECHA_PROCESO DESC");
@@ -82,6 +83,8 @@ public class OperacionesTendenciaDAO extends OracleOperacionesDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			individuos = OperacionHelper.individuosOperacionActiva(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException(null, e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
