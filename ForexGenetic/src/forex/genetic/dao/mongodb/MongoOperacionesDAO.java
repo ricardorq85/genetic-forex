@@ -3,6 +3,7 @@ package forex.genetic.dao.mongodb;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.bson.Document;
 
@@ -14,15 +15,15 @@ import forex.genetic.dao.IOperacionesDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Estadistica;
 import forex.genetic.entities.Individuo;
-import forex.genetic.entities.Order;
 import forex.genetic.entities.ParametroOperacionPeriodo;
+import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
 
 /**
  *
  * @author ricardorq85
  */
-public class MongoOperacionesDAO extends MongoGeneticDAO<Order> implements IOperacionesDAO<Order> {
+public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements IOperacionesDAO<MongoOrder> {
 
 	public MongoOperacionesDAO() {
 		this(true);
@@ -58,12 +59,13 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<Order> implements IOper
 	}
 
 	@Override
-	public void insert(Individuo individuo, List<? extends Order> operaciones) throws GeneticDAOException {
-		List<Document> docs = getMapper().toMap(operaciones);
-		for (Document document : docs) {
-			document.append("idIndividuo", individuo.getId());
-		}
-		insertManyDocuments(docs);
+	public void insert(Individuo individuo, List<MongoOrder> operaciones) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public void update(Individuo individuo, MongoOrder operacion, Date fechaApertura) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
@@ -108,12 +110,7 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<Order> implements IOper
 	}
 
 	@Override
-	public void updateOperacion(Individuo individuo, Order operacion, Date fechaApertura) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
-	public void updateMaximosReprocesoOperacion(Individuo individuo, Order operacion) throws GeneticDAOException {
+	public void updateMaximosReprocesoOperacion(Individuo individuo, MongoOrder operacion) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 

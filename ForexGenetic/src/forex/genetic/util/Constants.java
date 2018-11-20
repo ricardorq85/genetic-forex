@@ -472,4 +472,16 @@ public class Constants {
 
 		TAKE_PROFIT, STOP_LOSS, INDICADORES;
 	}
+
+	public static CloseType getCloseType(String closeTypeName) {
+		if ("TAKE_PROFIT".equals(closeTypeName)) {
+			return Constants.CloseType.TAKE_PROFIT;
+		} else if ("STOP_LOSS".equals(closeTypeName)) {
+			return Constants.CloseType.STOP_LOSS;
+		} else if ("INDICADORES".equals(closeTypeName)) {
+			return Constants.CloseType.INDICADORES;
+		} else {
+			return null;
+		}
+	}
 }

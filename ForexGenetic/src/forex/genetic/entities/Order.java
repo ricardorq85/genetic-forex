@@ -44,7 +44,6 @@ public class Order implements Serializable, Cloneable {
 	private Date maxFechaRetroceso = null;
 	DoubleInterval maxMinHistoriaApertura = null;
 	private long duracionMinutos;
-	
 
 	/**
 	 *

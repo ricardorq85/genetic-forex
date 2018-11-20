@@ -261,7 +261,7 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 	 * @param fechaApertura
 	 * @throws GeneticDAOException
 	 */
-	public void updateOperacion(Individuo individuo, Order operacion, Date fechaApertura) throws GeneticDAOException {
+	public void update(Individuo individuo, Order operacion, Date fechaApertura) throws GeneticDAOException {
 		String sql = "UPDATE OPERACION SET FECHA_CIERRE=?, PIPS=?, FECHA=? "
 				+ " WHERE ID_INDIVIDUO=? AND FECHA_APERTURA=?";
 
@@ -318,7 +318,7 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 	 * @param operaciones
 	 * @throws GeneticDAOException
 	 */
-	public void insert(Individuo individuo, List<? extends Order> operaciones) throws GeneticDAOException {
+	public void insert(Individuo individuo, List<Order> operaciones) throws GeneticDAOException {
 		String sql = "INSERT INTO OPERACION(ID_INDIVIDUO, TAKE_PROFIT, STOP_LOSS, "
 				+ " FECHA_APERTURA, FECHA_CIERRE, SPREAD, OPEN_PRICE, PIPS, LOTE, TIPO, FECHA) "
 				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?)";
@@ -585,21 +585,16 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 
 	@Override
 	public boolean exists(Order obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public void insert(Order obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public void update(Order obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
-
-
 }

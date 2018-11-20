@@ -14,7 +14,6 @@ import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
-import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 
 import forex.genetic.dao.IDatoHistoricoDAO;
@@ -94,9 +93,10 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	}
 
 	@Override
-	public Point consultarPuntoCierre(IndividuoEstrategia individuo, Date fechaBase) {
+	public Point consultarPuntoCierre(IndividuoEstrategia individuo, DateInterval rango) {
 		List<Bson> filtros = new ArrayList<>();
-		filtros.add(Filters.gt("fechaHistorico", fechaBase));
+		filtros.add(Filters.gt("fechaHistorico", rango.getLowInterval()));
+		filtros.add(Filters.lte("fechaHistorico", rango.getHighInterval()));
 
 		adicionarFiltroIndicadores(individuo.getCloseIndicators(), filtros);
 

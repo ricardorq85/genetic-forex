@@ -15,6 +15,7 @@ import forex.genetic.entities.dto.ProcesoEjecucionDTO;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.entities.mongo.MongoIndividuo;
+import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.factory.MonedaFactory;
 import forex.genetic.manager.controller.IndicadorController;
@@ -34,6 +35,13 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 	public Map<String, Object> toMap(MongoIndividuo obj) {
 		Map<String, Object> objectMap = toMapIndividuoEstrategia(obj);
 		objectMap.put("procesoEjecucion", toMapProcesoEjecucion(obj));
+
+		if (obj.getCurrentOrder() != null) {
+			MongoOperacionMapper operacionMapper = new MongoOperacionMapper();
+			objectMap.put("ordenActiva", operacionMapper.toMap((MongoOrder) obj.getCurrentOrder()));
+		} else {
+			objectMap.put("ordenActiva", null);
+		}
 		return objectMap;
 	}
 
@@ -41,14 +49,11 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 		Map<String, Object> procesoEjecucion = new HashMap<String, Object>();
 		if (obj.getProcesoEjecucion() != null) {
 			procesoEjecucion.put("maxFechaHistorico", obj.getProcesoEjecucion().getMaxFechaHistorico());
-			procesoEjecucion.put("fechaAperturaActiva", obj.getProcesoEjecucion().getFechaAperturaActiva());
 			if (obj.getProcesoEjecucion().getFechaProceso() != null) {
 				procesoEjecucion.put("fechaProceso", obj.getProcesoEjecucion().getFechaProceso());
 			} else {
 				procesoEjecucion.put("fechaProceso", new Date());
 			}
-			procesoEjecucion.put("openPriceActiva", obj.getProcesoEjecucion().getOpenPriceActiva());
-			procesoEjecucion.put("spreadActiva", obj.getProcesoEjecucion().getSpreadActiva());
 		}
 		return procesoEjecucion;
 	}
@@ -109,12 +114,17 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 		if (one.get("procesoEjecucion") != null) {
 			Map<String, Object> mapProcesoEjecucion = (Map<String, Object>) one.get("procesoEjecucion");
 			ProcesoEjecucionDTO procesoEjecucion = new ProcesoEjecucionDTO();
-			procesoEjecucion.setMaxFechaHistorico((Date)mapProcesoEjecucion.get("maxFechaHistorico"));
-			procesoEjecucion.setFechaAperturaActiva((Date)mapProcesoEjecucion.get("fechaAperturaActiva"));
-			procesoEjecucion.setFechaProceso((Date)mapProcesoEjecucion.get("fechaProceso"));
-			procesoEjecucion.setOpenPriceActiva((double)mapProcesoEjecucion.get("openPriceActiva"));
-			procesoEjecucion.setSpreadActiva((double)mapProcesoEjecucion.get("spreadActiva"));
+			procesoEjecucion.setMaxFechaHistorico((Date) mapProcesoEjecucion.get("maxFechaHistorico"));
+			procesoEjecucion.setFechaProceso((Date) mapProcesoEjecucion.get("fechaProceso"));
 			obj.setProcesoEjecucion(procesoEjecucion);
+		}
+		if (one.get("ordenActiva") != null) {
+			Map<String, Object> mapOrdenActiva = (Map<String, Object>) one.get("ordenActiva");
+			Document documentOrdenActiva = new Document(mapOrdenActiva);
+			MongoOperacionMapper operacionMapper = new MongoOperacionMapper();
+
+			MongoOrder order = operacionMapper.helpOne(documentOrdenActiva);
+			obj.setCurrentOrder(order);
 		}
 		return obj;
 	}

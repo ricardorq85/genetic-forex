@@ -179,7 +179,7 @@ public class OracleProcesarIndividuoThread extends Thread {
 				Order updateOrder = null;
 				if (individuo.getFechaApertura() != null) {
 					if (ordenes.get(0).getCloseDate() != null) {
-						daoOperaciones.updateOperacion(individuo, ordenes.get(0), individuo.getFechaApertura());
+						daoOperaciones.update(individuo, ordenes.get(0), individuo.getFechaApertura());
 						updateOrder = ordenes.get(0);
 					}
 					ordenes.remove(0);

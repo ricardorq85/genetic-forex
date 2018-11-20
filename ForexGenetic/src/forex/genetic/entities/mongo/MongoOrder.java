@@ -21,6 +21,8 @@ public class MongoOrder extends Order implements Serializable, Cloneable {
 
 	private double closePriceByTakeProfit, closePriceByStopLoss;
 	private Constants.CloseType tipoCierre;
+	private Date fechaRegistro;
+	private String idIndividuo;
 
 	public void setCloseDate(Date closeDate) {
 		if (getOpenDate() == null) {
@@ -58,4 +60,20 @@ public class MongoOrder extends Order implements Serializable, Cloneable {
 		this.tipoCierre = tipoCierre;
 	}
 
+	public Date getFechaRegistro() {
+		return fechaRegistro;
+	}
+
+	public void setFechaRegistro(Date fechaRegistro) {
+		this.fechaRegistro = fechaRegistro;
+	}
+
+	public String getIdIndividuo() {
+		return idIndividuo;
+	}
+
+	public void setIdIndividuo(String idIndividuo) {
+		this.idIndividuo = idIndividuo;
+	}
+	
 }

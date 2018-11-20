@@ -53,7 +53,7 @@ public interface IDatoHistoricoDAO extends IGeneticDAO<Point> {
 	public Point consultarProximoPuntoApertura(IndividuoEstrategia individuo, DateInterval rango)
 			throws GeneticDAOException;
 
-	public Point consultarPuntoCierre(IndividuoEstrategia individuo, Date fechaBase) throws GeneticDAOException;
+	public Point consultarPuntoCierre(IndividuoEstrategia individuo, DateInterval rango) throws GeneticDAOException;
 
 	public Point consultarPuntoAnterior(Date fecha) throws GeneticDAOException;
 

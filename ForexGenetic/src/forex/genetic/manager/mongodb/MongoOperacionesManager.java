@@ -66,7 +66,7 @@ public class MongoOperacionesManager extends OperacionesManager {
 						currentOrder.setStopLoss(stopLoss);
 						currentOrder.setTipo(individuo.getTipoOperacion());
 						currentOrder.setClosePriceByTakeProfit(operationController.calculateClosePriceByTakeProfit(currentOrder));
-						currentOrder.setClosePriceByStopLoss(operationController.calculateClosePriceByStopLoss(currentOrder));						
+						currentOrder.setClosePriceByStopLoss(operationController.calculateClosePriceByStopLoss(currentOrder));
 						individuo.setCurrentOrder(currentOrder);
 					}
 				}
@@ -97,14 +97,17 @@ public class MongoOperacionesManager extends OperacionesManager {
 						operate = !Double.isNaN(pips);
 						if (operate) {
 							currentOrder.setCloseByTakeStop(false);
+							currentOrder.setTipoCierre(CloseType.INDICADORES);
 							pips = (pips - currentOrder.getOpenSpread());
 						}
 					}
 				} else {
 					currentOrder.setCloseByTakeStop(true);
 					if (takeProfitPips >= (takeProfit)) {
+						currentOrder.setTipoCierre(CloseType.TAKE_PROFIT);
 						pips = (takeProfit);
 					} else if (stopLossPips <= -(stopLoss)) {
+						currentOrder.setTipoCierre(CloseType.STOP_LOSS);
 						pips = -(stopLoss);
 					}
 				}
@@ -297,7 +300,7 @@ public class MongoOperacionesManager extends OperacionesManager {
 			if ((currentOrder != null) && (currentOrder.getOpenDate() != null)
 					&& (currentOrder.getCloseDate() != null)) {
 				calcularRetrocesoOrden(currentOrder);
-				operacionesDAO.updateMaximosReprocesoOperacion(individuo, currentOrder);
+				operacionesDAO.updateMaximosReprocesoOperacion(individuo, (MongoOrder)currentOrder);
 			}
 		}
 		operacionesDAO.commit();
