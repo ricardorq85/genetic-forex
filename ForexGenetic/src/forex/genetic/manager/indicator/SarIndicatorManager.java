@@ -152,8 +152,12 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
 		Sar instance = getIndicatorInstance();
 		if (indMap != null) {
 			if (indMap.containsKey(instance.getName())) {
-				Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
-				instance.setSar(values.get("sar"));
+				if (indMap.get(instance.getName()) != null) {
+					Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
+					if (values.containsKey("sar")) {
+						instance.setSar(values.get("sar"));
+					}
+				}
 			}
 		}
 		return instance;

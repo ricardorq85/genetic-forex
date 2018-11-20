@@ -126,8 +126,8 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 		if (prevIndicator != null) {
 			if (!NumberUtil.isAnyInfiniteOrNan(prevIndicator.getAdxValue(), prevIndicator.getAdxPlus(),
 					prevIndicator.getAdxMinus())) {
-				objectMap.put("calculado",
-						NumberUtil.round(prevIndicator.getAdxValue() * (prevIndicator.getAdxPlus() - prevIndicator.getAdxMinus())));
+				objectMap.put("calculado", NumberUtil.round(
+						prevIndicator.getAdxValue() * (prevIndicator.getAdxPlus() - prevIndicator.getAdxMinus())));
 			}
 		}
 		return objectMap;
@@ -139,10 +139,18 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 		Adx instance = getIndicatorInstance();
 		if (indMap != null) {
 			if (indMap.containsKey(instance.getName())) {
-				Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
-				instance.setAdxValue(values.get("adxValue"));
-				instance.setAdxMinus(values.get("adxMinus"));
-				instance.setAdxPlus(values.get("adxPlus"));
+				if (indMap.get(instance.getName()) != null) {
+					Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
+					if (values.containsKey("adxValue")) {
+						instance.setAdxValue(values.get("adxValue"));
+					}
+					if (values.containsKey("adxMinus")) {
+						instance.setAdxMinus(values.get("adxMinus"));
+					}
+					if (values.containsKey("adxPlus")) {
+						instance.setAdxPlus(values.get("adxPlus"));
+					}
+				}
 			}
 		}
 		return instance;

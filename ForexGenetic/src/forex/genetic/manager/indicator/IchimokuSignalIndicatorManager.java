@@ -139,10 +139,18 @@ public class IchimokuSignalIndicatorManager extends IchimokuIndicatorManager {
 		Ichimoku instance = getIndicatorInstance();
 		if (indMap != null) {
 			if (indMap.containsKey(instance.getName())) {
-				Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
-				instance.setChinkouSpan(values.get("chinkouSpan"));
-				instance.setKijunSen(values.get("kijunSen"));
-				instance.setTenkanSen(values.get("tenkanSen"));
+				if (indMap.get(instance.getName()) != null) {
+					Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
+					if (values.containsKey("chinkouSpan")) {
+						instance.setChinkouSpan(values.get("chinkouSpan"));
+					}
+					if (values.containsKey("kijunSen")) {
+						instance.setKijunSen(values.get("kijunSen"));
+					}
+					if (values.containsKey("tenkanSen")) {
+						instance.setTenkanSen(values.get("tenkanSen"));
+					}
+				}
 			}
 		}
 		return instance;

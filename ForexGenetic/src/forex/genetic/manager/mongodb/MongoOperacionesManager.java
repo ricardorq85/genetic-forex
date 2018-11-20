@@ -5,13 +5,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
-import forex.genetic.dao.oracle.OracleOperacionesDAO;
+import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
+import forex.genetic.dao.mongodb.MongoOperacionesDAO;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.IntervalManager;
 import forex.genetic.manager.OperacionesManager;
@@ -35,8 +36,8 @@ public class MongoOperacionesManager extends OperacionesManager {
 	public MongoOperacionesManager() {
 	}
 
-	public List<? extends Order> calcularOperaciones(List<Point> points, Individuo individuo) {
-		List<Order> ordenes = new ArrayList<>();
+	public List<MongoOrder> calcularOperaciones(List<Point> points, Individuo individuo) {
+		List<MongoOrder> ordenes = new ArrayList<MongoOrder>();
 		double takeProfit = individuo.getTakeProfit();
 		double stopLoss = individuo.getStopLoss();
 		double lot = individuo.getLot();
@@ -44,11 +45,11 @@ public class MongoOperacionesManager extends OperacionesManager {
 		boolean hasMinimumCriterion = true;
 		boolean activeOperation = (individuo.getFechaApertura() != null);
 		Point openPoint;
-		Order currentOrder = individuo.getCurrentOrder();
+		MongoOrder currentOrder = (MongoOrder)individuo.getCurrentOrder();
 		double openOperationValue = (activeOperation) ? currentOrder.getOpenOperationValue() : 0.0D;
 		for (int i = 1; (i < points.size() && hasMinimumCriterion); i++) {
 			if (!activeOperation) {
-				boolean operate = true; //operationController.operateOpen(individuo, points, i);
+				boolean operate = operationController.operateOpen(individuo, points, i);
 				if (operate) {
 					openOperationValue = operationController.calculateOpenPrice(individuo, points, i);
 					individuo.setOpenOperationValue(openOperationValue);
@@ -56,7 +57,7 @@ public class MongoOperacionesManager extends OperacionesManager {
 					if (operate) {
 						activeOperation = true;
 						openPoint = points.get(i);
-						currentOrder = new Order();
+						currentOrder = new MongoOrder();
 						currentOrder.setOpenDate(openPoint.getDate());
 						currentOrder.setOpenOperationValue(openOperationValue);
 						currentOrder.setOpenSpread(openPoint.getSpread());
@@ -95,9 +96,6 @@ public class MongoOperacionesManager extends OperacionesManager {
 										* PropertiesManager.getPairFactor();
 						operate = !Double.isNaN(pips);
 						if (operate) {
-							// boolean operate2 =
-							// indicatorController.operateClose(individuo,
-							// points, i);
 							currentOrder.setCloseByTakeStop(false);
 							pips = (pips - currentOrder.getOpenSpread());
 						}
@@ -136,7 +134,7 @@ public class MongoOperacionesManager extends OperacionesManager {
 		double stopLoss = individuo.getStopLoss();
 
 		boolean activeOperation = (individuo.getFechaApertura() != null);
-		Order currentOrder = individuo.getCurrentOrder();
+		MongoOrder currentOrder = (MongoOrder)individuo.getCurrentOrder();
 		double openOperationValue = (activeOperation) ? currentOrder.getOpenOperationValue() : 0.0D;
 		for (int i = 1; (i < points.size() && (currentOrder != null)); i++) {
 			Point closePoint = points.get(i);
@@ -245,7 +243,7 @@ public class MongoOperacionesManager extends OperacionesManager {
 	 * @throws GeneticDAOException 
 	 */
 	public void procesarMaximosRetroceso(Date fechaMaximo) throws ClassNotFoundException, SQLException, GeneticDAOException {
-		OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
+		MongoOperacionesDAO operacionesDAO = new MongoOperacionesDAO();
 		List<Individuo> individuos = operacionesDAO.consultarOperacionesIndividuoRetroceso(fechaMaximo);
 		while ((individuos != null) && (!individuos.isEmpty())) {
 			for (Individuo individuo : individuos) {
@@ -273,7 +271,7 @@ public class MongoOperacionesManager extends OperacionesManager {
 	 */
 	public void procesarMaximosRetroceso(Individuo individuo, Date fechaMaximo)
 			throws ClassNotFoundException, SQLException, GeneticDAOException {
-		OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
+		MongoOperacionesDAO operacionesDAO = new MongoOperacionesDAO();
 		individuo = operacionesDAO.consultarOperacionesIndividuoRetroceso(individuo, fechaMaximo);
 
 		if (individuo.getOpenIndicators() == null) {
@@ -293,7 +291,7 @@ public class MongoOperacionesManager extends OperacionesManager {
 	 * @throws GeneticDAOException 
 	 */
 	public void procesarMaximosReproceso(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
-		OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
+		MongoOperacionesDAO operacionesDAO = new MongoOperacionesDAO();
 		List<Order> ordenes = individuo.getOrdenes();
 		for (Order currentOrder : ordenes) {
 			if ((currentOrder != null) && (currentOrder.getOpenDate() != null)
@@ -302,11 +300,11 @@ public class MongoOperacionesManager extends OperacionesManager {
 				operacionesDAO.updateMaximosReprocesoOperacion(individuo, currentOrder);
 			}
 		}
-		conn.commit();
+		operacionesDAO.commit();
 	}
 
 	public void calcularRetrocesoOrden(Order currentOrder) throws SQLException, GeneticDAOException {
-		OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
+		MongoDatoHistoricoDAO datoHistoricoDAO = new MongoDatoHistoricoDAO();
 		Point pointRetroceso = datoHistoricoDAO.consultarRetroceso(currentOrder);
 		if (pointRetroceso != null) {
 			boolean isBuy = (currentOrder.getTipo().equals(Constants.OperationType.BUY));

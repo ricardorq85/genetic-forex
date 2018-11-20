@@ -13,6 +13,8 @@ public class MongoMapperFactory {
 			return new MongoTendenciaParaOperarMapper();
 		} else if ("operacion".equals(collectionName)) {
 			return new MongoOperacionMapper();			
+		} else if ("parametro".equals(collectionName)) {
+			return new MongoParametroMapper();			
 		}
 		throw new IllegalArgumentException("collectionName no soportado: " + collectionName);
 	}

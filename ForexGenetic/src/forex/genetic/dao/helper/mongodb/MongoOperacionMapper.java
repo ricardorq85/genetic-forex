@@ -33,8 +33,9 @@ public class MongoOperacionMapper extends MongoMapper<MongoOrder> {
 		objMap.put("fechaRegistro", new Date());
 		objMap.put("closePriceByTakeProfit", obj.getClosePriceByTakeProfit());
 		objMap.put("closePriceByStopLoss", obj.getClosePriceByStopLoss());
-		objMap.put("tipoCierre", obj.getTipoCierre().name());
-		
+		if (obj.getTipoCierre() != null) {
+			objMap.put("tipoCierre", obj.getTipoCierre().name());
+		}
 		return objMap;
 	}
 

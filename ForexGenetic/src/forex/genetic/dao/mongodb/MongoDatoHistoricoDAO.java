@@ -105,8 +105,8 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		LogUtil.logTime(
 				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
 
-		Document doc = this.collection.find(bsonFiltrosCompletos).projection(Projections.exclude("indicadores"))
-				.sort(Sorts.orderBy(Sorts.ascending("fechaHistorico"))).limit(1).first();
+		Document doc = this.collection.find(bsonFiltrosCompletos).sort(Sorts.orderBy(Sorts.ascending("fechaHistorico")))
+				.limit(1).first();
 
 		Point p = getMapper().helpOne(doc);
 		return p;
@@ -125,8 +125,8 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		LogUtil.logTime(
 				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
 
-		Document doc = this.collection.find(bsonFiltrosCompletos).projection(Projections.exclude("indicadores"))
-				.sort(Sorts.orderBy(Sorts.ascending("fechaHistorico"))).limit(1).first();
+		Document doc = this.collection.find(bsonFiltrosCompletos).sort(Sorts.orderBy(Sorts.ascending("fechaHistorico")))
+				.limit(1).first();
 
 		Point p = getMapper().helpOne(doc);
 		return p;
@@ -167,8 +167,7 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	@Override
 	public Point consultarPuntoAnterior(Date fecha) throws GeneticDAOException {
 		Document doc = this.collection.find(Filters.lt("fechaHistorico", fecha))
-				.projection(Projections.exclude("indicadores")).sort(Sorts.orderBy(Sorts.descending("fechaHistorico")))
-				.limit(1).first();
+				.sort(Sorts.orderBy(Sorts.descending("fechaHistorico"))).limit(1).first();
 
 		Point p = getMapper().helpOne(doc);
 		return p;

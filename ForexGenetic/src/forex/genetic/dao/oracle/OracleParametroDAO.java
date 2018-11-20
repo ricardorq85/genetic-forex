@@ -63,7 +63,7 @@ public class OracleParametroDAO extends OracleGeneticDAO<Parametro> implements I
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);
-		}
+ 		}
 		return valor;
 	}
 

@@ -153,9 +153,15 @@ public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
 		Ichimoku instance = getIndicatorInstance();
 		if (indMap != null) {
 			if (indMap.containsKey(instance.getName())) {
-				Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
-				instance.setSenkouSpanA(values.get("senkouSpanA"));
-				instance.setSenkouSpanB(values.get("senkouSpanB"));
+				if (indMap.get(instance.getName()) != null) {
+					Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
+					if (values.containsKey("senkouSpanA")) {
+						instance.setSenkouSpanA(values.get("senkouSpanA"));
+					}
+					if (values.containsKey("senkouSpanB")) {
+						instance.setSenkouSpanB(values.get("senkouSpanB"));
+					}
+				}
 			}
 		}
 		return instance;

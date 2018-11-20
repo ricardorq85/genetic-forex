@@ -50,7 +50,9 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<Order> implements IOper
 						.asList(Aggregates.group(null, Accumulators.avg("avgDuracionMinutos", "$duracionMinutos"))))
 				.first();
 		if (doc != null) {
-			avgDuracionMinutos = doc.getLong("avgDuracionMinutos");
+			if (doc.get("avgDuracionMinutos") != null) {
+				avgDuracionMinutos = doc.getLong("avgDuracionMinutos");
+			}
 		}
 		return avgDuracionMinutos;
 	}

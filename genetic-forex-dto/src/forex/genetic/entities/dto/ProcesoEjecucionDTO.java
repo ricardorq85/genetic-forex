@@ -9,7 +9,6 @@ public class ProcesoEjecucionDTO {
 	private Date fechaProceso;
 	private double spreadActiva;
 	private double openPriceActiva;
-	private String tipoOperacionActiva;
 
 	public Date getMaxFechaHistorico() {
 		return maxFechaHistorico;
@@ -49,14 +48,6 @@ public class ProcesoEjecucionDTO {
 
 	public void setOpenPriceActiva(double openPriceActiva) {
 		this.openPriceActiva = openPriceActiva;
-	}
-
-	public String getTipoOperacionActiva() {
-		return tipoOperacionActiva;
-	}
-
-	public void setTipoOperacionActiva(String tipoOperacionActiva) {
-		this.tipoOperacionActiva = tipoOperacionActiva;
 	}
 
 }

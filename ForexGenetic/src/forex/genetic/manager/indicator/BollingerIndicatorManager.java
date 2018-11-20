@@ -119,16 +119,22 @@ public class BollingerIndicatorManager extends IntervalIndicatorManager<Bollinge
 		}
 		return objectMap;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Bollinger getIndicatorInstance(Map<String, Object> indMap) {
 		Bollinger instance = getIndicatorInstance();
 		if (indMap != null) {
 			if (indMap.containsKey(instance.getName())) {
-				Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
-				instance.setLower(values.get("lower"));
-				instance.setUpper(values.get("upper"));
+				if (indMap.get(instance.getName()) != null) {
+					Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
+					if (values.containsKey("lower")) {
+						instance.setLower(values.get("lower"));
+					}
+					if (values.containsKey("upper")) {
+						instance.setUpper(values.get("upper"));
+					}
+				}
 			}
 		}
 		return instance;

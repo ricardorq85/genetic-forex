@@ -14,6 +14,7 @@ import forex.genetic.entities.Poblacion;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.DriverDBFactory;
+import forex.genetic.manager.IGeneticManager;
 import forex.genetic.manager.ProcesoIndividuoManager;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.util.LogUtil;
@@ -37,25 +38,30 @@ public class PoblacionFacade implements IGeneticFacade {
 	}
 
 	public void process(boolean onlyOne) {
-		ProcesoIndividuoManager[] managers = (ProcesoIndividuoManager[]) DriverDBFactory
-				.createManager("procesoIndividuo");
+		IGeneticManager[] managers = DriverDBFactory.createManager("procesoIndividuo");
 		Thread[] threads = new Thread[managers.length];
-		for (int i = 0; i < managers.length; i++) {
-			ProcesoIndividuoManager manager = managers[i];
-			Runnable runner = new Runnable() {
-				@Override
-				public void run() {
-					try {
-						manager.process(onlyOne);
-					} catch (GeneticBusinessException e) {
-						e.printStackTrace();
-					}
-				}
-			};
-			threads[i] = new Thread(runner);
-			threads[i].start();
+		for (int i = 1; i < managers.length; i++) {
+			ProcesoIndividuoManager manager = (ProcesoIndividuoManager)managers[i];
+			try {
+				manager.process(onlyOne);
+			} catch (GeneticBusinessException e) {
+				e.printStackTrace();
+			}
+
+//			Runnable runner = new Runnable() {
+//				@Override
+//				public void run() {
+//					try {
+//						manager.process(onlyOne);
+//					} catch (GeneticBusinessException e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			};
+//			threads[i] = new Thread(runner);
+//			threads[i].start();
 		}
-		ThreadUtil.joinThreads(threads);
+//		ThreadUtil.joinThreads(threads);
 	}
 
 	/**

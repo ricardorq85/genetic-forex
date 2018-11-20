@@ -125,9 +125,15 @@ public class MacdIndicatorManager extends IntervalIndicatorManager<Macd> {
 		Macd instance = getIndicatorInstance();
 		if (indMap != null) {
 			if (indMap.containsKey(instance.getName())) {
-				Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
-				instance.setMacdSignal(values.get("macdSignal"));
-				instance.setMacdValue(values.get("macdValue"));
+				if (indMap.get(instance.getName()) != null) {
+					Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
+					if (values.containsKey("macdValue")) {
+						instance.setMacdValue(values.get("macdValue"));
+					}
+					if (values.containsKey("macdSignal")) {
+						instance.setMacdSignal(values.get("macdSignal"));
+					}
+				}
 			}
 		}
 		return instance;

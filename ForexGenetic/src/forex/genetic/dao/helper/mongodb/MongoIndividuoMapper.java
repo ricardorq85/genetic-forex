@@ -49,7 +49,6 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 			}
 			procesoEjecucion.put("openPriceActiva", obj.getProcesoEjecucion().getOpenPriceActiva());
 			procesoEjecucion.put("spreadActiva", obj.getProcesoEjecucion().getSpreadActiva());
-			procesoEjecucion.put("tipoOperacionActiva", obj.getProcesoEjecucion().getTipoOperacionActiva());
 		}
 		return procesoEjecucion;
 	}
@@ -115,7 +114,6 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 			procesoEjecucion.setFechaProceso((Date)mapProcesoEjecucion.get("fechaProceso"));
 			procesoEjecucion.setOpenPriceActiva((double)mapProcesoEjecucion.get("openPriceActiva"));
 			procesoEjecucion.setSpreadActiva((double)mapProcesoEjecucion.get("spreadActiva"));
-			procesoEjecucion.setTipoOperacionActiva((String)mapProcesoEjecucion.get("tipoOperacionActiva"));
 			obj.setProcesoEjecucion(procesoEjecucion);
 		}
 		return obj;

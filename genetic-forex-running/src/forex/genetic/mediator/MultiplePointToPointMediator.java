@@ -30,7 +30,7 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 	public void init() throws GeneticDAOException {
 		DataClient<?>[] dataClients = DriverDBFactory.createDataClient();
 		this.daosDatoHistorico = DriverDBFactory.createDAO("datoHistorico", dataClients);
-		this.daosTendencia = DriverDBFactory.createDAO("tendencia", dataClients);
+		//this.daosTendencia = DriverDBFactory.createDAO("tendencia", dataClients);
 		this.daosParametro = DriverDBFactory.createDAO("parametro", dataClients);
 
 		IParametroDAO parametroDAO = ((IParametroDAO)daosParametro[0]);
@@ -47,14 +47,12 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 				int imported = 0;
 				for (int j = 1; j < daosDatoHistorico.length; j++) {
 					IDatoHistoricoDAO daoDatoHistorico = ((IDatoHistoricoDAO)daosDatoHistorico[j]);
-					fechaHistoricaMaximaAnterior = DateUtil.obtenerFechaMinima(
-							daoDatoHistorico.getFechaHistoricaMaxima(), fechaHistoricaMaximaAnterior);
-					imported = importarDatosHistoricos();
-					this.fechaHistoricaMaximaNueva = DateUtil.obtenerFechaMinima(
-							daoDatoHistorico.getFechaHistoricaMaxima(), fechaHistoricaMaximaNueva);
+					fechaHistoricaMaximaAnterior = new Date(); //DateUtil.obtenerFechaMinima(							daoDatoHistorico.getFechaHistoricaMaxima(), fechaHistoricaMaximaAnterior);
+					//imported = importarDatosHistoricos();
+					this.fechaHistoricaMaximaNueva = new Date(); //DateUtil.obtenerFechaMinima(							daoDatoHistorico.getFechaHistoricaMaxima(), fechaHistoricaMaximaNueva);
 				}
-				this.exportarDatosHistoricos();
-				this.setUltimaFechaTendencia(count);
+				//this.exportarDatosHistoricos();
+				//this.setUltimaFechaTendencia(count);
 				LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
 						+ ",fechaHistoricaMaximaAnterior=" + DateUtil.getDateString(this.fechaHistoricaMaximaAnterior)
 						+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva)

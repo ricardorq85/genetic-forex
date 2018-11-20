@@ -132,8 +132,12 @@ public class RsiIndicatorManager extends IntervalIndicatorManager<Rsi> {
 		Rsi instance = getIndicatorInstance();
 		if (indMap != null) {
 			if (indMap.containsKey(instance.getName())) {
-				Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
-				instance.setRsi(values.get("rsi"));
+				if (indMap.get(instance.getName()) != null) {
+					Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
+					if (values.containsKey("rsi")) {
+						instance.setRsi(values.get("rsi"));
+					}
+				}
 			}
 		}
 		return instance;
