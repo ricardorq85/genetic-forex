@@ -55,7 +55,7 @@ public interface IDatoHistoricoDAO extends IGeneticDAO<Point> {
 
 	public Point consultarPuntoCierre(IndividuoEstrategia individuo, DateInterval rango) throws GeneticDAOException;
 	
-	public Point consultarPuntoCierreByTakeOrStop(Order order, DateInterval rango) throws GeneticDAOException;
+	public <H extends Order> Point consultarPuntoCierreByTakeOrStop(H order, DateInterval rango) throws GeneticDAOException;
 
 	public Point consultarPuntoAnterior(Date fecha) throws GeneticDAOException;
 

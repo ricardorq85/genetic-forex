@@ -95,7 +95,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 				while (processed && !fechaMenorOIgualQue.after(this.maxFechaHistorico)
 						&& fechaMenorOIgualQue.after(fechaMayorQue)) {
 					DateInterval intervaloFechasIndividuo = new DateInterval(fechaMayorQue, fechaMenorOIgualQue);
-					
+
 					Date lastProcessedDate = procesarIndividuo(individuo, intervaloFechasIndividuo);
 					processed = (lastProcessedDate != null);
 					if (processed) {
@@ -186,10 +186,13 @@ public class MongoProcesarIndividuoThread extends Thread {
 		if (individuo.getCurrentOrder() == null) {
 			return null;
 		}
-		Point puntoCierre = daoDatoHistorico.consultarPuntoCierre(individuo, intervaloCierre);
-		if (puntoCierre == null) {
+		Point puntoCierreByIndicadores = daoDatoHistorico.consultarPuntoCierre(individuo, intervaloCierre);
+		Point puntoCierreByTakeStop = daoDatoHistorico.consultarPuntoCierreByTakeOrStop(individuo.getCurrentOrder(),
+				intervaloCierre);
+		if ((puntoCierreByIndicadores == null) && (puntoCierreByTakeStop == null)) {
 			return intervaloCierre.getHighInterval();
 		}
+		Point puntoCierre = getPuntoMinimo(puntoCierreByIndicadores, puntoCierreByTakeStop);
 		Point puntoAnterior = daoDatoHistorico.consultarPuntoAnterior(puntoCierre.getDate());
 		List<Point> points = null;
 		if (puntoAnterior != null) {
@@ -218,6 +221,20 @@ public class MongoProcesarIndividuoThread extends Thread {
 		procesoEjecucionIndividuo.setFechaProceso(new Date());
 		individuo.setProcesoEjecucion(procesoEjecucionIndividuo);
 		daoIndividuo.insertOrUpdate(individuo);
+	}
+
+	private Point getPuntoMinimo(Point p1, Point p2) {
+		if ((p1 != null) && (p2 == null)) {
+			return p1;
+		}
+		if ((p1 == null) && (p2 != null)) {
+			return p2;
+		}
+		if (p1.getDate().before(p2.getDate())) {
+			return p1;
+		} else {
+			return p2;
+		}
 	}
 
 }

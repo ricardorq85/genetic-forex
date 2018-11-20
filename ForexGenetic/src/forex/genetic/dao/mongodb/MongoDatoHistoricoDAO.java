@@ -24,11 +24,13 @@ import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
+import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
+import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
 
 /**
@@ -92,18 +94,36 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		return doc.getDate("maxDate");
 	}
 
-
 	@Override
-	public Point consultarPuntoCierreByTakeOrStop(Order order, DateInterval rango)
+	public <H extends Order> Point consultarPuntoCierreByTakeOrStop(H order, DateInterval rango)
 			throws GeneticDAOException {
 		List<Bson> filtros = new ArrayList<>();
 		filtros.add(Filters.gt("fechaHistorico", rango.getLowInterval()));
 		filtros.add(Filters.lte("fechaHistorico", rango.getHighInterval()));
-		
-		//filtros.add(Filters.gte("", value))
-		return null;
+
+		List<Bson> filtrosTakeStop = new ArrayList<>();
+		boolean isBuy = (order.getTipo().equals(Constants.OperationType.BUY));
+		MongoOrder mongoOrder = (MongoOrder) order;
+		if (isBuy) {
+			filtrosTakeStop.add(Filters.gte("high", mongoOrder.getClosePriceByTakeProfit()));
+			filtrosTakeStop.add(Filters.lte("low", mongoOrder.getClosePriceByStopLoss()));
+		} else {
+			filtrosTakeStop.add(Filters.lte("low", mongoOrder.getClosePriceByTakeProfit()));
+			filtrosTakeStop.add(Filters.gte("high", mongoOrder.getClosePriceByStopLoss()));
+		}
+		filtros.add(Filters.or(filtrosTakeStop));
+
+		Bson bsonFiltrosCompletos = Filters.and(filtros);
+		LogUtil.logTime(
+				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
+
+		Document doc = this.collection.find(bsonFiltrosCompletos).sort(Sorts.orderBy(Sorts.ascending("fechaHistorico")))
+				.limit(1).first();
+
+		Point p = getMapper().helpOne(doc);
+		return p;
 	}
-	
+
 	@Override
 	public Point consultarPuntoCierre(IndividuoEstrategia individuo, DateInterval rango) {
 		List<Bson> filtros = new ArrayList<>();
