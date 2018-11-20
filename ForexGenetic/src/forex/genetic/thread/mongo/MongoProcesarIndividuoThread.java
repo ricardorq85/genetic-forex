@@ -95,6 +95,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 				while (processed && !fechaMenorOIgualQue.after(this.maxFechaHistorico)
 						&& fechaMenorOIgualQue.after(fechaMayorQue)) {
 					DateInterval intervaloFechasIndividuo = new DateInterval(fechaMayorQue, fechaMenorOIgualQue);
+					
 					Date lastProcessedDate = procesarIndividuo(individuo, intervaloFechasIndividuo);
 					processed = (lastProcessedDate != null);
 					if (processed) {

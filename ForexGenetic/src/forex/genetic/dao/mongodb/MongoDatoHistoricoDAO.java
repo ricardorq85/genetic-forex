@@ -92,6 +92,18 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		return doc.getDate("maxDate");
 	}
 
+
+	@Override
+	public Point consultarPuntoCierreByTakeOrStop(Order order, DateInterval rango)
+			throws GeneticDAOException {
+		List<Bson> filtros = new ArrayList<>();
+		filtros.add(Filters.gt("fechaHistorico", rango.getLowInterval()));
+		filtros.add(Filters.lte("fechaHistorico", rango.getHighInterval()));
+		
+		//filtros.add(Filters.gte("", value))
+		return null;
+	}
+	
 	@Override
 	public Point consultarPuntoCierre(IndividuoEstrategia individuo, DateInterval rango) {
 		List<Bson> filtros = new ArrayList<>();

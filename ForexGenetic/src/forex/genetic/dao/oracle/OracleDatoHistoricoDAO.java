@@ -1163,4 +1163,10 @@ public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements I
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
+	@Override
+	public Point consultarPuntoCierreByTakeOrStop(Order order, DateInterval rango)
+			throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
 }
