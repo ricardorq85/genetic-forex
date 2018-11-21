@@ -82,6 +82,7 @@ public class OracleProcesarIndividuoThread extends Thread {
 			daoIndividuoDDL.insertarIndividuoIndicadoresColumnas(individuo.getId());
 			connDDL.commit();
 			if (!validarYBorrarIndividuoInvalido(individuo)) {
+			//if (true) {
 				Date fechaMayorQue = (individuo.getFechaHistorico() == null) ? this.minFechaHistorico
 						: individuo.getFechaHistorico();
 				Date fechaMenorOIgualQue = DateUtil.obtenerFechaMinima(this.maxFechaHistorico,
@@ -141,6 +142,7 @@ public class OracleProcesarIndividuoThread extends Thread {
 		int indexFecha = 0;
 		long duracionPromedio = Math.max(3000, daoOperaciones.duracionPromedioMinutos(individuo.getId()));
 		List<Date> fechas = daoHistorico.consultarPuntosApertura(intervaloFechasIndividuo, individuo.getId());
+		//fechas.set(0, DateUtil.obtenerFecha("2008/08/05 20:32"));
 		LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + intervaloFechasIndividuo.toString()
 				+ ",Fechas consultadas: " + fechas.size(), 1);
 		if (individuo.getFechaApertura() == null) {

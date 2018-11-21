@@ -46,10 +46,15 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 	@Override
 	public List<? extends IndividuoEstrategia> getListByProcesoEjecucion(String filtroAdicional, Date fechaHistorico) {
 		Bson filtroProcesoEjecucionNull = Filters.exists("procesoEjecucion.maxFechaHistorico", false);
-		Bson filtro = Filters.ne("procesoEjecucion.maxFechaHistorico", fechaHistorico);
+		Bson filtroFechaHistorica = Filters.ne("procesoEjecucion.maxFechaHistorico", fechaHistorico);
+		Bson filtroOr = Filters.or(filtroProcesoEjecucionNull, filtroFechaHistorica);
 		Bson ordenador = Sorts.orderBy(Sorts.ascending("procesoEjecucion.maxFechaHistorico"),
 				Sorts.descending("idIndividuo"));
-		MongoCursor<Document> cursor = collection.find(Filters.or(filtroProcesoEjecucionNull, filtro)).sort(ordenador).limit(10).iterator();
+		
+		Bson filtroIndividuo = Filters.eq("idIndividuo","1394841600000.83");
+		Bson filtroCompleto = Filters.and(filtroIndividuo, filtroOr);
+
+		MongoCursor<Document> cursor = collection.find(filtroCompleto).sort(ordenador).limit(10).iterator();
 		return getMapper().helpList(cursor);
 	}
 

@@ -37,7 +37,7 @@ public class MultiplePointToPoint {
 			throws InterruptedException, FileNotFoundException, UnsupportedEncodingException {
 		long id = currentTimeMillis();
 		load().join();
-		String prefix = "PointToPoint";
+		String prefix = "MultiplePointToPoint";
 		logTime(prefix + ": " + id, 1);
 		String name = getPropertyString(LOG_PATH) + prefix + id + ".log";
 		PrintStream out = new PrintStream(name, Charset.defaultCharset().name());

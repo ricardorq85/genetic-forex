@@ -247,7 +247,7 @@ public class OperationController {
 			value = order.getOpenOperationValue() - (order.getOpenSpread() / PropertiesManager.getPairFactor())
 					- (order.getTakeProfit() / PropertiesManager.getPairFactor());
 		}
-		return value;
+		return NumberUtil.round(value);
 	}
 
 	public double calculateClosePriceByStopLoss(Order order) {
@@ -259,7 +259,7 @@ public class OperationController {
 			value = order.getOpenOperationValue() - (order.getOpenSpread() / PropertiesManager.getPairFactor())
 					+ (order.getStopLoss() / PropertiesManager.getPairFactor());
 		}
-		return value;
+		return NumberUtil.round(value);
 	}
 
 	/**

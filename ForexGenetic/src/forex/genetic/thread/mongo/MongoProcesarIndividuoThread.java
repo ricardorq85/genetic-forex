@@ -89,7 +89,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 						|| (procesoEjecucionIndividuo.getMaxFechaHistorico() == null)) ? this.minFechaHistorico
 								: procesoEjecucionIndividuo.getMaxFechaHistorico();
 				Date fechaMenorOIgualQue = DateUtil.obtenerFechaMinima(this.maxFechaHistorico,
-						DateUtil.adicionarMes(fechaMayorQue, 12));
+						DateUtil.adicionarMes(fechaMayorQue, 1));
 				boolean processed = true;
 
 				while (processed && !fechaMenorOIgualQue.after(this.maxFechaHistorico)
@@ -101,7 +101,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 					if (processed) {
 						fechaMayorQue = lastProcessedDate;
 						fechaMenorOIgualQue = DateUtil.obtenerFechaMinima(this.maxFechaHistorico,
-								DateUtil.adicionarMes(fechaMayorQue, 12));
+								DateUtil.adicionarMes(fechaMayorQue, 1));
 					}
 				}
 				if (processed && !validarYBorrarIndividuoInvalido(individuo)) {
@@ -144,20 +144,27 @@ public class MongoProcesarIndividuoThread extends Thread {
 		} else {
 			individuo.setCurrentOrder(order);
 			DateInterval intervaloCierre = new DateInterval();
-			intervaloCierre.setLowInterval(order.getOpenDate());
-			intervaloCierre.setLowInterval(DateUtil.adicionarMes(order.getOpenDate()));
+			intervaloCierre.setLowInterval(
+					DateUtil.obtenerFechaMaxima(order.getOpenDate(), intervaloFechasIndividuo.getLowInterval()));
+			intervaloCierre.setHighInterval(
+					DateUtil.obtenerFechaMaxima(DateUtil.adicionarMes(intervaloCierre.getLowInterval()),
+							intervaloFechasIndividuo.getHighInterval()));
 			return procesarOperacionActiva(individuo, intervaloCierre);
 		}
 	}
 
 	private MongoOrder procesarNuevaOperacion(MongoIndividuo individuo, DateInterval intervaloFechasIndividuo)
 			throws GeneticDAOException {
+
+		LogUtil.logTime("procesarNuevaOperacion:" + this.getName() + ";" + individuo.getId(), 1);
 		Point puntoApertura = daoDatoHistorico.consultarProximoPuntoApertura(individuo, intervaloFechasIndividuo);
 		if (puntoApertura == null) {
 			LogUtil.logTime(super.getName() + ": Individuo sin operaciones: " + individuo.getId(), 2);
 			updateProcesoIndividuo(individuo, null, intervaloFechasIndividuo.getHighInterval());
 			return null;
 		}
+		LogUtil.logTime("procesarNuevaOperacion:" + this.getName() + ";" + individuo.getId() + ";puntoApertura="
+				+ DateUtil.getDateString(puntoApertura.getDate()), 1);
 
 		MongoOrder order = null;
 		Point puntoAnterior = daoDatoHistorico.consultarPuntoAnterior(puntoApertura.getDate());
@@ -166,8 +173,6 @@ public class MongoProcesarIndividuoThread extends Thread {
 			points = new ArrayList<Point>(2);
 			points.add(puntoAnterior);
 			points.add(puntoApertura);
-			LogUtil.logTime("Procesar Individuo;" + this.getName() + ";" + individuo.getId() + ";puntoApertura="
-					+ DateUtil.getDateString(puntoApertura.getDate()), 1);
 
 			MongoOperacionesManager operacionesManager = new MongoOperacionesManager();
 			List<MongoOrder> ordenes = operacionesManager.calcularOperaciones(points, individuo);
@@ -183,16 +188,17 @@ public class MongoProcesarIndividuoThread extends Thread {
 
 	private Date procesarOperacionActiva(MongoIndividuo individuo, DateInterval intervaloCierre)
 			throws GeneticDAOException {
+		LogUtil.logTime("procesarOperacionActiva:" + this.getName() + ";" + individuo.getId(), 1);
 		if (individuo.getCurrentOrder() == null) {
 			return null;
 		}
 		Point puntoCierreByIndicadores = daoDatoHistorico.consultarPuntoCierre(individuo, intervaloCierre);
 		Point puntoCierreByTakeStop = daoDatoHistorico.consultarPuntoCierreByTakeOrStop(individuo.getCurrentOrder(),
 				intervaloCierre);
-		if ((puntoCierreByIndicadores == null) && (puntoCierreByTakeStop == null)) {
+		Point puntoCierre = getPuntoMinimo(puntoCierreByIndicadores, puntoCierreByTakeStop);
+		if (puntoCierre == null) {
 			return intervaloCierre.getHighInterval();
 		}
-		Point puntoCierre = getPuntoMinimo(puntoCierreByIndicadores, puntoCierreByTakeStop);
 		Point puntoAnterior = daoDatoHistorico.consultarPuntoAnterior(puntoCierre.getDate());
 		List<Point> points = null;
 		if (puntoAnterior != null) {
@@ -205,7 +211,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 				MongoOrder closedOrder = ordenes.get(0);
 				daoOperaciones.insertOrUpdate(closedOrder);
 				individuo.setCurrentOrder(null);
-				individuo.setFechaApertura(null);
+				updateProcesoIndividuo(individuo, closedOrder, closedOrder.getCloseDate());
 			}
 		}
 		return puntoCierre.getDate();
@@ -224,6 +230,9 @@ public class MongoProcesarIndividuoThread extends Thread {
 	}
 
 	private Point getPuntoMinimo(Point p1, Point p2) {
+		if ((p1 == null) && (p2 == null)) {
+			return null;
+		}
 		if ((p1 != null) && (p2 == null)) {
 			return p1;
 		}

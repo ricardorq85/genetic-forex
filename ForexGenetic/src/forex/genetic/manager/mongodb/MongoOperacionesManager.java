@@ -43,7 +43,7 @@ public class MongoOperacionesManager extends OperacionesManager {
 		double lot = individuo.getLot();
 
 		boolean hasMinimumCriterion = true;
-		boolean activeOperation = (individuo.getFechaApertura() != null);
+		boolean activeOperation = (individuo.getCurrentOrder() != null);
 		Point openPoint;
 		MongoOrder currentOrder = (MongoOrder)individuo.getCurrentOrder();
 		double openOperationValue = (activeOperation) ? currentOrder.getOpenOperationValue() : 0.0D;
@@ -58,6 +58,7 @@ public class MongoOperacionesManager extends OperacionesManager {
 						activeOperation = true;
 						openPoint = points.get(i);
 						currentOrder = new MongoOrder();
+						currentOrder.setIdIndividuo(individuo.getId());
 						currentOrder.setOpenDate(openPoint.getDate());
 						currentOrder.setOpenOperationValue(openOperationValue);
 						currentOrder.setOpenSpread(openPoint.getSpread());
