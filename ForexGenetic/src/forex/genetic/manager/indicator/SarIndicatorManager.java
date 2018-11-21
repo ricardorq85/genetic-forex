@@ -89,6 +89,7 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
 	public Interval calculateInterval(Sar sarIndividuo, Sar iSar, Point point) {
 		return intervalManager.calculateInterval(sarIndividuo.getInterval(), iSar.getSar(), point);
 	}
+
 	/*
 	 * public Indicator optimize(Sar individuo, Sar optimizedIndividuo, Sar
 	 * indicator, Point point) { Sar optimized = this.getIndicatorInstance(); double

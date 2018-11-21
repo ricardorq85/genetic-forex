@@ -171,6 +171,8 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 			IndicadorManager<?> managerInstance = indicadorController.getManagerInstance(i);
 			String[] nombreCalculado = managerInstance.getNombresCalculados();
 			List<Bson> filtrosDatosCalculados = new ArrayList<>();
+			List<Bson> filtrosIndicadorLow = new ArrayList<>();
+			List<Bson> filtrosIndicadorHigh = new ArrayList<>();
 			for (int j = 0; j < nombreCalculado.length; j++) {
 				IntervalIndicator intervalIndicator = ((IntervalIndicator) indicadores.get(i));
 				if ((intervalIndicator != null) && (intervalIndicator.getInterval() != null)
@@ -181,17 +183,29 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 					StringBuilder nombreIndicadorCalculado = new StringBuilder(nombreIndicador)
 							.append(nombreCalculado[j]);
 
-					Bson filtroLow = Filters.gte(nombreIndicadorCalculado.toString(),
-							intervalIndicator.getInterval().getLowInterval());
-					Bson filtroHigh = Filters.lte(nombreIndicadorCalculado.toString(),
-							intervalIndicator.getInterval().getHighInterval());
-					filtrosDatosCalculados.add(Filters.and(filtroLow, filtroHigh));
+					if (nombreCalculado[j].endsWith("low")) {
+						filtrosIndicadorHigh.add(Filters.gte(nombreIndicadorCalculado.toString(),
+								intervalIndicator.getInterval().getHighInterval()));
+						filtrosIndicadorLow.add(Filters.gte(nombreIndicadorCalculado.toString(),
+								intervalIndicator.getInterval().getLowInterval()));
+					} else if (nombreCalculado[j].endsWith("high")) {
+						filtrosIndicadorHigh.add(Filters.lte(nombreIndicadorCalculado.toString(),
+								intervalIndicator.getInterval().getHighInterval()));
+						filtrosIndicadorLow.add(Filters.lte(nombreIndicadorCalculado.toString(),
+								intervalIndicator.getInterval().getLowInterval()));
+					} else {
+						Bson filtroLow = Filters.gte(nombreIndicadorCalculado.toString(),
+								intervalIndicator.getInterval().getLowInterval());
+						Bson filtroHigh = Filters.lte(nombreIndicadorCalculado.toString(),
+								intervalIndicator.getInterval().getHighInterval());
+						filtrosDatosCalculados.add(Filters.and(filtroLow, filtroHigh));
+					}
 				}
 			}
-			if (filtrosDatosCalculados.size() > 1) {
-				filtros.add(Filters.or(filtrosDatosCalculados));
-			} else {
+			if (!filtrosDatosCalculados.isEmpty()) {
 				filtros.addAll(filtrosDatosCalculados);
+			} else if ((!filtrosIndicadorLow.isEmpty()) && (!filtrosIndicadorHigh.isEmpty())) {
+				filtros.add(Filters.or(Filters.and(filtrosIndicadorLow), Filters.and(filtrosIndicadorHigh)));
 			}
 		}
 	}
