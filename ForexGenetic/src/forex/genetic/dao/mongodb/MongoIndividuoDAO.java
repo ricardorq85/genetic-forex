@@ -13,7 +13,6 @@ import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Sorts;
 
 import forex.genetic.dao.IIndividuoDAO;
-import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.IndividuoOptimo;

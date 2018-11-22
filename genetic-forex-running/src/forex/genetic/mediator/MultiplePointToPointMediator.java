@@ -5,15 +5,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 import forex.genetic.dao.IDatoHistoricoDAO;
-import forex.genetic.dao.IGeneticDAO;
 import forex.genetic.dao.IParametroDAO;
-import forex.genetic.dao.mongodb.MongoGeneticDAO;
-import forex.genetic.entities.Tendencia;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.DriverDBFactory;
+import forex.genetic.tendencia.manager.TendenciaBuySellManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
@@ -21,19 +20,13 @@ import forex.genetic.util.jdbc.DataClient;
 public class MultiplePointToPointMediator extends PointToPointMediator {
 
 	private int count = 1;
-	private IGeneticDAO[] daosDatoHistorico;
-	private IGeneticDAO[] daosTendencia;
-	private IGeneticDAO[] daosParametro;
-	private MongoGeneticDAO<Tendencia> tendenciaDAO;
+	private List<DataClient> dataClients;
 
 	@Override
 	public void init() throws GeneticDAOException {
-		DataClient<?>[] dataClients = DriverDBFactory.createDataClient();
-		this.daosDatoHistorico = DriverDBFactory.createDAO("datoHistorico", dataClients);
-		this.daosTendencia = DriverDBFactory.createDAO("tendencia", dataClients);
-		this.daosParametro = DriverDBFactory.createDAO("parametro", dataClients);
+		dataClients = DriverDBFactory.createDataClient();
 
-		IParametroDAO parametroDAO = ((IParametroDAO)daosParametro[0]);
+		IParametroDAO parametroDAO = dataClients.get(0).getDaoParametro();
 		sourceExportedHistoryDataPath = parametroDAO.getValorParametro("SOURCE_EXPORTED_HISTORY_DATA_PATH");
 		processedExportedHistoryDataPath = parametroDAO.getValorParametro("PROCESSED_EXPORTED_HISTORY_DATA_PATH");
 		exportedPropertyFileName = parametroDAO.getValorParametro("EXPORTED_PROPERTY_FILE_NAME");
@@ -45,13 +38,17 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 		try {
 			while (true) {
 				int imported = 0;
-				for (int j = 1; j < daosDatoHistorico.length; j++) {
-					IDatoHistoricoDAO daoDatoHistorico = ((IDatoHistoricoDAO)daosDatoHistorico[j]);
-					fechaHistoricaMaximaAnterior = new Date(); //DateUtil.obtenerFechaMinima(							daoDatoHistorico.getFechaHistoricaMaxima(), fechaHistoricaMaximaAnterior);
-					//imported = importarDatosHistoricos();
-					this.fechaHistoricaMaximaNueva = new Date(); //DateUtil.obtenerFechaMinima(							daoDatoHistorico.getFechaHistoricaMaxima(), fechaHistoricaMaximaNueva);
+				for (int j = 1; j < dataClients.size(); j++) {
+					IDatoHistoricoDAO daoDatoHistorico = ((IDatoHistoricoDAO) dataClients.get(j).getDaoDatoHistorico());
+					fechaHistoricaMaximaAnterior = new Date(); // DateUtil.obtenerFechaMinima(
+																// daoDatoHistorico.getFechaHistoricaMaxima(),
+																// fechaHistoricaMaximaAnterior);
+					// imported = importarDatosHistoricos();
+					this.fechaHistoricaMaximaNueva = new Date(); // DateUtil.obtenerFechaMinima(
+																	// daoDatoHistorico.getFechaHistoricaMaxima(),
+																	// fechaHistoricaMaximaNueva);
 				}
-				//this.exportarDatosHistoricos();
+				// this.exportarDatosHistoricos();
 				this.setUltimaFechaTendencia(count);
 				LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
 						+ ",fechaHistoricaMaximaAnterior=" + DateUtil.getDateString(this.fechaHistoricaMaximaAnterior)
@@ -73,11 +70,17 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 		}
 	}
 
-//	private void procesarTendencias() throws SQLException, ClassNotFoundException {
-//		logTime("Init Procesar Tendencias", 1);
-//		OracleParametroDAO parametroDAO = new OracleParametroDAO(connection);
+	public void procesarTendencias() throws GeneticDAOException {
+		//for (int i = 0; i < dataClients.size(); i++) {
+			procesarTendencias(dataClients.get(0).getDaoParametro());
+		//}
+	}
+	
+	private void procesarTendencias(IParametroDAO parametroDAO) {
+//		LogUtil.logTime("Init Procesar Tendencias", 1);
 //		int parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
 //		int parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
+//		
 //		Date fechaBaseFinal = fechaHistoricaMaximaNueva;
 //		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
 //		if (count == 1) {
@@ -106,14 +109,14 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 //			tendenciaManager.calcularTendencias(fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
 //			fechaBaseFinal = fechaBaseInicial;
 //		}
-//		logTime("End Procesar Tendencias", 1);
-//	}
-//
+//		LogUtil.logTime("End Procesar Tendencias", 1);
+	}
+
 //	private void exportarIndividuos()
 //			throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
 //			InvocationTargetException, SQLException, ParseException, GeneticException, IOException {
 //		// this.refrescarDatosTendencia();
-//		logTime("Init Exportar Individuos", 1);
+//		LogUtil.logTime("Init Exportar Individuos", 1);
 //		boolean existNewData = this.existenNuevosDatosHistoricos();
 //		if (existNewData) {
 //			String fileName = sourceEstrategiasPath + "\\Tendencia" + IndividuoManager.nextId() + ".csv";
@@ -122,21 +125,21 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 //			manager.setParametroFechaInicio(ultimaFechaBaseTendencia);
 //			manager.setParametroFechaFin(fechaHistoricaMaximaNueva);
 //			ExportThread exportThread = new ExportThread(filePath, manager);
-//			logTime("Lanzando exportacion", 1);
+//			LogUtil.logTime("Lanzando exportacion", 1);
 //			exportThread.runExport();
-//			// logTime("Lanzando hilo para exportacion", 1);
+//			// LogUtil.logTime("Lanzando hilo para exportacion", 1);
 //			// exportThread.start();
 //			// manager.procesarTendencias();
 //			// manager.export(filePath);
 //		} else {
-//			logTime("No existen nuevos datos. No se procesara la exportacion", 1);
+//			LogUtil.logTime("No existen nuevos datos. No se procesara la exportacion", 1);
 //		}
-//		logTime("End Exportar Individuos", 1);
+//		LogUtil.logTime("End Exportar Individuos", 1);
 //	}
 //
 //	private void refrescarDatosTendencia() throws SQLException {
 //		String mv = "TENDENCIA_ULTIMOMES";
-//		logTime("Refrescando vista materializada: " + mv, 1);
+//		LogUtil.logTime("Refrescando vista materializada: " + mv, 1);
 //		JDBCUtil.refreshMaterializedView(this.connection, mv, "C");
 //	}
 //
@@ -147,11 +150,11 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 //	}
 //
 //	private void crearNuevosIndividuos() throws ClassNotFoundException, SQLException {
-//		logTime("Init Crear individuos x indicador", 1);
+//		LogUtil.logTime("Init Crear individuos x indicador", 1);
 //		IndividuoXIndicadorManager manager = new IndividuoXIndicadorManager(ultimaFechaBaseTendencia,
 //				fechaHistoricaMaximaNueva, 12);
 //		manager.crearIndividuos();
-//		logTime("End Crear individuos x indicador", 1);
+//		LogUtil.logTime("End Crear individuos x indicador", 1);
 //	}
 //
 //	class ExportThread extends Thread {

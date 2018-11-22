@@ -10,10 +10,11 @@ import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 
 import forex.genetic.bo.Parametro;
+import forex.genetic.dao.IParametroDAO;
 import forex.genetic.entities.dto.ParametroDTO;
 import forex.genetic.exception.GeneticDAOException;
 
-public class MongoParametroDAO extends MongoGeneticDAO<Parametro> {
+public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IParametroDAO {
 
 	public MongoParametroDAO() throws GeneticDAOException {
 		super("parametro", true);
@@ -30,8 +31,8 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> {
 
 	private void configureParameters() throws GeneticDAOException {
 		String[] paramNames = { "SOURCE_EXPORTED_HISTORY_DATA_PATH", "PROCESSED_EXPORTED_HISTORY_DATA_PATH",
-				"EXPORTED_PROPERTY_FILE_NAME", "SOURCE_ESTRATEGIAS_PATH" };
-		String[] paramvalues = { "", "", "", "" };
+				"EXPORTED_PROPERTY_FILE_NAME", "SOURCE_ESTRATEGIAS_PATH", "STEP_TENDENCIA", "INDIVIDUOS_X_TENDENCIA" };
+		String[] paramvalues = new String[paramNames.length];
 
 		for (int i = 0; i < paramNames.length; i++) {
 			ParametroDTO p = new ParametroDTO();
@@ -51,5 +52,45 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> {
 			obj = getMapper().helpOne(cursor.next());
 		}
 		return obj;
+	}
+
+	@Override
+	public int getIntValorParametro(String nombre) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public float getFloatValorParametro(String nombre) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public boolean getBooleanValorParametro(String nombre) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public String getValorParametro(String nombre) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public String[] getArrayStringParametro(String nombre) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public Date getDateValorParametro(String nombre) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public void updateDateValorParametro(String nombre, Date valor) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public void updateValorParametro(String nombre, String valor) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 }

@@ -1,19 +1,39 @@
 package forex.genetic.util.jdbc;
 
-public abstract class DataClient<T> {
+import forex.genetic.dao.IDatoHistoricoDAO;
+import forex.genetic.dao.IGeneticDAO;
+import forex.genetic.dao.IIndividuoDAO;
+import forex.genetic.dao.IParametroDAO;
+import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.Tendencia;
+import forex.genetic.exception.GeneticDAOException;
 
-	public DataClient(T client) {
+public abstract class DataClient<C, I extends IndividuoEstrategia> {
+
+	protected C client;
+
+	protected IDatoHistoricoDAO daoDatoHistorico;
+	protected IGeneticDAO<Tendencia> daoTendencia;
+	protected IParametroDAO daoParametro;
+	protected IIndividuoDAO<I> daoIndividuo;
+
+	public DataClient(C client) {
 		this.client = client;
 	}
 
-	private T client;
-
-	public T getClient() {
+	public C getClient() {
 		return client;
 	}
 
-	public void setClient(T client) {
+	public void setClient(C client) {
 		this.client = client;
 	}
 
+	public abstract IDatoHistoricoDAO getDaoDatoHistorico() throws GeneticDAOException;
+
+	public abstract IGeneticDAO<Tendencia> getDaoTendencia() throws GeneticDAOException;
+
+	public abstract IParametroDAO getDaoParametro() throws GeneticDAOException;
+
+	public abstract IIndividuoDAO<I> getDaoIndividuo() throws GeneticDAOException;
 }

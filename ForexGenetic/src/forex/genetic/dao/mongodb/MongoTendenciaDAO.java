@@ -1,6 +1,7 @@
 package forex.genetic.dao.mongodb;
 
 import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
 
 import forex.genetic.entities.Tendencia;
 import forex.genetic.exception.GeneticDAOException;
@@ -23,8 +24,7 @@ public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> {
 		IndexOptions indexOptions = new IndexOptions();
 		indexOptions.unique(true);
 
-		//this.collection.createIndex(Indexes.ascending("moneda", "periodo", "fechaHistorico"), indexOptions);
-		//this.collection.createIndex(Indexes.ascending("fechaHistorico"), indexOptions);
+		this.collection.createIndex(Indexes.ascending("fechaBase", "idIndividuo"), indexOptions);
+		this.collection.createIndex(Indexes.ascending("fechaTendencia"));
 	}
-
 }
