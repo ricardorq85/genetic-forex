@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import forex.genetic.dao.EstrategiaOperacionPeriodoDAO;
+import forex.genetic.dao.oracle.OracleEstrategiaOperacionPeriodoDAO;
 import forex.genetic.dao.oracle.OracleOperacionesDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.Individuo;
@@ -32,7 +32,7 @@ public class IndividuosPeriodoManager {
 	private InclusionesManager inclusionesManager;
 	private OracleParametroDAO parametroDAO;
 	private OracleOperacionesDAO operacionesDAO;
-	private EstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO;
+	private OracleEstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO;
 	private static final String[] ORDERS = { "NVL(PIPS_SEMANA,0)", "NVL(PIPS_MES,0)", "NVL(PIPS_ANYO,0)",
 			"PIPS_TOTALES" };
 	// Para filtrar las operaciones por la cantidad de órdenes que podría
@@ -52,7 +52,7 @@ public class IndividuosPeriodoManager {
 		conn = JDBCUtil.getConnection();
 		parametroDAO = new OracleParametroDAO(conn);
 		operacionesDAO = new OracleOperacionesDAO(conn);
-		estrategiaOperacionPeriodoDAO = new EstrategiaOperacionPeriodoDAO(conn);
+		estrategiaOperacionPeriodoDAO = new OracleEstrategiaOperacionPeriodoDAO(conn);
 		this.inclusionesManager.setEstrategiaOperacionPeriodoDAO(estrategiaOperacionPeriodoDAO);
 
 		parametroFechaInicioProceso = parametroDAO.getDateValorParametro("FECHA_INDIVIDUO_PERIODO");
@@ -225,11 +225,11 @@ public class IndividuosPeriodoManager {
 		return ordenesCreadas;
 	}
 
-	public EstrategiaOperacionPeriodoDAO getEstrategiaOperacionPeriodoDAO() {
+	public OracleEstrategiaOperacionPeriodoDAO getEstrategiaOperacionPeriodoDAO() {
 		return estrategiaOperacionPeriodoDAO;
 	}
 
-	public void setEstrategiaOperacionPeriodoDAO(EstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO) {
+	public void setEstrategiaOperacionPeriodoDAO(OracleEstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO) {
 		this.estrategiaOperacionPeriodoDAO = estrategiaOperacionPeriodoDAO;
 		this.inclusionesManager.setEstrategiaOperacionPeriodoDAO(estrategiaOperacionPeriodoDAO);
 	}

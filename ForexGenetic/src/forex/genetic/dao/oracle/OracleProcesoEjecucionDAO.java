@@ -337,4 +337,9 @@ public class OracleProcesoEjecucionDAO extends OracleGeneticDAO<ProcesoEjecucion
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void insertIfNoExists(ProcesoEjecucionDTO obj) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
 }

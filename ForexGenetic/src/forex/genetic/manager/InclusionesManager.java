@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.EstrategiaOperacionPeriodoDAO;
+import forex.genetic.dao.oracle.OracleEstrategiaOperacionPeriodoDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.DoubleRandomInterval;
 import forex.genetic.entities.IntegerRandomInterval;
@@ -25,7 +25,7 @@ public class InclusionesManager {
 
 	private Connection conn = null;
 	private OracleParametroDAO parametroDAO;
-	private EstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO;
+	private OracleEstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO;
 	private int minimoInclusiones = 1000;
 	private static final int MINIMO_PIPS_SEMANA = -2000, MAXIMO_PIPS_SEMANA = 200, MINIMO_PIPS_MES = -2000,
 			MAXIMO_PIPS_MES = 500, MINIMO_PIPS_ANYO = 1000, MAXIMO_PIPS_ANYO = 1000, MINIMO_PIPS_TOTALES = -3000,
@@ -119,11 +119,11 @@ public class InclusionesManager {
 		return param;
 	}
 
-	public EstrategiaOperacionPeriodoDAO getEstrategiaOperacionPeriodoDAO() {
+	public OracleEstrategiaOperacionPeriodoDAO getEstrategiaOperacionPeriodoDAO() {
 		return estrategiaOperacionPeriodoDAO;
 	}
 
-	public void setEstrategiaOperacionPeriodoDAO(EstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO) {
+	public void setEstrategiaOperacionPeriodoDAO(OracleEstrategiaOperacionPeriodoDAO estrategiaOperacionPeriodoDAO) {
 		this.estrategiaOperacionPeriodoDAO = estrategiaOperacionPeriodoDAO;
 	}
 

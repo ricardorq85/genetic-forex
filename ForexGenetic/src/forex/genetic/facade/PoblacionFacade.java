@@ -18,7 +18,6 @@ import forex.genetic.manager.IGeneticManager;
 import forex.genetic.manager.ProcesoIndividuoManager;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.util.LogUtil;
-import forex.genetic.util.ThreadUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -33,11 +32,11 @@ public class PoblacionFacade implements IGeneticFacade {
 	 * @throws ClassNotFoundException
 	 *
 	 */
-	public void process() throws GeneticDAOException {
+	public void process() throws GeneticBusinessException {
 		this.process(false);
 	}
 
-	public void process(boolean onlyOne) {
+	public void process(boolean onlyOne) throws GeneticBusinessException {
 		IGeneticManager[] managers = DriverDBFactory.createManager("procesoIndividuo");
 		Thread[] threads = new Thread[managers.length];
 		for (int i = 1; i < managers.length; i++) {

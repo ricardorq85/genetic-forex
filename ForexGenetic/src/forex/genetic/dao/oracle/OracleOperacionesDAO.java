@@ -597,4 +597,9 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 	public void update(Order obj) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
+
+	@Override
+	public void insertIfNoExists(Order obj) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
 }

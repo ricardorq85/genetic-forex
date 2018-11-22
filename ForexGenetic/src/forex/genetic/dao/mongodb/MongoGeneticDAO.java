@@ -23,7 +23,7 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 	private MongoMapper<E> mapper;
 	protected MongoCollection<Document> collection = null;
 
-	public MongoGeneticDAO(String collectionName, boolean configure) {
+	public MongoGeneticDAO(String collectionName, boolean configure) throws GeneticDAOException {
 		this.setCollectionName(collectionName);
 		this.collection = ConnectionMongoDB.getDatabase().getCollection(collectionName);
 		this.setMapper((MongoMapper<E>) MongoMapperFactory.get(collectionName));
@@ -33,7 +33,7 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 		}
 	}
 
-	public abstract void configureCollection();
+	public abstract void configureCollection() throws GeneticDAOException;
 
 	public void insertMany(List<? extends E> datos) {
 		List<Document> docs = getMapper().toMap(datos);
@@ -80,40 +80,42 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 	public void commit() throws GeneticDAOException {
 	}
 
+	public void insertIfNoExists(E obj) throws GeneticDAOException {
+		if (!exists(obj)) {
+			insert(obj);
+		}
+	}
+
 	@Override
 	public boolean exists(E obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return false;
+		Document filterPk = new Document(getMapper().toPrimaryKeyMap(obj));
+		return (this.collection.countDocuments(filterPk) > 0);
 	}
 
 	@Override
 	public void insert(E obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
+		Document doc = new Document("$set", getMapper().toMap(obj));
+		this.collection.insertOne(doc);
 	}
 
 	@Override
 	public void update(E obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
+		Document filterPk = new Document(getMapper().toPrimaryKeyMap(obj));
+		Document doc = new Document("$set", getMapper().toMap(obj));
+		this.collection.updateOne(filterPk, doc);
 	}
 
 	@Override
 	public boolean isClosed() throws GeneticDAOException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void restoreConnection() throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void rollback() throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
 	}
 
 	public MongoMapper<E> getMapper() {

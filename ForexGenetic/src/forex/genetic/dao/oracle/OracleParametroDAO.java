@@ -161,4 +161,9 @@ public class OracleParametroDAO extends OracleGeneticDAO<Parametro> implements I
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void insertIfNoExists(Parametro obj) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
 }

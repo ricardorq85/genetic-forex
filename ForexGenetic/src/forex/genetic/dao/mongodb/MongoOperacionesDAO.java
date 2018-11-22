@@ -3,7 +3,6 @@ package forex.genetic.dao.mongodb;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.bson.Document;
 
@@ -25,11 +24,11 @@ import forex.genetic.exception.GeneticDAOException;
  */
 public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements IOperacionesDAO<MongoOrder> {
 
-	public MongoOperacionesDAO() {
+	public MongoOperacionesDAO() throws GeneticDAOException {
 		this(true);
 	}
 
-	public MongoOperacionesDAO(boolean configure) {
+	public MongoOperacionesDAO(boolean configure) throws GeneticDAOException {
 		super("operacion", configure);
 	}
 

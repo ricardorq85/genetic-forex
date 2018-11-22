@@ -23,7 +23,7 @@ import forex.genetic.manager.controller.IndicadorController;
 
 public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implements IIndividuoDAO<MongoIndividuo> {
 
-	public MongoIndividuoDAO() {
+	public MongoIndividuoDAO() throws GeneticDAOException {
 		super("individuo", true);
 	}
 

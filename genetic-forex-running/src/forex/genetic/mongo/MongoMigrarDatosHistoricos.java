@@ -15,14 +15,13 @@ import static java.lang.System.currentTimeMillis;
 import static java.lang.System.setErr;
 import static java.lang.System.setOut;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
 
-import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.delegate.MigracionDelegate;
-import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.exception.GeneticBusinessException;
 
 /**
  *
@@ -30,8 +29,7 @@ import forex.genetic.exception.GeneticDAOException;
  */
 public class MongoMigrarDatosHistoricos {
 
-	public static void main(String[] args)
-			throws IOException, ClassNotFoundException, InterruptedException, SQLException, GeneticDAOException {
+	public static void main(String[] args) throws InterruptedException, FileNotFoundException, ClassNotFoundException, GeneticBusinessException, IOException {
 		long id = currentTimeMillis();
 		load().join();
 		logTime("MongoMigrarDatosHistoricos: " + id, 1);
@@ -43,10 +41,10 @@ public class MongoMigrarDatosHistoricos {
 		setOut(out);
 		setErr(out);
 
-		//Object t = new MongoDatoHistoricoDAO(true);
+		// Object t = new MongoDatoHistoricoDAO(true);
 		MigracionDelegate delegate = new MigracionDelegate();
 		logTime("Init Migrar Datos Historicos", 1);
-		//delegate.migrarDatosHistoricos();
+		// delegate.migrarDatosHistoricos();
 		logTime("End Migrar Datos Historicos", 1);
 		delegate.migrarIndividuos();
 //		MongoTendenciaParaOperarDAO tendenciaParaOperarDAO = new MongoTendenciaParaOperarDAO();

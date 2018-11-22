@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.dao;
+package forex.genetic.dao.oracle;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,9 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.helper.EstrategiaOperacionPeriodoHelper;
-import forex.genetic.dao.oracle.OracleGeneticDAO;
 import forex.genetic.entities.Individuo;
-import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.ParametroOperacionPeriodo;
 import forex.genetic.exception.GeneticDAOException;
@@ -26,9 +24,9 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class EstrategiaOperacionPeriodoDAO extends OracleGeneticDAO<ParametroOperacionPeriodo> {
+public class OracleEstrategiaOperacionPeriodoDAO extends OracleGeneticDAO<ParametroOperacionPeriodo> {
 
-	public EstrategiaOperacionPeriodoDAO(Connection connection) {
+	public OracleEstrategiaOperacionPeriodoDAO(Connection connection) {
 		super(connection);
 	}
 
@@ -327,12 +325,6 @@ public class EstrategiaOperacionPeriodoDAO extends OracleGeneticDAO<ParametroOpe
 	}
 
 	@Override
-	public boolean exists(ParametroOperacionPeriodo obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public void insert(ParametroOperacionPeriodo obj) throws GeneticDAOException {
 		// TODO Auto-generated method stub
 		
@@ -342,5 +334,15 @@ public class EstrategiaOperacionPeriodoDAO extends OracleGeneticDAO<ParametroOpe
 	public void update(ParametroOperacionPeriodo obj) throws GeneticDAOException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean exists(ParametroOperacionPeriodo obj) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public void insertIfNoExists(ParametroOperacionPeriodo obj) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 }

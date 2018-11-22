@@ -1169,4 +1169,9 @@ public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements I
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
+	@Override
+	public void insertIfNoExists(Point obj) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
 }

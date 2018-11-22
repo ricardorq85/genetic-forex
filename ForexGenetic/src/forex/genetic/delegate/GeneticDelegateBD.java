@@ -7,6 +7,7 @@ package forex.genetic.delegate;
 import java.io.FileNotFoundException;
 
 import forex.genetic.entities.Poblacion;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.facade.PoblacionFacade;
 
 /**
@@ -34,7 +35,11 @@ public class GeneticDelegateBD extends GeneticDelegate {
 	}
  
 	public void process(boolean onlyOne) {
-		PoblacionFacade facade = new PoblacionFacade();
-		facade.process(onlyOne);
+		try {
+			PoblacionFacade facade = new PoblacionFacade();
+			facade.process(onlyOne);
+		} catch (GeneticBusinessException e) {
+			e.printStackTrace();
+		}
 	}
 }

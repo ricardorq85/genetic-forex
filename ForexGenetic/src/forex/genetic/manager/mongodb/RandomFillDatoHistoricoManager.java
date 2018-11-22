@@ -18,6 +18,8 @@ import forex.genetic.entities.indicator.Macd;
 import forex.genetic.entities.indicator.Momentum;
 import forex.genetic.entities.indicator.Rsi;
 import forex.genetic.entities.indicator.Sar;
+import forex.genetic.exception.GeneticBusinessException;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.util.NumberUtil;
@@ -26,8 +28,12 @@ public class RandomFillDatoHistoricoManager {
 
 	private MongoDatoHistoricoDAO dao;
 
-	public RandomFillDatoHistoricoManager() {
-		dao = new MongoDatoHistoricoDAO(true);
+	public RandomFillDatoHistoricoManager() throws GeneticBusinessException {
+		try {
+			dao = new MongoDatoHistoricoDAO(true);
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException("", e);
+		}
 	}
 
 	public List<Point> fill() {

@@ -938,4 +938,8 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia>
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public void insertIfNoExists(IndividuoEstrategia obj) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
 }

@@ -9,6 +9,8 @@ import forex.genetic.dao.mongodb.MongoIndividuoDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Point;
+import forex.genetic.exception.GeneticBusinessException;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.DateUtil;
 
 public class MongoIndividuoManager {
@@ -16,9 +18,13 @@ public class MongoIndividuoManager {
 	private MongoIndividuoDAO dao;
 	private MongoDatoHistoricoDAO dhDAO;
 
-	public MongoIndividuoManager() {
-		dao = new MongoIndividuoDAO();
-		dhDAO = new MongoDatoHistoricoDAO(true);
+	public MongoIndividuoManager() throws GeneticBusinessException {
+		try {
+			dao = new MongoIndividuoDAO();
+			dhDAO = new MongoDatoHistoricoDAO(true);
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException("", e);
+		}
 	}
 
 	public List<? extends Point> consultarPuntosApertura(List<? extends IndividuoEstrategia> individuos) {

@@ -11,11 +11,11 @@ import forex.genetic.exception.GeneticDAOException;
  */
 public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> {
 
-	public MongoTendenciaDAO() {
-		super("tendencia", true);
+	public MongoTendenciaDAO() throws GeneticDAOException {
+		this(true);
 	}
 
-	public MongoTendenciaDAO(boolean configure) {
+	public MongoTendenciaDAO(boolean configure) throws GeneticDAOException {
 		super("tendencia", configure);
 	}
 
@@ -25,24 +25,6 @@ public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> {
 
 		//this.collection.createIndex(Indexes.ascending("moneda", "periodo", "fechaHistorico"), indexOptions);
 		//this.collection.createIndex(Indexes.ascending("fechaHistorico"), indexOptions);
-	}
-
-	@Override
-	public boolean exists(Tendencia obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void insert(Tendencia obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void update(Tendencia obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

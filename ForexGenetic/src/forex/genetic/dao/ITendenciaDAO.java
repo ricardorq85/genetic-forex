@@ -33,8 +33,6 @@ public interface ITendenciaDAO extends IGeneticDAO<Tendencia> {
 
 	public Date maxFechaProcesoTendencia(DateInterval intervaloFechaBase) throws GeneticDAOException;
 
-	public boolean exists(Tendencia ten) throws GeneticDAOException;
-
 	public int count(java.util.Date fecha) throws GeneticDAOException;
 
 	public ProcesoTendencia consultarProcesarTendencia(java.util.Date fecha, java.util.Date fecha2)

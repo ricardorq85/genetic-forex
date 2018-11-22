@@ -11,6 +11,7 @@ import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.dao.oracle.OracleGeneticDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.IGeneticManager;
 import forex.genetic.manager.mongodb.MongoProcesoIndividuoManager;
@@ -35,7 +36,7 @@ public class DriverDBFactory extends GeneticFactory {
 		return dc;
 	}
 
-	public static IGeneticDAO<? extends Object>[] createDAO(String entidad, DataClient<?>[] dataClient) {
+	public static IGeneticDAO<? extends Object>[] createDAO(String entidad, DataClient<?>[] dataClient) throws GeneticDAOException {
 		IGeneticDAO<?>[] daos = new IGeneticDAO[drivers.length];
 		for (int i = 0; i < drivers.length; i++) {
 			if ("oracle".equals(drivers[i])) {
@@ -52,7 +53,7 @@ public class DriverDBFactory extends GeneticFactory {
 		return daos;
 	}
 
-	public static IGeneticManager[] createManager(String entidad) {
+	public static IGeneticManager[] createManager(String entidad) throws GeneticBusinessException {
 		IGeneticManager[] instances = new IGeneticManager[drivers.length];
 		for (int i = 0; i < drivers.length; i++) {
 			if ("oracle".equals(drivers[i])) {
@@ -75,7 +76,7 @@ public class DriverDBFactory extends GeneticFactory {
 		return instance;
 	}
 
-	private static IGeneticManager createMongoManager(String entidad) {
+	private static IGeneticManager createMongoManager(String entidad) throws GeneticBusinessException {
 		IGeneticManager instance = null;
 		if ("procesoIndividuo".equals(entidad)) {
 			instance = new MongoProcesoIndividuoManager();
@@ -106,7 +107,7 @@ public class DriverDBFactory extends GeneticFactory {
 		return dao;
 	}
 
-	private static MongoGeneticDAO<? extends Object> createMongoDAO(String entidad, DataClient<?> dataClient) {
+	private static MongoGeneticDAO<? extends Object> createMongoDAO(String entidad, DataClient<?> dataClient) throws GeneticDAOException {
 		MongoGeneticDAO<? extends Object> dao = null;
 		if ("datoHistorico".equals(entidad)) {
 			dao = new MongoDatoHistoricoDAO();

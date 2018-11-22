@@ -7,6 +7,8 @@ public interface IGeneticDAO<E> {
 	public boolean exists(E obj) throws GeneticDAOException;
 
 	public void insert(E obj) throws GeneticDAOException;
+	
+	public void insertIfNoExists(E obj) throws GeneticDAOException;
 
 	public void update(E obj) throws GeneticDAOException;
 

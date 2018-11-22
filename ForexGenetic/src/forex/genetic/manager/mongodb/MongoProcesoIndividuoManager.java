@@ -10,6 +10,7 @@ import java.util.List;
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.dao.mongodb.MongoIndividuoDAO;
 import forex.genetic.entities.mongo.MongoIndividuo;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.ProcesoIndividuoManager;
 import forex.genetic.thread.mongo.MongoProcesarIndividuoThread;
@@ -21,10 +22,14 @@ import forex.genetic.util.LogUtil;
  */
 public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 
-	public MongoProcesoIndividuoManager() {
+	public MongoProcesoIndividuoManager() throws GeneticBusinessException {
 		super();
-		individuoDAO = new MongoIndividuoDAO();
-		dhDAO = new MongoDatoHistoricoDAO();
+		try {
+			individuoDAO = new MongoIndividuoDAO();
+			dhDAO = new MongoDatoHistoricoDAO();
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException("", e);
+		}
 	}
 
 	public void process() {

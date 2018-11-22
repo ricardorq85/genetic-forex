@@ -31,9 +31,8 @@ import forex.genetic.exception.GeneticDAOException;
  */
 public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO<TendenciaParaOperar> {
 
-	public MongoTendenciaParaOperarDAO() {
+	public MongoTendenciaParaOperarDAO() throws GeneticDAOException {
 		super("tendenciaParaOperar", true);
-		this.configureCollection();
 	}
 
 	public void configureCollection() {
@@ -68,23 +67,4 @@ public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO<TendenciaParaOp
 
 		return list;
 	}
-
-	@Override
-	public boolean exists(TendenciaParaOperar obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void insert(TendenciaParaOperar obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void update(TendenciaParaOperar obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

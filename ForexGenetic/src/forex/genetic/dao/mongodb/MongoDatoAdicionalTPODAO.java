@@ -16,9 +16,8 @@ import forex.genetic.exception.GeneticDAOException;
 public class MongoDatoAdicionalTPODAO extends MongoGeneticDAO<DatoAdicionalTPO> {
 
 	// public MongoTendenciaParaOperarDAO(Connection connection) {
-	public MongoDatoAdicionalTPODAO() {
+	public MongoDatoAdicionalTPODAO() throws GeneticDAOException {
 		super("datoAdicionalTPO", true);
-		this.configureCollection();
 	}
 
 	public void configureCollection() {
@@ -28,23 +27,4 @@ public class MongoDatoAdicionalTPODAO extends MongoGeneticDAO<DatoAdicionalTPO> 
 //		this.collection.createIndex(Indexes.ascending("periodo", "fechaBase", "tipoOperacion", "tipoExportacion"),
 	//			indexOptions);
 	}
-
-	@Override
-	public boolean exists(DatoAdicionalTPO obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void insert(DatoAdicionalTPO obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void update(DatoAdicionalTPO obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
