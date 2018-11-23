@@ -49,7 +49,7 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 																	// fechaHistoricaMaximaNueva);
 				}
 				// this.exportarDatosHistoricos();
-				this.setUltimaFechaTendencia(count);
+				//this.setUltimaFechaTendencia(count);
 				LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
 						+ ",fechaHistoricaMaximaAnterior=" + DateUtil.getDateString(this.fechaHistoricaMaximaAnterior)
 						+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva)

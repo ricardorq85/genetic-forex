@@ -141,6 +141,8 @@ public class MongoProcesarIndividuoThread extends Thread {
 
 		if (order == null) {
 			return intervaloFechasIndividuo.getHighInterval();
+		} else if (order.getOpenOperationValue()==0.0D) {
+			return order.getOpenDate();
 		} else {
 			individuo.setCurrentOrder(order);
 			DateInterval intervaloCierre = new DateInterval();
@@ -166,8 +168,9 @@ public class MongoProcesarIndividuoThread extends Thread {
 		LogUtil.logTime("procesarNuevaOperacion:" + this.getName() + ";" + individuo.getId() + ";puntoApertura="
 				+ DateUtil.getDateString(puntoApertura.getDate()), 1);
 
-		MongoOrder order = null;
 		Point puntoAnterior = daoDatoHistorico.consultarPuntoAnterior(puntoApertura.getDate());
+		MongoOrder order = new MongoOrder();
+		order.setOpenDate(puntoApertura.getDate());
 		List<Point> points = null;
 		if (puntoAnterior != null) {
 			points = new ArrayList<Point>(2);

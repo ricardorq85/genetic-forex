@@ -16,9 +16,6 @@ import forex.genetic.util.DateUtil;
  */
 public class Order implements Serializable, Cloneable {
 
-	/**
-	 *
-	 */
 	public static final long serialVersionUID = 201207182112L;
 	private double openOperationValue = 0.0D;
 	private int openOperationPoblacionIndex = 0;

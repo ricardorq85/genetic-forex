@@ -4,6 +4,7 @@
  */
 package forex.genetic.manager.mongodb;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.ProcesoIndividuoManager;
 import forex.genetic.thread.mongo.MongoProcesarIndividuoThread;
+import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 
 /**
@@ -39,10 +41,10 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 	public void process(boolean onlyOne) {
 		boolean any;
 		try {
-//			maxFechaHistorico = DateUtil.obtenerFecha("2018/11/12 00:00");
-//			minFechaHistorico = DateUtil.obtenerFecha("2008/05/06 00:00");
-			maxFechaHistorico = dhDAO.getFechaHistoricaMaxima();
-			minFechaHistorico = dhDAO.getFechaHistoricaMinima();
+			maxFechaHistorico = DateUtil.obtenerFecha("2018/11/12 00:00");
+			minFechaHistorico = DateUtil.obtenerFecha("2008/05/06 00:00");
+//			maxFechaHistorico = dhDAO.getFechaHistoricaMaxima();
+//			minFechaHistorico = dhDAO.getFechaHistoricaMinima();
 			do {
 				any = false;
 				List<Thread> threads = new ArrayList<>();
@@ -70,7 +72,7 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 					thread.join();
 				}
 			} while (any && !onlyOne);
-		} catch (InterruptedException | GeneticDAOException ex) {
+		} catch (InterruptedException | GeneticDAOException | ParseException ex) {
 			ex.printStackTrace();
 		}
 	}
