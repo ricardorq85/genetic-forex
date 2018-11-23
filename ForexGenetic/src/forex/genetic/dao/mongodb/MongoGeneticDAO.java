@@ -94,7 +94,7 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 
 	@Override
 	public void insert(E obj) throws GeneticDAOException {
-		Document doc = new Document("$set", getMapper().toMap(obj));
+		Document doc = new Document(getMapper().toMap(obj));
 		this.collection.insertOne(doc);
 	}
 

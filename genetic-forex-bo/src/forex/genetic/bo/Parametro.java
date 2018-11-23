@@ -7,10 +7,17 @@ public class Parametro {
 	private ParametroDTO parametro;
 
 	public Parametro(ParametroDTO p) {
-		this.parametro = p;
+		this.setParametro(p);
 	}
 
-	public String getParametroString() {
-		return String.valueOf(parametro.getValor());
+	public Parametro() {
+	}
+
+	public ParametroDTO getParametro() {
+		return parametro;
+	}
+
+	public void setParametro(ParametroDTO parametro) {
+		this.parametro = parametro;
 	}
 }

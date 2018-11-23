@@ -6,36 +6,40 @@ import java.util.Map;
 
 import org.bson.Document;
 
+import forex.genetic.bo.Parametro;
 import forex.genetic.entities.dto.ParametroDTO;
 
-public class MongoParametroMapper extends MongoMapper<ParametroDTO> {
+public class MongoParametroMapper extends MongoMapper<Parametro> {
 
 	@Override
-	public Map<String, Object> toPrimaryKeyMap(ParametroDTO obj) {
+	public Map<String, Object> toPrimaryKeyMap(Parametro obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
-		objectMap.put("nombre", obj.getNombre());
+		objectMap.put("nombre", obj.getParametro().getNombre());
 		return objectMap;
 	}
 
-	public Map<String, Object> toMap(ParametroDTO obj) {
+	public Map<String, Object> toMap(Parametro obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
-		objectMap.put("nombre", obj.getNombre());
-		objectMap.put("valor", obj.getValor());
-		objectMap.put("fecha", obj.getFecha());
+		objectMap.put("nombre", obj.getParametro().getNombre());
+		objectMap.put("valor", obj.getParametro().getValor());
+		objectMap.put("fecha", obj.getParametro().getFecha());
 		return objectMap;
 	}
 
 	@Override
-	public ParametroDTO helpOne(Document one) {
-		ParametroDTO obj = new ParametroDTO();
-		obj.setNombre(one.getString("nombre"));
-		obj.setValor(one.get("valor"));
-		obj.setFecha(one.getDate("fecha"));
+	public Parametro helpOne(Document one) {
+		Parametro obj = new Parametro();
+		ParametroDTO dto = new ParametroDTO();
+		dto.setNombre(one.getString("nombre"));
+		dto.setValor(one.get("valor"));
+		dto.setFecha(one.getDate("fecha"));
+		
+		obj.setParametro(dto);
 		return obj;
 	}
 
 	@Override
-	public Map<String, Object> toMapForDelete(ParametroDTO obj, Date fechaReferencia) {
+	public Map<String, Object> toMapForDelete(Parametro obj, Date fechaReferencia) {
 		throw new UnsupportedOperationException();
 	}
 }

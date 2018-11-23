@@ -39,7 +39,7 @@ public class PoblacionFacade implements IGeneticFacade {
 	public void process(boolean onlyOne) throws GeneticBusinessException {
 		IGeneticManager[] managers = DriverDBFactory.createManager("procesoIndividuo");
 		Thread[] threads = new Thread[managers.length];
-		for (int i = 1; i < managers.length; i++) {
+		for (int i = 0; i < managers.length; i++) {
 			ProcesoIndividuoManager manager = (ProcesoIndividuoManager)managers[i];
 			try {
 				manager.process(onlyOne);

@@ -24,7 +24,7 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 		IndexOptions indexOptions = new IndexOptions();
 		indexOptions.unique(true);
 
-		this.collection.createIndex(Indexes.ascending("valor"), indexOptions);
+		this.collection.createIndex(Indexes.ascending("nombre"), indexOptions);
 
 		configureParameters();
 	}
@@ -32,12 +32,12 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 	private void configureParameters() throws GeneticDAOException {
 		String[] paramNames = { "SOURCE_EXPORTED_HISTORY_DATA_PATH", "PROCESSED_EXPORTED_HISTORY_DATA_PATH",
 				"EXPORTED_PROPERTY_FILE_NAME", "SOURCE_ESTRATEGIAS_PATH", "STEP_TENDENCIA", "INDIVIDUOS_X_TENDENCIA" };
-		String[] paramvalues = new String[paramNames.length];
+		//String[] paramvalues = new String[paramNames.length];
 
 		for (int i = 0; i < paramNames.length; i++) {
 			ParametroDTO p = new ParametroDTO();
 			p.setNombre(paramNames[i]);
-			p.setValor(paramvalues[i]);
+			p.setValor("default");
 			p.setFecha(new Date());
 
 			Parametro param = new Parametro(p);
@@ -55,28 +55,37 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 	}
 
 	@Override
+	public String getValorParametro(String nombre) throws GeneticDAOException {
+		Parametro p = consultarByName(nombre);
+		if ((p != null) && (p.getParametro() != null) && (p.getParametro().getValor() != null)) {
+			return (p.getParametro().getValor().toString());
+		} else {
+			throw new GeneticDAOException("No existe el parametro:" + nombre, null);
+		}
+	}
+
+	@Override
 	public int getIntValorParametro(String nombre) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
+		String str = getValorParametro(nombre);
+		return (Integer.parseInt(str));
 	}
 
 	@Override
 	public float getFloatValorParametro(String nombre) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
+		String str = getValorParametro(nombre);
+		return (Float.parseFloat(str));
 	}
 
 	@Override
 	public boolean getBooleanValorParametro(String nombre) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
-	public String getValorParametro(String nombre) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
+		String str = getValorParametro(nombre);
+		return (Boolean.parseBoolean(str));
 	}
 
 	@Override
 	public String[] getArrayStringParametro(String nombre) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
+		String str = getValorParametro(nombre);
+		return (str.split(",", 0));
 	}
 
 	@Override
