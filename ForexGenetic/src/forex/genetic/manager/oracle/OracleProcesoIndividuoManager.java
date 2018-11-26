@@ -17,6 +17,7 @@ import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.ProcesoIndividuoManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.thread.oracle.OracleProcesarIndividuoThread;
+import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.ThreadUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -48,6 +49,7 @@ public class OracleProcesoIndividuoManager extends ProcesoIndividuoManager {
 	public void process(boolean onlyOne) throws GeneticBusinessException {
 		boolean any;
 		try {
+			//maxFechaHistorico = DateUtil.adicionarDias(dhDAO.getFechaHistoricaMaxima(), 1);
 			maxFechaHistorico = dhDAO.getFechaHistoricaMaxima();
 			minFechaHistorico = dhDAO.getFechaHistoricaMinima();
 		} catch (GeneticDAOException e) {

@@ -173,6 +173,9 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 			List<Bson> filtrosDatosCalculados = new ArrayList<>();
 			List<Bson> filtrosIndicadorLow = new ArrayList<>();
 			List<Bson> filtrosIndicadorHigh = new ArrayList<>();
+			List<Bson> filtrosIndicadorLowReves = new ArrayList<>();
+			List<Bson> filtrosIndicadorHighReves = new ArrayList<>();
+
 			for (int j = 0; j < nombreCalculado.length; j++) {
 				IntervalIndicator intervalIndicator = ((IntervalIndicator) indicadores.get(i));
 				if ((intervalIndicator != null) && (intervalIndicator.getInterval() != null)
@@ -188,11 +191,24 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 								intervalIndicator.getInterval().getHighInterval()));
 						filtrosIndicadorLow.add(Filters.gte(nombreIndicadorCalculado.toString(),
 								intervalIndicator.getInterval().getLowInterval()));
+
+						filtrosIndicadorLowReves.add(Filters.gte(nombreIndicadorCalculado.toString(),
+								intervalIndicator.getInterval().getLowInterval()));
+						filtrosIndicadorLowReves.add(Filters.lte(nombreIndicadorCalculado.toString(),
+								intervalIndicator.getInterval().getHighInterval()));
+
 					} else if (nombreCalculado[j].endsWith("high")) {
 						filtrosIndicadorHigh.add(Filters.lte(nombreIndicadorCalculado.toString(),
 								intervalIndicator.getInterval().getHighInterval()));
 						filtrosIndicadorLow.add(Filters.lte(nombreIndicadorCalculado.toString(),
 								intervalIndicator.getInterval().getLowInterval()));
+						filtrosIndicadorLowReves.add(Filters.gte(nombreIndicadorCalculado.toString(),
+								intervalIndicator.getInterval().getLowInterval()));
+
+						filtrosIndicadorLowReves.add(Filters.gte(nombreIndicadorCalculado.toString(),
+								intervalIndicator.getInterval().getLowInterval()));
+						filtrosIndicadorLowReves.add(Filters.lte(nombreIndicadorCalculado.toString(),
+								intervalIndicator.getInterval().getHighInterval()));
 					} else {
 						Bson filtroLow = Filters.gte(nombreIndicadorCalculado.toString(),
 								intervalIndicator.getInterval().getLowInterval());
@@ -205,7 +221,11 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 			if (!filtrosDatosCalculados.isEmpty()) {
 				filtros.addAll(filtrosDatosCalculados);
 			} else if ((!filtrosIndicadorLow.isEmpty()) && (!filtrosIndicadorHigh.isEmpty())) {
-				filtros.add(Filters.or(Filters.and(filtrosIndicadorLow), Filters.and(filtrosIndicadorHigh)));
+				filtros.add(Filters.or(Filters.and(filtrosIndicadorLow), 
+						Filters.and(filtrosIndicadorHigh),
+						Filters.and(filtrosIndicadorLowReves),
+						Filters.and(filtrosIndicadorHighReves)
+						));
 			}
 		}
 	}
