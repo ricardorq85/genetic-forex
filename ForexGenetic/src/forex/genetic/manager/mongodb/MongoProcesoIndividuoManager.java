@@ -41,6 +41,7 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 	public void process(boolean onlyOne) {
 		boolean any;
 		try {
+			// TODO rrojasq: cambiar para que no sea consultado cada vez que se necesita. Puede ser desde el DAO.
 			maxFechaHistorico = DateUtil.obtenerFecha("2018/11/12 00:00");
 			minFechaHistorico = DateUtil.obtenerFecha("2008/05/06 00:00");
 //			maxFechaHistorico = dhDAO.getFechaHistoricaMaxima();

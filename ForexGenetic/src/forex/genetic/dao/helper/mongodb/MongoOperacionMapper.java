@@ -27,6 +27,7 @@ public class MongoOperacionMapper extends MongoMapper<MongoOrder> {
 		objMap.put("stopLoss", obj.getStopLoss());
 		objMap.put("fechaApertura", obj.getOpenDate());
 		objMap.put("fechaCierre", obj.getCloseDate());
+		objMap.put("duracionMinutos", obj.getDuracionMinutos());
 		objMap.put("spread", obj.getOpenSpread());
 		objMap.put("openPrice", obj.getOpenOperationValue());
 		objMap.put("pips", obj.getPips());
@@ -61,6 +62,7 @@ public class MongoOperacionMapper extends MongoMapper<MongoOrder> {
 		order.setClosePriceByTakeProfit(one.getDouble("closePriceByTakeProfit"));
 		order.setClosePriceByStopLoss(one.getDouble("closePriceByStopLoss"));
 		order.setTipoCierre(Constants.getCloseType(one.getString("tipoCierre")));
+		order.setDuracionMinutos(one.getLong("duracionMinutos"));
 		return order;
 	}
 }

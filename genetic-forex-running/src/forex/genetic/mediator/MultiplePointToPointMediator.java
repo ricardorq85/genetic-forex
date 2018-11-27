@@ -13,6 +13,7 @@ import java.util.List;
 import forex.genetic.dao.IDatoHistoricoDAO;
 import forex.genetic.dao.IParametroDAO;
 import forex.genetic.delegate.GeneticDelegateBD;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.DriverDBFactory;
@@ -81,23 +82,28 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 		logTime("End Procesar Individuos", 1);
 	}
 
-	public void procesarTendencias() throws GeneticDAOException {
+	public void procesarTendencias() throws GeneticBusinessException {
 		for (int i = 0; i < dataClients.size(); i++) {
-			procesarTendencias(dataClients.get(0));
+			try {
+				procesarTendencias(dataClients.get(i));
+			} catch (ClassNotFoundException | SQLException | GeneticDAOException e) {
+				throw new GeneticBusinessException("procesarTendencias", e);
+			}
 		}
 	}
 
-	private void procesarTendencias(DataClient dataClient) throws GeneticDAOException {
+	private void procesarTendencias(DataClient dataClient)
+			throws GeneticDAOException, ClassNotFoundException, SQLException {
 		IParametroDAO parametroDAO = dataClient.getDaoParametro();
 		LogUtil.logTime("Init Procesar Tendencias", 1);
 		int parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
 		int parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
-		
+
 		Date fechaBaseFinal = fechaHistoricaMaximaNueva;
-		//TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
-//		if (count == 1) {
-//			tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia / 2);
-//		}
+		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
+		if (count == 1) {
+			tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia / 2);
+		}
 //		long durMillis = DateUtil.calcularDuracionMillis(ultimaFechaBaseTendencia, fechaBaseFinal);
 //		int diasDiferencia = (int) ((durMillis / (1000 * 60 * 60 * 24)) + 1);
 //		int minutosFactorStep = (int) ((diasDiferencia / 6) * 24 * 60);

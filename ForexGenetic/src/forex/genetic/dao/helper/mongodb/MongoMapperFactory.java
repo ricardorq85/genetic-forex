@@ -12,10 +12,12 @@ public class MongoMapperFactory {
 		} else if ("tendenciaParaOperar".equals(collectionName)) {
 			return new MongoTendenciaParaOperarMapper();
 		} else if ("operacion".equals(collectionName)) {
-			return new MongoOperacionMapper();			
+			return new MongoOperacionMapper();
 		} else if ("parametro".equals(collectionName)) {
-			return new MongoParametroMapper();			
+			return new MongoParametroMapper();
+		} else if ("estadisticaIndividuo".equals(collectionName)) {
+			return new MongoEstadisticaIndividuoMapper();
 		}
-		throw new IllegalArgumentException("collectionName no soportado: " + collectionName);
+		throw new IllegalArgumentException("Mapper. collectionName no soportado: " + collectionName);
 	}
 }

@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
+import forex.genetic.dao.mongodb.MongoEstadisticasIndividuoDAO;
 import forex.genetic.dao.mongodb.MongoIndividuoDAO;
 import forex.genetic.dao.mongodb.MongoOperacionesDAO;
 import forex.genetic.entities.DateInterval;
@@ -18,6 +19,7 @@ import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.dto.ProcesoEjecucionDTO;
+import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
@@ -35,6 +37,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 	private MongoDatoHistoricoDAO daoDatoHistorico;
 	private MongoOperacionesDAO daoOperaciones;
 	private MongoIndividuoDAO daoIndividuo;
+	private MongoEstadisticasIndividuoDAO daoEstadisticas;
 	private Date maxFechaHistorico = null;
 	private Date minFechaHistorico = null;
 
@@ -71,6 +74,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 			daoDatoHistorico = new MongoDatoHistoricoDAO();
 			daoOperaciones = new MongoOperacionesDAO();
 			daoIndividuo = new MongoIndividuoDAO();
+			daoEstadisticas = new MongoEstadisticasIndividuoDAO();
 			for (MongoIndividuo individuo : individuos) {
 				runIndividuo(individuo);
 			}
@@ -135,13 +139,14 @@ public class MongoProcesarIndividuoThread extends Thread {
 		LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + intervaloFechasIndividuo.toString(), 1);
 
 		Order order = individuo.getCurrentOrder();
+		MongoEstadistica estadisticaAnterior = daoEstadisticas.getLast(individuo);
 		if (order == null) {
 			order = procesarNuevaOperacion(individuo, intervaloFechasIndividuo);
 		}
 
 		if (order == null) {
 			return intervaloFechasIndividuo.getHighInterval();
-		} else if (order.getOpenOperationValue()==0.0D) {
+		} else if (order.getOpenOperationValue() == 0.0D) {
 			return order.getOpenDate();
 		} else {
 			individuo.setCurrentOrder(order);
@@ -151,7 +156,14 @@ public class MongoProcesarIndividuoThread extends Thread {
 			intervaloCierre.setHighInterval(
 					DateUtil.obtenerFechaMaxima(DateUtil.adicionarMes(intervaloCierre.getLowInterval()),
 							intervaloFechasIndividuo.getHighInterval()));
-			return procesarOperacionActiva(individuo, intervaloCierre);
+
+			Date returnDate = procesarOperacionActiva(individuo, intervaloCierre);
+			Order closeOrder = individuo.getCurrentOrder();
+			MongoEstadistica estadisticaNueva = new MongoEstadistica(estadisticaAnterior,
+					intervaloFechasIndividuo.getLowInterval());
+			estadisticaNueva.add(closeOrder);
+			individuo.setCurrentOrder(null);
+			return returnDate;
 		}
 	}
 
@@ -213,7 +225,6 @@ public class MongoProcesarIndividuoThread extends Thread {
 			if ((ordenes != null) && (!ordenes.isEmpty())) {
 				MongoOrder closedOrder = ordenes.get(0);
 				daoOperaciones.insertOrUpdate(closedOrder);
-				individuo.setCurrentOrder(null);
 				updateProcesoIndividuo(individuo, closedOrder, closedOrder.getCloseDate());
 			}
 		}

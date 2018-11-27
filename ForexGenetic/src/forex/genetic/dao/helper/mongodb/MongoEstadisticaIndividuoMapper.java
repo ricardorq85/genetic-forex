@@ -71,6 +71,8 @@ public class MongoEstadisticaIndividuoMapper extends MongoMapper<MongoEstadistic
 		objectMap.put("duracionDesvEstandarPositivos", obj.getDuracionDesvEstandarPositivos());
 		objectMap.put("duracionDesvEstandarNegativos", obj.getDuracionDesvEstandarNegativos());
 		objectMap.put("duracionDesvEstandar", obj.getDuracionDesvEstandar());
+		
+		objectMap.put("duracionTotal", obj.getDuracionTotal());
 
 		return objectMap;
 	}
@@ -128,6 +130,8 @@ public class MongoEstadisticaIndividuoMapper extends MongoMapper<MongoEstadistic
 		obj.setDuracionDesvEstandarPositivos(one.getDouble("duracionDesvEstandarPositivos"));
 		obj.setDuracionDesvEstandarNegativos(one.getDouble("duracionDesvEstandarNegativos"));
 		obj.setDuracionDesvEstandar(one.getDouble("duracionDesvEstandar"));
+		
+		obj.setDuracionTotal(one.getDouble("duracionTotal"));
 
 		return obj;
 	}

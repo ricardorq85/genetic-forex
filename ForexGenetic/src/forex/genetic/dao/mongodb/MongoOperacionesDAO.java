@@ -9,6 +9,7 @@ import org.bson.Document;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
 
 import forex.genetic.dao.IOperacionesDAO;
 import forex.genetic.entities.DateInterval;
@@ -36,10 +37,7 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		IndexOptions indexOptions = new IndexOptions();
 		indexOptions.unique(true);
 
-		// this.collection.createIndex(Indexes.ascending("moneda", "periodo",
-		// "fechaHistorico"), indexOptions);
-		// this.collection.createIndex(Indexes.ascending("fechaHistorico"),
-		// indexOptions);
+		this.collection.createIndex(Indexes.ascending("idIndividuo", "fechaApertura"), indexOptions);
 	}
 
 	@Override
