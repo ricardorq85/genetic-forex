@@ -21,6 +21,17 @@ public class MongoEstadistica extends Estadistica {
 	private double duracionTotal;
 
 	public MongoEstadistica() {
+		this.setDuracionMinima(Double.MAX_VALUE);
+		this.setDuracionMinimaNegativos(Double.MAX_VALUE);
+		this.setDuracionMinimaPositivos(Double.MAX_VALUE);
+		
+		this.setPipsMinimos(Double.MAX_VALUE);
+		this.setPipsMinimosNegativos(Double.MAX_VALUE);
+		this.setPipsMinimosPositivos(Double.MAX_VALUE);
+
+		this.setPipsMinimosRetroceso(Double.MAX_VALUE);
+		this.setPipsMinimosRetrocesoNegativos(Double.MAX_VALUE);
+		this.setPipsMinimosRetrocesoPositivos(Double.MAX_VALUE);
 	}
 
 	public String getIdIndividuo() {
