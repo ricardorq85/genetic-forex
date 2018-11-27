@@ -162,7 +162,7 @@ public class PointToPointMediator extends GeneticMediator {
 	protected void procesarIndividuos() throws FileNotFoundException {
 		logTime("Init Procesar Individuos", 1);
 		GeneticDelegateBD delegate = new GeneticDelegateBD();
-		delegate.multipleProcess(true);
+		delegate.process(true);
 		logTime("End Procesar Individuos", 1);
 	}
 

@@ -1,5 +1,8 @@
 package forex.genetic.mediator;
 
+import static forex.genetic.util.LogUtil.logTime;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -9,6 +12,7 @@ import java.util.List;
 
 import forex.genetic.dao.IDatoHistoricoDAO;
 import forex.genetic.dao.IParametroDAO;
+import forex.genetic.delegate.GeneticDelegateBD;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.DriverDBFactory;
@@ -69,6 +73,14 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 			throw new GeneticDAOException("Error start", e);
 		}
 	}
+	
+	protected void procesarIndividuos() throws FileNotFoundException {
+		logTime("Init Procesar Individuos", 1);
+		GeneticDelegateBD delegate = new GeneticDelegateBD();
+		delegate.multipleProcess(true);
+		logTime("End Procesar Individuos", 1);
+	}
+	
 
 	public void procesarTendencias() throws GeneticDAOException {
 		//for (int i = 0; i < dataClients.size(); i++) {
