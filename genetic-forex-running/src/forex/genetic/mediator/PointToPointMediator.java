@@ -17,8 +17,8 @@ import java.util.EnumSet;
 import java.util.List;
 
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
-import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
+import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.delegate.GeneticDelegateBD;
 import forex.genetic.delegate.PoblacionDelegate;
 import forex.genetic.exception.GeneticDAOException;

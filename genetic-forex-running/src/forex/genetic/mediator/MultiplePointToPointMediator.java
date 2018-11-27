@@ -53,7 +53,7 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 																	// fechaHistoricaMaximaNueva);
 				}
 				// this.exportarDatosHistoricos();
-				//this.setUltimaFechaTendencia(count);
+				// this.setUltimaFechaTendencia(count);
 				LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
 						+ ",fechaHistoricaMaximaAnterior=" + DateUtil.getDateString(this.fechaHistoricaMaximaAnterior)
 						+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva)
@@ -73,28 +73,28 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 			throw new GeneticDAOException("Error start", e);
 		}
 	}
-	
+
 	protected void procesarIndividuos() throws FileNotFoundException {
 		logTime("Init Procesar Individuos", 1);
 		GeneticDelegateBD delegate = new GeneticDelegateBD();
 		delegate.multipleProcess(true);
 		logTime("End Procesar Individuos", 1);
 	}
-	
 
 	public void procesarTendencias() throws GeneticDAOException {
-		//for (int i = 0; i < dataClients.size(); i++) {
-			procesarTendencias(dataClients.get(0).getDaoParametro());
-		//}
+		for (int i = 0; i < dataClients.size(); i++) {
+			procesarTendencias(dataClients.get(0));
+		}
 	}
-	
-	private void procesarTendencias(IParametroDAO parametroDAO) {
-//		LogUtil.logTime("Init Procesar Tendencias", 1);
-//		int parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
-//		int parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
-//		
-//		Date fechaBaseFinal = fechaHistoricaMaximaNueva;
-//		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
+
+	private void procesarTendencias(DataClient dataClient) throws GeneticDAOException {
+		IParametroDAO parametroDAO = dataClient.getDaoParametro();
+		LogUtil.logTime("Init Procesar Tendencias", 1);
+		int parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
+		int parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
+		
+		Date fechaBaseFinal = fechaHistoricaMaximaNueva;
+		//TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
 //		if (count == 1) {
 //			tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia / 2);
 //		}

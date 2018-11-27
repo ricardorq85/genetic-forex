@@ -32,12 +32,12 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 	private void configureParameters() throws GeneticDAOException {
 		String[] paramNames = { "SOURCE_EXPORTED_HISTORY_DATA_PATH", "PROCESSED_EXPORTED_HISTORY_DATA_PATH",
 				"EXPORTED_PROPERTY_FILE_NAME", "SOURCE_ESTRATEGIAS_PATH", "STEP_TENDENCIA", "INDIVIDUOS_X_TENDENCIA" };
-		//String[] paramvalues = new String[paramNames.length];
+		Object[] paramvalues = {"", "", "", "", new Integer(150), new Integer(200)};
 
 		for (int i = 0; i < paramNames.length; i++) {
 			ParametroDTO p = new ParametroDTO();
 			p.setNombre(paramNames[i]);
-			p.setValor("default");
+			p.setValor(paramvalues[i]);
 			p.setFecha(new Date());
 
 			Parametro param = new Parametro(p);
