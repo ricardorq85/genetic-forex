@@ -62,7 +62,7 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 				} else {
 					tendenciaProcesoDAO = tendenciaCompletaDAO;
 				}
-				LogUtil.logTime(tendenciaProcesoDAO.getClass().getSimpleName(), 1);
+				LogUtil.logTime("DAO: " + tendenciaProcesoDAO.getClass().getSimpleName(), 1);
 				Date fechaBase = tendenciaProcesoDAO.nextFechaBase(fechaProceso);
 				if (fechaBase != null) {
 					long minutosDia = (24 * 60);

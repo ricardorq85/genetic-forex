@@ -203,9 +203,9 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 						filtrosIndicadorLow.add(Filters.lte(nombreIndicadorCalculado.toString(),
 								intervalIndicator.getInterval().getLowInterval()));
 
-						filtrosIndicadorLowReves.add(Filters.gte(nombreIndicadorCalculado.toString(),
+						filtrosIndicadorHighReves.add(Filters.gte(nombreIndicadorCalculado.toString(),
 								intervalIndicator.getInterval().getLowInterval()));
-						filtrosIndicadorLowReves.add(Filters.lte(nombreIndicadorCalculado.toString(),
+						filtrosIndicadorHighReves.add(Filters.lte(nombreIndicadorCalculado.toString(),
 								intervalIndicator.getInterval().getHighInterval()));
 					} else {
 						Bson filtroLow = Filters.gte(nombreIndicadorCalculado.toString(),

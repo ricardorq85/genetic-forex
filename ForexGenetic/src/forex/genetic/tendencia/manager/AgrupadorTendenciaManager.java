@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.TendenciaParaOperarDAO;
-import forex.genetic.dao.mongodb.MongoTendenciaParaOperarDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.entities.DatoAdicionalTPO;
 import forex.genetic.entities.DoubleInterval;
@@ -30,7 +29,7 @@ public class AgrupadorTendenciaManager {
 	protected List<TendenciaParaOperarMaxMin> tendenciasResultado;
 	private Connection conn;
 	private TendenciaParaOperarDAO tendenciaParaOperarDAO;
-	private MongoTendenciaParaOperarDAO mongoTendenciaParaOperarDAO;
+//	private MongoTendenciaParaOperarDAO mongoTendenciaParaOperarDAO;
 	private OracleDatoHistoricoDAO datoHistoricoDAO;
 
 	private Date fechaBase, maxFechaProceso;
@@ -45,7 +44,7 @@ public class AgrupadorTendenciaManager {
 		super();
 		this.conn = conn;
 		this.tendenciaParaOperarDAO = new TendenciaParaOperarDAO(conn);
-		this.mongoTendenciaParaOperarDAO = new MongoTendenciaParaOperarDAO();
+		//this.mongoTendenciaParaOperarDAO = new MongoTendenciaParaOperarDAO();
 		this.listaTendencias = new ArrayList<>();
 		this.tendenciasResultado = new ArrayList<>();
 		this.setFechaBase(fechaBase);
@@ -290,9 +289,9 @@ public class AgrupadorTendenciaManager {
 		TendenciaParaOperarMaxMin tpo = new TendenciaParaOperarMaxMin();
 		tpo.setFechaBase(fechaBase);
 		int borrados = tendenciaParaOperarDAO.deleteTendenciaParaProcesar(tpo, maxFechaProceso);
-		long borradosMongo = mongoTendenciaParaOperarDAO.delete(tpo, maxFechaProceso);
+		//long borradosMongo = mongoTendenciaParaOperarDAO.delete(tpo, maxFechaProceso);
 		LogUtil.logTime("Borrando tendencias para operar: maxFechaProceso=" + DateUtil.getDateString(maxFechaProceso)
-				+ "; borradosOracle=" + borrados + "; borradosMongo=" + borradosMongo, 1);
+				+ "; borradosOracle=" + borrados, 1);
 		conn.commit();
 	}
 
@@ -498,7 +497,7 @@ public class AgrupadorTendenciaManager {
 
 	private void saveTendenciaParaOperar(TendenciaParaOperar ten) throws SQLException {
 		boolean exists = tendenciaParaOperarDAO.exists(ten);
-		mongoTendenciaParaOperarDAO.insertOrUpdate(ten);
+		//mongoTendenciaParaOperarDAO.insertOrUpdate(ten);
 		if (exists) {
 			tendenciaParaOperarDAO.updateTendenciaParaProcesar(ten);
 		} else {
