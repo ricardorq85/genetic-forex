@@ -19,6 +19,8 @@ public class MongoEstadistica extends Estadistica {
 	private Date fechaFinal;
 
 	private double duracionTotal;
+	private double duracionTotalPositivos;
+	private double duracionTotalNegativos;
 
 	public MongoEstadistica() {
 		this.setDuracionMinima(Double.MAX_VALUE);
@@ -64,6 +66,22 @@ public class MongoEstadistica extends Estadistica {
 
 	public void setDuracionTotal(double duracionTotal) {
 		this.duracionTotal = duracionTotal;
+	}
+
+	public double getDuracionTotalPositivos() {
+		return duracionTotalPositivos;
+	}
+
+	public void setDuracionTotalPositivos(double duracionTotalPositivos) {
+		this.duracionTotalPositivos = duracionTotalPositivos;
+	}
+
+	public double getDuracionTotalNegativos() {
+		return duracionTotalNegativos;
+	}
+
+	public void setDuracionTotalNegativos(double duracionTotalNegativos) {
+		this.duracionTotalNegativos = duracionTotalNegativos;
 	}
 
 }

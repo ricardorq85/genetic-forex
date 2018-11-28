@@ -17,10 +17,15 @@ public class MongoEstadisticasManager {
 
 	private MongoEstadisticasIndividuoDAO daoEstadisticas;
 
+	private MongoIndividuo individuo;
 	private List<MongoEstadistica> estadisticasIndividuo;
 	private List<Double> dataDuracion;
 	private List<Double> dataDuracionPositivos;
 	private List<Double> dataDuracionNegativos;
+
+	private List<Double> dataPips;
+	private List<Double> dataPipsPositivos;
+	private List<Double> dataPipsNegativos;
 
 	public MongoEstadisticasManager(MongoIndividuo individuo) throws GeneticDAOException {
 		this(individuo, null);
@@ -29,44 +34,44 @@ public class MongoEstadisticasManager {
 	public MongoEstadisticasManager(MongoIndividuo individuo, List<MongoEstadistica> estadisticasIndividuo)
 			throws GeneticDAOException {
 		this.daoEstadisticas = new MongoEstadisticasIndividuoDAO(false);
-
+		this.individuo = individuo;
 		if (estadisticasIndividuo != null) {
 			this.estadisticasIndividuo = estadisticasIndividuo;
 		} else {
 			this.estadisticasIndividuo = new ArrayList<>();
 		}
-		this.setDataDuracion();
+		this.setDataInicial();
 	}
 
-	private void setDataDuracion() {
-		dataDuracion = new ArrayList<>(dataDuracion.size());
+	private void setDataInicial() {
+		dataDuracion = new ArrayList<>(estadisticasIndividuo.size());
+		dataDuracionPositivos = new ArrayList<>(estadisticasIndividuo.size());
+		dataDuracionNegativos = new ArrayList<>(estadisticasIndividuo.size());
+		dataPips = new ArrayList<>(estadisticasIndividuo.size());
+		dataPipsPositivos = new ArrayList<>(estadisticasIndividuo.size());
+		dataPipsNegativos = new ArrayList<>(estadisticasIndividuo.size());
 		for (int i = 0; i < estadisticasIndividuo.size(); i++) {
-			MongoEstadistica estadistica = estadisticasIndividuo.get(i);
-			addDuracionToList(dataDuracion, i);
-			if (estadistica.getPips() > 0) {
-				addDuracionToList(dataDuracionPositivos, i);
-			} else {
-				addDuracionToList(dataDuracionNegativos, i);
-			}
+			addDataToList(i);
 		}
 	}
 
-	private void addDuracionToList(List<Double> data, int index) {
-		if (index == 0) {
-			data.add(estadisticasIndividuo.get(index).getDuracionTotal());
-		} else {
-			MongoEstadistica estadisticaAnterior = estadisticasIndividuo.get(index - 1);
-			dataDuracion
-					.add(estadisticasIndividuo.get(index).getDuracionTotal() - estadisticaAnterior.getDuracionTotal());
+	private void addDataToList(int index) {
+		MongoEstadistica estadistica = estadisticasIndividuo.get(index);
+		MongoEstadistica estadisticaAnterior = new MongoEstadistica();
+		if (index > 0) {
+			estadisticaAnterior = estadisticasIndividuo.get(index - 1);
 		}
-	}
-
-	private void addLastDataTolist(Order order) {
-		addDuracionToList(dataDuracion, estadisticasIndividuo.size() - 1);
-		if (order.getPips() > 0) {
-			addDuracionToList(dataDuracionPositivos, estadisticasIndividuo.size() - 1);
+		double diffPips = estadistica.getPips() - estadisticaAnterior.getPips();
+		dataDuracion.add(estadistica.getDuracionTotal() - estadisticaAnterior.getDuracionTotal());
+		dataPips.add(estadistica.getPips() - estadisticaAnterior.getPips());
+		if (diffPips > 0) {
+			dataDuracionPositivos
+					.add(estadistica.getDuracionTotalPositivos() - estadisticaAnterior.getDuracionTotalPositivos());
+			dataPipsPositivos.add(estadistica.getPipsPositivos() - estadisticaAnterior.getPipsPositivos());
 		} else {
-			addDuracionToList(dataDuracionNegativos, estadisticasIndividuo.size() - 1);
+			dataDuracionNegativos
+					.add(estadistica.getDuracionTotalNegativos() - estadisticaAnterior.getDuracionTotalNegativos());
+			dataPipsNegativos.add(estadistica.getPipsNegativos() - estadisticaAnterior.getPipsNegativos());
 		}
 	}
 
@@ -77,6 +82,7 @@ public class MongoEstadisticasManager {
 				estadisticaAnterior = estadisticasIndividuo.get(estadisticasIndividuo.size() - 1);
 			}
 			MongoEstadistica estadisticaNueva = new MongoEstadistica();
+			estadisticaNueva.setIdIndividuo(individuo.getId());
 			if (estadisticaAnterior != null) {
 				estadisticaAnterior.setFechaFinal(order.getCloseDate());
 			} else {
@@ -90,10 +96,18 @@ public class MongoEstadisticasManager {
 					.setDuracionMaxima(Math.max(estadisticaAnterior.getDuracionMaxima(), order.getDuracionMinutos()));
 			estadisticaNueva
 					.setDuracionMinima(Math.min(estadisticaAnterior.getDuracionMinima(), order.getDuracionMinutos()));
-			// estadisticaNueva.setDuracionModa();
+			estadisticaNueva.setPips(estadisticaAnterior.getPips() + order.getPips());
+
+			estadisticaNueva.setPipsMaximos(Math.max(estadisticaAnterior.getPipsMaximos(), order.getPips()));
+			estadisticaNueva.setPipsMinimos(Math.min(estadisticaAnterior.getPipsMinimos(), order.getPips()));
+
 			if (order.getPips() > 0) {
 				estadisticaNueva.setCantidadPositivos(estadisticaAnterior.getCantidadPositivos() + 1);
 				estadisticaNueva.setCantidadNegativos(estadisticaAnterior.getCantidadNegativos());
+
+				estadisticaNueva.setDuracionTotalPositivos(
+						estadisticaAnterior.getDuracionTotalPositivos() + order.getDuracionMinutos());
+				estadisticaNueva.setDuracionTotalNegativos(estadisticaAnterior.getDuracionTotalNegativos());
 
 				estadisticaNueva.setDuracionMaximaPositivos(
 						Math.max(estadisticaAnterior.getDuracionMaximaPositivos(), order.getDuracionMinutos()));
@@ -102,9 +116,25 @@ public class MongoEstadisticasManager {
 				estadisticaNueva.setDuracionMinimaPositivos(
 						Math.min(estadisticaAnterior.getDuracionMinimaPositivos(), order.getDuracionMinutos()));
 				estadisticaNueva.setDuracionMinimaNegativos(estadisticaAnterior.getDuracionMinimaNegativos());
+
+				estadisticaNueva.setPipsPositivos(estadisticaAnterior.getPipsPositivos() + order.getPips());
+				estadisticaNueva.setPipsNegativos(estadisticaAnterior.getPipsNegativos());
+
+				estadisticaNueva.setPipsMaximosPositivos(
+						Math.max(estadisticaAnterior.getPipsMaximosPositivos(), order.getPips()));
+				estadisticaNueva.setPipsMaximosNegativos(estadisticaAnterior.getPipsMaximosNegativos());
+
+				estadisticaNueva.setPipsMinimosPositivos(
+						Math.min(estadisticaAnterior.getPipsMinimosPositivos(), order.getPips()));
+				estadisticaNueva.setPipsMinimosNegativos(estadisticaAnterior.getPipsMinimosNegativos());
+
 			} else {
 				estadisticaNueva.setCantidadNegativos(estadisticaAnterior.getCantidadNegativos() + 1);
 				estadisticaNueva.setCantidadPositivos(estadisticaAnterior.getCantidadPositivos());
+
+				estadisticaNueva.setDuracionTotalNegativos(
+						estadisticaAnterior.getDuracionTotalNegativos() + order.getDuracionMinutos());
+				estadisticaNueva.setDuracionTotalPositivos(estadisticaAnterior.getDuracionTotalPositivos());
 
 				estadisticaNueva.setDuracionMaximaNegativos(
 						Math.max(estadisticaAnterior.getDuracionMaximaNegativos(), order.getDuracionMinutos()));
@@ -113,9 +143,21 @@ public class MongoEstadisticasManager {
 				estadisticaNueva.setDuracionMinimaNegativos(
 						Math.min(estadisticaAnterior.getDuracionMinimaNegativos(), order.getDuracionMinutos()));
 				estadisticaNueva.setDuracionMinimaPositivos(estadisticaAnterior.getDuracionMinimaPositivos());
+
+				estadisticaNueva.setPipsNegativos(estadisticaAnterior.getPipsNegativos() + order.getPips());
+				estadisticaNueva.setPipsPositivos(estadisticaAnterior.getPipsPositivos());
+
+				estadisticaNueva.setPipsMaximosNegativos(
+						Math.max(estadisticaAnterior.getPipsMaximosNegativos(), order.getPips()));
+				estadisticaNueva.setPipsMaximosPositivos(estadisticaAnterior.getPipsMaximosPositivos());
+
+				estadisticaNueva.setPipsMinimosNegativos(
+						Math.min(estadisticaAnterior.getPipsMinimosNegativos(), order.getPips()));
+				estadisticaNueva.setPipsMinimosPositivos(estadisticaAnterior.getPipsMinimosPositivos());
+
 			}
 			estadisticasIndividuo.add(estadisticaNueva);
-			addLastDataTolist(order);
+			addDataToList(estadisticasIndividuo.size() - 1);
 			addDatoscalculados(estadisticaNueva);
 
 			daoEstadisticas.insertOrUpdate(estadisticaAnterior);
@@ -132,6 +174,17 @@ public class MongoEstadisticasManager {
 		estadistica.setDuracionModa(calcularModa(dataDuracion));
 		estadistica.setDuracionModaPositivos(calcularModa(dataDuracionPositivos));
 		estadistica.setDuracionModaNegativos(calcularModa(dataDuracionNegativos));
+
+		estadistica.setDuracionPromedio((estadistica.getDuracionTotal() / Math.max(1, estadistica.getCantidadTotal())));
+		estadistica.setDuracionPromedioPositivos(
+				(estadistica.getDuracionTotalPositivos() / Math.max(1, estadistica.getCantidadPositivos())));
+		estadistica.setDuracionPromedio(
+				(estadistica.getDuracionTotalNegativos() / Math.max(1, estadistica.getCantidadNegativos())));
+
+		estadistica.setPipsModa(calcularModa(dataPips));
+		estadistica.setPipsModaPositivos(calcularModa(dataPipsPositivos));
+		estadistica.setPipsModaNegativos(calcularModa(dataPipsNegativos));
+
 	}
 
 	private double calcularStandardDeviation(List<Double> data) {
