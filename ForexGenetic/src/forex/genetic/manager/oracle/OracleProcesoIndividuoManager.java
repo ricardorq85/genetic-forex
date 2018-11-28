@@ -49,7 +49,7 @@ public class OracleProcesoIndividuoManager extends ProcesoIndividuoManager {
 	public void process(boolean onlyOne) throws GeneticBusinessException {
 		boolean any;
 		try {
-			//maxFechaHistorico = DateUtil.adicionarDias(dhDAO.getFechaHistoricaMaxima(), 1);
+			//maxFechaHistorico = DateUtil.adicionarDias(dhDAO.getFechaHistoricaMaxima(), -10);
 			maxFechaHistorico = dhDAO.getFechaHistoricaMaxima();
 			minFechaHistorico = dhDAO.getFechaHistoricaMinima();
 		} catch (GeneticDAOException e) {

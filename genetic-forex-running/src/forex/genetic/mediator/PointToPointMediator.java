@@ -21,6 +21,7 @@ import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.delegate.GeneticDelegateBD;
 import forex.genetic.delegate.PoblacionDelegate;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.ProcesarTendenciasFactory;
@@ -166,40 +167,45 @@ public class PointToPointMediator extends GeneticMediator {
 		logTime("End Procesar Individuos", 1);
 	}
 
-	protected void procesarTendencias() throws SQLException, ClassNotFoundException, GeneticDAOException {
-		logTime("Init Procesar Tendencias", 1);
-		OracleParametroDAO parametroDAO = new OracleParametroDAO(connection);
-		int parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
-		int parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
-		Date fechaBaseFinal = fechaHistoricaMaximaNueva;
-		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
-		if (count == 1) {
-			tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia / 2);
+	protected void procesarTendencias() throws GeneticBusinessException {
+		try {
+			logTime("Init Procesar Tendencias", 1);
+			OracleParametroDAO parametroDAO = new OracleParametroDAO(connection);
+			int parametroStepTendencia;
+			parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
+			int parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
+			Date fechaBaseFinal = fechaHistoricaMaximaNueva;
+			TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
+			if (count == 1) {
+				tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia / 2);
+			}
+			long durMillis = DateUtil.calcularDuracionMillis(ultimaFechaBaseTendencia, fechaBaseFinal);
+			int diasDiferencia = (int) ((durMillis / (1000 * 60 * 60 * 24)) + 1);
+			int minutosFactorStep = (int) ((diasDiferencia / 6) * 24 * 60);
+			parametroStepTendencia = Math.max(minutosFactorStep, parametroStepTendencia);
+			parametroFilasTendencia = Math.max((1440 / 2000 / (diasDiferencia / count + 1)), parametroFilasTendencia);
+			LogUtil.logTime("ultimaFechaBaseTendencia:" + DateUtil.getDateString(ultimaFechaBaseTendencia), 3);
+			LogUtil.logTime("fechaBaseFinal:" + DateUtil.getDateString(fechaBaseFinal), 3);
+			LogUtil.logTime("durMillis:" + durMillis, 3);
+			LogUtil.logTime("count:" + count, 3);
+			LogUtil.logTime("diasDiferencia:" + diasDiferencia, 3);
+			LogUtil.logTime("factorStep:" + minutosFactorStep, 3);
+			LogUtil.logTime("parametroStepTendencia:" + parametroStepTendencia, 1);
+			LogUtil.logTime("parametroFilasTendencia:" + parametroFilasTendencia, 1);
+			while (fechaBaseFinal.after(ultimaFechaBaseTendencia)) {
+				fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1 * (calcularFactorCount()));
+				int currentStep = -(parametroStepTendencia - count);
+				Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, currentStep);
+				// LogUtil.logEnter(1);
+				LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
+						+ DateUtil.getDateString(fechaBaseFinal), 1);
+				tendenciaManager.calcularTendencias(fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
+				fechaBaseFinal = fechaBaseInicial;
+			}
+			logTime("End Procesar Tendencias", 1);
+		} catch (GeneticDAOException | SQLException | ClassNotFoundException e) {
+			throw new GeneticBusinessException(null, e);
 		}
-		long durMillis = DateUtil.calcularDuracionMillis(ultimaFechaBaseTendencia, fechaBaseFinal);
-		int diasDiferencia = (int) ((durMillis / (1000 * 60 * 60 * 24)) + 1);
-		int minutosFactorStep = (int) ((diasDiferencia / 6) * 24 * 60);
-		parametroStepTendencia = Math.max(minutosFactorStep, parametroStepTendencia);
-		parametroFilasTendencia = Math.max((1440 / 2000 / (diasDiferencia / count + 1)), parametroFilasTendencia);
-		LogUtil.logTime("ultimaFechaBaseTendencia:" + DateUtil.getDateString(ultimaFechaBaseTendencia), 3);
-		LogUtil.logTime("fechaBaseFinal:" + DateUtil.getDateString(fechaBaseFinal), 3);
-		LogUtil.logTime("durMillis:" + durMillis, 3);
-		LogUtil.logTime("count:" + count, 3);
-		LogUtil.logTime("diasDiferencia:" + diasDiferencia, 3);
-		LogUtil.logTime("factorStep:" + minutosFactorStep, 3);
-		LogUtil.logTime("parametroStepTendencia:" + parametroStepTendencia, 1);
-		LogUtil.logTime("parametroFilasTendencia:" + parametroFilasTendencia, 1);
-		while (fechaBaseFinal.after(ultimaFechaBaseTendencia)) {
-			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1 * (calcularFactorCount()));
-			int currentStep = -(parametroStepTendencia - count);
-			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, currentStep);
-			// LogUtil.logEnter(1);
-			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
-					+ DateUtil.getDateString(fechaBaseFinal), 1);
-			tendenciaManager.calcularTendencias(fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
-			fechaBaseFinal = fechaBaseInicial;
-		}
-		logTime("End Procesar Tendencias", 1);
 	}
 
 	protected void exportarIndividuos()

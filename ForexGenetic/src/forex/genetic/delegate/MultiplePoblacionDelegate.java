@@ -12,6 +12,7 @@ import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.facade.DatoHistoricoFacade;
 import forex.genetic.facade.PoblacionFacade;
 import forex.genetic.factory.ControllerFactory;
+import forex.genetic.factory.FacadeFactory;
 import forex.genetic.manager.PoblacionManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.controller.IndicadorController;
@@ -22,15 +23,15 @@ import forex.genetic.util.LogUtil;
  *
  * @author ricardorq85
  */
-public class PoblacionDelegate {
+public class MultiplePoblacionDelegate {
 
 	private DatoHistoricoFacade dhFacade;
 	private PoblacionFacade poblacionFacade;
 
-	public PoblacionDelegate() {
+	public MultiplePoblacionDelegate() {
 		super();
-		dhFacade = new DatoHistoricoFacade();
-		poblacionFacade = new PoblacionFacade();
+		dhFacade = (DatoHistoricoFacade) FacadeFactory.create("datoHistorico");
+		poblacionFacade = (PoblacionFacade) FacadeFactory.create("individuo");
 	}
 
 	/**

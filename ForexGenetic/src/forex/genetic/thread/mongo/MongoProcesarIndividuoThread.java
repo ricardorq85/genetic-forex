@@ -159,9 +159,8 @@ public class MongoProcesarIndividuoThread extends Thread {
 
 			Date returnDate = procesarOperacionActiva(individuo, intervaloCierre);
 			Order closeOrder = individuo.getCurrentOrder();
-			MongoEstadistica estadisticaNueva = new MongoEstadistica(estadisticaAnterior,
-					intervaloFechasIndividuo.getLowInterval());
-			estadisticaNueva.add(closeOrder);
+			MongoEstadistica estadisticaNueva = new MongoEstadistica();
+			//estadisticaNueva.add(closeOrder);
 			individuo.setCurrentOrder(null);
 			return returnDate;
 		}

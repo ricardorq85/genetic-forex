@@ -142,7 +142,7 @@ public class OracleProcesarIndividuoThread extends Thread {
 		int indexFecha = 0;
 		long duracionPromedio = Math.max(3000, daoOperaciones.duracionPromedioMinutos(individuo.getId()));
 		List<Date> fechas = daoHistorico.consultarPuntosApertura(intervaloFechasIndividuo, individuo.getId());
-		//fechas.set(0, DateUtil.obtenerFecha("2008/08/05 20:32"));
+		//fechas.set(0, DateUtil.obtenerFecha("2008/08/26 16:02"));
 		LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + intervaloFechasIndividuo.toString()
 				+ ",Fechas consultadas: " + fechas.size(), 1);
 		if (individuo.getFechaApertura() == null) {
