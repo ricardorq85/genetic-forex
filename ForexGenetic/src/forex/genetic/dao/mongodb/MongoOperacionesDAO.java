@@ -107,7 +107,7 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	}
 
 	@Override
-	public void updateMaximosReprocesoOperacion(Individuo individuo, MongoOrder operacion) throws GeneticDAOException {
+	public void updateMaximosRetrocesoOperacion(Individuo individuo, MongoOrder operacion) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 

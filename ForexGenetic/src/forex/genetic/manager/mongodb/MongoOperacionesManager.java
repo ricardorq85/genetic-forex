@@ -259,7 +259,7 @@ public class MongoOperacionesManager extends OperacionesManager {
 				}
 				LogUtil.logTime("Individuo=" + individuo.getId() + ";Fecha apertura="
 						+ DateUtil.getDateString(individuo.getOrdenes().get(0).getOpenDate()), 1);
-				this.procesarMaximosReproceso(individuo);
+				this.procesarMaximosRetroceso(individuo);
 			}
 			individuos = operacionesDAO.consultarOperacionesIndividuoRetroceso(fechaMaximo);
 		}
@@ -284,7 +284,7 @@ public class MongoOperacionesManager extends OperacionesManager {
 		if (individuo.getCloseIndicators() == null) {
 			individuo.setCloseIndicators(new ArrayList<>());
 		}
-		this.procesarMaximosReproceso(individuo);
+		this.procesarMaximosRetroceso(individuo);
 	}
 
 	/**
@@ -294,20 +294,20 @@ public class MongoOperacionesManager extends OperacionesManager {
 	 * @throws SQLException
 	 * @throws GeneticDAOException 
 	 */
-	public void procesarMaximosReproceso(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
+	public void procesarMaximosRetroceso(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
 		MongoOperacionesDAO operacionesDAO = new MongoOperacionesDAO();
 		List<Order> ordenes = individuo.getOrdenes();
 		for (Order currentOrder : ordenes) {
 			if ((currentOrder != null) && (currentOrder.getOpenDate() != null)
 					&& (currentOrder.getCloseDate() != null)) {
 				calcularRetrocesoOrden(currentOrder);
-				operacionesDAO.updateMaximosReprocesoOperacion(individuo, (MongoOrder)currentOrder);
+				operacionesDAO.updateMaximosRetrocesoOperacion(individuo, (MongoOrder)currentOrder);
 			}
 		}
 		operacionesDAO.commit();
 	}
 
-	public void calcularRetrocesoOrden(Order currentOrder) throws SQLException, GeneticDAOException {
+	public void calcularRetrocesoOrden(Order currentOrder) throws GeneticDAOException {
 		MongoDatoHistoricoDAO datoHistoricoDAO = new MongoDatoHistoricoDAO();
 		Point pointRetroceso = datoHistoricoDAO.consultarRetroceso(currentOrder);
 		if (pointRetroceso != null) {
@@ -316,8 +316,6 @@ public class MongoOperacionesManager extends OperacionesManager {
 					|| ((isBuy) && (currentOrder.getPips() < 0)))) ? pointRetroceso.getHigh()
 							: pointRetroceso.getLow());
 
-			// double valueRetroceso = ((currentOrder.getPips() > 0) ?
-			// pointRetroceso.getHigh() : pointRetroceso.getLow());
 			double pips = (currentOrder.getTipo().equals(Constants.OperationType.BUY))
 					? (valueRetroceso - currentOrder.getOpenOperationValue()) * PropertiesManager.getPairFactor()
 					: (-valueRetroceso + currentOrder.getOpenOperationValue()) * PropertiesManager.getPairFactor();

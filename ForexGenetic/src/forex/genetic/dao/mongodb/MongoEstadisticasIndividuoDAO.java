@@ -6,7 +6,9 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.Updates;
 
+import forex.genetic.entities.Order;
 import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.exception.GeneticDAOException;
@@ -35,12 +37,30 @@ public class MongoEstadisticasIndividuoDAO extends MongoGeneticDAO<MongoEstadist
 
 	public MongoEstadistica getLast(MongoIndividuo individuo) {
 		Document doc = this.collection.find(Filters.eq("idIndividuo", individuo.getId()))
-				.sort(Sorts.descending("fechaFinal")).limit(1).first();
+				.sort(Sorts.descending("fechaInicial")).limit(1).first();
 
 		MongoEstadistica estadistica = null;
 		if (doc != null) {
 			estadistica = getMapper().helpOne(doc);
 		}
 		return estadistica;
+	}
+
+	public MongoEstadistica getLast(MongoIndividuo individuo, Order order) {
+		Document doc = this.collection
+				.find(Filters.and(Filters.eq("idIndividuo", individuo.getId()),
+						Filters.lt("fechaInicial", order.getCloseDate())))
+				.sort(Sorts.descending("fechaInicial")).limit(1).first();
+
+		MongoEstadistica estadistica = null;
+		if (doc != null) {
+			estadistica = getMapper().helpOne(doc);
+		}
+		return estadistica;
+	}
+
+	public void update(MongoEstadistica obj) {
+		Document filterPk = new Document(getMapper().toPrimaryKeyMap(obj));
+		this.collection.updateOne(filterPk, Updates.addToSet("fechaFinal", obj.getFechaFinal()));
 	}
 }

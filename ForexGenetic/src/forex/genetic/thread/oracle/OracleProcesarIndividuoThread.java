@@ -193,7 +193,7 @@ public class OracleProcesarIndividuoThread extends Thread {
 					ordenes.add(updateOrder);
 				}
 				individuo.setOrdenes(ordenes);
-				operacionesManager.procesarMaximosReproceso(individuo);
+				operacionesManager.procesarMaximosRetroceso(individuo);
 				if (individuo.getCurrentOrder() != null) {
 					individuo.setFechaApertura(individuo.getCurrentOrder().getOpenDate());
 					duracionPromedio = Math.max(3000, daoOperaciones.duracionPromedioMinutos(individuo.getId()));

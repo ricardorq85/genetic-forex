@@ -287,7 +287,7 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 	 * @param operacion
 	 * @throws GeneticDAOException
 	 */
-	public void updateMaximosReprocesoOperacion(Individuo individuo, Order operacion) throws GeneticDAOException {
+	public void updateMaximosRetrocesoOperacion(Individuo individuo, Order operacion) throws GeneticDAOException {
 		String sql = "UPDATE OPERACION SET MAX_PIPS_RETROCESO=?, MAX_VALUE_RETROCESO=?, MAX_FECHA_RETROCESO=?, FECHA=? "
 				+ " WHERE ID_INDIVIDUO=? AND FECHA_APERTURA=?";
 

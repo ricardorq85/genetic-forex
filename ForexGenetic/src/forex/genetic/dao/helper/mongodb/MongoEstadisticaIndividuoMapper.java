@@ -1,5 +1,6 @@
 package forex.genetic.dao.helper.mongodb;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,12 +72,23 @@ public class MongoEstadisticaIndividuoMapper extends MongoMapper<MongoEstadistic
 		objectMap.put("duracionDesvEstandarPositivos", obj.getDuracionDesvEstandarPositivos());
 		objectMap.put("duracionDesvEstandarNegativos", obj.getDuracionDesvEstandarNegativos());
 		objectMap.put("duracionDesvEstandar", obj.getDuracionDesvEstandar());
-		
+
 		objectMap.put("duracionTotal", obj.getDuracionTotal());
+		objectMap.put("duracionTotalPositivos", obj.getDuracionTotalPositivos());
+		objectMap.put("duracionTotalNegativos", obj.getDuracionTotalNegativos());
+
+		objectMap.put("dataDuracion", obj.getDataDuracion());
+		objectMap.put("dataDuracionPositivos", obj.getDataDuracionPositivos());
+		objectMap.put("dataDuracionNegativos", obj.getDataDuracionNegativos());
+
+		objectMap.put("dataPips", obj.getDataPips());
+		objectMap.put("dataPipsPositivos", obj.getDataPipsPositivos());
+		objectMap.put("dataPipsNegativos", obj.getDataPipsNegativos());
 
 		return objectMap;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public MongoEstadistica helpOne(Document one) {
 		MongoEstadistica obj = new MongoEstadistica();
@@ -130,8 +142,18 @@ public class MongoEstadisticaIndividuoMapper extends MongoMapper<MongoEstadistic
 		obj.setDuracionDesvEstandarPositivos(one.getDouble("duracionDesvEstandarPositivos"));
 		obj.setDuracionDesvEstandarNegativos(one.getDouble("duracionDesvEstandarNegativos"));
 		obj.setDuracionDesvEstandar(one.getDouble("duracionDesvEstandar"));
-		
-		obj.setDuracionTotal(one.getDouble("duracionTotal"));
+
+		obj.setDuracionTotal(one.getLong("duracionTotal"));
+		obj.setDuracionTotalPositivos(one.getLong("duracionTotalPositivos"));
+		obj.setDuracionTotalNegativos(one.getLong("duracionTotalNegativos"));
+
+		obj.setDataDuracion(one.get("dataDuracion", ArrayList.class));
+		obj.setDataDuracionPositivos(one.get("dataDuracionPositivos", ArrayList.class));
+		obj.setDataDuracionNegativos(one.get("dataDuracionNegativos", ArrayList.class));
+
+		obj.setDataPips(one.get("dataPips", ArrayList.class));
+		obj.setDataPipsPositivos(one.get("dataPipsPositivos", ArrayList.class));
+		obj.setDataPipsNegativos(one.get("dataPipsNegativos", ArrayList.class));
 
 		return obj;
 	}

@@ -312,7 +312,7 @@ public class OperacionesManager {
 				}
 				LogUtil.logTime("Individuo=" + individuo.getId() + ";Fecha apertura="
 						+ DateUtil.getDateString(individuo.getOrdenes().get(0).getOpenDate()), 1);
-				this.procesarMaximosReproceso(individuo);
+				this.procesarMaximosRetroceso(individuo);
 			}
 			individuos = operacionesDAO.consultarOperacionesIndividuoRetroceso(fechaMaximo);
 		}
@@ -337,7 +337,7 @@ public class OperacionesManager {
 		if (individuo.getCloseIndicators() == null) {
 			individuo.setCloseIndicators(new ArrayList<>());
 		}
-		this.procesarMaximosReproceso(individuo);
+		this.procesarMaximosRetroceso(individuo);
 	}
 
 	/**
@@ -347,14 +347,14 @@ public class OperacionesManager {
 	 * @throws SQLException
 	 * @throws GeneticDAOException 
 	 */
-	public void procesarMaximosReproceso(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
+	public void procesarMaximosRetroceso(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
 		OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
 		List<Order> ordenes = individuo.getOrdenes();
 		for (Order currentOrder : ordenes) {
 			if ((currentOrder != null) && (currentOrder.getOpenDate() != null)
 					&& (currentOrder.getCloseDate() != null)) {
 				calcularRetrocesoOrden(currentOrder);
-				operacionesDAO.updateMaximosReprocesoOperacion(individuo, currentOrder);
+				operacionesDAO.updateMaximosRetrocesoOperacion(individuo, currentOrder);
 			}
 		}
 		conn.commit();

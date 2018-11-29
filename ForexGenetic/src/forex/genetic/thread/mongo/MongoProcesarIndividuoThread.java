@@ -19,10 +19,10 @@ import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.dto.ProcesoEjecucionDTO;
-import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.manager.mongodb.MongoEstadisticasManager;
 import forex.genetic.manager.mongodb.MongoOperacionesManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -50,23 +50,6 @@ public class MongoProcesarIndividuoThread extends Thread {
 		super(name);
 		this.individuos = individuos;
 	}
-
-	public Date getMaxFechaHistorico() {
-		return maxFechaHistorico;
-	}
-
-	public void setMaxFechaHistorico(Date maxFechaHistorico) {
-		this.maxFechaHistorico = maxFechaHistorico;
-	}
-
-	public Date getMinFechaHistorico() {
-		return minFechaHistorico;
-	}
-
-	public void setMinFechaHistorico(Date minFechaHistorico) {
-		this.minFechaHistorico = minFechaHistorico;
-	}
-
 	@Override
 	public void run() {
 		try {
@@ -96,11 +79,12 @@ public class MongoProcesarIndividuoThread extends Thread {
 						DateUtil.adicionarMes(fechaMayorQue, 1));
 				boolean processed = true;
 
+				MongoEstadisticasManager estadisticasManager = new MongoEstadisticasManager(individuo);
 				while (processed && !fechaMenorOIgualQue.after(this.maxFechaHistorico)
 						&& fechaMenorOIgualQue.after(fechaMayorQue)) {
 					DateInterval intervaloFechasIndividuo = new DateInterval(fechaMayorQue, fechaMenorOIgualQue);
 
-					Date lastProcessedDate = procesarIndividuo(individuo, intervaloFechasIndividuo);
+					Date lastProcessedDate = procesarIndividuo(estadisticasManager, intervaloFechasIndividuo);
 					processed = (lastProcessedDate != null);
 					if (processed) {
 						fechaMayorQue = lastProcessedDate;
@@ -133,13 +117,12 @@ public class MongoProcesarIndividuoThread extends Thread {
 		return borrado;
 	}
 
-	private Date procesarIndividuo(MongoIndividuo individuo, DateInterval intervaloFechasIndividuo)
+	private Date procesarIndividuo(MongoEstadisticasManager estadisticasManager, DateInterval intervaloFechasIndividuo)
 			throws SQLException, ClassNotFoundException, ParseException, GeneticDAOException {
 
+		MongoIndividuo individuo = estadisticasManager.getIndividuo();
 		LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + intervaloFechasIndividuo.toString(), 1);
-
 		Order order = individuo.getCurrentOrder();
-		MongoEstadistica estadisticaAnterior = daoEstadisticas.getLast(individuo);
 		if (order == null) {
 			order = procesarNuevaOperacion(individuo, intervaloFechasIndividuo);
 		}
@@ -159,8 +142,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 
 			Date returnDate = procesarOperacionActiva(individuo, intervaloCierre);
 			Order closeOrder = individuo.getCurrentOrder();
-			MongoEstadistica estadisticaNueva = new MongoEstadistica();
-			//estadisticaNueva.add(closeOrder);
+			estadisticasManager.addOrder(closeOrder);
 			individuo.setCurrentOrder(null);
 			return returnDate;
 		}
@@ -223,6 +205,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 			List<MongoOrder> ordenes = operacionesManager.calcularOperaciones(points, individuo);
 			if ((ordenes != null) && (!ordenes.isEmpty())) {
 				MongoOrder closedOrder = ordenes.get(0);
+				operacionesManager.calcularRetrocesoOrden(closedOrder);
 				daoOperaciones.insertOrUpdate(closedOrder);
 				updateProcesoIndividuo(individuo, closedOrder, closedOrder.getCloseDate());
 			}
@@ -257,6 +240,23 @@ public class MongoProcesarIndividuoThread extends Thread {
 		} else {
 			return p2;
 		}
+	}
+
+
+	public Date getMaxFechaHistorico() {
+		return maxFechaHistorico;
+	}
+
+	public void setMaxFechaHistorico(Date maxFechaHistorico) {
+		this.maxFechaHistorico = maxFechaHistorico;
+	}
+
+	public Date getMinFechaHistorico() {
+		return minFechaHistorico;
+	}
+
+	public void setMinFechaHistorico(Date minFechaHistorico) {
+		this.minFechaHistorico = minFechaHistorico;
 	}
 
 }

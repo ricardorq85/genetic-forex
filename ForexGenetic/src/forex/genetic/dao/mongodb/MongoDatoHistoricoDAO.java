@@ -75,6 +75,37 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		}
 	}
 
+	@Override
+	public Point consultarRetroceso(Order order) throws GeneticDAOException {
+		List<Bson> filtros = new ArrayList<>();
+		Bson sort = null;
+		filtros.add(Filters.gt("fechaHistorico", order.getOpenDate()));
+		filtros.add(Filters.lte("fechaHistorico", order.getCloseDate()));
+		if (esVentaConPipsPositivos(order) || esCompraConPipsNegativos(order)) {
+			filtros.add(Filters.gt("high", order.getOpenOperationValue()));
+			sort = Sorts.descending("high");
+		} else {
+			filtros.add(Filters.lt("low", order.getOpenOperationValue()));
+			sort = Sorts.ascending("low");
+		}
+
+		Bson bsonFiltrosCompletos = Filters.and(filtros);
+		Document doc = this.collection.find(bsonFiltrosCompletos).sort(sort).limit(1).first();
+
+		Point p = getMapper().helpOne(doc);
+		return p;
+	}
+
+	private boolean esCompraConPipsNegativos(Order order) {
+		boolean isBuy = (order.getTipo().equals(Constants.OperationType.BUY));
+		return (isBuy) && (order.getPips() < 0);
+	}
+
+	private boolean esVentaConPipsPositivos(Order order) {
+		boolean isBuy = (order.getTipo().equals(Constants.OperationType.BUY));
+		return ((!isBuy) && (order.getPips() > 0));
+	}
+
 	public Date getFechaHistoricaMinima() {
 		Date fecha = null;
 		Document doc = this.collection
@@ -219,11 +250,8 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 			if (!filtrosDatosCalculados.isEmpty()) {
 				filtros.addAll(filtrosDatosCalculados);
 			} else if ((!filtrosIndicadorLow.isEmpty()) && (!filtrosIndicadorHigh.isEmpty())) {
-				filtros.add(Filters.or(Filters.and(filtrosIndicadorLow), 
-						Filters.and(filtrosIndicadorHigh),
-						Filters.and(filtrosIndicadorLowReves),
-						Filters.and(filtrosIndicadorHighReves)
-						));
+				filtros.add(Filters.or(Filters.and(filtrosIndicadorLow), Filters.and(filtrosIndicadorHigh),
+						Filters.and(filtrosIndicadorLowReves), Filters.and(filtrosIndicadorHighReves)));
 			}
 		}
 	}
@@ -308,10 +336,4 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	public DoubleInterval consultarMaximoMinimo(Date fecha1, Date fecha2) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
-
-	@Override
-	public Point consultarRetroceso(Order orden) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
 }
