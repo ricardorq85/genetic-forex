@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.manager.oracle.OracleOperacionesManager;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -50,7 +51,7 @@ public class RetrocesosManager {
     public void procesarMaximosRetroceso() throws ClassNotFoundException, SQLException, GeneticDAOException {
         conn = JDBCUtil.getConnection();
         try {
-            OperacionesManager operacionManager = new OperacionesManager(conn);
+            OperacionesManager operacionManager = new OracleOperacionesManager();
             operacionManager.procesarMaximosRetroceso(new Date());
         } finally {
             JDBCUtil.close(conn);

@@ -20,7 +20,7 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 		super("parametro", true);
 	}
 
-	public void configureCollection() throws GeneticDAOException {
+	public void configureCollection() {
 		IndexOptions indexOptions = new IndexOptions();
 		indexOptions.unique(true);
 
@@ -29,7 +29,7 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 		configureParameters();
 	}
 
-	private void configureParameters() throws GeneticDAOException {
+	private void configureParameters() {
 		String[] paramNames = { "SOURCE_EXPORTED_HISTORY_DATA_PATH", "PROCESSED_EXPORTED_HISTORY_DATA_PATH",
 				"EXPORTED_PROPERTY_FILE_NAME", "SOURCE_ESTRATEGIAS_PATH", "STEP_TENDENCIA", "INDIVIDUOS_X_TENDENCIA" };
 		Object[] paramvalues = {"", "", "", "", new Integer(150), new Integer(200)};
@@ -41,7 +41,11 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 			p.setFecha(new Date());
 
 			Parametro param = new Parametro(p);
-			insertIfNoExists(param);
+			try {
+				insertIfNoExists(param);
+			} catch (GeneticDAOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

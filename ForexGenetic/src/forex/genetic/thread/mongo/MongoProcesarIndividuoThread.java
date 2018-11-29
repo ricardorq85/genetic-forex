@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
-import forex.genetic.dao.mongodb.MongoEstadisticasIndividuoDAO;
 import forex.genetic.dao.mongodb.MongoIndividuoDAO;
 import forex.genetic.dao.mongodb.MongoOperacionesDAO;
 import forex.genetic.entities.DateInterval;
@@ -37,7 +36,6 @@ public class MongoProcesarIndividuoThread extends Thread {
 	private MongoDatoHistoricoDAO daoDatoHistorico;
 	private MongoOperacionesDAO daoOperaciones;
 	private MongoIndividuoDAO daoIndividuo;
-	private MongoEstadisticasIndividuoDAO daoEstadisticas;
 	private Date maxFechaHistorico = null;
 	private Date minFechaHistorico = null;
 
@@ -57,7 +55,6 @@ public class MongoProcesarIndividuoThread extends Thread {
 			daoDatoHistorico = new MongoDatoHistoricoDAO();
 			daoOperaciones = new MongoOperacionesDAO();
 			daoIndividuo = new MongoIndividuoDAO();
-			daoEstadisticas = new MongoEstadisticasIndividuoDAO();
 			for (MongoIndividuo individuo : individuos) {
 				runIndividuo(individuo);
 			}
@@ -241,7 +238,6 @@ public class MongoProcesarIndividuoThread extends Thread {
 			return p2;
 		}
 	}
-
 
 	public Date getMaxFechaHistorico() {
 		return maxFechaHistorico;

@@ -22,6 +22,7 @@ import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.OperacionesManager;
+import forex.genetic.manager.oracle.OracleOperacionesManager;
 import forex.genetic.proxy.ProcesosAlternosProxy;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -164,7 +165,7 @@ public class OracleProcesarIndividuoThread extends Thread {
 		}
 
 		daoIndividuo.consultarDetalleIndividuoProceso(individuo, this.maxFechaHistorico);
-		OperacionesManager operacionesManager = new OperacionesManager(conn);
+		OperacionesManager operacionesManager = new OracleOperacionesManager();
 		Date lastDate = fechaInicialHistorico;
 		if ((points != null) && (!points.isEmpty())) {
 			lastDate = points.get(points.size() - 1).getDate();

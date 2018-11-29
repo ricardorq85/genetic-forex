@@ -39,11 +39,11 @@ import forex.genetic.util.LogUtil;
  */
 public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDatoHistoricoDAO {
 
-	public MongoDatoHistoricoDAO() throws GeneticDAOException {
+	public MongoDatoHistoricoDAO() {
 		this(true);
 	}
 
-	public MongoDatoHistoricoDAO(boolean configure) throws GeneticDAOException {
+	public MongoDatoHistoricoDAO(boolean configure) {
 		super("datoHistorico", configure);
 	}
 

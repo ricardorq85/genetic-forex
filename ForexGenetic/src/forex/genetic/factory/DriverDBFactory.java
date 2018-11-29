@@ -14,14 +14,21 @@ import forex.genetic.util.jdbc.mongodb.ConnectionMongoDB;
 
 public class DriverDBFactory extends GeneticFactory {
 
+	@SuppressWarnings("rawtypes")
 	public static List<DataClient> createDataClient() throws GeneticDAOException {
 		List<DataClient> dc = new ArrayList<DataClient>(drivers.length);
 		for (int i = 0; i < drivers.length; i++) {
-			if ("oracle".equals(drivers[i])) {
-				dc.add(JDBCUtil.getDataClient());
-			} else if ("mongodb".equals(drivers[i])) {
-				dc.add(ConnectionMongoDB.getMongoDataClient());
-			}
+			dc.add(createDataClient(drivers[i]));
+		}
+		return dc;
+	}
+	
+	public static DataClient createDataClient(String name) throws GeneticDAOException {
+		DataClient dc = null;
+		if ("oracle".equals(name)) {
+			dc = JDBCUtil.getDataClient();
+		} else if ("mongodb".equals(name)) {
+			dc = ConnectionMongoDB.getMongoDataClient();
 		}
 		return dc;
 	}

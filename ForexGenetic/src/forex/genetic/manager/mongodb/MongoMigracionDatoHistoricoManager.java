@@ -70,10 +70,6 @@ public class MongoMigracionDatoHistoricoManager extends MigracionManager<Point> 
 
 	@Override
 	protected MongoGeneticDAO<Point> getDestinoDAO() throws GeneticBusinessException {
-		try {
-			return new MongoDatoHistoricoDAO(false);
-		} catch (GeneticDAOException e) {
-			throw new GeneticBusinessException("", e);
-		}
+		return new MongoDatoHistoricoDAO(false);
 	}
 }

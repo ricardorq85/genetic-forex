@@ -15,8 +15,8 @@ import java.util.List;
 import forex.genetic.dao.IndividuoTendenciaDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.dao.oracle.OracleOperacionesDAO;
-import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
+import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.AnalyzeProcesoTendencia;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
@@ -34,6 +34,7 @@ import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.helper.ParametroTendenciaGeneticaHelper;
 import forex.genetic.manager.indicator.IndicadorManager;
+import forex.genetic.manager.oracle.OracleOperacionesManager;
 import forex.genetic.thread.ProcessGeneracion;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
@@ -70,7 +71,7 @@ public class TendenciaGeneticaManager {
     public TendenciaGeneticaManager() throws ClassNotFoundException, SQLException, GeneticDAOException {
         this.indicadorController = ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.IndividuoTendencia);
         conn = JDBCUtil.getConnection();
-        operacionManager = new OperacionesManager();
+        operacionManager = new OracleOperacionesManager();
         operacionesDAO = new OracleOperacionesDAO(conn);
         datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
         parametroDAO = new OracleParametroDAO(conn);

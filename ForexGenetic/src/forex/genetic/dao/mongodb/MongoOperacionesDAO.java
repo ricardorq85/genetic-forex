@@ -15,6 +15,7 @@ import forex.genetic.dao.IOperacionesDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Estadistica;
 import forex.genetic.entities.Individuo;
+import forex.genetic.entities.Order;
 import forex.genetic.entities.ParametroOperacionPeriodo;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
@@ -136,5 +137,6 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	public void actualizarOperacionesPositivasYNegativas() throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
+
 
 }

@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.Order;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.PropertiesManager;
 

@@ -39,7 +39,7 @@ public interface IOperacionesDAO<E extends Order> extends IGeneticDAO<E> {
 
 	public void update(Individuo individuo, E operacion, Date fechaApertura) throws GeneticDAOException;
 
-	public void updateMaximosRetrocesoOperacion(Individuo individuo, E operacion) throws GeneticDAOException;
+	public void updateMaximosRetrocesoOperacion(Individuo individuo, E currentOrder) throws GeneticDAOException;
 
 	public void insert(Individuo individuo, List<E> operaciones) throws GeneticDAOException;
 

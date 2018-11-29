@@ -5,16 +5,19 @@ import java.sql.Connection;
 import forex.genetic.dao.IDatoHistoricoDAO;
 import forex.genetic.dao.IGeneticDAO;
 import forex.genetic.dao.IIndividuoDAO;
+import forex.genetic.dao.IOperacionesDAO;
 import forex.genetic.dao.IParametroDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.dao.oracle.OracleIndividuoDAO;
+import forex.genetic.dao.oracle.OracleOperacionesDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.Order;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.exception.GeneticDAOException;
 
-public class OracleDataClient extends DataClient<Connection, IndividuoEstrategia> {
+public class OracleDataClient extends DataClient<Connection, IndividuoEstrategia, Order> {
 
 	public OracleDataClient(Connection client) {
 		super(client);
@@ -50,5 +53,14 @@ public class OracleDataClient extends DataClient<Connection, IndividuoEstrategia
 			daoIndividuo = new OracleIndividuoDAO(client);
 		}
 		return daoIndividuo;
+	}
+
+	@Override
+	public IOperacionesDAO<Order> getDaoOperaciones() throws GeneticDAOException {
+		if (daoOperacion == null) {
+			daoOperacion = new OracleOperacionesDAO(client);
+		}
+		return daoOperacion;
+
 	}
 }

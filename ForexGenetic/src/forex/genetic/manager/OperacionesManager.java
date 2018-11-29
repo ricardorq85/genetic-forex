@@ -1,13 +1,12 @@
 package forex.genetic.manager;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
-import forex.genetic.dao.oracle.OracleOperacionesDAO;
+import forex.genetic.dao.IDatoHistoricoDAO;
+import forex.genetic.dao.IOperacionesDAO;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Interval;
@@ -20,15 +19,15 @@ import forex.genetic.util.Constants.OperationType;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.NumberUtil;
+import forex.genetic.util.jdbc.DataClient;
 
 /**
  *
  * @author ricardorq85
  */
-public class OperacionesManager {
+public abstract class OperacionesManager {
 
-	private Connection conn = null;
-	private final OperationController operationController = new OperationController();
+	protected final OperationController operationController = new OperationController();
 
 	/**
 	 *
@@ -36,14 +35,9 @@ public class OperacionesManager {
 	public OperacionesManager() {
 	}
 
-	/**
-	 *
-	 * @param conn
-	 */
-	public OperacionesManager(Connection conn) {
-		this.conn = conn;
-	}
 
+	protected abstract DataClient getDataClient() throws GeneticDAOException;
+	
 	/**
 	 *
 	 * @param individuo
@@ -279,14 +273,6 @@ public class OperacionesManager {
 												: (resultInterval.getLowInterval() + resultInterval.getHighInterval())
 														/ 2;
 				price = this.calculatePrice(tipoOperacion, precioBase, PropertiesManager.getPipsFixer());
-				/*
-				 * if (tipoOperacion.equals(OperationType.BUY)) { price +=
-				 * PropertiesManager.getPipsFixer() /
-				 * PropertiesManager.getPairFactor(); } else { price -=
-				 * PropertiesManager.getPipsFixer() /
-				 * PropertiesManager.getPairFactor(); } price =
-				 * NumberUtil.round(price);
-				 */
 			}
 		}
 		return price;
@@ -297,10 +283,11 @@ public class OperacionesManager {
 	 * @param fechaMaximo
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
-	 * @throws GeneticDAOException 
+	 * @throws GeneticDAOException
 	 */
-	public void procesarMaximosRetroceso(Date fechaMaximo) throws ClassNotFoundException, SQLException, GeneticDAOException {
-		OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
+	public void procesarMaximosRetroceso(Date fechaMaximo)
+			throws ClassNotFoundException, SQLException, GeneticDAOException {
+		IOperacionesDAO<? extends Order> operacionesDAO = getDataClient().getDaoOperaciones();
 		List<Individuo> individuos = operacionesDAO.consultarOperacionesIndividuoRetroceso(fechaMaximo);
 		while ((individuos != null) && (!individuos.isEmpty())) {
 			for (Individuo individuo : individuos) {
@@ -324,11 +311,11 @@ public class OperacionesManager {
 	 * @param fechaMaximo
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
-	 * @throws GeneticDAOException 
+	 * @throws GeneticDAOException
 	 */
 	public void procesarMaximosRetroceso(Individuo individuo, Date fechaMaximo)
 			throws ClassNotFoundException, SQLException, GeneticDAOException {
-		OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
+		IOperacionesDAO<? extends Order> operacionesDAO = getDataClient().getDaoOperaciones();
 		individuo = operacionesDAO.consultarOperacionesIndividuoRetroceso(individuo, fechaMaximo);
 
 		if (individuo.getOpenIndicators() == null) {
@@ -345,10 +332,12 @@ public class OperacionesManager {
 	 * @param individuo
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
-	 * @throws GeneticDAOException 
+	 * @throws GeneticDAOException
 	 */
-	public void procesarMaximosRetroceso(Individuo individuo) throws ClassNotFoundException, SQLException, GeneticDAOException {
-		OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
+	public void procesarMaximosRetroceso(Individuo individuo)
+			throws ClassNotFoundException, SQLException, GeneticDAOException {
+		@SuppressWarnings("unchecked")
+		IOperacionesDAO<Order> operacionesDAO = getDataClient().getDaoOperaciones();
 		List<Order> ordenes = individuo.getOrdenes();
 		for (Order currentOrder : ordenes) {
 			if ((currentOrder != null) && (currentOrder.getOpenDate() != null)
@@ -357,11 +346,11 @@ public class OperacionesManager {
 				operacionesDAO.updateMaximosRetrocesoOperacion(individuo, currentOrder);
 			}
 		}
-		conn.commit();
+		operacionesDAO.commit();
 	}
 
-	public void calcularRetrocesoOrden(Order currentOrder) throws SQLException, GeneticDAOException {
-		OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
+	public void calcularRetrocesoOrden(Order currentOrder) throws GeneticDAOException {
+		IDatoHistoricoDAO datoHistoricoDAO = getDataClient().getDaoDatoHistorico();
 		Point pointRetroceso = datoHistoricoDAO.consultarRetroceso(currentOrder);
 		if (pointRetroceso != null) {
 			boolean isBuy = (currentOrder.getTipo().equals(Constants.OperationType.BUY));
@@ -369,8 +358,6 @@ public class OperacionesManager {
 					|| ((isBuy) && (currentOrder.getPips() < 0)))) ? pointRetroceso.getHigh()
 							: pointRetroceso.getLow());
 
-			// double valueRetroceso = ((currentOrder.getPips() > 0) ?
-			// pointRetroceso.getHigh() : pointRetroceso.getLow());
 			double pips = (currentOrder.getTipo().equals(Constants.OperationType.BUY))
 					? (valueRetroceso - currentOrder.getOpenOperationValue()) * PropertiesManager.getPairFactor()
 					: (-valueRetroceso + currentOrder.getOpenOperationValue()) * PropertiesManager.getPairFactor();
@@ -384,4 +371,5 @@ public class OperacionesManager {
 			currentOrder.setMaxFechaRetroceso(null);
 		}
 	}
+
 }

@@ -23,7 +23,7 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 	private MongoMapper<E> mapper;
 	protected MongoCollection<Document> collection = null;
 
-	public MongoGeneticDAO(String collectionName, boolean configure) throws GeneticDAOException {
+	public MongoGeneticDAO(String collectionName, boolean configure) {
 		this.setCollectionName(collectionName);
 		this.collection = ConnectionMongoDB.getDatabase().getCollection(collectionName);
 		this.setMapper((MongoMapper<E>) MongoMapperFactory.get(collectionName));
@@ -33,7 +33,7 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 		}
 	}
 
-	public abstract void configureCollection() throws GeneticDAOException;
+	public abstract void configureCollection();
 
 	public void insertMany(List<? extends E> datos) {
 		List<Document> docs = getMapper().toMap(datos);
