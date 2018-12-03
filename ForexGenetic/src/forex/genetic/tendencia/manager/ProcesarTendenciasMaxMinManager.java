@@ -25,6 +25,7 @@ import forex.genetic.entities.Point;
 import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.exception.GeneticException;
+import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.manager.OperacionesManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.oracle.OracleOperacionesManager;
@@ -50,7 +51,7 @@ public class ProcesarTendenciasMaxMinManager {
      */
     public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, GeneticException {
         conn = JDBCUtil.getConnection();
-        OperacionesManager operacionManager = new OracleOperacionesManager();
+        OperacionesManager operacionManager = new OracleOperacionesManager(DriverDBFactory.createOracleDataClient(conn));
         TendenciasManager tendenciasManager = new TendenciasManager();
         OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
         OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);

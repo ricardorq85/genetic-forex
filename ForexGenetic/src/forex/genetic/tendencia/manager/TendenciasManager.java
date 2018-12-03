@@ -25,6 +25,7 @@ import forex.genetic.entities.Tendencia;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.ControllerFactory;
+import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.manager.OperacionesManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.controller.IndicadorController;
@@ -140,7 +141,7 @@ public class TendenciasManager {
 
 	private void calcularTendenciasFacade(Date fechaInicio, Date fechaFin, int stepTendencia, int filasTendencia)
 			throws ClassNotFoundException, SQLException, GeneticException {
-		OperacionesManager operacionManager = new OracleOperacionesManager();
+		OperacionesManager operacionManager = new OracleOperacionesManager(DriverDBFactory.createOracleDataClient(conn));
 		OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
 		OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
 		OracleParametroDAO parametroDAO = new OracleParametroDAO(conn);

@@ -8,8 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.entities.Order;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.PropertiesManager;
 
@@ -20,12 +18,15 @@ import forex.genetic.manager.PropertiesManager;
 public class JDBCUtil {
 
 	public synchronized static OracleDataClient getDataClient() throws GeneticDAOException {
-		OracleDataClient client;
 		try {
-			client = new OracleDataClient(getConnection());
+			return getDataClient(getConnection());
 		} catch (ClassNotFoundException | SQLException e) {
 			throw new GeneticDAOException("Error creando DataClient", e);
 		}
+	}
+
+	public synchronized static OracleDataClient getDataClient(Connection c) throws GeneticDAOException {
+		OracleDataClient client = new OracleDataClient(c);
 		return client;
 	}
 

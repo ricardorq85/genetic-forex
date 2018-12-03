@@ -1,5 +1,6 @@
 package forex.genetic.factory;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import forex.genetic.manager.mongodb.MongoProcesoIndividuoManager;
 import forex.genetic.manager.oracle.OracleProcesoIndividuoManager;
 import forex.genetic.util.jdbc.DataClient;
 import forex.genetic.util.jdbc.JDBCUtil;
+import forex.genetic.util.jdbc.OracleDataClient;
 import forex.genetic.util.jdbc.mongodb.ConnectionMongoDB;
 
 public class DriverDBFactory extends GeneticFactory {
@@ -30,6 +32,11 @@ public class DriverDBFactory extends GeneticFactory {
 		} else if ("mongodb".equals(name)) {
 			dc = ConnectionMongoDB.getMongoDataClient();
 		}
+		return dc;
+	}
+	
+	public static DataClient createOracleDataClient(Connection c) throws GeneticDAOException {
+		OracleDataClient dc = JDBCUtil.getDataClient(c);
 		return dc;
 	}
 

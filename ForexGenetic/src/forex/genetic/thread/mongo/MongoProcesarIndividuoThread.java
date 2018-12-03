@@ -21,10 +21,12 @@ import forex.genetic.entities.dto.ProcesoEjecucionDTO;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.manager.mongodb.MongoEstadisticasManager;
 import forex.genetic.manager.mongodb.MongoOperacionesManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
+import forex.genetic.util.jdbc.DataClient;
 
 /**
  *
@@ -38,6 +40,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 	private MongoIndividuoDAO daoIndividuo;
 	private Date maxFechaHistorico = null;
 	private Date minFechaHistorico = null;
+	private DataClient dataClient = null;
 
 	/**
 	 *
@@ -53,9 +56,10 @@ public class MongoProcesarIndividuoThread extends Thread {
 	public void run() {
 		try {
 			LogUtil.logTime("Inicia proceso para " + super.getName(), 1);
-			daoDatoHistorico = new MongoDatoHistoricoDAO();
-			daoOperaciones = new MongoOperacionesDAO();
-			daoIndividuo = new MongoIndividuoDAO();
+			dataClient = DriverDBFactory.createDataClient("mongodb");
+			daoDatoHistorico = (MongoDatoHistoricoDAO) dataClient.getDaoDatoHistorico();
+			daoOperaciones = (MongoOperacionesDAO) dataClient.getDaoOperaciones();
+			daoIndividuo = (MongoIndividuoDAO) dataClient.getDaoIndividuo();
 			for (MongoIndividuo individuo : individuos) {
 				runIndividuo(individuo);
 			}
@@ -170,7 +174,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 			points.add(puntoAnterior);
 			points.add(puntoApertura);
 
-			MongoOperacionesManager operacionesManager = new MongoOperacionesManager();
+			MongoOperacionesManager operacionesManager = new MongoOperacionesManager(dataClient);
 			List<MongoOrder> ordenes = operacionesManager.calcularOperaciones(points, individuo);
 			if ((ordenes != null) && (!ordenes.isEmpty())) {
 				order = ordenes.get(0);
@@ -201,7 +205,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 			points = new ArrayList<Point>(2);
 			points.add(puntoAnterior);
 			points.add(puntoCierre);
-			MongoOperacionesManager operacionesManager = new MongoOperacionesManager();
+			MongoOperacionesManager operacionesManager = new MongoOperacionesManager(dataClient);
 			List<MongoOrder> ordenes = operacionesManager.calcularOperaciones(points, individuo);
 			if ((ordenes != null) && (!ordenes.isEmpty())) {
 				MongoOrder closedOrder = ordenes.get(0);

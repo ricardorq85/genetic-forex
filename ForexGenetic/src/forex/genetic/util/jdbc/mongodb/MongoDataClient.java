@@ -63,4 +63,8 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 		}
 		return daoOperacion;
 	}
+
+	@Override
+	public void close() throws GeneticDAOException {
+	}
 }

@@ -6,8 +6,6 @@ import java.util.List;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.mongo.MongoOrder;
-import forex.genetic.exception.GeneticDAOException;
-import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.manager.OperacionesManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants;
@@ -20,12 +18,9 @@ import forex.genetic.util.jdbc.DataClient;
  */
 public class MongoOperacionesManager extends OperacionesManager {
 
-	public MongoOperacionesManager() {
+	public MongoOperacionesManager(DataClient dc) {
+		super(dc);
 	}
-	
-	protected DataClient getDataClient() throws GeneticDAOException {
-		return DriverDBFactory.createDataClient("mongodb"); 
-	}		
 
 	public List<MongoOrder> calcularOperaciones(List<Point> points, Individuo individuo) {
 		List<MongoOrder> ordenes = new ArrayList<MongoOrder>();

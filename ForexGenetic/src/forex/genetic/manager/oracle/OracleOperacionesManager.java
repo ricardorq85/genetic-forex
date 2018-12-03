@@ -1,7 +1,5 @@
 package forex.genetic.manager.oracle;
 
-import forex.genetic.exception.GeneticDAOException;
-import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.manager.OperacionesManager;
 import forex.genetic.util.jdbc.DataClient;
 
@@ -11,13 +9,8 @@ import forex.genetic.util.jdbc.DataClient;
  */
 public class OracleOperacionesManager extends OperacionesManager {
 
-	/**
-	 *
-	 */
-	public OracleOperacionesManager() {
+	public OracleOperacionesManager(DataClient dc) {
+		super(dc);
 	}
 
-	protected DataClient getDataClient() throws GeneticDAOException {
-		return DriverDBFactory.createDataClient("oracle");
-	}
 }

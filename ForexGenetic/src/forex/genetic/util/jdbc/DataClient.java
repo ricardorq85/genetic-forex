@@ -32,6 +32,8 @@ public abstract class DataClient<C, I extends IndividuoEstrategia, O extends Ord
 		this.client = client;
 	}
 
+	public abstract void close() throws GeneticDAOException;
+
 	public abstract IDatoHistoricoDAO getDaoDatoHistorico() throws GeneticDAOException;
 
 	public abstract IGeneticDAO<Tendencia> getDaoTendencia() throws GeneticDAOException;
@@ -39,6 +41,6 @@ public abstract class DataClient<C, I extends IndividuoEstrategia, O extends Ord
 	public abstract IParametroDAO getDaoParametro() throws GeneticDAOException;
 
 	public abstract IIndividuoDAO<I> getDaoIndividuo() throws GeneticDAOException;
-	
+
 	public abstract IOperacionesDAO<O> getDaoOperaciones() throws GeneticDAOException;
 }

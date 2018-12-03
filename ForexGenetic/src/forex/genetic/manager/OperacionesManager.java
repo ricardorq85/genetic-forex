@@ -29,15 +29,14 @@ public abstract class OperacionesManager {
 
 	protected final OperationController operationController = new OperationController();
 
-	/**
-	 *
-	 */
-	public OperacionesManager() {
+	@SuppressWarnings("rawtypes")
+	protected DataClient dataClient;
+
+	@SuppressWarnings("rawtypes")
+	public OperacionesManager(DataClient dc) {
+		dataClient = dc;
 	}
 
-
-	protected abstract DataClient getDataClient() throws GeneticDAOException;
-	
 	/**
 	 *
 	 * @param individuo
@@ -287,7 +286,7 @@ public abstract class OperacionesManager {
 	 */
 	public void procesarMaximosRetroceso(Date fechaMaximo)
 			throws ClassNotFoundException, SQLException, GeneticDAOException {
-		IOperacionesDAO<? extends Order> operacionesDAO = getDataClient().getDaoOperaciones();
+		IOperacionesDAO<? extends Order> operacionesDAO = dataClient.getDaoOperaciones();
 		List<Individuo> individuos = operacionesDAO.consultarOperacionesIndividuoRetroceso(fechaMaximo);
 		while ((individuos != null) && (!individuos.isEmpty())) {
 			for (Individuo individuo : individuos) {
@@ -315,7 +314,7 @@ public abstract class OperacionesManager {
 	 */
 	public void procesarMaximosRetroceso(Individuo individuo, Date fechaMaximo)
 			throws ClassNotFoundException, SQLException, GeneticDAOException {
-		IOperacionesDAO<? extends Order> operacionesDAO = getDataClient().getDaoOperaciones();
+		IOperacionesDAO<? extends Order> operacionesDAO = dataClient.getDaoOperaciones();
 		individuo = operacionesDAO.consultarOperacionesIndividuoRetroceso(individuo, fechaMaximo);
 
 		if (individuo.getOpenIndicators() == null) {
@@ -337,7 +336,7 @@ public abstract class OperacionesManager {
 	public void procesarMaximosRetroceso(Individuo individuo)
 			throws ClassNotFoundException, SQLException, GeneticDAOException {
 		@SuppressWarnings("unchecked")
-		IOperacionesDAO<Order> operacionesDAO = getDataClient().getDaoOperaciones();
+		IOperacionesDAO<Order> operacionesDAO = dataClient.getDaoOperaciones();
 		List<Order> ordenes = individuo.getOrdenes();
 		for (Order currentOrder : ordenes) {
 			if ((currentOrder != null) && (currentOrder.getOpenDate() != null)
@@ -350,7 +349,7 @@ public abstract class OperacionesManager {
 	}
 
 	public void calcularRetrocesoOrden(Order currentOrder) throws GeneticDAOException {
-		IDatoHistoricoDAO datoHistoricoDAO = getDataClient().getDaoDatoHistorico();
+		IDatoHistoricoDAO datoHistoricoDAO = dataClient.getDaoDatoHistorico();
 		Point pointRetroceso = datoHistoricoDAO.consultarRetroceso(currentOrder);
 		if (pointRetroceso != null) {
 			boolean isBuy = (currentOrder.getTipo().equals(Constants.OperationType.BUY));

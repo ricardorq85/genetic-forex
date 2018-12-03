@@ -1,6 +1,7 @@
 package forex.genetic.util.jdbc;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import forex.genetic.dao.IDatoHistoricoDAO;
 import forex.genetic.dao.IGeneticDAO;
@@ -62,5 +63,14 @@ public class OracleDataClient extends DataClient<Connection, IndividuoEstrategia
 		}
 		return daoOperacion;
 
+	}
+
+	@Override
+	public void close() throws GeneticDAOException {
+		try {
+			client.close();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("close connection", e);
+		}
 	}
 }
