@@ -9,6 +9,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
@@ -98,7 +99,7 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 			for (int j = 0; j < nombresCalculados.length; j++) {
 				String indexName = new StringBuilder(indexNamePrefix).append(".").append(nombresCalculados[j])
 						.toString();
-				//LogUtil.logTime("Index: " + indexName, 1);
+				// LogUtil.logTime("Index: " + indexName, 1);
 				this.collection.createIndex(Indexes.ascending(indexName));
 			}
 		}
@@ -393,6 +394,21 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	}
 
 	@Override
+	public List<? extends Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2)
+			throws GeneticDAOException {
+		//final double FACTOR_NUMERO_RANDOM_TENDENCIAS = 0.3;
+		// TODO Parametro de entrada, o calcular acá
+		int numeroRegistros = 10;
+		Bson filtros = Filters.and(Filters.gte("fechaHistorico", fechaBase1),
+				Filters.lte("fechaHistorico", fechaBase2));
+		Bson sorts = Sorts.orderBy(Sorts.descending("high"), Sorts.ascending("fechaHistorico"));
+		MongoCursor<Document> cursor = this.collection.aggregate(
+				Arrays.asList(Aggregates.match(filtros), Aggregates.sample(numeroRegistros), Aggregates.sort(sorts)))
+				.iterator();
+		return getMapper().helpList(cursor);
+	}
+
+	@Override
 	public List<Date> consultarPuntosApertura(Date fechaMayorQue, String idIndividuo) throws GeneticDAOException {
 		throw new UnsupportedOperationException(
 				"MongoDatoHistoricoDAO.consultarPuntosApertura no soportado. Se debe usar consultarProximoPuntoApertura");
@@ -436,11 +452,6 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 
 	@Override
 	public List<Point> consultarHistorico(Date fechaBase1, Date fechaBase2) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
-	public List<Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 

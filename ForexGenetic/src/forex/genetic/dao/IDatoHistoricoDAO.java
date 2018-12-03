@@ -32,15 +32,15 @@ public interface IDatoHistoricoDAO extends IGeneticDAO<Point> {
 
 	public Date getFechaHistoricaMaxima() throws GeneticDAOException;
 
-	public List<Point> consultarHistorico(Date fechaBase1, Date fechaBase2) throws GeneticDAOException;
+	public List<? extends Point> consultarHistorico(Date fechaBase1, Date fechaBase2) throws GeneticDAOException;
 
-	public List<Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2) throws GeneticDAOException;
+	public List<? extends Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2) throws GeneticDAOException;
 
-	public List<Point> consultarHistorico(Date fechaBase) throws GeneticDAOException;
+	public List<? extends Point> consultarHistorico(Date fechaBase) throws GeneticDAOException;
 
-	public List<Point> consultarPuntoByLow(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException;
+	public List<? extends Point> consultarPuntoByLow(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException;
 
-	public List<Point> consultarPuntoByHigh(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException;
+	public List<? extends Point> consultarPuntoByHigh(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException;
 
 	public DoubleInterval consultarMaximoMinimo(Date fecha1, Date fecha2) throws GeneticDAOException;
 

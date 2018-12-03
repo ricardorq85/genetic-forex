@@ -5,20 +5,26 @@ import java.util.Date;
 import java.util.List;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.Sorts;
 
 import forex.genetic.dao.IOperacionesDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Estadistica;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
+import forex.genetic.entities.ParametroConsultaEstadistica;
 import forex.genetic.entities.ParametroOperacionPeriodo;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.util.DateUtil;
 
 /**
  *
@@ -82,11 +88,6 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	}
 
 	@Override
-	public Estadistica consultarEstadisticasIndividuo(Individuo individuo) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
 	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
@@ -97,9 +98,14 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, Date fechaFin, int filas)
+	public List<? extends Order> consultarOperacionesActivas(Date fechaBase, Date fechaFin, int filas)
 			throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
+		Bson filtros = Filters.and(Filters.lt("fechaApertura", fechaBase),
+				Filters.gt("fechaApertura", DateUtil.adicionarDias(fechaBase, -30)),
+				Filters.or(Filters.exists("fechaCierre", false), Filters.gt("fechaCierre", fechaBase)));
+		Bson sorts = Sorts.orderBy(Sorts.ascending("fechaApertura"));
+		MongoCursor<Document> cursor = this.collection.find(filtros).sort(sorts).limit(filas).iterator();
+		return getMapper().helpList(cursor);
 	}
 
 	@Override
@@ -138,5 +144,10 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
+	@Override
+	public Estadistica consultarEstadisticasIndividuo(Individuo individuo,
+			ParametroConsultaEstadistica parametroConsultaEstadistica) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
 
 }

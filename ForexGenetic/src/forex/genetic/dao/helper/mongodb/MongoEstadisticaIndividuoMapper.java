@@ -16,7 +16,6 @@ public class MongoEstadisticaIndividuoMapper extends MongoMapper<MongoEstadistic
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		objectMap.put("idIndividuo", obj.getIdIndividuo());
 		objectMap.put("fechaInicial", obj.getFechaInicial());
-		//objectMap.put("fechaFinal", obj.getFechaFinal());
 		return objectMap;
 	}
 

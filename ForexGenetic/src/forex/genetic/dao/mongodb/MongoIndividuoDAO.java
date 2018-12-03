@@ -33,6 +33,7 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		this.collection.createIndex(Indexes.ascending("idIndividuo"), indexOptions);
 	}
 
+	@Override
 	public MongoIndividuo consultarById(String idIndividuo) {
 		MongoIndividuo obj = null;
 		MongoCursor<Document> cursor = this.collection.find(Filters.eq("idIndividuo", idIndividuo)).iterator();
@@ -50,13 +51,13 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		Bson ordenador = Sorts.orderBy(Sorts.ascending("procesoEjecucion.maxFechaHistorico"),
 				Sorts.descending("idIndividuo"));
 		
-		Bson filtroIndividuo = Filters.eq("idIndividuo","1394841600000.83");
+		//Bson filtroIndividuo = Filters.eq("idIndividuo","1394841600000.83");
 		Bson filtroCompleto = filtroOr; //Filters.and(filtroIndividuo, filtroOr);
 
 		MongoCursor<Document> cursor = collection.find(filtroCompleto).sort(ordenador).limit(10).iterator();
 		return getMapper().helpList(cursor);
 	}
-
+	
 	@Override
 	public void crearVistaIndicadoresIndividuo(String viewName, String idIndividuo) throws GeneticDAOException {
 		// TODO Auto-generated method stub

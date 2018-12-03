@@ -24,7 +24,7 @@ public class DriverDBFactory extends GeneticFactory {
 		}
 		return dc;
 	}
-	
+
 	public static DataClient createDataClient(String name) throws GeneticDAOException {
 		DataClient dc = null;
 		if ("oracle".equals(name)) {
@@ -34,7 +34,7 @@ public class DriverDBFactory extends GeneticFactory {
 		}
 		return dc;
 	}
-	
+
 	public static DataClient createOracleDataClient(Connection c) throws GeneticDAOException {
 		OracleDataClient dc = JDBCUtil.getDataClient(c);
 		return dc;
@@ -57,7 +57,7 @@ public class DriverDBFactory extends GeneticFactory {
 //		return daos;
 //	}
 
-	public static IGeneticManager[] createManager(String entidad) throws GeneticBusinessException {
+	public static IGeneticManager[] createManager(String entidad) throws GeneticBusinessException, GeneticDAOException {
 		IGeneticManager[] instances = new IGeneticManager[drivers.length];
 		for (int i = 0; i < drivers.length; i++) {
 			if ("oracle".equals(drivers[i])) {
@@ -69,10 +69,10 @@ public class DriverDBFactory extends GeneticFactory {
 		return instances;
 	}
 
-	private static IGeneticManager createOracleManager(String entidad) {
+	private static IGeneticManager createOracleManager(String entidad) throws GeneticDAOException {
 		IGeneticManager instance = null;
 		if ("procesoIndividuo".equals(entidad)) {
-			instance = new OracleProcesoIndividuoManager();
+			instance = new OracleProcesoIndividuoManager(createDataClient("oracle"));
 		} else {
 			throw new IllegalArgumentException(
 					new StringBuilder("Entidad no soportada para crear MANAGER: ").append(entidad).toString());
@@ -80,10 +80,10 @@ public class DriverDBFactory extends GeneticFactory {
 		return instance;
 	}
 
-	private static IGeneticManager createMongoManager(String entidad) throws GeneticBusinessException {
+	private static IGeneticManager createMongoManager(String entidad) throws GeneticBusinessException, GeneticDAOException {
 		IGeneticManager instance = null;
 		if ("procesoIndividuo".equals(entidad)) {
-			instance = new MongoProcesoIndividuoManager();
+			instance = new MongoProcesoIndividuoManager(createDataClient("mongodb"));
 		} else {
 			throw new IllegalArgumentException(
 					new StringBuilder("Entidad no soportada para crear MANAGER: ").append(entidad).toString());

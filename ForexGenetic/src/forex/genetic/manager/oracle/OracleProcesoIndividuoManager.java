@@ -7,19 +7,18 @@ package forex.genetic.manager.oracle;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
-import forex.genetic.dao.oracle.OracleProcesoEjecucionDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.ProcesoIndividuoManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.thread.oracle.OracleProcesarIndividuoThread;
-import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.ThreadUtil;
+import forex.genetic.util.jdbc.DataClient;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -30,32 +29,17 @@ public class OracleProcesoIndividuoManager extends ProcesoIndividuoManager {
 
 	private Connection conn;
 
-	public OracleProcesoIndividuoManager() {
-		try {
-			conn = JDBCUtil.getConnection();
-			poblacionDAO = new OracleProcesoEjecucionDAO(conn);
-			dhDAO = new OracleDatoHistoricoDAO(conn);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void process() throws GeneticBusinessException {
-		this.process(false);
+	public OracleProcesoIndividuoManager(DataClient dc) {
+		super(dc);
 	}
 
 	public void process(boolean onlyOne) throws GeneticBusinessException {
 		boolean any;
+		// maxFechaHistorico = DateUtil.adicionarDias(dhDAO.getFechaHistoricaMaxima(),
+		// -10);
 		try {
-			//maxFechaHistorico = DateUtil.adicionarDias(dhDAO.getFechaHistoricaMaxima(), -10);
-			maxFechaHistorico = dhDAO.getFechaHistoricaMaxima();
-			minFechaHistorico = dhDAO.getFechaHistoricaMinima();
-		} catch (GeneticDAOException e) {
-			throw new GeneticBusinessException("process fechas", e);
-		}
-		try {
+			Date maxFechaHistorico = dataClient.getDaoDatoHistorico().getFechaHistoricaMaxima();
+			Date minFechaHistorico = dataClient.getDaoDatoHistorico().getFechaHistoricaMinima();
 			do {
 				any = false;
 				List<Thread> threads = new ArrayList<>();
@@ -63,7 +47,8 @@ public class OracleProcesoIndividuoManager extends ProcesoIndividuoManager {
 				String filtroAdicional = PropertiesManager.getPropertyString("FILTRO_ADICIONAL_" + countFiltro);
 				while (filtroAdicional != null) {
 					LogUtil.logTime("Obteniendo individuos para el filtro " + countFiltro + ": " + filtroAdicional, 1);
-					List<Individuo> individuos = poblacionDAO.getIndividuos(filtroAdicional, maxFechaHistorico);
+					List<Individuo> individuos = dataClient.getDaoProcesoEjecucion().getIndividuos(filtroAdicional,
+							maxFechaHistorico);
 					if ((individuos != null) && (!individuos.isEmpty())) {
 						OracleProcesarIndividuoThread procesarIndividuoThread = new OracleProcesarIndividuoThread(
 								"FILTRO_ADICIONAL_" + countFiltro, individuos);

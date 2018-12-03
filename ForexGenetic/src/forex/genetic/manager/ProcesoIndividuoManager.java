@@ -6,11 +6,8 @@ package forex.genetic.manager;
 
 import java.util.Date;
 
-import forex.genetic.dao.IDatoHistoricoDAO;
-import forex.genetic.dao.IIndividuoDAO;
-import forex.genetic.dao.IProcesoEjecucionDAO;
-import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.exception.GeneticBusinessException;
+import forex.genetic.util.jdbc.DataClient;
 
 /**
  *
@@ -18,13 +15,10 @@ import forex.genetic.exception.GeneticBusinessException;
  */
 public abstract class ProcesoIndividuoManager implements IGeneticManager {
 
-	protected IProcesoEjecucionDAO poblacionDAO;
-	protected IIndividuoDAO<? extends IndividuoEstrategia> individuoDAO;
-	protected IDatoHistoricoDAO dhDAO;
-	protected Date maxFechaHistorico;
-	protected Date minFechaHistorico;
+	protected DataClient dataClient;
 
-	public ProcesoIndividuoManager() {
+	public ProcesoIndividuoManager(DataClient dc) {
+		this.dataClient = dc;
 	}
 
 	public void process() throws GeneticBusinessException {

@@ -29,15 +29,17 @@ public class MultiplePoblacionFacade extends PoblacionFacade {
 	}
 
 	public void process(boolean onlyOne) throws GeneticBusinessException {
-		IGeneticManager[] managers = DriverDBFactory.createManager("procesoIndividuo");
-		Thread[] threads = new Thread[managers.length];
-		for (int i = 0; i < managers.length; i++) {
-			ProcesoIndividuoManager manager = (ProcesoIndividuoManager)managers[i];
-			try {
-				manager.process(onlyOne);
-			} catch (GeneticBusinessException e) {
-				e.printStackTrace();
-			}
+		IGeneticManager[] managers;
+		try {
+			managers = DriverDBFactory.createManager("procesoIndividuo");
+			Thread[] threads = new Thread[managers.length];
+			for (int i = 0; i < managers.length; i++) {
+				ProcesoIndividuoManager manager = (ProcesoIndividuoManager) managers[i];
+				try {
+					manager.process(onlyOne);
+				} catch (GeneticBusinessException e) {
+					e.printStackTrace();
+				}
 
 //			Runnable runner = new Runnable() {
 //				@Override
@@ -51,8 +53,12 @@ public class MultiplePoblacionFacade extends PoblacionFacade {
 //			};
 //			threads[i] = new Thread(runner);
 //			threads[i].start();
-		}
+			}
 //		ThreadUtil.joinThreads(threads);
+		} catch (GeneticDAOException e1) {
+			throw new GeneticBusinessException(null, e1);
+		}
+
 	}
 
 }

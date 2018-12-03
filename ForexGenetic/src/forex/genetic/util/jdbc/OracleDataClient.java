@@ -8,10 +8,12 @@ import forex.genetic.dao.IGeneticDAO;
 import forex.genetic.dao.IIndividuoDAO;
 import forex.genetic.dao.IOperacionesDAO;
 import forex.genetic.dao.IParametroDAO;
+import forex.genetic.dao.IProcesoEjecucionDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.dao.oracle.OracleOperacionesDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
+import forex.genetic.dao.oracle.OracleProcesoEjecucionDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
@@ -62,7 +64,6 @@ public class OracleDataClient extends DataClient<Connection, IndividuoEstrategia
 			daoOperacion = new OracleOperacionesDAO(client);
 		}
 		return daoOperacion;
-
 	}
 
 	@Override
@@ -71,6 +72,23 @@ public class OracleDataClient extends DataClient<Connection, IndividuoEstrategia
 			client.close();
 		} catch (SQLException e) {
 			throw new GeneticDAOException("close connection", e);
+		}
+	}
+
+	@Override
+	public IProcesoEjecucionDAO getDaoProcesoEjecucion() throws GeneticDAOException {
+		if (daoProcesoEjecucion == null) {
+			daoProcesoEjecucion = new OracleProcesoEjecucionDAO(client);
+		}
+		return daoProcesoEjecucion;
+	}
+
+	@Override
+	public void commit() throws GeneticDAOException {
+		try {
+			client.commit();
+		} catch (SQLException e) {
+			throw new GeneticDAOException("Error en commit", e);
 		}
 	}
 }

@@ -13,6 +13,7 @@ import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.oracle.OracleProcesoIndividuoManager;
 import forex.genetic.util.LogUtil;
@@ -35,8 +36,13 @@ public class PoblacionFacade implements IGeneticFacade {
 	}
 
 	public void process(boolean onlyOne) throws GeneticBusinessException {
-		OracleProcesoIndividuoManager manager = new OracleProcesoIndividuoManager();
-		manager.process(onlyOne);
+		OracleProcesoIndividuoManager manager;
+		try {
+			manager = new OracleProcesoIndividuoManager(DriverDBFactory.createDataClient("oracle"));
+			manager.process(onlyOne);
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(null, e);
+		}
 	}
 
 	/**

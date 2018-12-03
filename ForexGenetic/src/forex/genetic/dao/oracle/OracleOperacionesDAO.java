@@ -18,6 +18,7 @@ import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Estadistica;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
+import forex.genetic.entities.ParametroConsultaEstadistica;
 import forex.genetic.entities.ParametroOperacionPeriodo;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.Constants;
@@ -122,7 +123,7 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 	 * @return
 	 * @throws GeneticDAOException
 	 */
-	public Estadistica consultarEstadisticasIndividuo(Individuo individuo) throws GeneticDAOException {
+	public Estadistica consultarEstadisticasIndividuo(Individuo individuo, ParametroConsultaEstadistica parametroConsultaEstadistica) throws GeneticDAOException {
 		Estadistica estadistica = null;
 		String sql = "SELECT * FROM DETALLE_ESTADISTICAS WHERE ID_INDIVIDUO=?";
 
@@ -600,6 +601,12 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 
 	@Override
 	public void insertIfNoExists(Order obj) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public List<? extends Order> consultarOperacionesActivas(Date fechaBase, Date fechaFin, int filas)
+			throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 }

@@ -5,6 +5,7 @@ import forex.genetic.dao.IGeneticDAO;
 import forex.genetic.dao.IIndividuoDAO;
 import forex.genetic.dao.IOperacionesDAO;
 import forex.genetic.dao.IParametroDAO;
+import forex.genetic.dao.IProcesoEjecucionDAO;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Tendencia;
@@ -19,6 +20,7 @@ public abstract class DataClient<C, I extends IndividuoEstrategia, O extends Ord
 	protected IParametroDAO daoParametro;
 	protected IIndividuoDAO<I> daoIndividuo;
 	protected IOperacionesDAO<O> daoOperacion;
+	protected IProcesoEjecucionDAO daoProcesoEjecucion;
 
 	public DataClient(C client) {
 		this.client = client;
@@ -34,6 +36,8 @@ public abstract class DataClient<C, I extends IndividuoEstrategia, O extends Ord
 
 	public abstract void close() throws GeneticDAOException;
 
+	public abstract void commit() throws GeneticDAOException;
+
 	public abstract IDatoHistoricoDAO getDaoDatoHistorico() throws GeneticDAOException;
 
 	public abstract IGeneticDAO<Tendencia> getDaoTendencia() throws GeneticDAOException;
@@ -43,4 +47,7 @@ public abstract class DataClient<C, I extends IndividuoEstrategia, O extends Ord
 	public abstract IIndividuoDAO<I> getDaoIndividuo() throws GeneticDAOException;
 
 	public abstract IOperacionesDAO<O> getDaoOperaciones() throws GeneticDAOException;
+
+	public abstract IProcesoEjecucionDAO getDaoProcesoEjecucion() throws GeneticDAOException;
+
 }

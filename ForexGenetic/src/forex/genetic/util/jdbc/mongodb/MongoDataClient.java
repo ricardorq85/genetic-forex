@@ -7,6 +7,7 @@ import forex.genetic.dao.IGeneticDAO;
 import forex.genetic.dao.IIndividuoDAO;
 import forex.genetic.dao.IOperacionesDAO;
 import forex.genetic.dao.IParametroDAO;
+import forex.genetic.dao.IProcesoEjecucionDAO;
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.dao.mongodb.MongoIndividuoDAO;
 import forex.genetic.dao.mongodb.MongoOperacionesDAO;
@@ -67,4 +68,15 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	@Override
 	public void close() throws GeneticDAOException {
 	}
+
+	@Override
+	public void commit() throws GeneticDAOException {
+	}
+
+	@Override
+	public IProcesoEjecucionDAO getDaoProcesoEjecucion() throws GeneticDAOException {
+		throw new UnsupportedOperationException(
+				"Mongo no tiene Proceso Ejecucion, se maneja directamente en el Individuo");
+	}
+
 }

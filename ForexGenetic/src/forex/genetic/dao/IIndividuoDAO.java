@@ -10,6 +10,7 @@ import java.util.List;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.IndividuoOptimo;
+import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.controller.IndicadorController;
 
@@ -89,4 +90,6 @@ public interface IIndividuoDAO<E extends IndividuoEstrategia> extends IGeneticDA
 	public List<Individuo> consultarIndividuosParaBorrar(int minutos) throws GeneticDAOException;
 
 	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, int minutos) throws GeneticDAOException;
+
+	public E consultarById(String idIndividuo);
 }
