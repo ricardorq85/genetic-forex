@@ -16,7 +16,7 @@ public class MongoEstadisticaIndividuoMapper extends MongoMapper<MongoEstadistic
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		objectMap.put("idIndividuo", obj.getIdIndividuo());
 		objectMap.put("fechaInicial", obj.getFechaInicial());
-		objectMap.put("fechaFinal", obj.getFechaFinal());
+		//objectMap.put("fechaFinal", obj.getFechaFinal());
 		return objectMap;
 	}
 
@@ -84,6 +84,10 @@ public class MongoEstadisticaIndividuoMapper extends MongoMapper<MongoEstadistic
 		objectMap.put("dataPips", obj.getDataPips());
 		objectMap.put("dataPipsPositivos", obj.getDataPipsPositivos());
 		objectMap.put("dataPipsNegativos", obj.getDataPipsNegativos());
+
+		objectMap.put("dataPipsRetroceso", obj.getDataPipsRetroceso());
+		objectMap.put("dataPipsRetrocesoPositivos", obj.getDataPipsRetrocesoPositivos());
+		objectMap.put("dataPipsRetrocesoNegativos", obj.getDataPipsRetrocesoNegativos());
 
 		return objectMap;
 	}
@@ -154,6 +158,10 @@ public class MongoEstadisticaIndividuoMapper extends MongoMapper<MongoEstadistic
 		obj.setDataPips(one.get("dataPips", ArrayList.class));
 		obj.setDataPipsPositivos(one.get("dataPipsPositivos", ArrayList.class));
 		obj.setDataPipsNegativos(one.get("dataPipsNegativos", ArrayList.class));
+
+		obj.setDataPipsRetroceso(one.get("dataPipsRetroceso", ArrayList.class));
+		obj.setDataPipsRetrocesoPositivos(one.get("dataPipsRetrocesoPositivos", ArrayList.class));
+		obj.setDataPipsRetrocesoNegativos(one.get("dataPipsRetrocesoNegativos", ArrayList.class));
 
 		return obj;
 	}

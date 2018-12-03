@@ -48,6 +48,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 		super(name);
 		this.individuos = individuos;
 	}
+
 	@Override
 	public void run() {
 		try {
@@ -139,8 +140,10 @@ public class MongoProcesarIndividuoThread extends Thread {
 
 			Date returnDate = procesarOperacionActiva(individuo, intervaloCierre);
 			Order closeOrder = individuo.getCurrentOrder();
-			estadisticasManager.addOrder(closeOrder);
-			individuo.setCurrentOrder(null);
+			if ((closeOrder != null) && (closeOrder.getCloseDate() != null)) {
+				estadisticasManager.addOrder(closeOrder);
+				individuo.setCurrentOrder(null);
+			}
 			return returnDate;
 		}
 	}
@@ -202,6 +205,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 			List<MongoOrder> ordenes = operacionesManager.calcularOperaciones(points, individuo);
 			if ((ordenes != null) && (!ordenes.isEmpty())) {
 				MongoOrder closedOrder = ordenes.get(0);
+				individuo.setCurrentOrder(closedOrder);
 				operacionesManager.calcularRetrocesoOrden(closedOrder);
 				daoOperaciones.insertOrUpdate(closedOrder);
 				updateProcesoIndividuo(individuo, closedOrder, closedOrder.getCloseDate());

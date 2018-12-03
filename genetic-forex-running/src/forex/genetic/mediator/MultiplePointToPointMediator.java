@@ -43,7 +43,7 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 		try {
 			while (true) {
 				int imported = 0;
-				for (int j = 1; j < dataClients.size(); j++) {
+				for (int j = 0; j < dataClients.size(); j++) {
 					IDatoHistoricoDAO daoDatoHistorico = ((IDatoHistoricoDAO) dataClients.get(j).getDaoDatoHistorico());
 					fechaHistoricaMaximaAnterior = new Date(); // DateUtil.obtenerFechaMinima(
 																// daoDatoHistorico.getFechaHistoricaMaxima(),

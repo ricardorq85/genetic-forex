@@ -23,12 +23,16 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 	private MongoMapper<E> mapper;
 	protected MongoCollection<Document> collection = null;
 
-	public MongoGeneticDAO(String collectionName, boolean configure) {
-		this.setCollectionName(collectionName);
-		this.collection = ConnectionMongoDB.getDatabase().getCollection(collectionName);
-		this.setMapper((MongoMapper<E>) MongoMapperFactory.get(collectionName));
+	public MongoGeneticDAO(String name, boolean configure) {
+		this.setMapper((MongoMapper<E>) MongoMapperFactory.get(name));
+		setCollection(name, configure);
+	}
+
+	protected void setCollection(String name, boolean configure) {
+		this.setCollectionName(name);
+		this.collection = ConnectionMongoDB.getDatabase().getCollection(name);
 		if (configure) {
-			LogUtil.logTime(new StringBuilder("Configurando collection: ").append(collectionName).toString(), 1);
+			LogUtil.logTime(new StringBuilder("Configurando collection: ").append(name).toString(), 1);
 			this.configureCollection();
 		}
 	}

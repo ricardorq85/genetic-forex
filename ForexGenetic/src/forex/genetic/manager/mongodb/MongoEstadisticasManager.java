@@ -8,6 +8,7 @@ import forex.genetic.entities.Order;
 import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.util.NumberUtil;
 
 public class MongoEstadisticasManager {
 
@@ -74,7 +75,11 @@ public class MongoEstadisticasManager {
 
 				estadisticaNueva.setDuracionMinimaPositivos(
 						Math.min(estadisticaAnterior.getDuracionMinimaPositivos(), order.getDuracionMinutos()));
-				estadisticaNueva.setDuracionMinimaNegativos(estadisticaAnterior.getDuracionMinimaNegativos());
+				if (NumberUtil.isInfiniteOrNan(estadisticaAnterior.getDuracionMinimaNegativos())) {
+					estadisticaNueva.setDuracionMinimaNegativos(0.0D);
+				} else {
+					estadisticaNueva.setDuracionMinimaNegativos(estadisticaAnterior.getDuracionMinimaNegativos());
+				}
 
 				estadisticaNueva.setPipsPositivos(estadisticaAnterior.getPipsPositivos() + order.getPips());
 				estadisticaNueva.setPipsNegativos(estadisticaAnterior.getPipsNegativos());
@@ -85,7 +90,11 @@ public class MongoEstadisticasManager {
 
 				estadisticaNueva.setPipsMinimosPositivos(
 						Math.min(estadisticaAnterior.getPipsMinimosPositivos(), order.getPips()));
-				estadisticaNueva.setPipsMinimosNegativos(estadisticaAnterior.getPipsMinimosNegativos());
+				if (NumberUtil.isInfiniteOrNan(estadisticaAnterior.getPipsMinimosNegativos())) {
+					estadisticaNueva.setPipsMinimosNegativos(0.0D);
+				} else {
+					estadisticaNueva.setPipsMinimosNegativos(estadisticaAnterior.getPipsMinimosNegativos());
+				}
 
 				estadisticaNueva.setPipsMaximosRetrocesoPositivos(
 						Math.max(estadisticaAnterior.getPipsMaximosRetrocesoPositivos(), order.getMaxPipsRetroceso()));
@@ -94,8 +103,12 @@ public class MongoEstadisticasManager {
 
 				estadisticaNueva.setPipsMinimosRetrocesoPositivos(
 						Math.min(estadisticaAnterior.getPipsMinimosRetrocesoPositivos(), order.getMaxPipsRetroceso()));
-				estadisticaNueva
-						.setPipsMinimosRetrocesoNegativos(estadisticaAnterior.getPipsMinimosRetrocesoNegativos());
+				if (NumberUtil.isInfiniteOrNan(estadisticaAnterior.getPipsMinimosRetrocesoNegativos())) {
+					estadisticaNueva.setPipsMinimosRetrocesoNegativos(0.0D);
+				} else {
+					estadisticaNueva
+							.setPipsMinimosRetrocesoNegativos(estadisticaAnterior.getPipsMinimosRetrocesoNegativos());
+				}
 			} else {
 				estadisticaNueva.getDataDuracionNegativos().add(new Long(order.getDuracionMinutos()).doubleValue());
 				estadisticaNueva.getDataPipsNegativos().add(order.getPips());
@@ -114,7 +127,11 @@ public class MongoEstadisticasManager {
 
 				estadisticaNueva.setDuracionMinimaNegativos(
 						Math.min(estadisticaAnterior.getDuracionMinimaNegativos(), order.getDuracionMinutos()));
-				estadisticaNueva.setDuracionMinimaPositivos(estadisticaAnterior.getDuracionMinimaPositivos());
+				if (NumberUtil.isInfiniteOrNan(estadisticaAnterior.getDuracionMinimaPositivos())) {
+					estadisticaNueva.setDuracionMinimaPositivos(0.0D);
+				} else {
+					estadisticaNueva.setDuracionMinimaPositivos(estadisticaAnterior.getDuracionMinimaPositivos());
+				}
 
 				estadisticaNueva.setPipsNegativos(estadisticaAnterior.getPipsNegativos() + order.getPips());
 				estadisticaNueva.setPipsPositivos(estadisticaAnterior.getPipsPositivos());
@@ -125,7 +142,11 @@ public class MongoEstadisticasManager {
 
 				estadisticaNueva.setPipsMinimosNegativos(
 						Math.min(estadisticaAnterior.getPipsMinimosNegativos(), order.getPips()));
-				estadisticaNueva.setPipsMinimosPositivos(estadisticaAnterior.getPipsMinimosPositivos());
+				if (NumberUtil.isInfiniteOrNan(estadisticaAnterior.getPipsMinimosPositivos())) {
+					estadisticaNueva.setPipsMinimosPositivos(0.0D);
+				} else {
+					estadisticaNueva.setPipsMinimosPositivos(estadisticaAnterior.getPipsMinimosPositivos());
+				}
 
 				estadisticaNueva.setPipsMaximosRetrocesoNegativos(
 						Math.max(estadisticaAnterior.getPipsMaximosRetrocesoNegativos(), order.getMaxPipsRetroceso()));
@@ -134,54 +155,86 @@ public class MongoEstadisticasManager {
 
 				estadisticaNueva.setPipsMinimosRetrocesoNegativos(
 						Math.min(estadisticaAnterior.getPipsMinimosRetrocesoNegativos(), order.getMaxPipsRetroceso()));
-				estadisticaNueva
-						.setPipsMinimosRetrocesoPositivos(estadisticaAnterior.getPipsMinimosRetrocesoPositivos());
-
+				if (NumberUtil.isInfiniteOrNan(estadisticaAnterior.getPipsMinimosRetrocesoPositivos())) {
+					estadisticaNueva.setPipsMinimosRetrocesoPositivos(0.0D);
+				} else {
+					estadisticaNueva
+							.setPipsMinimosRetrocesoPositivos(estadisticaAnterior.getPipsMinimosRetrocesoPositivos());
+				}
 			}
 			addDatoscalculados(estadisticaNueva);
 
 			if (estadisticaAnterior.getFechaFinal() != null) {
 				daoEstadisticas.update(estadisticaAnterior);
 			}
-			daoEstadisticas.insert(estadisticaNueva);
+			daoEstadisticas.insertOrUpdate(estadisticaNueva);
 			estadisticaAnterior = estadisticaNueva;
 		}
 	}
 
 	private void addDatoscalculados(MongoEstadistica estadistica) {
-		estadistica.setDuracionDesvEstandar(calcularStandardDeviation(estadistica.getDataDuracion()));
-		estadistica.setDuracionDesvEstandarPositivos(calcularStandardDeviation(estadistica.getDataDuracionPositivos()));
-		estadistica.setDuracionDesvEstandarNegativos(calcularStandardDeviation(estadistica.getDataDuracionNegativos()));
+		if (estadistica.getDataDuracion().size() > 1) {
+			estadistica.setDuracionDesvEstandar(
+					NumberUtil.round(calcularStandardDeviation(estadistica.getDataDuracion())));
+			estadistica.setDuracionModa(NumberUtil.round(calcularModa(estadistica.getDataDuracion())));
+		}
 
-		estadistica.setDuracionModa(calcularModa(estadistica.getDataDuracion()));
-		estadistica.setDuracionModaPositivos(calcularModa(estadistica.getDataDuracionPositivos()));
-		estadistica.setDuracionModaNegativos(calcularModa(estadistica.getDataDuracionNegativos()));
+		if (estadistica.getDataDuracionPositivos().size() > 1) {
+			estadistica.setDuracionDesvEstandarPositivos(
+					NumberUtil.round(calcularStandardDeviation(estadistica.getDataDuracionPositivos())));
+			estadistica
+					.setDuracionModaPositivos(NumberUtil.round(calcularModa(estadistica.getDataDuracionPositivos())));
+		}
 
-		estadistica.setDuracionPromedio((estadistica.getDuracionTotal() / Math.max(1, estadistica.getCantidadTotal())));
-		estadistica.setDuracionPromedioPositivos(
-				(estadistica.getDuracionTotalPositivos() / Math.max(1, estadistica.getCantidadPositivos())));
-		estadistica.setDuracionPromedioNegativos(
-				(estadistica.getDuracionTotalNegativos() / Math.max(1, estadistica.getCantidadNegativos())));
+		if (estadistica.getDataDuracionNegativos().size() > 1) {
+			estadistica.setDuracionDesvEstandarNegativos(
+					NumberUtil.round(calcularStandardDeviation(estadistica.getDataDuracionNegativos())));
+			estadistica
+					.setDuracionModaNegativos(NumberUtil.round(calcularModa(estadistica.getDataDuracionNegativos())));
+		}
 
-		estadistica.setPipsModa(calcularModa(estadistica.getDataPips()));
-		estadistica.setPipsModaPositivos(calcularModa(estadistica.getDataPipsPositivos()));
-		estadistica.setPipsModaNegativos(calcularModa(estadistica.getDataPipsNegativos()));
+		estadistica.setDuracionPromedio(
+				NumberUtil.round((estadistica.getDuracionTotal() / Math.max(1, estadistica.getCantidadTotal()))));
+		estadistica.setDuracionPromedioPositivos(NumberUtil
+				.round((estadistica.getDuracionTotalPositivos() / Math.max(1, estadistica.getCantidadPositivos()))));
+		estadistica.setDuracionPromedioNegativos(NumberUtil
+				.round((estadistica.getDuracionTotalNegativos() / Math.max(1, estadistica.getCantidadNegativos()))));
 
-		estadistica.setPipsModaRetroceso(calcularModa(estadistica.getDataPipsRetroceso()));
-		estadistica.setPipsModaRetrocesoPositivos(calcularModa(estadistica.getDataPipsRetrocesoPositivos()));
-		estadistica.setPipsModaRetrocesoNegativos(calcularModa(estadistica.getDataPipsRetrocesoNegativos()));
+		if (estadistica.getDataPips().size() > 1) {
+			estadistica.setPipsModa(NumberUtil.round(calcularModa(estadistica.getDataPips())));
+		}
+		if (estadistica.getDataPipsPositivos().size() > 1) {
+			estadistica.setPipsModaPositivos(NumberUtil.round(calcularModa(estadistica.getDataPipsPositivos())));
+		}
+		if (estadistica.getDataPipsNegativos().size() > 1) {
+			estadistica.setPipsModaNegativos(NumberUtil.round(calcularModa(estadistica.getDataPipsNegativos())));
+		}
 
-		estadistica.setPipsPromedio((estadistica.getPips() / Math.max(1, estadistica.getCantidadTotal())));
+		if (estadistica.getDataPipsRetroceso().size() > 1) {
+			estadistica.setPipsModaRetroceso(NumberUtil.round(calcularModa(estadistica.getDataPipsRetroceso())));
+		}
+		if (estadistica.getDataPipsRetrocesoPositivos().size() > 1) {
+			estadistica.setPipsModaRetrocesoPositivos(
+					NumberUtil.round(calcularModa(estadistica.getDataPipsRetrocesoPositivos())));
+		}
+		if (estadistica.getDataPipsRetrocesoNegativos().size() > 1) {
+			estadistica.setPipsModaRetrocesoNegativos(
+					NumberUtil.round(calcularModa(estadistica.getDataPipsRetrocesoNegativos())));
+		}
+
+		estadistica.setPipsPromedio(
+				NumberUtil.round((estadistica.getPips() / Math.max(1, estadistica.getCantidadTotal()))));
 		estadistica.setPipsPromedioPositivos(
-				(estadistica.getPipsPositivos() / Math.max(1, estadistica.getCantidadPositivos())));
+				NumberUtil.round((estadistica.getPipsPositivos() / Math.max(1, estadistica.getCantidadPositivos()))));
 		estadistica.setPipsPromedioNegativos(
-				(estadistica.getPipsNegativos() / Math.max(1, estadistica.getCantidadNegativos())));
+				NumberUtil.round((estadistica.getPipsNegativos() / Math.max(1, estadistica.getCantidadNegativos()))));
 
-		estadistica.setPipsPromedioRetroceso((estadistica.getPipsMaximosRetroceso() / Math.max(1, estadistica.getCantidadTotal())));
-		estadistica.setPipsPromedioRetrocesoPositivos(
-				(estadistica.getPipsMaximosRetrocesoPositivos() / Math.max(1, estadistica.getCantidadPositivos())));
-		estadistica.setPipsPromedioRetrocesoNegativos(
-				(estadistica.getPipsMaximosRetrocesoNegativos() / Math.max(1, estadistica.getCantidadNegativos())));
+		estadistica.setPipsPromedioRetroceso(NumberUtil
+				.round((estadistica.getPipsMaximosRetroceso() / Math.max(1, estadistica.getCantidadTotal()))));
+		estadistica.setPipsPromedioRetrocesoPositivos(NumberUtil.round(
+				(estadistica.getPipsMaximosRetrocesoPositivos() / Math.max(1, estadistica.getCantidadPositivos()))));
+		estadistica.setPipsPromedioRetrocesoNegativos(NumberUtil.round(
+				(estadistica.getPipsMaximosRetrocesoNegativos() / Math.max(1, estadistica.getCantidadNegativos()))));
 	}
 
 	public MongoIndividuo getIndividuo() {

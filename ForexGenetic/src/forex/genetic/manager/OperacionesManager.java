@@ -362,7 +362,7 @@ public abstract class OperacionesManager {
 					? (valueRetroceso - currentOrder.getOpenOperationValue()) * PropertiesManager.getPairFactor()
 					: (-valueRetroceso + currentOrder.getOpenOperationValue()) * PropertiesManager.getPairFactor();
 			pips = (pips - currentOrder.getOpenSpread());
-			currentOrder.setMaxPipsRetroceso(pips);
+			currentOrder.setMaxPipsRetroceso(NumberUtil.round(pips));
 			currentOrder.setMaxValueRetroceso(valueRetroceso);
 			currentOrder.setMaxFechaRetroceso(pointRetroceso.getDate());
 		} else {

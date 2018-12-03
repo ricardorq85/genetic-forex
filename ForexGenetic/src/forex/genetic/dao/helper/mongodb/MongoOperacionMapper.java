@@ -38,6 +38,11 @@ public class MongoOperacionMapper extends MongoMapper<MongoOrder> {
 		if (obj.getTipoCierre() != null) {
 			objMap.put("tipoCierre", obj.getTipoCierre().name());
 		}
+		
+		objMap.put("maxPipsRetroceso", obj.getMaxPipsRetroceso());
+		objMap.put("maxValueRetroceso", obj.getMaxValueRetroceso());
+		objMap.put("maxFechaRetroceso", obj.getMaxFechaRetroceso());
+		
 		return objMap;
 	}
 
@@ -63,6 +68,11 @@ public class MongoOperacionMapper extends MongoMapper<MongoOrder> {
 		order.setClosePriceByStopLoss(one.getDouble("closePriceByStopLoss"));
 		order.setTipoCierre(Constants.getCloseType(one.getString("tipoCierre")));
 		order.setDuracionMinutos(one.getLong("duracionMinutos"));
+		
+		order.setMaxPipsRetroceso(one.getDouble("maxPipsRetroceso"));
+		order.setMaxValueRetroceso(one.getDouble("maxValueRetroceso"));
+		order.setMaxFechaRetroceso(one.getDate("maxFechaRetroceso"));
+
 		return order;
 	}
 }

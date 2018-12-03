@@ -5,7 +5,7 @@ public class MongoMapperFactory {
 	public static MongoMapper<?> get(String collectionName) {
 		if ("individuo".equals(collectionName)) {
 			return new MongoIndividuoMapper();
-		} else if ("datoHistorico".equals(collectionName)) {
+		} else if (collectionName.startsWith("datoHistorico")) {
 			return new MongoDatoHistoricoMapper();
 		} else if ("datoAdicional".equals(collectionName)) {
 			return new MongoDatoAdicionalTPOMapper();
