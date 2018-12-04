@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.oracle.OracleTendenciaDAO;
+import forex.genetic.dao.ITendenciaDAO;
 import forex.genetic.entities.Estadistica;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
@@ -13,6 +13,7 @@ import forex.genetic.entities.ParametroConsultaEstadistica;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.entities.TendenciaEstadistica;
+import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
@@ -41,7 +42,7 @@ public class MongoTendenciaManager {
 		// int affected =
 		// tendenciaUltimosDatosDAO.deleteTendenciaMenorQue(fechaComparacion);
 		// dataClient.commit();
-		LogUtil.logTime("Tendencias borradas: " + affected, 1);
+		// LogUtil.logTime("Tendencias borradas: " + affected, 1);
 	}
 
 	public List<TendenciaEstadistica> calcularTendencias(Date fechaBaseInicial, Date fechaBaseFinal, int filas)
@@ -63,10 +64,9 @@ public class MongoTendenciaManager {
 	public List<TendenciaEstadistica> calcularTendencias(Date fechaBase, int filas)
 			throws SQLException, GeneticDAOException {
 		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
-		List<? extends Point> pointsFechaTendencia = dataClient.getDaoDatoHistorico().consultarHistorico(fechaBase,
-				fechaBase);
-		if ((pointsFechaTendencia != null) && (!pointsFechaTendencia.isEmpty())) {
-			listaTendencias.addAll(this.calcularTendencias(pointsFechaTendencia.get(0), filas));
+		Point p = dataClient.getDaoDatoHistorico().consultarDatoHistorico(fechaBase);
+		if (p != null) {
+			listaTendencias.addAll(this.calcularTendencias(p, filas));
 		}
 		return listaTendencias;
 	}
@@ -77,13 +77,14 @@ public class MongoTendenciaManager {
 			// LogUtil.logEnter(1);
 			LogUtil.logTime("Fecha base=" + DateUtil.getDateString(puntoTendencia.getDate()), 1);
 			@SuppressWarnings("unchecked")
-			List<MongoOrder> operaciones = dataClient.getDaoOperaciones()
+			List<MongoOrder> orders = dataClient.getDaoOperaciones()
 					.consultarOperacionesActivas(puntoTendencia.getDate(), null, filas);
-			LogUtil.logTime("Operaciones=" + operaciones.size(), 1);
-			operaciones.stream().forEach((order) -> {
+			LogUtil.logTime("Operaciones=" + orders.size(), 1);
+			orders.stream().forEach((order) -> {
 				TendenciaEstadistica tendenciaEstadistica;
 				try {
-					MongoIndividuo individuo = (MongoIndividuo)dataClient.getDaoIndividuo().consultarById(order.getIdIndividuo());
+					MongoIndividuo individuo = (MongoIndividuo) dataClient.getDaoIndividuo()
+							.consultarById(order.getIdIndividuo());
 					if (individuo.getProcesoEjecucion().getMaxFechaHistorico().after(puntoTendencia.getDate())) {
 						individuo.setCurrentOrder(order);
 						Tendencia objTendencia = new Tendencia();
@@ -111,14 +112,15 @@ public class MongoTendenciaManager {
 	}
 
 	public void guardarTendencia(Tendencia tendencia) throws SQLException, GeneticDAOException {
-		guardarTendencia(tendencia, tendenciaDAO);
+		guardarTendencia(tendencia, dataClient.getDaoTendencia());
 		if (tendencia.getFechaBase().after(fechaComparacion)) {
-			guardarTendencia(tendencia, tendenciaUltimosDatosDAO);
+			guardarTendencia(tendencia, null);
+			// tendenciaUltimosDatosDAO);
 		}
-		conn.commit();
+		dataClient.commit();
 	}
 
-	public void guardarTendencia(Tendencia tendencia, OracleTendenciaDAO dao) throws SQLException, GeneticDAOException {
+	public void guardarTendencia(Tendencia tendencia, ITendenciaDAO dao) throws SQLException, GeneticDAOException {
 		dao.insertOrUpdate(tendencia);
 		if (dao.exists(tendencia)) {
 			dao.update(tendencia);
@@ -128,26 +130,33 @@ public class MongoTendenciaManager {
 	}
 
 	public void borrarTendencia(String idIndividuo, Date fechaBase) throws SQLException, GeneticDAOException {
-		tendenciaDAO.deleteTendencia(idIndividuo, fechaBase);
-		conn.commit();
+		dataClient.getDaoTendencia().deleteTendencia(idIndividuo, fechaBase);
+		dataClient.commit();
 	}
 
 	public TendenciaEstadistica calcularTendencia(Point currentPoint, Date fechaBase, String idIndividuo)
 			throws SQLException, CloneNotSupportedException, ClassNotFoundException, GeneticDAOException {
-		Individuo individuo = operacionesDAO.consultarIndividuoOperacionActiva(idIndividuo, fechaBase, 2);
-		return this.calcularTendencia(currentPoint, individuo);
+		// Individuo individuo =
+		// dataClient.getDaoOperaciones().consultarIndividuoOperacionActiva(idIndividuo,
+		// fechaBase, 2);
+		return null;
+		// this.calcularTendencia(currentPoint, individuo);
 	}
 
 	public TendenciaEstadistica calcularTendencia(Date fechaBase, String idIndividuo)
 			throws SQLException, CloneNotSupportedException, ClassNotFoundException, GeneticDAOException {
-		Individuo individuo = operacionesDAO.consultarIndividuoOperacionActiva(idIndividuo, fechaBase, 2);
-		return this.calcularTendencia(fechaBase, individuo);
+		// Individuo individuo =
+		// dataClient.getDaoOperaciones().consultarIndividuoOperacionActiva(idIndividuo,
+		// fechaBase, 2);
+		return null;
+		// this.calcularTendencia(fechaBase, individuo);
 	}
 
 	public TendenciaEstadistica calcularTendencia(Date fechaBase, Individuo individuo)
 			throws SQLException, CloneNotSupportedException, ClassNotFoundException, GeneticDAOException {
 		TendenciaEstadistica tendenciaEstadistica = null;
-		List<Point> pointsFechaTendencia = datoHistoricoDAO.consultarHistorico(fechaBase, fechaBase);
+		List<? extends Point> pointsFechaTendencia = dataClient.getDaoDatoHistorico().consultarHistorico(fechaBase,
+				fechaBase);
 		if ((pointsFechaTendencia != null) && (!pointsFechaTendencia.isEmpty())) {
 			tendenciaEstadistica = this.calcularTendencia(pointsFechaTendencia.get(0), individuo);
 		}
@@ -165,13 +174,14 @@ public class MongoTendenciaManager {
 			ParametroConsultaEstadistica parametroConsultaEstadisticaFiltrada = new ParametroConsultaEstadistica(
 					fechaBase, ordenActual.getPips(), ordenActual.getDuracionMinutos(), individuo);
 			LogUtil.logTime("Consultando estadística filtrada...", 5);
-			Estadistica estadisticaFiltradaActual = this
-					.consultarEstadisticasIndividuo(parametroConsultaEstadisticaFiltrada);
+			MongoEstadistica estadisticaFiltradaActual = new MongoEstadistica();
+			// this.consultarEstadisticasIndividuo(parametroConsultaEstadisticaFiltrada);
 
 			ParametroConsultaEstadistica parametroConsultaEstadistica = new ParametroConsultaEstadistica(fechaBase,
 					null, null, individuo);
 			LogUtil.logTime("Consultando estadística...", 3);
-			Estadistica estadisticaHistorica = this.consultarEstadisticasIndividuo(parametroConsultaEstadistica);
+			MongoEstadistica estadisticaHistorica = dataClient.getDaoEstadistica().getLast(individuo, ordenActual);
+			// this.consultarEstadisticasIndividuo(parametroConsultaEstadistica);
 
 			if (estadisticaHistorica.getCantidadTotal() > 0) {
 				LogUtil.logTime("Creando tendencia...", 5);
@@ -220,7 +230,8 @@ public class MongoTendenciaManager {
 
 	private Estadistica consultarEstadisticasIndividuo(ParametroConsultaEstadistica parametroConsultaEstadistica)
 			throws SQLException, GeneticDAOException {
-		return operacionesDAO.consultarEstadisticasIndividuo(parametroConsultaEstadistica.getIndividuo());
+		return dataClient.getDaoOperaciones()
+				.consultarEstadisticasIndividuo(parametroConsultaEstadistica.getIndividuo(), null);
 	}
 
 }

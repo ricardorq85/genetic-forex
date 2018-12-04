@@ -12,7 +12,6 @@ import java.util.List;
 
 import forex.genetic.dao.IIndividuoDAO;
 import forex.genetic.dao.helper.IndividuoHelper;
-import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.IndividuoOptimo;
@@ -36,6 +35,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia>
 	public OracleIndividuoDAO(Connection connection) {
 		super(connection);
 	}
+
 	public void crearVistaIndicadoresIndividuo(String viewName, String idIndividuo) throws GeneticDAOException {
 		String sql = "CREATE OR REPLACE VIEW " + viewName + " AS " + "SELECT IND.*,  "
 				+ "  II_MA.INTERVALO_INFERIOR INFERIOR_MA, II_MA.INTERVALO_SUPERIOR SUPERIOR_MA, "
@@ -935,11 +935,16 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia>
 
 	@Override
 	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, int minutos) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
+
 	@Override
 	public void insertIfNoExists(IndividuoEstrategia obj) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public IndividuoEstrategia consultarById(String idIndividuo) {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 }

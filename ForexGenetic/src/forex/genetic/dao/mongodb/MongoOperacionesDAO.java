@@ -150,4 +150,10 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
+	@Override
+	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, Date fechaFin, int filas)
+			throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
 }

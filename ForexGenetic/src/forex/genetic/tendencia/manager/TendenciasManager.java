@@ -198,7 +198,7 @@ public class TendenciasManager {
 					parametroDAO.updateValorParametro("RETROCESO_ESTADISTICAS", null);
 					parametroDAO.updateValorParametro("DURACION_ESTADISTICAS", null);
 					conn.commit();
-					Estadistica estadistica = operacionesDAO.consultarEstadisticasIndividuo(individuo);
+					Estadistica estadistica = operacionesDAO.consultarEstadisticasIndividuo(individuo, null);
 
 					// if ((estadistica.getCantidadPositivos() > 0) &&
 					// (estadistica.getCantidadNegativos() > 0)) {
@@ -227,7 +227,7 @@ public class TendenciasManager {
 								String.valueOf(Math.round(pipsActuales)));
 						parametroDAO.updateValorParametro("DURACION_ESTADISTICAS", String.valueOf(duracionActual));
 						conn.commit();
-						Estadistica estadisticaActual = operacionesDAO.consultarEstadisticasIndividuo(individuo);
+						Estadistica estadisticaActual = operacionesDAO.consultarEstadisticasIndividuo(individuo, null);
 						for (int k = -1; k < 2; k += 2) {
 							CalculoTendencia calculoTendencia = calcularProbabilidadTendencia(pipsActuales,
 									duracionActual, estadistica, estadisticaActual, k);

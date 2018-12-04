@@ -37,6 +37,8 @@ public interface IDatoHistoricoDAO extends IGeneticDAO<Point> {
 	public List<? extends Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2) throws GeneticDAOException;
 
 	public List<? extends Point> consultarHistorico(Date fechaBase) throws GeneticDAOException;
+	
+	public Point consultarDatoHistorico(Date fechaBase) throws GeneticDAOException;
 
 	public List<? extends Point> consultarPuntoByLow(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException;
 

@@ -18,6 +18,7 @@ import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.tendencia.manager.TendenciaBuySellManager;
+import forex.genetic.tendencia.manager.mongo.MongoTendenciaManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
@@ -59,7 +60,7 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 						+ ",fechaHistoricaMaximaAnterior=" + DateUtil.getDateString(this.fechaHistoricaMaximaAnterior)
 						+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva)
 						+ ",count=" + count, 1);
-				procesarIndividuos();
+				//procesarIndividuos();
 				procesarTendencias();
 				exportarIndividuos();
 				crearNuevosIndividuos();
@@ -99,8 +100,15 @@ public class MultiplePointToPointMediator extends PointToPointMediator {
 		int parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
 		int parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
 
-		Date fechaBaseFinal = fechaHistoricaMaximaNueva;
-		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
+		Date fechaBaseFinal=null;
+		try {
+			fechaBaseFinal = DateUtil.obtenerFecha("2018/10/23 23:40");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//fechaHistoricaMaximaNueva;
+		MongoTendenciaManager tendenciaManager = new MongoTendenciaManager();
 		if (count == 1) {
 			tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia / 2);
 		}

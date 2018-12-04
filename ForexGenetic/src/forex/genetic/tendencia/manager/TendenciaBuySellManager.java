@@ -242,7 +242,7 @@ public class TendenciaBuySellManager extends TendenciasManager {
 					String.valueOf(Math.round(parametroConsultaEstadistica.getDuracion())));
 		}
 		conn.commit();
-		return operacionesDAO.consultarEstadisticasIndividuo(parametroConsultaEstadistica.getIndividuo());
+		return operacionesDAO.consultarEstadisticasIndividuo(parametroConsultaEstadistica.getIndividuo(), null);
 	}
 
 }

@@ -106,6 +106,20 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	}
 
 	@Override
+	public Point consultarDatoHistorico(Date fecha) throws GeneticDAOException {
+		int year = DateUtil.obtenerAnyo(fecha);
+		setCollection(year, true);
+		Point p = consultarHistoricoIntern(fecha);
+		return p;
+	}
+
+	public Point consultarHistoricoIntern(Date fecha) throws GeneticDAOException {
+		Document doc = this.collection.find(Filters.eq("fechaHistorico", fecha)).limit(1).first();
+		Point p = getMapper().helpOne(doc);
+		return p;
+	}
+
+	@Override
 	public Point consultarRetroceso(Order order) throws GeneticDAOException {
 		Point p = null;
 		int initialYear = DateUtil.obtenerAnyo(order.getOpenDate());
@@ -396,7 +410,7 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	@Override
 	public List<? extends Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2)
 			throws GeneticDAOException {
-		//final double FACTOR_NUMERO_RANDOM_TENDENCIAS = 0.3;
+		// final double FACTOR_NUMERO_RANDOM_TENDENCIAS = 0.3;
 		// TODO Parametro de entrada, o calcular acá
 		int numeroRegistros = 10;
 		Bson filtros = Filters.and(Filters.gte("fechaHistorico", fechaBase1),
@@ -456,11 +470,6 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	}
 
 	@Override
-	public List<Point> consultarHistorico(Date fechaBase) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
 	public List<Point> consultarPuntoByLow(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
@@ -473,5 +482,10 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	@Override
 	public DoubleInterval consultarMaximoMinimo(Date fecha1, Date fecha2) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public List<? extends Point> consultarHistorico(Date fechaBase) throws GeneticDAOException {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
 	}
 }

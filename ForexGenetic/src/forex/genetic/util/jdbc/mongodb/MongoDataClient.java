@@ -3,26 +3,36 @@ package forex.genetic.util.jdbc.mongodb;
 import com.mongodb.MongoClient;
 
 import forex.genetic.dao.IDatoHistoricoDAO;
-import forex.genetic.dao.IGeneticDAO;
+import forex.genetic.dao.IEstadisticaDAO;
 import forex.genetic.dao.IIndividuoDAO;
 import forex.genetic.dao.IOperacionesDAO;
 import forex.genetic.dao.IParametroDAO;
 import forex.genetic.dao.IProcesoEjecucionDAO;
+import forex.genetic.dao.ITendenciaDAO;
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
+import forex.genetic.dao.mongodb.MongoEstadisticasIndividuoDAO;
 import forex.genetic.dao.mongodb.MongoIndividuoDAO;
 import forex.genetic.dao.mongodb.MongoOperacionesDAO;
 import forex.genetic.dao.mongodb.MongoParametroDAO;
 import forex.genetic.dao.mongodb.MongoTendenciaDAO;
-import forex.genetic.entities.Tendencia;
+import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.jdbc.DataClient;
 
-public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, MongoOrder> {
+public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, MongoOrder, MongoEstadistica> {
 
 	public MongoDataClient(MongoClient client) {
 		super(client);
+	}
+
+	@Override
+	public void close() throws GeneticDAOException {
+	}
+
+	@Override
+	public void commit() throws GeneticDAOException {
 	}
 
 	@Override
@@ -34,7 +44,7 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	}
 
 	@Override
-	public IGeneticDAO<Tendencia> getDaoTendencia() throws GeneticDAOException {
+	public ITendenciaDAO getDaoTendencia() throws GeneticDAOException {
 		if (daoTendencia == null) {
 			daoTendencia = new MongoTendenciaDAO();
 		}
@@ -66,17 +76,17 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	}
 
 	@Override
-	public void close() throws GeneticDAOException {
-	}
-
-	@Override
-	public void commit() throws GeneticDAOException {
-	}
-
-	@Override
 	public IProcesoEjecucionDAO getDaoProcesoEjecucion() throws GeneticDAOException {
 		throw new UnsupportedOperationException(
 				"Mongo no tiene Proceso Ejecucion, se maneja directamente en el Individuo");
+	}
+
+	@Override
+	public IEstadisticaDAO<MongoEstadistica> getDaoEstadistica() throws GeneticDAOException {
+		if (daoEstadistica == null) {
+			daoEstadistica = new MongoEstadisticasIndividuoDAO();
+		}
+		return daoEstadistica;
 	}
 
 }

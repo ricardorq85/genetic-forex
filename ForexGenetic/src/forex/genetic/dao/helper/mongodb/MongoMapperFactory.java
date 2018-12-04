@@ -17,6 +17,8 @@ public class MongoMapperFactory {
 			return new MongoParametroMapper();
 		} else if ("estadisticaIndividuo".equals(collectionName)) {
 			return new MongoEstadisticaIndividuoMapper();
+		} else if ("tendencia".equals(collectionName)) {
+			return new MongoTendenciaMapper();
 		}
 		throw new IllegalArgumentException("Mapper. collectionName no soportado: " + collectionName);
 	}

@@ -1174,4 +1174,9 @@ public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements I
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
+	@Override
+	public Point consultarDatoHistorico(Date fechaBase) throws GeneticDAOException {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
+
 }
