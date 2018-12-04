@@ -55,13 +55,13 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		super(name, configure);
 	}
 
-	public void insertMany(List<? extends Point> datos) {
+	public void insertMany(List<Point> datos) {
 		int initialIndex = 0;
 		for (int i = 1; i < datos.size(); i++) {
 			int prev = DateUtil.obtenerAnyo(datos.get(i - 1).getDate());
 			int curr = DateUtil.obtenerAnyo(datos.get(i).getDate());
 			if ((curr != prev) || (i == datos.size() - 1)) {
-				List<? extends Point> tempDatos = datos;
+				List<Point> tempDatos = datos;
 				if ((initialIndex > 0) || (i < datos.size() - 1)) {
 					tempDatos = datos.subList(initialIndex, i);
 				}

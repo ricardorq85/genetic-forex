@@ -13,7 +13,6 @@ import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.ParametroConsultaEstadistica;
 import forex.genetic.entities.ParametroOperacionPeriodo;
-import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
 
 /**
@@ -55,8 +54,9 @@ public interface IOperacionesDAO<E extends Order> extends IGeneticDAO<E> {
 
 	public long duracionPromedioMinutos(String idIndividuo) throws GeneticDAOException;
 
-	public Estadistica consultarEstadisticasIndividuo(Individuo individuo,
+	public <E extends Estadistica> E consultarEstadisticas(Individuo individuo,
 			ParametroConsultaEstadistica parametroConsultaEstadistica) throws GeneticDAOException;
 
-	public List<? extends Order> consultarOperacionesActivas(Date fechaBase, Date fechaFin, int filas) throws GeneticDAOException;
+	public List<E> consultarOperacionesActivas(Date fechaBase, Date fechaFin, int filas) throws GeneticDAOException;
+
 }

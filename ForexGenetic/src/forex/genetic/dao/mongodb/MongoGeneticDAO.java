@@ -39,7 +39,7 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 
 	public abstract void configureCollection();
 
-	public void insertMany(List<? extends E> datos) {
+	public void insertMany(List<E> datos) {
 		List<Document> docs = getMapper().toMap(datos);
 		this.insertManyDocuments(docs);
 	}

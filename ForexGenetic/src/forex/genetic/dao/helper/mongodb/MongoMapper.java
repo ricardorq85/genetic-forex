@@ -19,7 +19,7 @@ public abstract class MongoMapper<T> {
 
 	public abstract T helpOne(Document one);
 
-	public List<? extends T> helpList(MongoCursor<Document> cursor) {
+	public List<T> helpList(MongoCursor<Document> cursor) {
 		List<T> list = new ArrayList<T>();
 		try {
 			while (cursor.hasNext()) {
@@ -32,7 +32,7 @@ public abstract class MongoMapper<T> {
 		return list;
 	}
 
-	public List<Document> toMap(List<? extends T> datos) {
+	public List<Document> toMap(List<T> datos) {
 		List<Document> objectMaps = new ArrayList<Document>(datos.size());
 		datos.stream().forEach(dato -> {
 			objectMaps.add(new Document(toMap(dato)));

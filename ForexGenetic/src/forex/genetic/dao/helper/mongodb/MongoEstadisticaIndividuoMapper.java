@@ -91,64 +91,77 @@ public class MongoEstadisticaIndividuoMapper extends MongoMapper<MongoEstadistic
 		return objectMap;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public MongoEstadistica helpOne(Document one) {
 		MongoEstadistica obj = new MongoEstadistica();
+		helpOne(one, obj);
+		return obj;
+	}
 
-		obj.setIdIndividuo(one.getString("idIndividuo"));
-		obj.setFechaInicial(one.getDate("fechaInicial"));
-		obj.setFechaFinal(one.getDate("fechaFinal"));
+	@SuppressWarnings("unchecked")
+	public void helpOne(Document one, MongoEstadistica obj) {
+		if (one.containsKey("idIndividuo")) {
+			obj.setIdIndividuo(one.getString("idIndividuo"));
+		}
+		if (one.containsKey("fechaInicial")) {
+			obj.setFechaInicial(one.getDate("fechaInicial"));
+		}
+		if (one.containsKey("fechaFinal")) {
+			obj.setFechaFinal(one.getDate("fechaFinal"));
+		}
 
-		obj.setCantidadPositivos(one.getInteger("cantidadPositivos"));
-		obj.setCantidadNegativos(one.getInteger("cantidadNegativos"));
-		obj.setCantidadTotal(one.getInteger("cantidadTotal"));
-		obj.setPipsPositivos(one.getDouble("pipsPositivos"));
-		obj.setPipsNegativos(one.getDouble("pipsNegativos"));
-		obj.setPips(one.getDouble("pips"));
-		obj.setPipsMinimosPositivos(one.getDouble("pipsMinimosPositivos"));
-		obj.setPipsMinimosNegativos(one.getDouble("pipsMinimosNegativos"));
-		obj.setPipsMinimos(one.getDouble("pipsMinimos"));
-		obj.setPipsMaximosPositivos(one.getDouble("pipsMaximosPositivos"));
-		obj.setPipsMaximosNegativos(one.getDouble("pipsMaximosNegativos"));
-		obj.setPipsMaximos(one.getDouble("pipsMaximos"));
-		obj.setPipsPromedioPositivos(one.getDouble("pipsPromedioPositivos"));
-		obj.setPipsPromedioNegativos(one.getDouble("pipsPromedioNegativos"));
-		obj.setPipsPromedio(one.getDouble("pipsPromedio"));
-		obj.setPipsModaPositivos(one.getDouble("pipsModaPositivos"));
-		obj.setPipsModaNegativos(one.getDouble("pipsModaNegativos"));
-		obj.setPipsModa(one.getDouble("pipsModa"));
-		obj.setPipsMaximosRetrocesoPositivos(one.getDouble("pipsMaximosRetrocesoPositivos"));
-		obj.setPipsMaximosRetrocesoNegativos(one.getDouble("pipsMaximosRetrocesoNegativos"));
-		obj.setPipsMaximosRetroceso(one.getDouble("pipsMaximosRetroceso"));
-		obj.setPipsMinimosRetrocesoPositivos(one.getDouble("pipsMinimosRetrocesoPositivos"));
-		obj.setPipsMinimosRetrocesoNegativos(one.getDouble("pipsMinimosRetrocesoNegativos"));
-		obj.setPipsMinimosRetroceso(one.getDouble("pipsMinimosRetroceso"));
-		obj.setPipsPromedioRetrocesoPositivos(one.getDouble("pipsPromedioRetrocesoPositivos"));
-		obj.setPipsPromedioRetrocesoNegativos(one.getDouble("pipsPromedioRetrocesoNegativos"));
-		obj.setPipsPromedioRetroceso(one.getDouble("pipsPromedioRetroceso"));
-		obj.setPipsModaRetrocesoPositivos(one.getDouble("pipsModaRetrocesoPositivos"));
-		obj.setPipsModaRetrocesoNegativos(one.getDouble("pipsModaRetrocesoNegativos"));
-		obj.setPipsModaRetroceso(one.getDouble("pipsModaRetroceso"));
-		obj.setDuracionMinimaPositivos(one.getDouble("duracionMinimaPositivos"));
-		obj.setDuracionMinimaNegativos(one.getDouble("duracionMinimaNegativos"));
-		obj.setDuracionMinima(one.getDouble("duracionMinima"));
-		obj.setDuracionMaximaPositivos(one.getDouble("duracionMaximaPositivos"));
-		obj.setDuracionMaximaNegativos(one.getDouble("duracionMaximaNegativos"));
-		obj.setDuracionMaxima(one.getDouble("duracionMaxima"));
-		obj.setDuracionPromedioPositivos(one.getDouble("duracionPromedioPositivos"));
-		obj.setDuracionPromedioNegativos(one.getDouble("duracionPromedioNegativos"));
-		obj.setDuracionPromedio(one.getDouble("duracionPromedio"));
-		obj.setDuracionModaPositivos(one.getDouble("duracionModaPositivos"));
-		obj.setDuracionModaNegativos(one.getDouble("duracionModaNegativos"));
-		obj.setDuracionModa(one.getDouble("duracionModa"));
-		obj.setDuracionDesvEstandarPositivos(one.getDouble("duracionDesvEstandarPositivos"));
-		obj.setDuracionDesvEstandarNegativos(one.getDouble("duracionDesvEstandarNegativos"));
-		obj.setDuracionDesvEstandar(one.getDouble("duracionDesvEstandar"));
+		obj.setCantidadPositivos((Integer)one.getOrDefault("cantidadPositivos", 0));
+		obj.setCantidadNegativos((Integer)one.getOrDefault("cantidadNegativos", 0));
+		obj.setCantidadTotal((Integer)one.getOrDefault("cantidadTotal", 0));
 
-		obj.setDuracionTotal(one.getLong("duracionTotal"));
-		obj.setDuracionTotalPositivos(one.getLong("duracionTotalPositivos"));
-		obj.setDuracionTotalNegativos(one.getLong("duracionTotalNegativos"));
+		obj.setPipsPositivos((Double) one.getOrDefault("pipsPositivos", 0.0D));
+		obj.setPipsPositivos((Double) one.getOrDefault("pipsPositivos", 0.0D));
+		obj.setPipsNegativos((Double) one.getOrDefault("pipsNegativos", 0.0D));
+		obj.setPips((Double) one.getOrDefault("pips", 0.0D));
+		obj.setPipsMinimosPositivos((Double) one.getOrDefault("pipsMinimosPositivos", 0.0D));
+		obj.setPipsMinimosNegativos((Double) one.getOrDefault("pipsMinimosNegativos", 0.0D));
+		obj.setPipsMinimos((Double) one.getOrDefault("pipsMinimos", 0.0D));
+		obj.setPipsMaximosPositivos((Double) one.getOrDefault("pipsMaximosPositivos", 0.0D));
+		obj.setPipsMaximosNegativos((Double) one.getOrDefault("pipsMaximosNegativos", 0.0D));
+		obj.setPipsMaximos((Double) one.getOrDefault("pipsMaximos", 0.0D));
+		obj.setPipsPromedioPositivos((Double) one.getOrDefault("pipsPromedioPositivos", 0.0D));
+		obj.setPipsPromedioNegativos((Double) one.getOrDefault("pipsPromedioNegativos", 0.0D));
+		obj.setPipsPromedio((Double) one.getOrDefault("pipsPromedio", 0.0D));
+
+		obj.setPipsModaPositivos((Double) one.getOrDefault("pipsModaPositivos", 0.0D));
+		obj.setPipsModaNegativos((Double) one.getOrDefault("pipsModaNegativos", 0.0D));
+		obj.setPipsModa((Double) one.getOrDefault("pipsModa", 0.0D));
+		obj.setPipsMaximosRetrocesoPositivos((Double) one.getOrDefault("pipsMaximosRetrocesoPositivos", 0.0D));
+		obj.setPipsMaximosRetrocesoNegativos((Double) one.getOrDefault("pipsMaximosRetrocesoNegativos", 0.0D));
+		obj.setPipsMaximosRetroceso((Double) one.getOrDefault("pipsMaximosRetroceso", 0.0D));
+		obj.setPipsMinimosRetrocesoPositivos((Double) one.getOrDefault("pipsMinimosRetrocesoPositivos", 0.0D));
+		obj.setPipsMinimosRetrocesoNegativos((Double) one.getOrDefault("pipsMinimosRetrocesoNegativos", 0.0D));
+		obj.setPipsMinimosRetroceso((Double) one.getOrDefault("pipsMinimosRetroceso", 0.0D));
+		obj.setPipsPromedioRetrocesoPositivos((Double) one.getOrDefault("pipsPromedioRetrocesoPositivos", 0.0D));
+		obj.setPipsPromedioRetrocesoNegativos((Double) one.getOrDefault("pipsPromedioRetrocesoNegativos", 0.0D));
+		obj.setPipsPromedioRetroceso((Double) one.getOrDefault("pipsPromedioRetroceso", 0.0D));
+		obj.setPipsModaRetrocesoPositivos((Double) one.getOrDefault("pipsModaRetrocesoPositivos", 0.0D));
+		obj.setPipsModaRetrocesoNegativos((Double) one.getOrDefault("pipsModaRetrocesoNegativos", 0.0D));
+		obj.setPipsModaRetroceso((Double) one.getOrDefault("pipsModaRetroceso", 0.0D));
+		obj.setDuracionMinimaPositivos((Double) one.getOrDefault("duracionMinimaPositivos", 0.0D));
+		obj.setDuracionMinimaNegativos((Double) one.getOrDefault("duracionMinimaNegativos", 0.0D));
+		obj.setDuracionMinima((Double) one.getOrDefault("duracionMinima", 0.0D));
+		obj.setDuracionMaximaPositivos((Double) one.getOrDefault("duracionMaximaPositivos", 0.0D));
+		obj.setDuracionMaximaNegativos((Double) one.getOrDefault("duracionMaximaNegativos", 0.0D));
+		obj.setDuracionMaxima((Double) one.getOrDefault("duracionMaxima", 0.0D));
+		obj.setDuracionPromedioPositivos((Double) one.getOrDefault("duracionPromedioPositivos", 0.0D));
+		obj.setDuracionPromedioNegativos((Double) one.getOrDefault("duracionPromedioNegativos", 0.0D));
+		obj.setDuracionPromedio((Double) one.getOrDefault("duracionPromedio", 0.0D));
+		obj.setDuracionModaPositivos((Double) one.getOrDefault("duracionModaPositivos", 0.0D));
+		obj.setDuracionModaNegativos((Double) one.getOrDefault("duracionModaNegativos", 0.0D));
+		obj.setDuracionModa((Double) one.getOrDefault("duracionModa", 0.0D));
+		obj.setDuracionDesvEstandarPositivos((Double) one.getOrDefault("duracionDesvEstandarPositivos", 0.0D));
+		obj.setDuracionDesvEstandarNegativos((Double) one.getOrDefault("duracionDesvEstandarNegativos", 0.0D));
+		obj.setDuracionDesvEstandar((Double) one.getOrDefault("duracionDesvEstandar", 0.0D));
+
+		obj.setDuracionTotal((Long) one.getOrDefault("duracionTotal", 0L));
+		obj.setDuracionTotalPositivos((Long) one.getOrDefault("duracionTotalPositivos", 0L));
+		obj.setDuracionTotalNegativos((Long) one.getOrDefault("duracionTotalNegativos", 0L));
 
 		obj.setDataDuracion(one.get("dataDuracion", ArrayList.class));
 		obj.setDataDuracionPositivos(one.get("dataDuracionPositivos", ArrayList.class));
@@ -161,8 +174,6 @@ public class MongoEstadisticaIndividuoMapper extends MongoMapper<MongoEstadistic
 		obj.setDataPipsRetroceso(one.get("dataPipsRetroceso", ArrayList.class));
 		obj.setDataPipsRetrocesoPositivos(one.get("dataPipsRetrocesoPositivos", ArrayList.class));
 		obj.setDataPipsRetrocesoNegativos(one.get("dataPipsRetrocesoNegativos", ArrayList.class));
-
-		return obj;
 	}
 
 	@Override

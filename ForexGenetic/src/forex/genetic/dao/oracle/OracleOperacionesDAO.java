@@ -123,7 +123,8 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 	 * @return
 	 * @throws GeneticDAOException
 	 */
-	public Estadistica consultarEstadisticasIndividuo(Individuo individuo, ParametroConsultaEstadistica parametroConsultaEstadistica) throws GeneticDAOException {
+	@Override
+	public Estadistica consultarEstadisticas(Individuo individuo, ParametroConsultaEstadistica parametroConsultaEstadistica) throws GeneticDAOException {
 		Estadistica estadistica = null;
 		String sql = "SELECT * FROM DETALLE_ESTADISTICAS WHERE ID_INDIVIDUO=?";
 
@@ -605,7 +606,7 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 	}
 
 	@Override
-	public List<? extends Order> consultarOperacionesActivas(Date fechaBase, Date fechaFin, int filas)
+	public List<Order> consultarOperacionesActivas(Date fechaBase, Date fechaFin, int filas)
 			throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
