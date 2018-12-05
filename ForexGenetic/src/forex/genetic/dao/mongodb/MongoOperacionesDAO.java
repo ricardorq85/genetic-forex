@@ -21,7 +21,6 @@ import forex.genetic.dao.IOperacionesDAO;
 import forex.genetic.dao.helper.mongodb.MongoEstadisticaIndividuoMapper;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
-import forex.genetic.entities.Order;
 import forex.genetic.entities.ParametroConsultaEstadistica;
 import forex.genetic.entities.ParametroOperacionPeriodo;
 import forex.genetic.entities.mongo.MongoEstadistica;
@@ -55,13 +54,14 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	public MongoEstadistica consultarEstadisticas(Individuo individuo,
 			ParametroConsultaEstadistica parametroConsultaEstadistica) throws GeneticDAOException {
 		List<Bson> filtrosPositivos = getFiltrosParaPositivos(individuo, parametroConsultaEstadistica);
-		MongoEstadistica estadisticaPositivos = consultarEstadisticasIntern(filtrosPositivos, null);
+		MongoEstadistica estadisticaPositivos = consultarEstadisticasIntern(filtrosPositivos, null, "Positivos");
 		estadisticaPositivos.setPipsModaPositivos(getModa(filtrosPositivos, "$pips"));
 		estadisticaPositivos.setDuracionModaPositivos(getModa(filtrosPositivos, "$duracionMinutos"));
 		estadisticaPositivos.setPipsModaRetrocesoPositivos(getModa(filtrosPositivos, "$maxPipsRetroceso"));
 
 		List<Bson> filtrosNegativos = getFiltrosParaNegativos(individuo, parametroConsultaEstadistica);
-		MongoEstadistica estadisticaCompleta = consultarEstadisticasIntern(filtrosNegativos, estadisticaPositivos);
+		MongoEstadistica estadisticaCompleta = consultarEstadisticasIntern(filtrosNegativos, estadisticaPositivos,
+				"Negativos");
 		estadisticaCompleta.setPipsModaNegativos(getModa(filtrosNegativos, "$pips"));
 		estadisticaCompleta.setDuracionModaNegativos(getModa(filtrosNegativos, "$duracionMinutos"));
 		estadisticaCompleta.setPipsModaRetrocesoNegativos(getModa(filtrosNegativos, "$maxPipsRetroceso"));
@@ -69,9 +69,9 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		return estadisticaCompleta;
 	}
 
-	private MongoEstadistica consultarEstadisticasIntern(List<Bson> filtros, MongoEstadistica estadisticaPrevia)
-			throws GeneticDAOException {
-		List<BsonField> datosAcumulados = getAccumulators();
+	private MongoEstadistica consultarEstadisticasIntern(List<Bson> filtros, MongoEstadistica estadisticaPrevia,
+			String suffix) throws GeneticDAOException {
+		List<BsonField> datosAcumulados = getAccumulators(suffix);
 		Document doc = this.collection.aggregate(Arrays.asList(Aggregates.match(Filters.and(filtros)),
 				Aggregates.group("$estadistica", datosAcumulados))).first();
 		MongoEstadisticaIndividuoMapper mapper = new MongoEstadisticaIndividuoMapper();
@@ -79,25 +79,34 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		if (estadisticaPrevia == null) {
 			obj = new MongoEstadistica();
 		}
-		mapper.helpOne(doc, obj);
+		if (doc != null) {
+			mapper.helpOne(doc, obj);
+		}
 		return obj;
 	}
 
-	private List<BsonField> getAccumulators() {
+	private List<BsonField> getAccumulators(String suffix) {
 		List<BsonField> datosAcumulados = new ArrayList<BsonField>();
-		datosAcumulados.add(Accumulators.sum("pipsSuma", "pips"));
-		datosAcumulados.add(Accumulators.min("pipsMinimos", "pips"));
-		datosAcumulados.add(Accumulators.max("pipsMaximos", "pips"));
-		datosAcumulados.add(Accumulators.avg("pipsPromedio", "pips"));
+		datosAcumulados.add(Accumulators.sum(new StringBuilder("pipsSuma").append(suffix).toString(), "$pips"));
+		datosAcumulados.add(Accumulators.min(new StringBuilder("pipsMinimos").append(suffix).toString(), "$pips"));
+		datosAcumulados.add(Accumulators.max(new StringBuilder("pipsMaximos").append(suffix).toString(), "$pips"));
+		datosAcumulados.add(Accumulators.avg(new StringBuilder("pipsPromedio").append(suffix).toString(), "$pips"));
 
-		datosAcumulados.add(Accumulators.min("duracionMinima", "duracionMinutos"));
-		datosAcumulados.add(Accumulators.max("duracionMaxima", "duracionMinutos"));
-		datosAcumulados.add(Accumulators.avg("duracionPromedio", "duracionMinutos"));
-		datosAcumulados.add(Accumulators.stdDevPop("duracionDesviacion", "duracionMinutos"));
+		datosAcumulados.add(
+				Accumulators.min(new StringBuilder("duracionMinima").append(suffix).toString(), "$duracionMinutos"));
+		datosAcumulados.add(
+				Accumulators.max(new StringBuilder("duracionMaxima").append(suffix).toString(), "$duracionMinutos"));
+		datosAcumulados.add(
+				Accumulators.avg(new StringBuilder("duracionPromedio").append(suffix).toString(), "$duracionMinutos"));
+		datosAcumulados.add(Accumulators.stdDevPop(new StringBuilder("duracionDesviacion").append(suffix).toString(),
+				"$duracionMinutos"));
 
-		datosAcumulados.add(Accumulators.min("pipsRetrocesoMinimos", "maxPipsRetroceso"));
-		datosAcumulados.add(Accumulators.max("pipsRetrocesoMaximos", "maxPipsRetroceso"));
-		datosAcumulados.add(Accumulators.avg("pipsRetrocesoPromedio", "maxPipsRetroceso"));
+		datosAcumulados.add(Accumulators.min(new StringBuilder("pipsMinimosRetroceso").append(suffix).toString(),
+				"$maxPipsRetroceso"));
+		datosAcumulados.add(Accumulators.max(new StringBuilder("pipsMaximosRetroceso").append(suffix).toString(),
+				"$maxPipsRetroceso"));
+		datosAcumulados.add(Accumulators.avg(new StringBuilder("pipsPromedioRetroceso").append(suffix).toString(),
+				"$maxPipsRetroceso"));
 
 		return datosAcumulados;
 	}
@@ -193,7 +202,7 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		long avgDuracionMinutos = 0;
 		Document doc = this.collection
 				.aggregate(Arrays
-						.asList(Aggregates.group(null, Accumulators.avg("avgDuracionMinutos", "duracionMinutos"))))
+						.asList(Aggregates.group(null, Accumulators.avg("avgDuracionMinutos", "$duracionMinutos"))))
 				.first();
 		if (doc != null) {
 			if (doc.get("avgDuracionMinutos") != null) {

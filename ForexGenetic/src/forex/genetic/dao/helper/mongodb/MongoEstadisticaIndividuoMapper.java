@@ -115,7 +115,6 @@ public class MongoEstadisticaIndividuoMapper extends MongoMapper<MongoEstadistic
 		obj.setCantidadTotal((Integer)one.getOrDefault("cantidadTotal", 0));
 
 		obj.setPipsPositivos((Double) one.getOrDefault("pipsPositivos", 0.0D));
-		obj.setPipsPositivos((Double) one.getOrDefault("pipsPositivos", 0.0D));
 		obj.setPipsNegativos((Double) one.getOrDefault("pipsNegativos", 0.0D));
 		obj.setPips((Double) one.getOrDefault("pips", 0.0D));
 		obj.setPipsMinimosPositivos((Double) one.getOrDefault("pipsMinimosPositivos", 0.0D));

@@ -1148,18 +1148,7 @@ public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements I
 	}
 
 	@Override
-	public Point consultarProximoPuntoApertura(IndividuoEstrategia individuo, DateInterval rango)
-			throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
 	public Point consultarPuntoAnterior(Date fecha) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
-	public Point consultarPuntoCierre(IndividuoEstrategia individuo, DateInterval rango) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
@@ -1176,6 +1165,16 @@ public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements I
 
 	@Override
 	public Point consultarDatoHistorico(Date fechaBase) throws GeneticDAOException {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
+
+	@Override
+	public List<Point> consultarProximosPuntosApertura(IndividuoEstrategia individuo, DateInterval rango) {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
+
+	@Override
+	public List<Point> consultarPuntosCierre(IndividuoEstrategia individuo, DateInterval rango) {
 		throw new UnsupportedOperationException("UnsupportedOperationException");
 	}
 

@@ -65,7 +65,7 @@ public class MongoEstadisticasIndividuoDAO extends MongoGeneticDAO<MongoEstadist
 
 	public void update(MongoEstadistica obj) {
 		Document filterPk = new Document(getMapper().toPrimaryKeyMap(obj));
-		this.collection.updateOne(filterPk, Updates.addToSet("fechaFinal", obj.getFechaFinal()));
+		this.collection.updateOne(filterPk, Updates.set("fechaFinal", obj.getFechaFinal()));
 	}
 
 }
