@@ -17,7 +17,6 @@ import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.DriverDBFactory;
-import forex.genetic.tendencia.manager.TendenciaBuySellManager;
 import forex.genetic.tendencia.manager.mongo.MongoTendenciaManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -60,7 +59,7 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 						+ ",fechaHistoricaMaximaAnterior=" + DateUtil.getDateString(this.fechaHistoricaMaximaAnterior)
 						+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva)
 						+ ",count=" + count, 1);
-				//procesarIndividuos();
+				procesarIndividuos();
 				procesarTendencias();
 				exportarIndividuos();
 				crearNuevosIndividuos();
@@ -102,7 +101,7 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 
 		Date fechaBaseFinal=null;
 		try {
-			fechaBaseFinal = DateUtil.obtenerFecha("2018/10/23 23:40");
+			fechaBaseFinal = DateUtil.obtenerFecha("2008/08/12 15:30");
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
