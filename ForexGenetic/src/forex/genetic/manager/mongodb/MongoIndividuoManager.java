@@ -35,14 +35,7 @@ public class MongoIndividuoManager {
 			rango.setHighInterval(DateUtil.obtenerFecha("2009/06/01 00:00"));
 
 			IndividuoEstrategia ind = dao.consultarById("1394755200000.14");
-			// individuos.stream().forEach(ind -> {
-			Point punto = dhDAO.consultarProximoPuntoApertura(ind, rango);
-			if (punto != null) {
-				System.out.println("Individuo con fechas consultadas:" + ind.getId());
-				System.out.println(DateUtil.getDateString(punto.getDate()));
-				puntosTotales.add(punto);
-			}
-			// });
+			return dhDAO.consultarProximosPuntosApertura(ind, rango);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

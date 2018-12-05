@@ -8,7 +8,6 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
@@ -33,7 +32,6 @@ import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
-import forex.genetic.util.LogUtil;
 
 /**
  *
@@ -53,6 +51,11 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 
 	public MongoDatoHistoricoDAO(String name, boolean configure) {
 		super(name, configure);
+		int year = 2009;
+		int currYear = DateUtil.obtenerAnyo(new Date());
+		while (year <= currYear) {
+			setCollection(year++, true);
+		}
 	}
 
 	public void insertMany(List<Point> datos) {
@@ -65,13 +68,17 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 				if ((initialIndex > 0) || (i < datos.size() - 1)) {
 					tempDatos = datos.subList(initialIndex, i);
 				}
-				setCollection(prev, true);
+				setCollection(prev);
 				super.insertMany(tempDatos);
 				initialIndex = i;
 			}
 		}
 	}
 
+	private void setCollection(int anyo) {
+		setCollection(anyo, false);
+	}
+	
 	protected void setCollection(int anyo, boolean configure) {
 		StringBuilder sb = new StringBuilder("datoHistorico").append(anyo);
 		setCollection(sb.toString(), configure);
@@ -108,7 +115,7 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	@Override
 	public Point consultarDatoHistorico(Date fecha) throws GeneticDAOException {
 		int year = DateUtil.obtenerAnyo(fecha);
-		setCollection(year, true);
+		setCollection(year);
 		Point p = consultarHistoricoIntern(fecha);
 		return p;
 	}
@@ -124,11 +131,11 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		Point p = null;
 		int initialYear = DateUtil.obtenerAnyo(order.getOpenDate());
 		int endYear = DateUtil.obtenerAnyo(order.getCloseDate());
-		setCollection(initialYear, true);
+		setCollection(initialYear);
 		Point p1 = consultarRetrocesoIntern(order);
 		p = p1;
 		if (initialYear != endYear) {
-			setCollection(endYear, true);
+			setCollection(endYear);
 			Point p2 = consultarRetrocesoIntern(order);
 			if (esVentaConPipsPositivos(order) || esCompraConPipsNegativos(order)) {
 				if ((p1 != null) && ((p2 == null) || (p1.getHigh() > p2.getHigh()))) {
@@ -178,7 +185,7 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	}
 
 	public Date getFechaHistoricaMinima() {
-		setCollection(minYear, true);
+		setCollection(minYear);
 		Date fecha = null;
 		Document doc = this.collection
 				.aggregate(Arrays.asList(Aggregates.group(null, Accumulators.min("minDate", "$fechaHistorico"))))
@@ -194,7 +201,7 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		int year = DateUtil.obtenerAnyo(new Date());
 		Date date = null;
 		while ((year >= minYear) && (date == null)) {
-			setCollection(year--, true);
+			setCollection(year--);
 			date = getFechaHistoricaMaximaIntern();
 		}
 		return date;
@@ -216,11 +223,11 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 			throws GeneticDAOException {
 		int initialYear = DateUtil.obtenerAnyo(rango.getLowInterval());
 		int endYear = DateUtil.obtenerAnyo(rango.getHighInterval());
-		setCollection(initialYear, true);
+		setCollection(initialYear);
 		Point p1 = consultarPuntoCierreByTakeOrStopIntern(order, rango);
 		Point p = p1;
 		if ((initialYear != endYear) && (p1 == null)) {
-			setCollection(endYear, true);
+			setCollection(endYear);
 			Point p2 = consultarPuntoCierreByTakeOrStopIntern(order, rango);
 			p = p2;
 		}
@@ -246,8 +253,8 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		filtros.add(Filters.or(filtrosTakeStop));
 
 		Bson bsonFiltrosCompletos = Filters.and(filtros);
-		LogUtil.logTime(
-				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
+//		LogUtil.logTime(
+//				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
 
 		Document doc = this.collection.find(bsonFiltrosCompletos).sort(Sorts.orderBy(Sorts.ascending("fechaHistorico")))
 				.limit(1).first();
@@ -257,21 +264,19 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	}
 
 	@Override
-	public Point consultarPuntoCierre(IndividuoEstrategia individuo, DateInterval rango) {
+	public List<Point> consultarPuntosCierre(IndividuoEstrategia individuo, DateInterval rango) {
 		int initialYear = DateUtil.obtenerAnyo(rango.getLowInterval());
 		int endYear = DateUtil.obtenerAnyo(rango.getHighInterval());
-		setCollection(initialYear, true);
-		Point p1 = consultarPuntoCierreIntern(individuo, rango);
-		Point p = p1;
-		if ((initialYear != endYear) && (p1 == null)) {
-			setCollection(endYear, true);
-			Point p2 = consultarPuntoCierreIntern(individuo, rango);
-			p = p2;
+		setCollection(initialYear);
+		List<Point> p = consultarPuntoCierreIntern(individuo, rango);
+		if ((initialYear != endYear)) {
+			setCollection(endYear);
+			p.addAll(consultarPuntoCierreIntern(individuo, rango));
 		}
 		return p;
 	}
 
-	public Point consultarPuntoCierreIntern(IndividuoEstrategia individuo, DateInterval rango) {
+	public List<Point> consultarPuntoCierreIntern(IndividuoEstrategia individuo, DateInterval rango) {
 		List<Bson> filtros = new ArrayList<>();
 		filtros.add(Filters.gt("fechaHistorico", rango.getLowInterval()));
 		filtros.add(Filters.lte("fechaHistorico", rango.getHighInterval()));
@@ -279,33 +284,27 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		adicionarFiltroIndicadores(individuo.getCloseIndicators(), filtros);
 
 		Bson bsonFiltrosCompletos = Filters.and(filtros);
-		LogUtil.logTime("idIndividuo=" + individuo.getId(), 1);
-		LogUtil.logTime(
-				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
+		MongoCursor<Document> cursor = this.collection.find(bsonFiltrosCompletos).sort(Sorts.orderBy(Sorts.ascending("fechaHistorico")))
+				.iterator();
 
-		Document doc = this.collection.find(bsonFiltrosCompletos).sort(Sorts.orderBy(Sorts.ascending("fechaHistorico")))
-				.limit(1).first();
-
-		Point p = getMapper().helpOne(doc);
+		List<Point> p = getMapper().helpList(cursor);
 		return p;
 	}
 
 	@Override
-	public Point consultarProximoPuntoApertura(IndividuoEstrategia individuo, DateInterval rango) {
+	public List<Point> consultarProximosPuntosApertura(IndividuoEstrategia individuo, DateInterval rango) {
 		int initialYear = DateUtil.obtenerAnyo(rango.getLowInterval());
 		int endYear = DateUtil.obtenerAnyo(rango.getHighInterval());
-		setCollection(initialYear, true);
-		Point p1 = consultarProximoPuntoAperturaIntern(individuo, rango);
-		Point p = p1;
-		if ((initialYear != endYear) && (p1 == null)) {
-			setCollection(endYear, true);
-			Point p2 = consultarProximoPuntoAperturaIntern(individuo, rango);
-			p = p2;
+		setCollection(initialYear);
+		List<Point> puntosApertura = consultarProximosPuntosAperturaIntern(individuo, rango);
+		if ((initialYear != endYear)) {
+			setCollection(endYear);
+			puntosApertura.addAll(consultarProximosPuntosAperturaIntern(individuo, rango));
 		}
-		return p;
+		return puntosApertura;
 	}
 
-	public Point consultarProximoPuntoAperturaIntern(IndividuoEstrategia individuo, DateInterval rango) {
+	private List<Point> consultarProximosPuntosAperturaIntern(IndividuoEstrategia individuo, DateInterval rango) {
 		List<Bson> filtros = new ArrayList<>();
 		filtros.add(Filters.gt("fechaHistorico", rango.getLowInterval()));
 		filtros.add(Filters.lte("fechaHistorico", rango.getHighInterval()));
@@ -313,14 +312,14 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		adicionarFiltroIndicadores(individuo.getOpenIndicators(), filtros);
 
 		Bson bsonFiltrosCompletos = Filters.and(filtros);
-		LogUtil.logTime("idIndividuo=" + individuo.getId(), 1);
-		LogUtil.logTime(
-				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
+//		LogUtil.logTime("idIndividuo=" + individuo.getId(), 1);
+//		LogUtil.logTime(
+//				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
 
-		Document doc = this.collection.find(bsonFiltrosCompletos).sort(Sorts.orderBy(Sorts.ascending("fechaHistorico")))
-				.limit(1).first();
+		MongoCursor<Document> cursor = this.collection.find(bsonFiltrosCompletos)
+				.sort(Sorts.orderBy(Sorts.ascending("fechaHistorico"))).iterator();
 
-		Point p = getMapper().helpOne(doc);
+		List<Point> p = getMapper().helpList(cursor);
 		return p;
 	}
 
@@ -388,11 +387,11 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	@Override
 	public Point consultarPuntoAnterior(Date fecha) throws GeneticDAOException {
 		int initialYear = DateUtil.obtenerAnyo(fecha);
-		setCollection(initialYear, true);
+		setCollection(initialYear);
 		Point p1 = consultarPuntoAnteriorIntern(fecha);
 		Point p = p1;
 		if ((initialYear > minYear) && (p1 == null)) {
-			setCollection(--initialYear, true);
+			setCollection(--initialYear);
 			Point p2 = consultarPuntoAnteriorIntern(fecha);
 			p = p2;
 		}
