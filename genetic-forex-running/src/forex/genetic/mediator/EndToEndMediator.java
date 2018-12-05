@@ -37,7 +37,7 @@ import forex.genetic.util.FileUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
-public class PointToPointMediator extends GeneticMediator {
+public class EndToEndMediator extends GeneticMediator {
 
 	private int count = 1;
 	private Connection connection;

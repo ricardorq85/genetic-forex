@@ -19,13 +19,13 @@ import java.nio.charset.Charset;
 import java.text.ParseException;
 
 import forex.genetic.exception.GeneticException;
-import forex.genetic.mediator.PointToPointMediator;
+import forex.genetic.mediator.EndToEndMediator;
 
 /**
  *
  * @author ricardorq85
  */
-public class ForexPointToPoint {
+public class ForexEndToEnd {
 
 	/**
 	 * @param args
@@ -45,7 +45,7 @@ public class ForexPointToPoint {
 		logTime("Inicio: " + id, 1);
 		setId(Long.toString(id));
 		try {
-			PointToPointMediator mediator = new PointToPointMediator();
+			EndToEndMediator mediator = new EndToEndMediator();
 			mediator.init();
 			mediator.start();
 		} catch (GeneticException ex) {

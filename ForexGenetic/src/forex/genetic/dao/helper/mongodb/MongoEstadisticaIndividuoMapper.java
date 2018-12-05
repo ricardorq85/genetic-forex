@@ -159,9 +159,9 @@ public class MongoEstadisticaIndividuoMapper extends MongoMapper<MongoEstadistic
 		obj.setDuracionDesvEstandarNegativos((Double) one.getOrDefault("duracionDesvEstandarNegativos", 0.0D));
 		obj.setDuracionDesvEstandar((Double) one.getOrDefault("duracionDesvEstandar", 0.0D));
 
-		obj.setDuracionTotal((Long) one.getOrDefault("duracionTotal", 0L));
-		obj.setDuracionTotalPositivos((Long) one.getOrDefault("duracionTotalPositivos", 0L));
-		obj.setDuracionTotalNegativos((Long) one.getOrDefault("duracionTotalNegativos", 0L));
+		obj.setDuracionTotal((Double) one.getOrDefault("duracionTotal", 0L));
+		obj.setDuracionTotalPositivos((Double) one.getOrDefault("duracionTotalPositivos", 0L));
+		obj.setDuracionTotalNegativos((Double) one.getOrDefault("duracionTotalNegativos", 0L));
 
 		obj.setDataDuracion(one.get("dataDuracion", ArrayList.class));
 		obj.setDataDuracionPositivos(one.get("dataDuracionPositivos", ArrayList.class));

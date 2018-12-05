@@ -20,9 +20,9 @@ public class MongoEstadistica extends Estadistica {
 	private Date fechaInicial;
 	private Date fechaFinal;
 
-	private long duracionTotal;
-	private long duracionTotalPositivos;
-	private long duracionTotalNegativos;
+	private double duracionTotal;
+	private double duracionTotalPositivos;
+	private double duracionTotalNegativos;
 
 	private List<Double> dataDuracion = new ArrayList<Double>();
 	private List<Double> dataDuracionPositivos = new ArrayList<Double>();
@@ -35,7 +35,7 @@ public class MongoEstadistica extends Estadistica {
 	private List<Double> dataPipsRetroceso = new ArrayList<Double>();
 	private List<Double> dataPipsRetrocesoPositivos = new ArrayList<Double>();
 	private List<Double> dataPipsRetrocesoNegativos = new ArrayList<Double>();
-	
+
 	public MongoEstadistica() {
 		this.setDuracionMinima(Double.MAX_VALUE);
 		this.setDuracionMinimaNegativos(Double.MAX_VALUE);
@@ -98,27 +98,27 @@ public class MongoEstadistica extends Estadistica {
 		this.fechaFinal = fechaFinal;
 	}
 
-	public long getDuracionTotal() {
+	public double getDuracionTotal() {
 		return duracionTotal;
 	}
 
-	public void setDuracionTotal(long duracionTotal) {
+	public void setDuracionTotal(double duracionTotal) {
 		this.duracionTotal = duracionTotal;
 	}
 
-	public long getDuracionTotalPositivos() {
+	public double getDuracionTotalPositivos() {
 		return duracionTotalPositivos;
 	}
 
-	public void setDuracionTotalPositivos(long duracionTotalPositivos) {
+	public void setDuracionTotalPositivos(double duracionTotalPositivos) {
 		this.duracionTotalPositivos = duracionTotalPositivos;
 	}
 
-	public long getDuracionTotalNegativos() {
+	public double getDuracionTotalNegativos() {
 		return duracionTotalNegativos;
 	}
 
-	public void setDuracionTotalNegativos(long duracionTotalNegativos) {
+	public void setDuracionTotalNegativos(double duracionTotalNegativos) {
 		this.duracionTotalNegativos = duracionTotalNegativos;
 	}
 

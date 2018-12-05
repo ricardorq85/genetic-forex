@@ -19,13 +19,13 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 import forex.genetic.exception.GeneticDAOException;
-import forex.genetic.mediator.MultiplePointToPointMediator;
+import forex.genetic.mediator.MultipleEndToEndMediator;
 
 /**
  *
  * @author ricardorq85
  */
-public class MultiplePointToPoint {
+public class MultipleEndtoEnd {
 
 	/**
 	 * @param args the command line arguments
@@ -46,7 +46,7 @@ public class MultiplePointToPoint {
 		logTime("Inicio: " + id, 1);
 		setId(Long.toString(id));
 		try {
-			MultiplePointToPointMediator mediator = new MultiplePointToPointMediator();
+			MultipleEndToEndMediator mediator = new MultipleEndToEndMediator();
 			mediator.init();
 			mediator.start();
 		} catch (GeneticDAOException ex) {

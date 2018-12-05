@@ -21,7 +21,6 @@ import forex.genetic.dao.IOperacionesDAO;
 import forex.genetic.dao.helper.mongodb.MongoEstadisticaIndividuoMapper;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
-import forex.genetic.entities.Order;
 import forex.genetic.entities.ParametroConsultaEstadistica;
 import forex.genetic.entities.ParametroOperacionPeriodo;
 import forex.genetic.entities.mongo.MongoEstadistica;
@@ -145,7 +144,6 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	}
 
 	private double getModa(List<Bson> filtros, String fieldName) throws GeneticDAOException {
-//		List<Bson> filtros = getFiltrosParaPositivos(individuo, parametroConsultaEstadistica);
 		double value = 0.0D;
 		Document doc = this.collection.aggregate(Arrays.asList(Aggregates.match(Filters.and(filtros)),
 				Aggregates.group(fieldName, Accumulators.sum("count", 1)), Aggregates.sort(Sorts.descending("count")),
@@ -157,36 +155,6 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		}
 		return value;
 	}
-
-//	public double duracionModaPositivos(Individuo individuo, ParametroConsultaEstadistica parametroConsultaEstadistica)
-//			throws GeneticDAOException {
-//		List<Bson> filtros = getFiltrosParaPositivos(individuo, parametroConsultaEstadistica);
-//		double value = 0.0D;
-//		Document doc = this.collection.aggregate(Arrays.asList(Aggregates.match(Filters.and(filtros)),
-//				Aggregates.group("$duracionMinutos", Accumulators.sum("count", 1)),
-//				Aggregates.sort(Sorts.descending("count")), Aggregates.limit(1))).first();
-//		if (doc != null) {
-//			if (doc.get("_id") != null) {
-//				value = doc.getLong("_id");
-//			}
-//		}
-//		return value;
-//	}
-//
-//	public double pipsRetrocesoModaPositivos(Individuo individuo,
-//			ParametroConsultaEstadistica parametroConsultaEstadistica) throws GeneticDAOException {
-//		List<Bson> filtros = getFiltrosParaPositivos(individuo, parametroConsultaEstadistica);
-//		double value = 0.0D;
-//		Document doc = this.collection.aggregate(Arrays.asList(Aggregates.match(Filters.and(filtros)),
-//				Aggregates.group("$maxPipsRetroceso", Accumulators.sum("count", 1)),
-//				Aggregates.sort(Sorts.descending("count")), Aggregates.limit(1))).first();
-//		if (doc != null) {
-//			if (doc.get("_id") != null) {
-//				value = doc.getLong("_id");
-//			}
-//		}
-//		return value;
-//	}
 
 	@Override
 	public long duracionPromedioMinutos(String idIndividuo) throws GeneticDAOException {

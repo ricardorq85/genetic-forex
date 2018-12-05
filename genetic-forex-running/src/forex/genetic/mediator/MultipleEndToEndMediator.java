@@ -23,7 +23,7 @@ import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
 
-public class MultiplePointToPointMediator extends PointToPointMediator {
+public class MultipleEndToEndMediator extends EndToEndMediator {
 
 	private int count = 1;
 	private List<DataClient> dataClients;
