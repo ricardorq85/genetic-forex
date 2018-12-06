@@ -8,6 +8,7 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
@@ -27,6 +28,7 @@ import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.DateUtil;
+import forex.genetic.util.LogUtil;
 
 /**
  *
@@ -53,15 +55,32 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	@Override
 	public MongoEstadistica consultarEstadisticas(Individuo individuo,
 			ParametroConsultaEstadistica parametroConsultaEstadistica) throws GeneticDAOException {
+
+		List<Bson> filtrosTotales = getFiltrosParaTotales(individuo, parametroConsultaEstadistica);
+
+		//LogUtil.logTime(Filters.and(filtrosTotales)
+			//	.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
+
+		MongoEstadistica estadisticaTotales = consultarEstadisticasIntern(filtrosTotales, null, "");
+		estadisticaTotales.setPipsModa(getModa(filtrosTotales, "$pips"));
+		estadisticaTotales.setDuracionModa(getModa(filtrosTotales, "$duracionMinutos"));
+		estadisticaTotales.setPipsModaRetroceso(getModa(filtrosTotales, "$maxPipsRetroceso"));
+
 		List<Bson> filtrosPositivos = getFiltrosParaPositivos(individuo, parametroConsultaEstadistica);
-		MongoEstadistica estadisticaPositivos = consultarEstadisticasIntern(filtrosPositivos, null, "Positivos");
+		MongoEstadistica estadisticaPositivos = consultarEstadisticasIntern(filtrosPositivos, estadisticaTotales,
+				"Positivos");
 		estadisticaPositivos.setPipsModaPositivos(getModa(filtrosPositivos, "$pips"));
 		estadisticaPositivos.setDuracionModaPositivos(getModa(filtrosPositivos, "$duracionMinutos"));
 		estadisticaPositivos.setPipsModaRetrocesoPositivos(getModa(filtrosPositivos, "$maxPipsRetroceso"));
 
 		List<Bson> filtrosNegativos = getFiltrosParaNegativos(individuo, parametroConsultaEstadistica);
+
+//		LogUtil.logTime(Filters.and(filtrosNegativos)
+	//			.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
+
 		MongoEstadistica estadisticaCompleta = consultarEstadisticasIntern(filtrosNegativos, estadisticaPositivos,
 				"Negativos");
+		
 		estadisticaCompleta.setPipsModaNegativos(getModa(filtrosNegativos, "$pips"));
 		estadisticaCompleta.setDuracionModaNegativos(getModa(filtrosNegativos, "$duracionMinutos"));
 		estadisticaCompleta.setPipsModaRetrocesoNegativos(getModa(filtrosNegativos, "$maxPipsRetroceso"));
@@ -72,8 +91,10 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	private MongoEstadistica consultarEstadisticasIntern(List<Bson> filtros, MongoEstadistica estadisticaPrevia,
 			String suffix) throws GeneticDAOException {
 		List<BsonField> datosAcumulados = getAccumulators(suffix);
-		Document doc = this.collection.aggregate(Arrays.asList(Aggregates.match(Filters.and(filtros)),
-				Aggregates.group("$estadistica", datosAcumulados))).first();
+
+		Document doc = this.collection.aggregate(
+				Arrays.asList(Aggregates.match(Filters.and(filtros)), Aggregates.group("estadistica", datosAcumulados)))
+				.first();
 		MongoEstadisticaIndividuoMapper mapper = new MongoEstadisticaIndividuoMapper();
 		MongoEstadistica obj = estadisticaPrevia;
 		if (estadisticaPrevia == null) {
@@ -87,7 +108,11 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 
 	private List<BsonField> getAccumulators(String suffix) {
 		List<BsonField> datosAcumulados = new ArrayList<BsonField>();
-		datosAcumulados.add(Accumulators.sum(new StringBuilder("pipsSuma").append(suffix).toString(), "$pips"));
+		datosAcumulados.add(Accumulators.sum(new StringBuilder("cantidad").append(suffix).toString(), 1));
+		datosAcumulados.add(
+				Accumulators.sum(new StringBuilder("duracionTotal").append(suffix).toString(), "$duracionMinutos"));
+
+		datosAcumulados.add(Accumulators.sum(new StringBuilder("pips").append(suffix).toString(), "$pips"));
 		datosAcumulados.add(Accumulators.min(new StringBuilder("pipsMinimos").append(suffix).toString(), "$pips"));
 		datosAcumulados.add(Accumulators.max(new StringBuilder("pipsMaximos").append(suffix).toString(), "$pips"));
 		datosAcumulados.add(Accumulators.avg(new StringBuilder("pipsPromedio").append(suffix).toString(), "$pips"));
@@ -98,7 +123,7 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 				Accumulators.max(new StringBuilder("duracionMaxima").append(suffix).toString(), "$duracionMinutos"));
 		datosAcumulados.add(
 				Accumulators.avg(new StringBuilder("duracionPromedio").append(suffix).toString(), "$duracionMinutos"));
-		datosAcumulados.add(Accumulators.stdDevPop(new StringBuilder("duracionDesviacion").append(suffix).toString(),
+		datosAcumulados.add(Accumulators.stdDevPop(new StringBuilder("duracionDesvEstandard").append(suffix).toString(),
 				"$duracionMinutos"));
 
 		datosAcumulados.add(Accumulators.min(new StringBuilder("pipsMinimosRetroceso").append(suffix).toString(),
@@ -109,6 +134,27 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 				"$maxPipsRetroceso"));
 
 		return datosAcumulados;
+	}
+
+	private List<Bson> getFiltrosParaTotales(Individuo individuo,
+			ParametroConsultaEstadistica parametroConsultaEstadistica) {
+		List<Bson> filtros = getFiltrosParaEstadistica(individuo, parametroConsultaEstadistica);
+		List<Bson> filtrosOr = new ArrayList<Bson>();
+		if (parametroConsultaEstadistica.getRetroceso() != null) {
+			if (parametroConsultaEstadistica.getRetroceso() > 0.0D) {
+				filtrosOr.add(Filters.and(Filters.lte("pips", 0),
+						Filters.gte("maxPipsRetroceso", parametroConsultaEstadistica.getRetroceso())));
+				filtrosOr.add(Filters.and(Filters.gt("pips", 0),
+						Filters.gte("pips", parametroConsultaEstadistica.getRetroceso())));
+			} else {
+				filtrosOr.add(Filters.and(Filters.gt("pips", 0),
+						Filters.lte("maxPipsRetroceso", parametroConsultaEstadistica.getRetroceso())));
+				filtrosOr.add(Filters.and(Filters.lte("pips", 0),
+						Filters.lte("pips", parametroConsultaEstadistica.getRetroceso())));
+			}
+			filtros.add(Filters.or(filtrosOr));
+		}
+		return filtros;
 	}
 
 	private List<Bson> getFiltrosParaPositivos(Individuo individuo,
@@ -146,7 +192,7 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		filtros.add(Filters.and(Filters.exists("fechaCierre", true),
 				Filters.lt("fechaCierre", parametroConsultaEstadistica.getFecha())));
 		if (parametroConsultaEstadistica.getDuracion() == null) {
-			filtros.add(Filters.gte("duracionMinutos", 0.0D));
+			filtros.add(Filters.gte("duracionMinutos", 0L));
 		} else {
 			filtros.add(Filters.gte("duracionMinutos", parametroConsultaEstadistica.getDuracion()));
 		}
@@ -160,7 +206,7 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 				Aggregates.limit(1))).first();
 		if (doc != null) {
 			if (doc.get("_id") != null) {
-				value = doc.getLong("_id");
+				value = new Double(String.valueOf(doc.get("_id")));
 			}
 		}
 		return value;

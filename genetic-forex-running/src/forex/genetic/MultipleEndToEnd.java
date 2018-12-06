@@ -25,7 +25,7 @@ import forex.genetic.mediator.MultipleEndToEndMediator;
  *
  * @author ricardorq85
  */
-public class MultipleEndtoEnd {
+public class MultipleEndToEnd {
 
 	/**
 	 * @param args the command line arguments
