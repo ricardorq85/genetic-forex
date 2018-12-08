@@ -85,6 +85,7 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		estadisticaCompleta.setDuracionModaNegativos(getModa(filtrosNegativos, "$duracionMinutos"));
 		estadisticaCompleta.setPipsModaRetrocesoNegativos(getModa(filtrosNegativos, "$maxPipsRetroceso"));
 
+		estadisticaCompleta.setIdIndividuo(individuo.getId());
 		return estadisticaCompleta;
 	}
 

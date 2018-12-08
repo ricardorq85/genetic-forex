@@ -78,7 +78,7 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	private void setCollection(int anyo) {
 		setCollection(anyo, false);
 	}
-	
+
 	protected void setCollection(int anyo, boolean configure) {
 		StringBuilder sb = new StringBuilder("datoHistorico").append(anyo);
 		setCollection(sb.toString(), configure);
@@ -187,9 +187,10 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	public Date getFechaHistoricaMinima() {
 		setCollection(minYear);
 		Date fecha = null;
-		Document doc = this.collection
-				.aggregate(Arrays.asList(Aggregates.group(null, Accumulators.min("minDate", "$fechaHistorico"))))
-				.first();
+//		Document doc = this.collection
+//				.aggregate(Arrays.asList(Aggregates.group(null, Accumulators.min("minDate", "$fechaHistorico"))))
+//				.first();
+		Document doc = this.collection.find().sort(Sorts.ascending("fechaHistorico")).first();
 		if (doc != null) {
 			fecha = doc.getDate("minDate");
 		}
@@ -201,19 +202,21 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		int year = DateUtil.obtenerAnyo(new Date());
 		Date date = null;
 		while ((year >= minYear) && (date == null)) {
-			setCollection(year--);
+			setCollection(year);
 			date = getFechaHistoricaMaximaIntern();
+			year--;
 		}
 		return date;
 	}
 
 	public Date getFechaHistoricaMaximaIntern() {
 		Date fecha = null;
-		Document doc = this.collection
-				.aggregate(Arrays.asList(Aggregates.group(null, Accumulators.max("maxDate", "$fechaHistorico"))))
-				.first();
+//		Document doc = this.collection
+//				.aggregate(Arrays.asList(Aggregates.group(null, Accumulators.max("maxDate", "$fechaHistorico"))))
+//				.first();
+		Document doc = this.collection.find().sort(Sorts.descending("fechaHistorico")).first();
 		if (doc != null) {
-			fecha = doc.getDate("maxDate");
+			fecha = doc.getDate("fechaHistorico");
 		}
 		return fecha;
 	}
@@ -284,8 +287,8 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		adicionarFiltroIndicadores(individuo.getCloseIndicators(), filtros);
 
 		Bson bsonFiltrosCompletos = Filters.and(filtros);
-		MongoCursor<Document> cursor = this.collection.find(bsonFiltrosCompletos).sort(Sorts.orderBy(Sorts.ascending("fechaHistorico")))
-				.iterator();
+		MongoCursor<Document> cursor = this.collection.find(bsonFiltrosCompletos)
+				.sort(Sorts.orderBy(Sorts.ascending("fechaHistorico"))).iterator();
 
 		List<Point> p = getMapper().helpList(cursor);
 		return p;

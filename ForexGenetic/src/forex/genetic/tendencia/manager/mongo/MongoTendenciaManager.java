@@ -176,6 +176,7 @@ public class MongoTendenciaManager {
 
 			LogUtil.logTime("Consultando estadística...", 3);
 			MongoEstadistica estadisticaHistorica = dataClient.getDaoEstadistica().getLast(individuo, ordenActual);
+			estadisticaHistorica.corregirInfinitos();
 			if (estadisticaHistorica.getCantidadTotal() > 0) {
 				LogUtil.logTime("Creando tendencia...", 5);
 				tendencia = this.crearTendencia(estadisticaHistorica, estadisticaFiltradaActual, ordenActual);

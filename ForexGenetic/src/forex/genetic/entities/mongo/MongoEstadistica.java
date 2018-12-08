@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.entities.Estadistica;
+import forex.genetic.util.NumberUtil;
 
 /**
  *
@@ -48,6 +49,36 @@ public class MongoEstadistica extends Estadistica {
 		this.setPipsMinimosRetroceso(Double.MAX_VALUE);
 		this.setPipsMinimosRetrocesoNegativos(Double.MAX_VALUE);
 		this.setPipsMinimosRetrocesoPositivos(Double.MAX_VALUE);
+	}
+
+	public void corregirInfinitos() {
+		if (NumberUtil.isInfiniteOrNan(this.getDuracionMinima())) {
+			this.setDuracionMinima(0.0D);
+		}
+		if (NumberUtil.isInfiniteOrNan(this.getDuracionMinimaNegativos())) {
+			this.setDuracionMinimaNegativos(0.0D);
+		}
+		if (NumberUtil.isInfiniteOrNan(this.getDuracionMinimaPositivos())) {
+			this.setDuracionMinimaPositivos(0.0D);
+		}
+		if (NumberUtil.isInfiniteOrNan(this.getPipsMinimos())) {
+			this.setPipsMinimos(0.0D);
+		}
+		if (NumberUtil.isInfiniteOrNan(this.getPipsMinimosNegativos())) {
+			this.setPipsMinimosNegativos(0.0D);
+		}
+		if (NumberUtil.isInfiniteOrNan(this.getPipsMinimosPositivos())) {
+			this.setPipsMinimosPositivos(0.0D);
+		}
+		if (NumberUtil.isInfiniteOrNan(this.getPipsMinimosRetroceso())) {
+			this.setPipsMinimosRetroceso(0.0D);
+		}
+		if (NumberUtil.isInfiniteOrNan(this.getPipsMinimosRetrocesoNegativos())) {
+			this.setPipsMinimosRetrocesoNegativos(0.0D);
+		}
+		if (NumberUtil.isInfiniteOrNan(this.getPipsMinimosRetrocesoPositivos())) {
+			this.setPipsMinimosRetrocesoPositivos(0.0D);
+		}
 	}
 
 	public List<Double> getDataPips() {
