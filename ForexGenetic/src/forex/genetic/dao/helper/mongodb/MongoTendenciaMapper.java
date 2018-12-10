@@ -6,12 +6,7 @@ import java.util.Map;
 
 import org.bson.Document;
 
-import forex.genetic.entities.Regresion;
 import forex.genetic.entities.Tendencia;
-import forex.genetic.entities.TendenciaParaOperar;
-import forex.genetic.entities.TendenciaParaOperarMaxMin;
-import forex.genetic.util.Constants;
-import forex.genetic.util.DateUtil;
 
 public class MongoTendenciaMapper extends MongoMapper<Tendencia> {
 
@@ -26,7 +21,28 @@ public class MongoTendenciaMapper extends MongoMapper<Tendencia> {
 
 	@Override
 	public Map<String, Object> toMap(Tendencia obj) {
-		throw new UnsupportedOperationException("Operacion no soportada");
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		objectMap.put("idIndividuo", obj.getIndividuo().getId());
+		objectMap.put("fechaBase", obj.getFechaBase());
+		objectMap.put("precioBase", obj.getPrecioBase());
+		objectMap.put("fechaTendencia", obj.getFechaTendencia());
+		objectMap.put("pips", obj.getPips());
+		objectMap.put("precioCalculado", obj.getPrecioCalculado());
+		objectMap.put("tipoTendencia", obj.getTipoTendencia());
+		objectMap.put("fechaApertura", obj.getFechaApertura());
+		objectMap.put("precioApertura", obj.getPrecioApertura());
+		objectMap.put("duracion", obj.getDuracion());
+		objectMap.put("pipsActuales", obj.getPipsActuales());
+		objectMap.put("duracionActual", obj.getDuracionActual());
+		objectMap.put("propabilidadPipsPositivos", obj.getProbabilidadPositivos());
+		objectMap.put("probabilidadPipsNegativos", obj.getProbabilidadNegativos());
+		objectMap.put("probabilidad", obj.getProbabilidad());
+		objectMap.put("fecha", obj.getFecha());
+		objectMap.put("fechaCierre", obj.getFechaCierre());
+		objectMap.put("tipoCalculo", obj.getTipoCalculo());
+		objectMap.put("pipsReales", obj.getPipsReales());
+
+		return objectMap;
 	}
 
 	@Override

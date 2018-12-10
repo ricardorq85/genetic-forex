@@ -45,14 +45,14 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 				int imported = 0;
 				for (int j = 0; j < dataClients.size(); j++) {
 					IDatoHistoricoDAO daoDatoHistorico = ((IDatoHistoricoDAO) dataClients.get(j).getDaoDatoHistorico());
-					fechaHistoricaMaximaAnterior = new Date(); // DateUtil.obtenerFechaMinima(
-																// daoDatoHistorico.getFechaHistoricaMaxima(),
-																// fechaHistoricaMaximaAnterior);
+					fechaHistoricaMaximaAnterior = DateUtil.obtenerFechaMinima(
+							daoDatoHistorico.getFechaHistoricaMaxima(), fechaHistoricaMaximaAnterior);
+					// TODO ricardorq85
 					// imported = importarDatosHistoricos();
-					this.fechaHistoricaMaximaNueva = new Date(); // DateUtil.obtenerFechaMinima(
-																	// daoDatoHistorico.getFechaHistoricaMaxima(),
-																	// fechaHistoricaMaximaNueva);
+					this.fechaHistoricaMaximaNueva = DateUtil
+							.obtenerFechaMinima(daoDatoHistorico.getFechaHistoricaMaxima(), fechaHistoricaMaximaNueva);
 				}
+				// TODO ricardorq85
 				// this.exportarDatosHistoricos();
 				// this.setUltimaFechaTendencia(count);
 				LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
@@ -99,14 +99,13 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 		int parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
 		int parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
 
-		Date fechaBaseFinal=null;
-		try {
-			fechaBaseFinal = DateUtil.obtenerFecha("2008/08/12 15:30");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//fechaHistoricaMaximaNueva;
+		Date fechaBaseFinal = fechaHistoricaMaximaNueva;
+//		try {
+//			fechaBaseFinal = DateUtil.obtenerFecha("2008/08/12 15:30");
+//		} catch (ParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		MongoTendenciaManager tendenciaManager = new MongoTendenciaManager();
 		if (count == 1) {
 			tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia / 2);
