@@ -173,7 +173,6 @@ public class MongoTendenciaManager {
 					fechaBase, ordenActual.getPips(), ordenActual.getDuracionMinutos(), individuo);
 			LogUtil.logTime("Consultando estadística filtrada...", 5);
 			MongoEstadistica estadisticaFiltradaActual = (MongoEstadistica)dataClient.getDaoOperaciones().consultarEstadisticas(individuo, parametroConsultaEstadisticaFiltrada);
-
 			LogUtil.logTime("Consultando estadística...", 3);
 			MongoEstadistica estadisticaHistorica = dataClient.getDaoEstadistica().getLast(individuo, ordenActual);
 			estadisticaHistorica.corregirInfinitos();
