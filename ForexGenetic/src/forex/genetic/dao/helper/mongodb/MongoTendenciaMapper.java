@@ -7,6 +7,7 @@ import java.util.Map;
 import org.bson.Document;
 
 import forex.genetic.entities.Tendencia;
+import forex.genetic.entities.mongo.MongoIndividuo;
 
 public class MongoTendenciaMapper extends MongoMapper<Tendencia> {
 
@@ -52,6 +53,29 @@ public class MongoTendenciaMapper extends MongoMapper<Tendencia> {
 
 	@Override
 	public Tendencia helpOne(Document one) {
-		throw new UnsupportedOperationException("Operacion no soportada");
+		Tendencia obj = new Tendencia();
+		MongoIndividuo individuo = new MongoIndividuo();
+		individuo.setId(one.getString("idIndividuo"));
+		obj.setIndividuo(individuo);
+		obj.setFechaBase(one.getDate("fechaBase"));
+		obj.setPrecioBase(one.getDouble("precioBase"));
+		obj.setFechaTendencia(one.getDate("fechaTendencia"));
+		obj.setPips(one.getDouble("pips"));
+		obj.setPrecioCalculado(one.getDouble("precioCalculado"));
+		obj.setTipoTendencia(one.getString("tipoTendencia"));
+		obj.setFechaApertura(one.getDate("fechaApertura"));
+		obj.setPrecioApertura(one.getDouble("precioApertura"));
+		obj.setDuracion(one.getLong("duracion"));
+		obj.setPipsActuales(one.getDouble("pipsActuales"));
+		obj.setDuracionActual(one.getLong("duracionActual"));
+		obj.setProbabilidadPositivos(one.getDouble("probabilidadPositivos"));
+		obj.setProbabilidadNegativos(one.getDouble("probabilidadNegativos"));
+		obj.setProbabilidad(one.getDouble("probabilidad"));
+		obj.setFecha(one.getDate("fecha"));
+		obj.setFechaCierre(one.getDate("fechaCierre"));
+		obj.setTipoCalculo(one.getString("tipoCalculo"));
+		obj.setPipsReales(one.getDouble("pipsReales"));
+		
+		return obj;
 	}
 }
