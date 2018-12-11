@@ -22,9 +22,9 @@ import java.util.List;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
-import forex.genetic.dao.TendenciaProcesoBuySellDAO;
-import forex.genetic.dao.TendenciaProcesoFiltradaUltimosDatosDAO;
 import forex.genetic.dao.helper.TendenciaProcesoBuySellHelper;
+import forex.genetic.dao.oracle.OracleTendenciaProcesoBuySellDAO;
+import forex.genetic.dao.oracle.OracleTendenciaProcesoFiltradaUltimosDatosDAO;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.Regresion;
 import forex.genetic.entities.TendenciaParaOperar;
@@ -71,7 +71,7 @@ public class TestTendenciaRegresion {
 
 		// TestTendenciaDAO dao;// = new TestTendenciaDAO(conn);
 
-		TendenciaProcesoBuySellDAO dao = new TendenciaProcesoFiltradaUltimosDatosDAO(conn) {
+		OracleTendenciaProcesoBuySellDAO dao = new OracleTendenciaProcesoFiltradaUltimosDatosDAO(conn) {
 			@Override
 			protected String getTablaTendenciaFiltrada() {
 				return "TENDENCIA_CALCULADA";

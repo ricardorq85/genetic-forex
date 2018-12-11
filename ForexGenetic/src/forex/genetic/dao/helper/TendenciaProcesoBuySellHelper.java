@@ -16,8 +16,7 @@ import forex.genetic.util.NumberUtil;
 public class TendenciaProcesoBuySellHelper {
 
 	public static Regresion helpRegresion(ProcesoTendenciaBuySell procesoTendencia,
-			SimpleRegression simpleRegressionProcessor, StandardDeviation standardDeviationProcessor)
-			throws SQLException {
+			SimpleRegression simpleRegressionProcessor, StandardDeviation standardDeviationProcessor) {
 		Regresion regresion = null;
 		regresion = new Regresion();
 		regresion.setTiempoTendencia(procesoTendencia.getTiempoTendencia());

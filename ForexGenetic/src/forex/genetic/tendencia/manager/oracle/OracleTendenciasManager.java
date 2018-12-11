@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.tendencia.manager;
+package forex.genetic.tendencia.manager.oracle;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -40,7 +40,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class TendenciasManager {
+public class OracleTendenciasManager {
 
 	protected Connection conn = null;
 	private final double probInterna = 0.6D;
@@ -50,7 +50,7 @@ public class TendenciasManager {
 	/**
 	 *
 	 */
-	public TendenciasManager() {
+	public OracleTendenciasManager() {
 		this(null);
 	}
 
@@ -58,7 +58,7 @@ public class TendenciasManager {
 	 *
 	 * @param conn
 	 */
-	public TendenciasManager(Connection conn) {
+	public OracleTendenciasManager(Connection conn) {
 		this.conn = conn;
 		this.indicadorControllerCalculo = ControllerFactory
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);

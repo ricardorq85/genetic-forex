@@ -20,6 +20,7 @@ import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.factory.ProcesarTendenciasFactory;
+import forex.genetic.manager.IGeneticManager;
 import forex.genetic.manager.IndividuoManager;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
 import forex.genetic.tendencia.manager.mongo.MongoTendenciaManager;
@@ -87,12 +88,13 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 	}
 
 	public void procesarTendencias() throws GeneticBusinessException {
-		for (int i = 0; i < dataClients.size(); i++) {
-			try {
+		try {
+			IGeneticManager[] managers = DriverDBFactory.createManager("tendencia");
+			for (int i = 0; i < dataClients.size(); i++) {
 				procesarTendencias(dataClients.get(i));
-			} catch (ClassNotFoundException | SQLException | GeneticDAOException e) {
-				throw new GeneticBusinessException("procesarTendencias", e);
 			}
+		} catch (ClassNotFoundException | GeneticDAOException e) {
+			throw new GeneticBusinessException("procesarTendencias", e);
 		}
 	}
 
@@ -140,7 +142,9 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 		LogUtil.logTime("End Procesar Tendencias", 1);
 	}
 
-	protected void exportarIndividuos() throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, ParseException, GeneticException {
+	protected void exportarIndividuos()
+			throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException,
+			IllegalAccessException, InvocationTargetException, ParseException, GeneticException {
 		for (int i = 0; i < dataClients.size(); i++) {
 			LogUtil.logTime("Init Exportar Individuos", 1);
 			boolean existNewData = this.existenNuevosDatosHistoricos();

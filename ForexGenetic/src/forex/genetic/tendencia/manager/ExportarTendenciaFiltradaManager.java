@@ -3,7 +3,7 @@ package forex.genetic.tendencia.manager;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import forex.genetic.dao.TendenciaProcesoFiltradaDAO;
+import forex.genetic.dao.oracle.OracleTendenciaProcesoFiltradaDAO;
 import forex.genetic.entities.Regresion;
 import forex.genetic.util.Constants.OperationType;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -23,7 +23,7 @@ public class ExportarTendenciaFiltradaManager extends ExportarTendenciaManager {
 
 	public ExportarTendenciaFiltradaManager(Connection c) {
 		super(c);
-		super.tendenciaProcesoDAO = new TendenciaProcesoFiltradaDAO(c);
+		super.tendenciaProcesoDAO = new OracleTendenciaProcesoFiltradaDAO(c);
 	}
 
 	protected void procesarRegresion(Regresion regresion, Regresion regresionFiltrada) throws SQLException {

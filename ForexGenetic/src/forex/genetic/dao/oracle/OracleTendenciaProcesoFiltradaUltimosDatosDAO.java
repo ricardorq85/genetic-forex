@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.dao;
+package forex.genetic.dao.oracle;
 
 import java.sql.Connection;
 
@@ -10,9 +10,9 @@ import java.sql.Connection;
  *
  * @author ricardorq85
  */
-public class TendenciaProcesoFiltradaUltimosDatosDAO extends TendenciaProcesoFiltradaDAO {
+public class OracleTendenciaProcesoFiltradaUltimosDatosDAO extends OracleTendenciaProcesoFiltradaDAO {
 
-	public TendenciaProcesoFiltradaUltimosDatosDAO(Connection connection) {
+	public OracleTendenciaProcesoFiltradaUltimosDatosDAO(Connection connection) {
 		super(connection, "TENDENCIA_ULTIMOSDATOS");
 	}
 

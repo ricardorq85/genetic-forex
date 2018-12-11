@@ -36,6 +36,7 @@ import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.helper.ParametroTendenciaGeneticaHelper;
 import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.manager.oracle.OracleOperacionesManager;
+import forex.genetic.tendencia.manager.oracle.OracleTendenciasManager;
 import forex.genetic.thread.ProcessGeneracion;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
@@ -169,7 +170,7 @@ public class TendenciaGeneticaManager {
         List<ProcesoTendencia> procesoTendenciaList;
         AnalyzeProcesoTendencia analyzeProcesoTendencia;
         ProcesoTendencia procesoTendencia;
-        TendenciasManager tendenciasManager = new TendenciasManager();
+        OracleTendenciasManager tendenciasManager = new OracleTendenciasManager();
         Date fechaProceso = new Date(fechaInicio.getTime());
         List<? extends Indicator> indicadoresTendencia = individuoEstrategia.getOpenIndicators();
         LogUtil.logTime("Individuo=" + individuoEstrategia.getId(), 1);

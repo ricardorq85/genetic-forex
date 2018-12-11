@@ -28,6 +28,7 @@ import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.manager.OperacionesManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.oracle.OracleOperacionesManager;
+import forex.genetic.tendencia.manager.oracle.OracleTendenciasManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -52,7 +53,7 @@ public class ProcesarTendenciasValorProbableManager {
     public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, GeneticException {
         conn = JDBCUtil.getConnection();
         OperacionesManager operacionManager = new OracleOperacionesManager(DriverDBFactory.createOracleDataClient(conn));
-        TendenciasManager tendenciasManager = new TendenciasManager(conn);
+        OracleTendenciasManager tendenciasManager = new OracleTendenciasManager(conn);
         OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
         OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
         OracleParametroDAO parametroDAO = new OracleParametroDAO(conn);

@@ -19,6 +19,7 @@ import forex.genetic.dao.mongodb.MongoOperacionesDAO;
 import forex.genetic.dao.mongodb.MongoParametroDAO;
 import forex.genetic.dao.mongodb.MongoTendenciaDAO;
 import forex.genetic.dao.mongodb.MongoTendenciaParaOperarDAO;
+import forex.genetic.dao.mongodb.MongoTendenciaUltimosDatosDAO;
 import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.entities.mongo.MongoOrder;
@@ -57,7 +58,10 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 
 	@Override
 	public ITendenciaDAO getDaoTendenciaUltimosDatos() throws GeneticDAOException {
-		return getDaoTendencia();
+		if (daoTendenciaUltimosDatos == null) {
+			daoTendenciaUltimosDatos = new MongoTendenciaUltimosDatosDAO();
+		}
+		return daoTendenciaUltimosDatos;
 	}
 
 	@Override

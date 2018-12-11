@@ -27,7 +27,7 @@ import forex.genetic.manager.IndividuoXIndicadorManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.io.CopyFileVisitor;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
-import forex.genetic.tendencia.manager.TendenciaBuySellManager;
+import forex.genetic.tendencia.manager.oracle.OracleTendenciaBuySellManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.FileUtil;
@@ -144,7 +144,7 @@ public class OracleEndToEndMediator extends EndToEndMediator {
 			parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
 			int parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
 			Date fechaBaseFinal = fechaHistoricaMaximaNueva;
-			TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
+			OracleTendenciaBuySellManager tendenciaManager = new OracleTendenciaBuySellManager();
 			if (count == 1) {
 				tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia / 2);
 			}

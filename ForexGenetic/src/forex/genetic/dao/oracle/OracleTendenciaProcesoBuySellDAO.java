@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.dao;
+package forex.genetic.dao.oracle;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import forex.genetic.dao.helper.TendenciaProcesoBuySellHelper;
-import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.Regresion;
 import forex.genetic.entities.TendenciaParaOperar;
@@ -24,9 +23,9 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public abstract class TendenciaProcesoBuySellDAO extends OracleTendenciaDAO {
+public abstract class OracleTendenciaProcesoBuySellDAO extends OracleTendenciaDAO {
 
-	public TendenciaProcesoBuySellDAO(Connection connection) {
+	public OracleTendenciaProcesoBuySellDAO(Connection connection) {
 		super(connection);
 	}
 

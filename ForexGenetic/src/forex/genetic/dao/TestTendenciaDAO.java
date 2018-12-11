@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import forex.genetic.dao.helper.TendenciaProcesoBuySellHelper;
+import forex.genetic.dao.oracle.OracleTendenciaProcesoFiltradaUltimosDatosDAO;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -21,7 +22,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class TestTendenciaDAO extends TendenciaProcesoFiltradaUltimosDatosDAO {
+public class TestTendenciaDAO extends OracleTendenciaProcesoFiltradaUltimosDatosDAO {
 
 	public TestTendenciaDAO(Connection connection) {
 		super(connection);

@@ -33,6 +33,8 @@ public interface IOperacionesDAO<E extends Order> extends IGeneticDAO<E> {
 
 	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, Date fechaFin, int filas)
 			throws GeneticDAOException;
+	
+	public Individuo consultarIndividuoOperacionActiva(String idIndividuo, Date fechaBase, int filas);
 
 	public int deleteOperaciones(String idIndividuo) throws GeneticDAOException;
 

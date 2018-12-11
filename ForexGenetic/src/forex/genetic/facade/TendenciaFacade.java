@@ -7,15 +7,15 @@ import java.util.List;
 
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.tendencia.manager.oracle.OracleTendenciaBuySellManager;
 import forex.genetic.dao.oracle.OracleParametroDAO;
-import forex.genetic.tendencia.manager.TendenciaBuySellManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 public class TendenciaFacade implements IGeneticFacade {
 
-	private TendenciaBuySellManager tendenciaManager;
+	private OracleTendenciaBuySellManager tendenciaManager;
 	private OracleParametroDAO parametroDAO;
 	private OracleTendenciaDAO tendenciaDAO;
 	protected Connection conn = null;
@@ -25,7 +25,7 @@ public class TendenciaFacade implements IGeneticFacade {
 
 	public TendenciaFacade() throws GeneticDAOException, ClassNotFoundException, SQLException {
 		conn = JDBCUtil.getConnection();
-		tendenciaManager = new TendenciaBuySellManager();
+		tendenciaManager = new OracleTendenciaBuySellManager();
 		parametroDAO = new OracleParametroDAO(conn);
 		tendenciaDAO = new OracleTendenciaDAO(conn);
 		parametroFechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_TENDENCIA");
@@ -65,7 +65,7 @@ public class TendenciaFacade implements IGeneticFacade {
 
 	private void procesarTendenciasXFecha() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		Date fechaBaseFinal = parametroFechaInicio;
-		TendenciaBuySellManager tendenciaManager = new TendenciaBuySellManager();
+		OracleTendenciaBuySellManager tendenciaManager = new OracleTendenciaBuySellManager();
 		while (fechaBaseFinal.after(DateUtil.adicionarDias(fechaBaseFinal, -30))) {
 			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1);
 			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, -parametroStepTendencia);

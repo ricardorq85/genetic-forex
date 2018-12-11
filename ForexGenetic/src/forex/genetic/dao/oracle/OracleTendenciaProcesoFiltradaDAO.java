@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.dao;
+package forex.genetic.dao.oracle;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,15 +20,15 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class TendenciaProcesoFiltradaDAO extends TendenciaProcesoBuySellDAO {
+public class OracleTendenciaProcesoFiltradaDAO extends OracleTendenciaProcesoBuySellDAO {
 
 	private String tablaTendencia;
 
-	public TendenciaProcesoFiltradaDAO(Connection connection) {
+	public OracleTendenciaProcesoFiltradaDAO(Connection connection) {
 		this(connection, "TENDENCIA");
 	}
 	
-	public TendenciaProcesoFiltradaDAO(Connection connection, String t) {
+	public OracleTendenciaProcesoFiltradaDAO(Connection connection, String t) {
 		super(connection);
 		this.tablaTendencia = t;
 	}

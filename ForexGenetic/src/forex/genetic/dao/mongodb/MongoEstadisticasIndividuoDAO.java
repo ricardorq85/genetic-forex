@@ -1,5 +1,7 @@
 package forex.genetic.dao.mongodb;
 
+import java.util.Date;
+
 import org.bson.Document;
 
 import com.mongodb.client.model.Filters;
@@ -50,10 +52,10 @@ public class MongoEstadisticasIndividuoDAO extends MongoGeneticDAO<MongoEstadist
 	}
 
 	@Override
-	public <I extends IndividuoEstrategia, O extends Order> MongoEstadistica getLast(I individuo, O order) {
+	public <I extends IndividuoEstrategia, O extends Order> MongoEstadistica getLast(I individuo, Date fechaBase) {
 		Document doc = this.collection
 				.find(Filters.and(Filters.eq("idIndividuo", individuo.getId()),
-						Filters.lt("fechaInicial", order.getCloseDate())))
+						Filters.lt("fechaInicial", fechaBase)))
 				.sort(Sorts.descending("fechaInicial")).limit(1).first();
 
 		MongoEstadistica estadistica = null;

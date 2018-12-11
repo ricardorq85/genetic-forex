@@ -10,7 +10,9 @@ import forex.genetic.dao.ITendenciaDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.ParametroTendenciaGenetica;
 import forex.genetic.entities.ProcesoTendencia;
+import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.Tendencia;
+import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.exception.GeneticDAOException;
 
 /**
@@ -19,12 +21,16 @@ import forex.genetic.exception.GeneticDAOException;
  */
 public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> implements ITendenciaDAO {
 
-	public MongoTendenciaDAO() throws GeneticDAOException {
+	public MongoTendenciaDAO() {
 		this(true);
 	}
 
-	public MongoTendenciaDAO(boolean configure) throws GeneticDAOException {
-		super("tendencia", configure);
+	public MongoTendenciaDAO(boolean configure) {
+		this("tendencia", configure);
+	}
+
+	public MongoTendenciaDAO(String name, boolean configure) {
+		super(name, configure);
 	}
 
 	public void configureCollection() {
@@ -117,5 +123,9 @@ public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> implements ITe
 	@Override
 	public void setTabla(String tabla) {
 		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
+
+	public List<TendenciaParaOperar> consultarTendencias(ProcesoTendenciaBuySell procesoTendencia) {
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 }

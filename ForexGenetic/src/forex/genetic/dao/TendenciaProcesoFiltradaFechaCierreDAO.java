@@ -6,11 +6,13 @@ package forex.genetic.dao;
 
 import java.sql.Connection;
 
+import forex.genetic.dao.oracle.OracleTendenciaProcesoFiltradaDAO;
+
 /**
  *
  * @author ricardorq85
  */
-public class TendenciaProcesoFiltradaFechaCierreDAO extends TendenciaProcesoFiltradaDAO {
+public class TendenciaProcesoFiltradaFechaCierreDAO extends OracleTendenciaProcesoFiltradaDAO {
 
 	public TendenciaProcesoFiltradaFechaCierreDAO(Connection connection) {
 		super(connection);
