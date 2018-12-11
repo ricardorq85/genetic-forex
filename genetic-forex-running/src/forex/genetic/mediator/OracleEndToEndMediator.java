@@ -9,16 +9,13 @@ import java.nio.file.FileSystems;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 
-import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
-import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.delegate.GeneticDelegateBD;
 import forex.genetic.delegate.PoblacionDelegate;
 import forex.genetic.exception.GeneticBusinessException;
@@ -37,36 +34,8 @@ import forex.genetic.util.FileUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
-public class EndToEndMediator extends GeneticMediator {
-
-	protected int count = 1;
-	protected Connection connection;
-	protected Date fechaHistoricaMaximaAnterior, fechaHistoricaMaximaNueva, ultimaFechaBaseTendencia;
-	protected OracleDatoHistoricoDAO datoHistoricoDAO;
-	protected OracleTendenciaDAO tendenciaDAO;
-	protected OracleParametroDAO parametroDAO;
-	protected String sourceExportedHistoryDataPath;// =
-													// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\exported";
-	protected String processedExportedHistoryDataPath;// =
-														// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\processed";
-	protected String exportedPropertyFileName;// =
-												// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\Export.properties";
-	protected String sourceEstrategiasPath;// =
-											// "c:\\Users\\USER\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\estrategias\\live";
-
-	@Override
-	public void init() throws GeneticDAOException {
-		this.connection = JDBCUtil.getGeneticConnection();
-		this.datoHistoricoDAO = new OracleDatoHistoricoDAO(connection);
-		this.tendenciaDAO = new OracleTendenciaDAO(connection);
-		this.parametroDAO = new OracleParametroDAO(connection);
-
-		sourceExportedHistoryDataPath = parametroDAO.getValorParametro("SOURCE_EXPORTED_HISTORY_DATA_PATH");
-		processedExportedHistoryDataPath = parametroDAO.getValorParametro("PROCESSED_EXPORTED_HISTORY_DATA_PATH");
-		exportedPropertyFileName = parametroDAO.getValorParametro("EXPORTED_PROPERTY_FILE_NAME");
-		sourceEstrategiasPath = parametroDAO.getValorParametro("SOURCE_ESTRATEGIAS_PATH");
-	}
-
+public class OracleEndToEndMediator extends EndToEndMediator {
+	
 	@Override
 	public void start() throws GeneticDAOException {
 		try {

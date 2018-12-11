@@ -14,6 +14,12 @@ public abstract class OracleGeneticDAO<E> implements IGeneticDAO<E> {
 	public OracleGeneticDAO(Connection connection) {
 		this.connection = connection;
 	}
+	
+	public void insertIfNoExists(E obj) throws GeneticDAOException {
+		if (!exists(obj)) {
+			insert(obj);
+		}
+	}
 
 	public void commit() throws GeneticDAOException {
 		try {

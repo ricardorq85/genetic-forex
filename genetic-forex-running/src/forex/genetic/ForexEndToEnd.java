@@ -36,7 +36,7 @@ public class ForexEndToEnd {
 			throws IOException, ClassNotFoundException, InterruptedException, ParseException, NoSuchMethodException {
 		long id = currentTimeMillis();
 		load().join();
-		String prefix = "PointToPoint";
+		String prefix = "EndToEnd";
 		logTime(prefix + ": " + id, 1);
 		String name = getPropertyString(LOG_PATH) + prefix + id + ".log";
 		PrintStream out = new PrintStream(name, Charset.defaultCharset().name());

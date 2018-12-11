@@ -5,6 +5,8 @@ import static forex.genetic.util.LogUtil.logTime;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
@@ -17,6 +19,9 @@ import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.DriverDBFactory;
+import forex.genetic.factory.ProcesarTendenciasFactory;
+import forex.genetic.manager.IndividuoManager;
+import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
 import forex.genetic.tendencia.manager.mongo.MongoTendenciaManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -24,7 +29,6 @@ import forex.genetic.util.jdbc.DataClient;
 
 public class MultipleEndToEndMediator extends EndToEndMediator {
 
-	private int count = 1;
 	private List<DataClient> dataClients;
 
 	@Override
@@ -69,8 +73,8 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 					count = 1;
 				}
 			}
-		} catch (SQLException | IOException | ClassNotFoundException | NoSuchMethodException | InstantiationException
-				| IllegalAccessException | InvocationTargetException | ParseException | GeneticException e) {
+		} catch (SQLException | IOException | ClassNotFoundException | IllegalAccessException
+				| InvocationTargetException | ParseException | GeneticException e) {
 			throw new GeneticDAOException("Error start", e);
 		}
 	}
@@ -100,67 +104,66 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 		int parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
 
 		Date fechaBaseFinal = fechaHistoricaMaximaNueva;
-//		try {
-//			fechaBaseFinal = DateUtil.obtenerFecha("2008/08/12 15:30");
-//		} catch (ParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		try {
+			fechaBaseFinal = DateUtil.obtenerFecha("2008/08/12 15:30");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		MongoTendenciaManager tendenciaManager = new MongoTendenciaManager();
 		if (count == 1) {
 			tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia / 2);
 		}
-//		long durMillis = DateUtil.calcularDuracionMillis(ultimaFechaBaseTendencia, fechaBaseFinal);
-//		int diasDiferencia = (int) ((durMillis / (1000 * 60 * 60 * 24)) + 1);
-//		int minutosFactorStep = (int) ((diasDiferencia / 6) * 24 * 60);
-//		parametroStepTendencia = Math.max(minutosFactorStep, parametroStepTendencia);
-//		parametroFilasTendencia = Math.max((1440 / 2000 / (diasDiferencia / count + 1)), parametroFilasTendencia);
-//		LogUtil.logTime("ultimaFechaBaseTendencia:" + DateUtil.getDateString(ultimaFechaBaseTendencia), 3);
-//		LogUtil.logTime("fechaBaseFinal:" + DateUtil.getDateString(fechaBaseFinal), 3);
-//		LogUtil.logTime("durMillis:" + durMillis, 3);
-//		LogUtil.logTime("count:" + count, 3);
-//		LogUtil.logTime("diasDiferencia:" + diasDiferencia, 3);
-//		LogUtil.logTime("factorStep:" + minutosFactorStep, 3);
-//		LogUtil.logTime("parametroStepTendencia:" + parametroStepTendencia, 1);
-//		LogUtil.logTime("parametroFilasTendencia:" + parametroFilasTendencia, 1);
-//		while (fechaBaseFinal.after(ultimaFechaBaseTendencia)) {
-//			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1 * (calcularFactorCount()));
-//			int currentStep = -(parametroStepTendencia - count);
-//			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, currentStep);
-//			// LogUtil.logEnter(1);
-//			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
-//					+ DateUtil.getDateString(fechaBaseFinal), 1);
-//			tendenciaManager.calcularTendencias(fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
-//			fechaBaseFinal = fechaBaseInicial;
-//		}
-//		LogUtil.logTime("End Procesar Tendencias", 1);
+		long durMillis = DateUtil.calcularDuracionMillis(ultimaFechaBaseTendencia, fechaBaseFinal);
+		int diasDiferencia = (int) ((durMillis / (1000 * 60 * 60 * 24)) + 1);
+		int minutosFactorStep = (int) ((diasDiferencia / 6) * 24 * 60);
+		parametroStepTendencia = Math.max(minutosFactorStep, parametroStepTendencia);
+		parametroFilasTendencia = Math.max((1440 / 2000 / (diasDiferencia / count + 1)), parametroFilasTendencia);
+		LogUtil.logTime("ultimaFechaBaseTendencia:" + DateUtil.getDateString(ultimaFechaBaseTendencia), 3);
+		LogUtil.logTime("fechaBaseFinal:" + DateUtil.getDateString(fechaBaseFinal), 3);
+		LogUtil.logTime("durMillis:" + durMillis, 3);
+		LogUtil.logTime("count:" + count, 3);
+		LogUtil.logTime("diasDiferencia:" + diasDiferencia, 3);
+		LogUtil.logTime("factorStep:" + minutosFactorStep, 3);
+		LogUtil.logTime("parametroStepTendencia:" + parametroStepTendencia, 1);
+		LogUtil.logTime("parametroFilasTendencia:" + parametroFilasTendencia, 1);
+		while (fechaBaseFinal.after(ultimaFechaBaseTendencia)) {
+			fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1 * (calcularFactorCount()));
+			int currentStep = -(parametroStepTendencia - count);
+			Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, currentStep);
+			// LogUtil.logEnter(1);
+			LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
+					+ DateUtil.getDateString(fechaBaseFinal), 1);
+			tendenciaManager.calcularTendencias(fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
+			fechaBaseFinal = fechaBaseInicial;
+		}
+		LogUtil.logTime("End Procesar Tendencias", 1);
 	}
 
-//	private void exportarIndividuos()
-//			throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
-//			InvocationTargetException, SQLException, ParseException, GeneticException, IOException {
-//		// this.refrescarDatosTendencia();
-//		LogUtil.logTime("Init Exportar Individuos", 1);
-//		boolean existNewData = this.existenNuevosDatosHistoricos();
-//		if (existNewData) {
-//			String fileName = sourceEstrategiasPath + "\\Tendencia" + IndividuoManager.nextId() + ".csv";
-//			Path filePath = FileSystems.getDefault().getPath(fileName);
-//			ProcesarTendenciasBuySellManager manager = ProcesarTendenciasFactory.createManager();
-//			manager.setParametroFechaInicio(ultimaFechaBaseTendencia);
-//			manager.setParametroFechaFin(fechaHistoricaMaximaNueva);
-//			ExportThread exportThread = new ExportThread(filePath, manager);
-//			LogUtil.logTime("Lanzando exportacion", 1);
-//			exportThread.runExport();
-//			// LogUtil.logTime("Lanzando hilo para exportacion", 1);
-//			// exportThread.start();
-//			// manager.procesarTendencias();
-//			// manager.export(filePath);
-//		} else {
-//			LogUtil.logTime("No existen nuevos datos. No se procesara la exportacion", 1);
-//		}
-//		LogUtil.logTime("End Exportar Individuos", 1);
-//	}
-//
+	protected void exportarIndividuos() throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, ParseException, GeneticException {
+		for (int i = 0; i < dataClients.size(); i++) {
+			LogUtil.logTime("Init Exportar Individuos", 1);
+			boolean existNewData = this.existenNuevosDatosHistoricos();
+			if (existNewData) {
+				String fileName = sourceEstrategiasPath + "\\Tendencia" + IndividuoManager.nextId() + ".csv";
+				Path filePath = FileSystems.getDefault().getPath(fileName);
+				ProcesarTendenciasBuySellManager manager = ProcesarTendenciasFactory.createManager(dataClients.get(i));
+				manager.setParametroFechaInicio(ultimaFechaBaseTendencia);
+				manager.setParametroFechaFin(fechaHistoricaMaximaNueva);
+				ExportThread exportThread = new ExportThread(filePath, manager);
+				LogUtil.logTime("Lanzando exportacion", 1);
+				exportThread.runExport();
+				// LogUtil.logTime("Lanzando hilo para exportacion", 1);
+				// exportThread.start();
+				// manager.procesarTendencias();
+				// manager.export(filePath);
+			} else {
+				LogUtil.logTime("No existen nuevos datos. No se procesara la exportacion", 1);
+			}
+			LogUtil.logTime("End Exportar Individuos", 1);
+		}
+	}
+
 //	private void refrescarDatosTendencia() throws SQLException {
 //		String mv = "TENDENCIA_ULTIMOMES";
 //		LogUtil.logTime("Refrescando vista materializada: " + mv, 1);

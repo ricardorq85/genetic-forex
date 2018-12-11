@@ -7,18 +7,16 @@ package forex.genetic.tendencia.manager;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
 
-import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
-import forex.genetic.util.jdbc.JDBCUtil;
+import forex.genetic.util.jdbc.DataClient;
 
 /**
  *
@@ -26,24 +24,22 @@ import forex.genetic.util.jdbc.JDBCUtil;
  */
 public abstract class ProcesarTendenciasBuySellManager {
 
-	protected Connection conn = null;
-	protected OracleParametroDAO parametroDAO;
+	protected DataClient dataClient;
+
 	protected Date parametroFechaInicio;
 	protected int parametroStep;
 	protected Date parametroFechaFin;
 	protected String tipoTendencia;
 	protected float[] parametroDiasTendencia;
 
-	public ProcesarTendenciasBuySellManager() throws SQLException, ClassNotFoundException, GeneticDAOException {
-		conn = JDBCUtil.getConnection();
+	public ProcesarTendenciasBuySellManager() throws ClassNotFoundException, GeneticDAOException {
 		this.tipoTendencia = "BUY_SELL_20170204-2";
 
-		parametroDAO = new OracleParametroDAO(conn);
-		parametroFechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");
-		parametroFechaFin = parametroDAO.getDateValorParametro("FECHA_FIN_PROCESAR_TENDENCIA");
-		parametroStep = parametroDAO.getIntValorParametro("STEP_PROCESAR_TENDENCIA");
+		parametroFechaInicio = dataClient.getDaoParametro().getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");
+		parametroFechaFin = dataClient.getDaoParametro().getDateValorParametro("FECHA_FIN_PROCESAR_TENDENCIA");
+		parametroStep = dataClient.getDaoParametro().getIntValorParametro("STEP_PROCESAR_TENDENCIA");
 		parametroDiasTendencia = convertArrayStringToFloat(
-				parametroDAO.getArrayStringParametro("DIAS_EXPORTACION_TENDENCIA"));
+				dataClient.getDaoParametro().getArrayStringParametro("DIAS_EXPORTACION_TENDENCIA"));
 	}
 
 	private float[] convertArrayStringToFloat(String[] arrayStringParametro) {
@@ -78,7 +74,7 @@ public abstract class ProcesarTendenciasBuySellManager {
 				fechaProceso = DateUtil.calcularFechaXDuracion(parametroStep, fechaProceso);
 			}
 		} finally {
-			JDBCUtil.close(conn);
+			dataClient.close();
 		}
 	}
 
@@ -112,6 +108,14 @@ public abstract class ProcesarTendenciasBuySellManager {
 
 	public void setParametroFechaFin(Date parametroFechaFin) {
 		this.parametroFechaFin = parametroFechaFin;
+	}
+
+	public DataClient getDataClient() {
+		return dataClient;
+	}
+
+	public void setDataClient(DataClient dataClient) {
+		this.dataClient = dataClient;
 	}
 
 }

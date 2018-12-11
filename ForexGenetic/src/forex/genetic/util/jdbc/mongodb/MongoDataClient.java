@@ -2,6 +2,7 @@ package forex.genetic.util.jdbc.mongodb;
 
 import com.mongodb.MongoClient;
 
+import forex.genetic.dao.IDatoAdicionalTPODAO;
 import forex.genetic.dao.IDatoHistoricoDAO;
 import forex.genetic.dao.IEstadisticaDAO;
 import forex.genetic.dao.IIndividuoDAO;
@@ -9,12 +10,15 @@ import forex.genetic.dao.IOperacionesDAO;
 import forex.genetic.dao.IParametroDAO;
 import forex.genetic.dao.IProcesoEjecucionDAO;
 import forex.genetic.dao.ITendenciaDAO;
+import forex.genetic.dao.ITendenciaParaOperarDAO;
+import forex.genetic.dao.mongodb.MongoDatoAdicionalTPODAO;
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.dao.mongodb.MongoEstadisticasIndividuoDAO;
 import forex.genetic.dao.mongodb.MongoIndividuoDAO;
 import forex.genetic.dao.mongodb.MongoOperacionesDAO;
 import forex.genetic.dao.mongodb.MongoParametroDAO;
 import forex.genetic.dao.mongodb.MongoTendenciaDAO;
+import forex.genetic.dao.mongodb.MongoTendenciaParaOperarDAO;
 import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.entities.mongo.MongoOrder;
@@ -49,6 +53,11 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 			daoTendencia = new MongoTendenciaDAO();
 		}
 		return daoTendencia;
+	}
+
+	@Override
+	public ITendenciaDAO getDaoTendenciaUltimosDatos() throws GeneticDAOException {
+		return getDaoTendencia();
 	}
 
 	@Override
@@ -87,6 +96,22 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 			daoEstadistica = new MongoEstadisticasIndividuoDAO();
 		}
 		return daoEstadistica;
+	}
+
+	@Override
+	public ITendenciaParaOperarDAO getDaoTendenciaParaOperar() throws GeneticDAOException {
+		if (daoTendenciaParaOperar == null) {
+			daoTendenciaParaOperar = new MongoTendenciaParaOperarDAO();
+		}
+		return daoTendenciaParaOperar;
+	}
+
+	@Override
+	public IDatoAdicionalTPODAO getDaoDatoAdicionalTPO() throws GeneticDAOException {
+		if (daoDatoAdicionalTPO == null) {
+			daoDatoAdicionalTPO= new MongoDatoAdicionalTPODAO();
+		}
+		return daoDatoAdicionalTPO;
 	}
 
 }

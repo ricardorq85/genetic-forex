@@ -18,7 +18,6 @@ import forex.genetic.util.jdbc.JDBCUtil;
 
 public class ExportarTendenciaManager {
 
-	private Connection conn = null;
 	protected TendenciaProcesoBuySellDAO tendenciaProcesoDAO;
 	protected ProcesoTendenciaBuySell procesoTendencia;
 	private static int index = 0;

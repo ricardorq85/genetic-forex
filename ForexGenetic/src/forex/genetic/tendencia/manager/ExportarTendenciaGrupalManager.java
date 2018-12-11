@@ -27,13 +27,8 @@ public class ExportarTendenciaGrupalManager extends ExportarTendenciaManager {
 	private static final double MAX_PENDIENTE = 1.1D;
 	private static final double MIN_PORCENTAJE_CANTIDAD_REGRESION = 0.5D;
 	private static final double MAX_DESVIACION = 10000.0D;
-	private TendenciaProcesoBuySellDAO tendenciaProcesoCompletaDAO;
 
-	public ExportarTendenciaGrupalManager() throws ClassNotFoundException, SQLException {
-		this(JDBCUtil.getConnection(), null);
-	}
-
-	public ExportarTendenciaGrupalManager(Connection c, Date fechaBase) {
+	public ExportarTendenciaGrupalManager(DataClient dc, Date fechaBase) {
 		super(c);
 		if (DateUtil.cumpleFechaParaTendenciaUltimosDatos(fechaBase)) {
 			super.tendenciaProcesoDAO = new TendenciaProcesoFiltradaUltimosDatosDAO(c);

@@ -23,6 +23,7 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 	private MongoMapper<E> mapper;
 	protected MongoCollection<Document> collection = null;
 
+	@SuppressWarnings("unchecked")
 	public MongoGeneticDAO(String name, boolean configure) {
 		this.setMapper((MongoMapper<E>) MongoMapperFactory.get(name));
 		setCollection(name, configure);

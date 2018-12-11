@@ -581,14 +581,8 @@ public class OracleTendenciaDAO extends OracleGeneticDAO<Tendencia> implements I
 	}
 
 	@Override
-	public void insertOrUpdate(Tendencia obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void insertIfNoExists(Tendencia obj) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
+	public long delete(Tendencia obj, Date fechaReferencia) {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
 	}
 
 }

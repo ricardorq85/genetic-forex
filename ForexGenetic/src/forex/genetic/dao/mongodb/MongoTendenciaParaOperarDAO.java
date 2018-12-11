@@ -21,6 +21,7 @@ import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 
+import forex.genetic.dao.ITendenciaParaOperarDAO;
 import forex.genetic.dao.helper.mongodb.MongoTendenciaParaOperarMapper;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.exception.GeneticDAOException;
@@ -29,7 +30,8 @@ import forex.genetic.exception.GeneticDAOException;
  *
  * @author ricardorq85
  */
-public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO<TendenciaParaOperar> {
+public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO<TendenciaParaOperar>
+		implements ITendenciaParaOperarDAO {
 
 	public MongoTendenciaParaOperarDAO() throws GeneticDAOException {
 		super("tendenciaParaOperar", true);
@@ -53,7 +55,7 @@ public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO<TendenciaParaOp
 		return fecha;
 	}
 
-	public List<? extends TendenciaParaOperar> consultarTendenciasParaOperar(Date fechaInicio) {
+	public List<? extends TendenciaParaOperar> consultar(Date fechaInicio) {
 		List<? extends TendenciaParaOperar> list = null;
 		Document filter = new Document();
 		if (fechaInicio != null) {
@@ -63,8 +65,9 @@ public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO<TendenciaParaOp
 		}
 		filter.append("activa", 1);
 		MongoCursor<Document> cursor = this.collection.find(filter).sort(orderBy(ascending("fechaBase"))).iterator();
-		list = ((MongoTendenciaParaOperarMapper)getMapper()).helpList(cursor);
+		list = ((MongoTendenciaParaOperarMapper) getMapper()).helpList(cursor);
 
 		return list;
 	}
+
 }

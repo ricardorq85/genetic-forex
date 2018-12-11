@@ -1,13 +1,9 @@
 package forex.genetic.tendencia.manager;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.TendenciaParaOperarDAO;
-import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.entities.DatoAdicionalTPO;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Extremos;
@@ -22,15 +18,14 @@ import forex.genetic.util.Constants.OperationType;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.NumberUtil;
+import forex.genetic.util.jdbc.DataClient;
 
 public class AgrupadorTendenciaManager {
 
 	private List<ProcesoTendenciaFiltradaBuySell> listaTendencias;
 	protected List<TendenciaParaOperarMaxMin> tendenciasResultado;
-	private Connection conn;
-	private TendenciaParaOperarDAO tendenciaParaOperarDAO;
-//	private MongoTendenciaParaOperarDAO mongoTendenciaParaOperarDAO;
-	private OracleDatoHistoricoDAO datoHistoricoDAO;
+
+	protected DataClient dataClient;
 
 	private Date fechaBase, maxFechaProceso;
 	private int numeroTendencias, cantidadTotalTendencias, numeroPendientesPositivas, numeroPendientesNegativas;
@@ -40,17 +35,15 @@ public class AgrupadorTendenciaManager {
 	private double stepLote = 0.01D;
 	private double maxLote = 0.1D;
 
-	public AgrupadorTendenciaManager(Date fechaBase, Date maxFechaProceso, Connection conn) throws SQLException, GeneticDAOException {
+	public AgrupadorTendenciaManager(Date fechaBase, Date maxFechaProceso, DataClient dc)
+			throws GeneticDAOException {
 		super();
-		this.conn = conn;
-		this.tendenciaParaOperarDAO = new TendenciaParaOperarDAO(conn);
-		//this.mongoTendenciaParaOperarDAO = new MongoTendenciaParaOperarDAO();
+		this.dataClient = dc;
 		this.listaTendencias = new ArrayList<>();
 		this.tendenciasResultado = new ArrayList<>();
 		this.setFechaBase(fechaBase);
 		this.maxFechaProceso = maxFechaProceso;
-		this.datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
-		this.precioPonderado = datoHistoricoDAO.consultarPrecioPonderado(fechaBase);
+		this.precioPonderado = dc.getDaoDatoHistorico().consultarPrecioPonderado(fechaBase);
 	}
 
 	protected void createDatoAdicional(Extremos extremos) {
@@ -88,7 +81,7 @@ public class AgrupadorTendenciaManager {
 		this.sumaPrimeraTendencia += paraProcesar.getRegresion().getPrimeraTendencia();
 	}
 
-	public void procesar() throws SQLException {
+	public void procesar() throws GeneticDAOException {
 		Extremos extremos = encontrarExtremos();
 		if (extremos != null) {
 			createDatoAdicional(extremos);
@@ -187,7 +180,7 @@ public class AgrupadorTendenciaManager {
 		return extremos;
 	}
 
-	public void procesarExtremos(Extremos extremos) throws SQLException {
+	public void procesarExtremos(Extremos extremos) throws GeneticDAOException {
 		int lastIndex = listaTendencias.size() - 1;
 		TendenciaParaOperarMaxMin buy = null, ultimoBuy = null, buyMayorPendiente = null;
 		TendenciaParaOperarMaxMin sell = null, ultimoSell = null, sellMayorPendiente = null;
@@ -285,14 +278,15 @@ public class AgrupadorTendenciaManager {
 		}
 	}
 
-	protected void processDelete() throws SQLException {
+	protected void processDelete() throws GeneticDAOException {
 		TendenciaParaOperarMaxMin tpo = new TendenciaParaOperarMaxMin();
 		tpo.setFechaBase(fechaBase);
-		int borrados = tendenciaParaOperarDAO.deleteTendenciaParaProcesar(tpo, maxFechaProceso);
-		//long borradosMongo = mongoTendenciaParaOperarDAO.delete(tpo, maxFechaProceso);
+		long borrados = dataClient.getDaoTendenciaParaOperar().delete(tpo, maxFechaProceso);
+		// long borradosMongo = mongoTendenciaParaOperarDAO.delete(tpo,
+		// maxFechaProceso);
 		LogUtil.logTime("Borrando tendencias para operar: maxFechaProceso=" + DateUtil.getDateString(maxFechaProceso)
 				+ "; borradosOracle=" + borrados, 1);
-		conn.commit();
+		dataClient.commit();
 	}
 
 	private boolean validarRegresion(int index) {
@@ -495,31 +489,25 @@ public class AgrupadorTendenciaManager {
 		return lote;
 	}
 
-	private void saveTendenciaParaOperar(TendenciaParaOperar ten) throws SQLException {
-		boolean exists = tendenciaParaOperarDAO.exists(ten);
-		//mongoTendenciaParaOperarDAO.insertOrUpdate(ten);
-		if (exists) {
-			tendenciaParaOperarDAO.updateTendenciaParaProcesar(ten);
-		} else {
-			tendenciaParaOperarDAO.insertTendenciaParaOperar(ten);
-		}
+	private void saveTendenciaParaOperar(TendenciaParaOperar ten) throws GeneticDAOException {
+		dataClient.getDaoTendenciaParaOperar().insertOrUpdate(ten);
 	}
 
-	public void saveDatosAdicionalesTPO(DatoAdicionalTPO datoAdicional) throws SQLException {
+	public void saveDatosAdicionalesTPO(DatoAdicionalTPO datoAdicional) throws GeneticDAOException {
 		if (datoAdicional != null) {
-			boolean exists = tendenciaParaOperarDAO.existsDatoAdicional(datoAdicional);
-			//mongoTendenciaParaOperarDAO.insertOrUpdateDatoAdicional(datoAdicional);
+			boolean exists = dataClient.getDaoDatoAdicionalTPO().exists(datoAdicional);
+			// mongoTendenciaParaOperarDAO.insertOrUpdateDatoAdicional(datoAdicional);
 			if (exists) {
-				tendenciaParaOperarDAO.updateDatoAdicionalTPO(datoAdicional);
+				dataClient.getDaoDatoAdicionalTPO().update(datoAdicional);
 			} else {
-				tendenciaParaOperarDAO.insertDatosAdicionalesTPO(datoAdicional);
+				dataClient.getDaoDatoAdicionalTPO().insert(datoAdicional);
 			}
 		}
 	}
 
-	public void export() throws SQLException {
+	public void export() throws GeneticDAOException {
 		this.saveDatosAdicionalesTPO(this.adicionalTPO);
-		conn.commit();
+		dataClient.commit();
 		List<TendenciaParaOperarMaxMin> tendencias = this.tendenciasResultado;
 		if (tendencias != null) {
 			tendencias.stream().forEach((ten) -> {
@@ -531,7 +519,7 @@ public class AgrupadorTendenciaManager {
 					e.printStackTrace();
 				}
 			});
-			conn.commit();
+			dataClient.commit();
 		}
 	}
 

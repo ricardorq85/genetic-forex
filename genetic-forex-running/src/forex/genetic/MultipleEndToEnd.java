@@ -37,7 +37,7 @@ public class MultipleEndToEnd {
 			throws InterruptedException, FileNotFoundException, UnsupportedEncodingException {
 		long id = currentTimeMillis();
 		load().join();
-		String prefix = "MultiplePointToPoint";
+		String prefix = "MultipleEndToEnd";
 		logTime(prefix + ": " + id, 1);
 		String name = getPropertyString(LOG_PATH) + prefix + id + ".log";
 		PrintStream out = new PrintStream(name, Charset.defaultCharset().name());
@@ -49,7 +49,7 @@ public class MultipleEndToEnd {
 			MultipleEndToEndMediator mediator = new MultipleEndToEndMediator();
 			mediator.init();
 			mediator.start();
-		} catch (GeneticDAOException ex) {
+		} catch (GeneticDAOException | InstantiationException ex) {
 			ex.printStackTrace();
 		}
 		logTime("Fin: " + id, 1);

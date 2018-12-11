@@ -46,7 +46,7 @@ public class ProcesarTendenciasBuySell {
         logTime("Inicio: " + id, 1);
         setId(Long.toString(id));
         try {
-            ProcesarTendenciasBuySellManager manager = ProcesarTendenciasFactory.createManager();  
+            ProcesarTendenciasBuySellManager manager = ProcesarTendenciasFactory.createManager();
             		//new ProcesarTendenciasGrupalManager();
             		//new ProcesarTendenciasIndividualManager(); 
             		//new ProcesarTendenciasBuySellManager();

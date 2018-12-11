@@ -3,45 +3,34 @@ package forex.genetic.tendencia.manager;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.TendenciaParaOperarDAO;
-import forex.genetic.dao.mongodb.MongoTendenciaParaOperarDAO;
-import forex.genetic.dao.oracle.OracleParametroDAO;
+import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.IndividuoManager;
-import forex.genetic.util.jdbc.JDBCUtil;
+import forex.genetic.util.jdbc.DataClient;
 
 public class ExportarTendenciaParaOperarManager {
-	private Connection connection = null;
 
-	private MongoTendenciaParaOperarDAO mongoTendenciaParaOperarDAO;
-
-	private TendenciaParaOperarDAO tendenciaParaOperarDAO;
-	private OracleParametroDAO parametroDAO;
-
+	private DataClient dataClient;
 	private Date fechaInicio;
 	private static String sourceEstrategiasPath;
 
-	public ExportarTendenciaParaOperarManager() throws SQLException, ClassNotFoundException, GeneticDAOException {
-		connection = JDBCUtil.getConnection();
-		this.tendenciaParaOperarDAO = new TendenciaParaOperarDAO(connection);
-		this.mongoTendenciaParaOperarDAO = new MongoTendenciaParaOperarDAO();
-		this.parametroDAO = new OracleParametroDAO(connection);
-		ExportarTendenciaParaOperarManager.sourceEstrategiasPath = parametroDAO
+	public ExportarTendenciaParaOperarManager(DataClient dc)
+			throws SQLException, ClassNotFoundException, GeneticDAOException {
+		this.dataClient = dc;
+		ExportarTendenciaParaOperarManager.sourceEstrategiasPath = dataClient.getDaoParametro()
 				.getValorParametro("SOURCE_ESTRATEGIAS_PATH");
-		this.fechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_EXPORTACION");
+		this.fechaInicio = dataClient.getDaoParametro().getDateValorParametro("FECHA_INICIO_EXPORTACION");
 	}
 
 	public void exportar() throws SQLException, ClassNotFoundException, IOException, GeneticDAOException {
 		String indId = IndividuoManager.nextId();
 
-		List<TendenciaParaOperarMaxMin> list = this.tendenciaParaOperarDAO
-				.consultarTendenciasParaOperar(this.fechaInicio);
+		List<? extends TendenciaParaOperar> list = this.dataClient.getDaoTendenciaParaOperar().consultar(this.fechaInicio);
 		this.exportar(list, indId);
 
 //		List<? extends TendenciaParaOperar> listMongo = this.mongoTendenciaParaOperarDAO
@@ -50,15 +39,15 @@ public class ExportarTendenciaParaOperarManager {
 	}
 
 	private void exportar(List<TendenciaParaOperarMaxMin> list, String name)
-			throws IOException, ClassNotFoundException, SQLException, GeneticDAOException {
+			throws IOException, ClassNotFoundException, GeneticDAOException {
 		ProcesarTendenciasGrupalManager grupalManager = new ProcesarTendenciasGrupalManager();
+		grupalManager.setDataClient(dataClient);
 		grupalManager.setTendenciasResultado(list);
 
 		String fileName = sourceEstrategiasPath + "\\Tendencia" + name + ".csv";
 		Path filePath = FileSystems.getDefault().getPath(fileName);
 
 		grupalManager.export(filePath);
-
 	}
 
 }

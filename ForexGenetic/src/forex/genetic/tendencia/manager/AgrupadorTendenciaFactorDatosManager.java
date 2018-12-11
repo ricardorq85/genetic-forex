@@ -1,23 +1,22 @@
 package forex.genetic.tendencia.manager;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Date;
 
 import forex.genetic.entities.Extremos;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.Constants.OperationType;
+import forex.genetic.util.jdbc.DataClient;
 
 public class AgrupadorTendenciaFactorDatosManager extends AgrupadorTendenciaManager {
 
-	public AgrupadorTendenciaFactorDatosManager(Date fechaBase, Date maxFechaProceso, Connection conn)
-			throws SQLException, GeneticDAOException {
-		super(fechaBase, maxFechaProceso, conn);
+	public AgrupadorTendenciaFactorDatosManager(Date fechaBase, Date maxFechaProceso, DataClient dc)
+			throws GeneticDAOException {
+		super(fechaBase, maxFechaProceso, dc);
 	}
 
 	@Override
-	public void procesarExtremos(Extremos extremos) throws SQLException {
+	public void procesarExtremos(Extremos extremos) throws GeneticDAOException {
 		super.procesarExtremos(extremos);
 		this.setFactorDatos();
 		this.actualizarTPO();

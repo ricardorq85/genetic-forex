@@ -1,5 +1,7 @@
 package forex.genetic.dao;
 
+import java.util.Date;
+
 import forex.genetic.exception.GeneticDAOException;
 
 public interface IGeneticDAO<E> {
@@ -14,6 +16,8 @@ public interface IGeneticDAO<E> {
 
 	public void insertOrUpdate(E obj) throws GeneticDAOException;
 
+	public long delete(E obj, Date fechaReferencia);
+	
 	public void close() throws GeneticDAOException;
 
 	public void commit() throws GeneticDAOException;

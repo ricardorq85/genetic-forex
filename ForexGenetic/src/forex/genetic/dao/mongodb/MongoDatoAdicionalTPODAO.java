@@ -6,6 +6,7 @@ package forex.genetic.dao.mongodb;
 
 import com.mongodb.client.model.IndexOptions;
 
+import forex.genetic.dao.IDatoAdicionalTPODAO;
 import forex.genetic.entities.DatoAdicionalTPO;
 import forex.genetic.exception.GeneticDAOException;
 
@@ -13,7 +14,7 @@ import forex.genetic.exception.GeneticDAOException;
  *
  * @author ricardorq85
  */
-public class MongoDatoAdicionalTPODAO extends MongoGeneticDAO<DatoAdicionalTPO> {
+public class MongoDatoAdicionalTPODAO extends MongoGeneticDAO<DatoAdicionalTPO> implements IDatoAdicionalTPODAO {
 
 	// public MongoTendenciaParaOperarDAO(Connection connection) {
 	public MongoDatoAdicionalTPODAO() throws GeneticDAOException {
