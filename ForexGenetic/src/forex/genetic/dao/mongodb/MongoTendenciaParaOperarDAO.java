@@ -7,7 +7,6 @@ package forex.genetic.dao.mongodb;
 import static com.mongodb.client.model.Sorts.ascending;
 import static com.mongodb.client.model.Sorts.orderBy;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,10 +15,9 @@ import java.util.Map;
 import org.bson.Document;
 
 import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.Accumulators;
-import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.Sorts;
 
 import forex.genetic.dao.ITendenciaParaOperarDAO;
 import forex.genetic.dao.helper.mongodb.MongoTendenciaParaOperarMapper;
@@ -44,13 +42,12 @@ public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO<TendenciaParaOp
 		this.collection.createIndex(Indexes.ascending("periodo", "fechaBase", "tipoOperacion", "tipoExportacion"),
 				indexOptions);
 	}
-
+	
 	public Date getFechaBaseMinima() {
 		Date fecha = null;
-		Document doc = this.collection
-				.aggregate(Arrays.asList(Aggregates.group(null, Accumulators.min("minDate", "$fechaBase")))).first();
+		Document doc = this.collection.find().sort(Sorts.ascending("fechaBase")).first();
 		if (doc != null) {
-			fecha = doc.getDate("minDate");
+			fecha = doc.getDate("fechaBase");
 		}
 		return fecha;
 	}
