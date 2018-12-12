@@ -50,201 +50,171 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		Bson filtroOr = Filters.or(filtroProcesoEjecucionNull, filtroFechaHistorica);
 		Bson ordenador = Sorts.orderBy(Sorts.ascending("procesoEjecucion.maxFechaHistorico"),
 				Sorts.descending("idIndividuo"));
-		
-		Bson filtroIndividuo = Filters.eq("idIndividuo","1394841600000.83");
+
+		Bson filtroIndividuo = Filters.eq("idIndividuo", "1394841600000.83");
 		Bson filtroCompleto = Filters.and(filtroIndividuo, filtroOr);
 
 		MongoCursor<Document> cursor = collection.find(filtroCompleto).sort(ordenador).limit(10).iterator();
 		return getMapper().helpList(cursor);
 	}
-	
+
 	@Override
 	public void crearVistaIndicadoresIndividuo(String viewName, String idIndividuo) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public void insertarIndividuoIndicadoresColumnas(String idIndividuo) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosPadreRepetidos(String tipoProceso) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosStopLossInconsistente(int sl) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosStopLossInconsistente(int sl, String idIndividuo)
 			throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosCantidadLimite(double porcentajeLimite) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosCantidadLimite(double porcentajeLimite, String idIndividuo)
 			throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public void smartDelete(String idIndividuo, String causaBorrado, String idPadre) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosRepetidosOperaciones(Individuo individuoPadre)
 			throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosRepetidos() throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public Individuo consultarIndividuo(String idIndividuo) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuoHijoRepetidoOperaciones(Individuo individuoHijo)
 			throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuoHijoRepetido(Individuo individuoHijo) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public void consultarDetalleIndividuoProceso(Individuo individuo, Date fechaHistorico) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public void consultarDetalleIndividuo(IndicadorController indicadorController, Individuo individuo)
 			throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public void insertIndividuo(IndividuoEstrategia individuo) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public void insertIndicadorIndividuo(IndicadorController indicadorController, IndividuoEstrategia individuo)
 			throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<IndividuoOptimo> consultarIndividuosOptimos() throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public int getCountIndicadoresOpen(Individuo individuo) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosResumenSemanal(Date fechaInicial, Date fechaFinal)
 			throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuosRandom(Date fechaInicial, Date fechaFinal, int cantidad)
-			throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Individuo> consultarIndividuosRandom(int cantidad) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<MongoIndividuo> consultarIndividuosRandom(int cantidad) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosIndicadoresCloseMinimos(int minimo) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosIndicadoresCloseMinimos(int minimo, String id)
 			throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosIntervaloIndicadores() throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosIntervaloIndicadores(String idIndividuo) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosParaBorrar(Date fechaLimite) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, Date fechaLimite)
 			throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosParaBorrar(int minutos) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
 	public List<Individuo> consultarIndividuosParaBorrar(String idIndividuo, int minutos) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public List<MongoIndividuo> consultarIndividuosRandom(Date fechaInicial, Date fechaFinal, int cantidad)
+			throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 }

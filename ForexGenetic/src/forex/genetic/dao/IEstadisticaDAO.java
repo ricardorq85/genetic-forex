@@ -5,6 +5,7 @@
 package forex.genetic.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import forex.genetic.entities.Estadistica;
 import forex.genetic.entities.IndividuoEstrategia;
@@ -17,6 +18,8 @@ import forex.genetic.entities.Order;
 public interface IEstadisticaDAO<E extends Estadistica> extends IGeneticDAO<E> {
 
 	public <I extends IndividuoEstrategia> E getLast(I individuo);
+	
+	public List<E> consultarRandom(Date fechaInicial, Date fechaFinal, int cantidad);
 
 	public <I extends IndividuoEstrategia, O extends Order> E getLast(I individuo, Date fechaBase);
 }

@@ -7,19 +7,12 @@ package forex.genetic.manager.mongodb;
 
 import static forex.genetic.util.LogUtil.logTime;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.IndicatorDAO;
-import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
-import forex.genetic.dao.oracle.OracleIndividuoDAO;
-import forex.genetic.dao.oracle.OracleOperacionesDAO;
-import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
-import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.RangoCierreOperacionIndividuo;
@@ -27,9 +20,10 @@ import forex.genetic.entities.RangoOperacionIndividuo;
 import forex.genetic.entities.RangoOperacionIndividuoIndicador;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
+import forex.genetic.entities.mongo.MongoEstadistica;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.ControllerFactory;
-import forex.genetic.manager.CrossoverIndividuoManager;
 import forex.genetic.manager.IndividuoXIndicadorManager;
 import forex.genetic.manager.MutationIndividuoManager;
 import forex.genetic.manager.controller.IndicadorController;
@@ -38,7 +32,6 @@ import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.RandomUtil;
 import forex.genetic.util.jdbc.DataClient;
-import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *
@@ -48,19 +41,17 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 
 	private DataClient dataClient;
 
-	public MongoIndividuoXIndicadorManager() {
-		this(null, null, 12);
+	public MongoIndividuoXIndicadorManager(DataClient dc) throws GeneticBusinessException {
+		this(dc, null, null, 12);
 	}
 
-	public MongoIndividuoXIndicadorManager(Date fechaMinima, Date fechaMaxima, int maximoMeses) {
+	public MongoIndividuoXIndicadorManager(DataClient dc, Date fechaMinima, Date fechaMaxima, int maximoMeses)
+			throws GeneticBusinessException {
 		super(fechaMinima, fechaMaxima, maximoMeses);
+		dataClient = dc;
 	}
 
-	public void crearIndividuos() throws SQLException, ClassNotFoundException, GeneticDAOException {
-		if (primeraVez) {
-			this.configurarAmbiente();
-			primeraVez = false;
-		}
+	public void crearIndividuos() throws GeneticBusinessException {
 		try {
 			Date fechaFiltroFinal = new Date(fechaMaxima.getTime());
 			while (fechaFiltroFinal.after(fechaMinima)) {
@@ -70,7 +61,8 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 					DateInterval dateInterval = new DateInterval();
 					dateInterval.setLowInterval(DateUtil.adicionarMes(fechaFiltroFinal, -meses));
 					dateInterval.setHighInterval(fechaFiltroFinal);
-					int cantidadPuntos = dhDAO.consultarCantidadPuntos(dateInterval);
+					int cantidadPuntos = new Long(
+							dataClient.getDaoDatoHistorico().consultarCantidadPuntos(dateInterval)).intValue();
 					logTime("Fecha filtro: " + DateUtil.getDateString(dateInterval.getLowInterval()) + " - "
 							+ DateUtil.getDateString(dateInterval.getHighInterval()), 1);
 					int repeat = RandomUtil.nextInt(meses) + 1;
@@ -93,94 +85,32 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 				}
 				fechaFiltroFinal = DateUtil.adicionarMes(fechaFiltroFinal, -1);
 			}
-		} finally {
-			JDBCUtil.close(conn);
-		}
-	}
-
-	private void configurarAmbiente() throws GeneticDAOException {
-		this.configurarOperacionPositivasYNegativas();
-	}
-
-	private void configurarOperacionPositivasYNegativas() throws GeneticDAOException {
-		logTime("Configurando operaciones positivas y negativas", 1);
-		operacionesDAO.actualizarOperacionesPositivasYNegativas();
-	}
-
-	private boolean crearIndividuos(RangoOperacionIndividuo rangoOperacionIndividuo) throws GeneticDAOException {
-		boolean rangoValido = rangoOperacionIndividuo.isRangoValido();
-		boolean found_any = false;
-		logTime(rangoOperacionIndividuo.toString(), 2);
-		if (rangoValido) {
-			found_any = true;
-			IndividuoEstrategia individuoSell = createIndividuo(rangoOperacionIndividuo, Constants.OperationType.SELL);
-			IndividuoEstrategia individuoBuy = createIndividuo(rangoOperacionIndividuo, Constants.OperationType.BUY);
-			insertIndividuo(individuoSell);
-			insertIndividuo(individuoBuy);
-
-			if ((individuoSell != null) && (individuoBuy != null)) {
-				Poblacion poblacion = new Poblacion();
-				poblacion.add(individuoSell);
-				poblacion.add(individuoBuy);
-				Poblacion mutados = mutarIndividuos(poblacion);
-				poblacion.addAll(mutados);
-				cruzarIndividuos(rangoOperacionIndividuo, poblacion);
-			}
-
-		} else {
-			logTime("NO cumple con el rango valido.", 2);
-		}
-		return found_any;
-	}
-
-	private void cruzarIndividuos(RangoOperacionIndividuo rangoOperacionIndividuo, Poblacion poblacionBase) {
-		List<Individuo> individuosResumen = null;
-		try {
-			// individuosResumen =
-			// individuoDAO.consultarIndividuosResumenSemanal(rangoOperacionIndividuo.getFechaFiltro(),
-			// rangoOperacionIndividuo.getFechaFiltro2());
-			individuosResumen = individuoDAO.consultarIndividuosRandom(rangoOperacionIndividuo.getFechaFiltro(),
-					rangoOperacionIndividuo.getFechaFiltro2(), parametroCantidadCruzar * 2);
 		} catch (GeneticDAOException e) {
-			e.printStackTrace();
+			throw new GeneticBusinessException(e);
+		} finally {
+			try {
+				dataClient.close();
+			} catch (GeneticDAOException e) {
+				e.printStackTrace();
+			}
 		}
+	}
 
-		if (individuosResumen == null) {
-			return;
-		}
-		if (individuosResumen.isEmpty()) {
-			return;
+	protected List<IndividuoEstrategia> getIndividuosACruzar(RangoOperacionIndividuo rangoOperacionIndividuo) throws GeneticDAOException {
+		List<MongoEstadistica> estadisticasRandom = dataClient.getDaoEstadistica().consultarRandom(
+				rangoOperacionIndividuo.getFechaFiltro(), rangoOperacionIndividuo.getFechaFiltro2(),
+				parametroCantidadCruzar * 2);
+		if ((estadisticasRandom == null) || (estadisticasRandom.isEmpty())) {
+			return null;
 		}
 
 		IndicadorController indicadorController = ControllerFactory
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
-		List<IndividuoEstrategia> individuosParaCruzar = new ArrayList<>(individuosResumen);
-		individuosParaCruzar.stream().forEach((individuoParaCruzar) -> {
-			try {
-				individuoDAO.consultarDetalleIndividuo(indicadorController, (Individuo) individuoParaCruzar);
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new RuntimeException(e);
-			}
-		});
-
-		Poblacion poblacionParaCruzar = new Poblacion();
-		poblacionParaCruzar.setIndividuos(individuosParaCruzar);
-
-		CrossoverIndividuoManager crossover = new CrossoverIndividuoManager();
-		Poblacion[] cruce = crossover.crossover(0, poblacionBase, poblacionParaCruzar, parametroCantidadCruzar);
-
-		if ((cruce != null) && (cruce.length > 0)) {
-			List<IndividuoEstrategia> cruzados = cruce[1].getIndividuos();
-			cruzados.stream().forEach((individuoCruzado) -> {
-				try {
-					insertIndividuo(individuoCruzado);
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new RuntimeException(e);
-				}
-			});
+		List<IndividuoEstrategia> individuosParaCruzar = new ArrayList<>();
+		for (MongoEstadistica estadistica : estadisticasRandom) {
+			individuosParaCruzar.add(dataClient.getDaoIndividuo().consultarById(estadistica.getIdIndividuo()));
 		}
+		return individuosParaCruzar;
 	}
 
 	private Poblacion mutarIndividuos(Poblacion poblacion) {
@@ -215,8 +145,8 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 		}
 	}
 
-	private void procesarRangoOperacionIndicadores(RangoOperacionIndividuo rangoOperacionIndividuo, int cantidadPuntos)
-			throws SQLException {
+	private void procesarRangoOperacionIndicadores(RangoOperacionIndividuo rangoOperacionIndividuo,
+			int cantidadPuntos) {
 		StringBuilder fields = new StringBuilder();
 		StringBuilder filters = new StringBuilder();
 		StringBuilder porcentajeCumplimiento = new StringBuilder();
@@ -244,7 +174,7 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 	}
 
 	private void asignarIntervaloXPorcentajeCumplimiento(RangoOperacionIndividuo rangoOperacionIndividuo,
-			int cantidadPuntos) throws SQLException {
+			int cantidadPuntos) {
 		int num_indicadores = indicadorController.getIndicatorNumber();
 		for (int i = 0; i < num_indicadores; i++) {
 			IntervalIndicatorManager<?> indManager = (IntervalIndicatorManager<?>) indicadorController
@@ -296,7 +226,7 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 	}
 
 	private double porcentajeCumplimiento(RangoOperacionIndividuo r, IntervalIndicatorManager<?> indManager,
-			IntervalIndicator intervalIndicator, Double i1, Double i2, int cantidadPuntos) throws SQLException {
+			IntervalIndicator intervalIndicator, Double i1, Double i2, int cantidadPuntos) {
 		DoubleInterval interval = (DoubleInterval) intervalIndicator.getInterval();
 		if (i1 != null && i2 != null) {
 			interval.setLowInterval(i1);
@@ -316,7 +246,7 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 	}
 
 	private double porcentajeCumplimientoDummy(IntervalIndicatorManager<?> indManager,
-			IntervalIndicator intervalIndicator, Double i1, Double i2) throws SQLException {
+			IntervalIndicator intervalIndicator, Double i1, Double i2) {
 		return 0.7;
 	}
 

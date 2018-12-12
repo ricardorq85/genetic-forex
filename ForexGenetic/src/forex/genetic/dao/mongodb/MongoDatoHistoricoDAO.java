@@ -112,6 +112,26 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	}
 
 	@Override
+	public long consultarCantidadPuntos(DateInterval interval) throws GeneticDAOException {
+		int initialYear = DateUtil.obtenerAnyo(interval.getLowInterval());
+		int endYear = DateUtil.obtenerAnyo(interval.getHighInterval());
+		int year = initialYear;
+		long count = 0;
+		while (year <= endYear) {
+			setCollection(year);
+			count += consultarCantidadPuntosIntern(interval);
+			year++;
+		}
+		return count;
+	}
+
+	private long consultarCantidadPuntosIntern(DateInterval interval) throws GeneticDAOException {
+		long count = this.collection.countDocuments(Filters.and(Filters.gte("fechaHistorico", interval.getLowInterval()),
+				Filters.lte("fechaHistorico", interval.getHighInterval())));
+		return count;
+	}
+
+	@Override
 	public Point consultarXFecha(Date fecha) throws GeneticDAOException {
 		int year = DateUtil.obtenerAnyo(fecha);
 		setCollection(year);
@@ -186,12 +206,9 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	public Date getFechaHistoricaMinima() {
 		setCollection(minYear);
 		Date fecha = null;
-//		Document doc = this.collection
-//				.aggregate(Arrays.asList(Aggregates.group(null, Accumulators.min("minDate", "$fechaHistorico"))))
-//				.first();
 		Document doc = this.collection.find().sort(Sorts.ascending("fechaHistorico")).first();
 		if (doc != null) {
-			fecha = doc.getDate("minDate");
+			fecha = doc.getDate("fechaHistorico");
 		}
 		return fecha;
 	}
@@ -314,10 +331,6 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		adicionarFiltroIndicadores(individuo.getOpenIndicators(), filtros);
 
 		Bson bsonFiltrosCompletos = Filters.and(filtros);
-//		LogUtil.logTime("idIndividuo=" + individuo.getId(), 1);
-//		LogUtil.logTime(
-//				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
-
 		MongoCursor<Document> cursor = this.collection.find(bsonFiltrosCompletos)
 				.sort(Sorts.orderBy(Sorts.ascending("fechaHistorico"))).iterator();
 
@@ -446,12 +459,7 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	}
 
 	@Override
-	public int consultarCantidadPuntos() throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
-	public int consultarCantidadPuntos(DateInterval interval) throws GeneticDAOException {
+	public long consultarCantidadPuntos() throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 

@@ -82,8 +82,8 @@ public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements I
 		return point;
 	}
 
-	public int consultarCantidadPuntos() throws GeneticDAOException {
-		int cantidad = 0;
+	public long consultarCantidadPuntos() throws GeneticDAOException {
+		long cantidad = 0;
 		String sql = "SELECT COUNT(*) REGISTROS FROM DATOHISTORICO";
 		Statement stmtConsulta = null;
 		ResultSet resultado = null;
@@ -91,7 +91,7 @@ public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements I
 			stmtConsulta = this.connection.createStatement();
 			resultado = stmtConsulta.executeQuery(sql);
 			if (resultado.next()) {
-				cantidad = resultado.getInt("REGISTROS");
+				cantidad = resultado.getLong("REGISTROS");
 			}
 		} catch (SQLException e) {
 			throw new GeneticDAOException("Error consultarCantidadPuntos()", e);
@@ -102,8 +102,8 @@ public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements I
 		return cantidad;
 	}
 
-	public int consultarCantidadPuntos(DateInterval interval) throws GeneticDAOException {
-		int cantidad = 0;
+	public long consultarCantidadPuntos(DateInterval interval) throws GeneticDAOException {
+		long cantidad = 0;
 		String sql = "SELECT COUNT(*) REGISTROS FROM DATOHISTORICO WHERE FECHA BETWEEN ? AND ?";
 		PreparedStatement stmtConsulta = null;
 		ResultSet resultado = null;
@@ -113,7 +113,7 @@ public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements I
 			stmtConsulta.setTimestamp(2, new Timestamp(interval.getHighInterval().getTime()));
 			resultado = stmtConsulta.executeQuery();
 			if (resultado.next()) {
-				cantidad = resultado.getInt("REGISTROS");
+				cantidad = resultado.getLong("REGISTROS");
 			}
 		} catch (SQLException e) {
 			throw new GeneticDAOException("Error consultarCantidadPuntos(DateInterval interval)", e);

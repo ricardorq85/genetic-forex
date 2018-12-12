@@ -29,8 +29,8 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia>
-		implements IIndividuoDAO<IndividuoEstrategia> {
+public class OracleIndividuoDAO extends OracleGeneticDAO<Individuo>
+		implements IIndividuoDAO<Individuo> {
 
 	public OracleIndividuoDAO(Connection connection) {
 		super(connection);
@@ -890,24 +890,6 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia>
 	}
 
 	@Override
-	public boolean exists(IndividuoEstrategia obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void insert(IndividuoEstrategia obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void update(IndividuoEstrategia obj) throws GeneticDAOException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public List<? extends IndividuoEstrategia> getListByProcesoEjecucion(String filtroAdicional, Date fechaHistorico)
 			throws GeneticDAOException {
 		// TODO Auto-generated method stub
@@ -939,17 +921,28 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia>
 	}
 
 	@Override
-	public void insertIfNoExists(IndividuoEstrategia obj) throws GeneticDAOException {
+	public boolean exists(Individuo obj) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
-	public IndividuoEstrategia consultarById(String idIndividuo) {
+	public void insert(Individuo obj) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
-	public long delete(IndividuoEstrategia obj, Date fechaReferencia) {
-		throw new UnsupportedOperationException("UnsupportedOperationException");
+	public void update(Individuo obj) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
+
+	@Override
+	public long delete(Individuo obj, Date fechaReferencia) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public Individuo consultarById(String idIndividuo) {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
 }

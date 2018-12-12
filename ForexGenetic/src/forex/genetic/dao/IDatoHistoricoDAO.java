@@ -22,9 +22,9 @@ public interface IDatoHistoricoDAO extends IGeneticDAO<Point> {
 
 	public Point consultarXFecha(Date fechaBase) throws GeneticDAOException;
 
-	public int consultarCantidadPuntos() throws GeneticDAOException;
+	public long consultarCantidadPuntos() throws GeneticDAOException;
 
-	public int consultarCantidadPuntos(DateInterval interval) throws GeneticDAOException;
+	public long consultarCantidadPuntos(DateInterval interval) throws GeneticDAOException;
 
 	public Date getFechaHistoricaMinima() throws GeneticDAOException;
 
