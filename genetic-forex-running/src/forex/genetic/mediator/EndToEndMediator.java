@@ -28,9 +28,9 @@ import forex.genetic.exception.GeneticException;
 import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.factory.ProcesarTendenciasFactory;
 import forex.genetic.manager.IndividuoManager;
-import forex.genetic.manager.IndividuoXIndicadorManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.io.CopyFileVisitor;
+import forex.genetic.manager.oracle.OracleIndividuoXIndicadorManager;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
 import forex.genetic.tendencia.manager.TendenciaProcesoManager;
 import forex.genetic.util.Constants;
@@ -258,7 +258,7 @@ public abstract class EndToEndMediator extends GeneticMediator {
 
 	protected void crearNuevosIndividuos() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		logTime("Init Crear individuos x indicador", 1);
-		IndividuoXIndicadorManager manager = new IndividuoXIndicadorManager(ultimaFechaBaseTendencia,
+		OracleIndividuoXIndicadorManager manager = new OracleIndividuoXIndicadorManager(ultimaFechaBaseTendencia,
 				fechaHistoricaMaximaNueva, 12);
 		manager.crearIndividuos();
 		logTime("End Crear individuos x indicador", 1);

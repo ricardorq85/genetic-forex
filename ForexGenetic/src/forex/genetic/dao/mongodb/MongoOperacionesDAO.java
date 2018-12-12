@@ -1,6 +1,10 @@
 package forex.genetic.dao.mongodb;
 
-import java.util.ArrayList;
+import static forex.genetic.dao.helper.mongodb.MongoOperacioneHelper.getAccumulators;
+import static forex.genetic.dao.helper.mongodb.MongoOperacioneHelper.getFiltrosParaNegativos;
+import static forex.genetic.dao.helper.mongodb.MongoOperacioneHelper.getFiltrosParaPositivos;
+import static forex.genetic.dao.helper.mongodb.MongoOperacioneHelper.getFiltrosParaTotales;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -8,7 +12,6 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.BsonField;
@@ -26,7 +29,6 @@ import forex.genetic.entities.ParametroOperacionPeriodo;
 import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
-import forex.genetic.util.DateUtil;
 
 /**
  *
@@ -38,8 +40,10 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		this(true);
 	}
 
-	public MongoOperacionesDAO(boolean configure) throws GeneticDAOException {
+	public MongoOperacionesDAO(boolean configure) {
 		super("operacion", configure);
+		setCollection("operacionesPositivas", true);
+		setCollection("operacionesNegativas", true);
 	}
 
 	public void configureCollection() {
@@ -54,16 +58,14 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	public MongoEstadistica consultarEstadisticas(Individuo individuo,
 			ParametroConsultaEstadistica parametroConsultaEstadistica) throws GeneticDAOException {
 
+		setCollection("operacion", false);
 		List<Bson> filtrosTotales = getFiltrosParaTotales(individuo, parametroConsultaEstadistica);
-
-		//LogUtil.logTime(Filters.and(filtrosTotales)
-			//	.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
-
 		MongoEstadistica estadisticaTotales = consultarEstadisticasIntern(filtrosTotales, null, "");
 		estadisticaTotales.setPipsModa(getModa(filtrosTotales, "$pips"));
 		estadisticaTotales.setDuracionModa(getModa(filtrosTotales, "$duracionMinutos"));
 		estadisticaTotales.setPipsModaRetroceso(getModa(filtrosTotales, "$maxPipsRetroceso"));
 
+		setCollection("operacionesPositivas", false);
 		List<Bson> filtrosPositivos = getFiltrosParaPositivos(individuo, parametroConsultaEstadistica);
 		MongoEstadistica estadisticaPositivos = consultarEstadisticasIntern(filtrosPositivos, estadisticaTotales,
 				"Positivos");
@@ -71,19 +73,17 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		estadisticaPositivos.setDuracionModaPositivos(getModa(filtrosPositivos, "$duracionMinutos"));
 		estadisticaPositivos.setPipsModaRetrocesoPositivos(getModa(filtrosPositivos, "$maxPipsRetroceso"));
 
+		setCollection("operacionesNegativas", false);
 		List<Bson> filtrosNegativos = getFiltrosParaNegativos(individuo, parametroConsultaEstadistica);
-
-//		LogUtil.logTime(Filters.and(filtrosNegativos)
-	//			.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
-
 		MongoEstadistica estadisticaCompleta = consultarEstadisticasIntern(filtrosNegativos, estadisticaPositivos,
 				"Negativos");
-		
 		estadisticaCompleta.setPipsModaNegativos(getModa(filtrosNegativos, "$pips"));
 		estadisticaCompleta.setDuracionModaNegativos(getModa(filtrosNegativos, "$duracionMinutos"));
 		estadisticaCompleta.setPipsModaRetrocesoNegativos(getModa(filtrosNegativos, "$maxPipsRetroceso"));
 
+		setCollection("operacion", false);
 		estadisticaCompleta.setIdIndividuo(individuo.getId());
+
 		return estadisticaCompleta;
 	}
 
@@ -103,99 +103,6 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 			mapper.helpOne(doc, obj);
 		}
 		return obj;
-	}
-
-	private List<BsonField> getAccumulators(String suffix) {
-		List<BsonField> datosAcumulados = new ArrayList<BsonField>();
-		datosAcumulados.add(Accumulators.sum(new StringBuilder("cantidad").append(suffix).toString(), 1));
-		datosAcumulados.add(
-				Accumulators.sum(new StringBuilder("duracionTotal").append(suffix).toString(), "$duracionMinutos"));
-
-		datosAcumulados.add(Accumulators.sum(new StringBuilder("pips").append(suffix).toString(), "$pips"));
-		datosAcumulados.add(Accumulators.min(new StringBuilder("pipsMinimos").append(suffix).toString(), "$pips"));
-		datosAcumulados.add(Accumulators.max(new StringBuilder("pipsMaximos").append(suffix).toString(), "$pips"));
-		datosAcumulados.add(Accumulators.avg(new StringBuilder("pipsPromedio").append(suffix).toString(), "$pips"));
-
-		datosAcumulados.add(
-				Accumulators.min(new StringBuilder("duracionMinima").append(suffix).toString(), "$duracionMinutos"));
-		datosAcumulados.add(
-				Accumulators.max(new StringBuilder("duracionMaxima").append(suffix).toString(), "$duracionMinutos"));
-		datosAcumulados.add(
-				Accumulators.avg(new StringBuilder("duracionPromedio").append(suffix).toString(), "$duracionMinutos"));
-		datosAcumulados.add(Accumulators.stdDevPop(new StringBuilder("duracionDesvEstandard").append(suffix).toString(),
-				"$duracionMinutos"));
-
-		datosAcumulados.add(Accumulators.min(new StringBuilder("pipsMinimosRetroceso").append(suffix).toString(),
-				"$maxPipsRetroceso"));
-		datosAcumulados.add(Accumulators.max(new StringBuilder("pipsMaximosRetroceso").append(suffix).toString(),
-				"$maxPipsRetroceso"));
-		datosAcumulados.add(Accumulators.avg(new StringBuilder("pipsPromedioRetroceso").append(suffix).toString(),
-				"$maxPipsRetroceso"));
-
-		return datosAcumulados;
-	}
-
-	private List<Bson> getFiltrosParaTotales(Individuo individuo,
-			ParametroConsultaEstadistica parametroConsultaEstadistica) {
-		List<Bson> filtros = getFiltrosParaEstadistica(individuo, parametroConsultaEstadistica);
-		List<Bson> filtrosOr = new ArrayList<Bson>();
-		if (parametroConsultaEstadistica.getRetroceso() != null) {
-			if (parametroConsultaEstadistica.getRetroceso() > 0.0D) {
-				filtrosOr.add(Filters.and(Filters.lte("pips", 0),
-						Filters.gte("maxPipsRetroceso", parametroConsultaEstadistica.getRetroceso())));
-				filtrosOr.add(Filters.and(Filters.gt("pips", 0),
-						Filters.gte("pips", parametroConsultaEstadistica.getRetroceso())));
-			} else {
-				filtrosOr.add(Filters.and(Filters.gt("pips", 0),
-						Filters.lte("maxPipsRetroceso", parametroConsultaEstadistica.getRetroceso())));
-				filtrosOr.add(Filters.and(Filters.lte("pips", 0),
-						Filters.lte("pips", parametroConsultaEstadistica.getRetroceso())));
-			}
-			filtros.add(Filters.or(filtrosOr));
-		}
-		return filtros;
-	}
-
-	private List<Bson> getFiltrosParaPositivos(Individuo individuo,
-			ParametroConsultaEstadistica parametroConsultaEstadistica) {
-		List<Bson> filtros = getFiltrosParaEstadistica(individuo, parametroConsultaEstadistica);
-		filtros.add(Filters.gt("pips", 0.0D));
-		if (parametroConsultaEstadistica.getRetroceso() != null) {
-			if (parametroConsultaEstadistica.getRetroceso() > 0.0D) {
-				filtros.add(Filters.gte("pips", parametroConsultaEstadistica.getRetroceso()));
-			} else {
-				filtros.add(Filters.lte("maxPipsRetroceso", parametroConsultaEstadistica.getRetroceso()));
-			}
-		}
-		return filtros;
-	}
-
-	private List<Bson> getFiltrosParaNegativos(Individuo individuo,
-			ParametroConsultaEstadistica parametroConsultaEstadistica) {
-		List<Bson> filtros = getFiltrosParaEstadistica(individuo, parametroConsultaEstadistica);
-		filtros.add(Filters.lte("pips", 0.0D));
-		if (parametroConsultaEstadistica.getRetroceso() != null) {
-			if (parametroConsultaEstadistica.getRetroceso() < 0.0D) {
-				filtros.add(Filters.lte("pips", parametroConsultaEstadistica.getRetroceso()));
-			} else {
-				filtros.add(Filters.gte("maxPipsRetroceso", parametroConsultaEstadistica.getRetroceso()));
-			}
-		}
-		return filtros;
-	}
-
-	private List<Bson> getFiltrosParaEstadistica(Individuo individuo,
-			ParametroConsultaEstadistica parametroConsultaEstadistica) {
-		List<Bson> filtros = new ArrayList<Bson>();
-		filtros.add(Filters.eq("idIndividuo", individuo.getId()));
-		filtros.add(Filters.and(Filters.exists("fechaCierre", true),
-				Filters.lt("fechaCierre", parametroConsultaEstadistica.getFecha())));
-		if (parametroConsultaEstadistica.getDuracion() == null) {
-			filtros.add(Filters.gte("duracionMinutos", 0L));
-		} else {
-			filtros.add(Filters.gte("duracionMinutos", parametroConsultaEstadistica.getDuracion()));
-		}
-		return filtros;
 	}
 
 	private double getModa(List<Bson> filtros, String fieldName) throws GeneticDAOException {
@@ -226,14 +133,38 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		return avgDuracionMinutos;
 	}
 
-	@Override
-	public void insert(Individuo individuo, List<MongoOrder> operaciones) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
+	private void setCollectionInternByPips(MongoOrder obj) {
+		if (obj.getPips() > 0) {
+			setCollection("operacionesPositivas", false);
+		} else {
+			setCollection("operacionesNegativas", false);
+		}
+	}
+
+	public void insertIfNoExists(MongoOrder obj) {
+		setCollection("operacion", false);
+		super.insertIfNoExists(obj);
+		setCollectionInternByPips(obj);
+		super.insertIfNoExists(obj);
+		setCollection("operacion", false);
 	}
 
 	@Override
-	public void update(Individuo individuo, MongoOrder operacion, Date fechaApertura) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
+	public void insert(MongoOrder obj) {
+		setCollection("operacion", false);
+		super.insert(obj);
+		setCollectionInternByPips(obj);
+		super.insert(obj);
+		setCollection("operacion", false);
+	}
+
+	@Override
+	public void update(MongoOrder obj) {
+		setCollection("operacion", false);
+		super.update(obj);
+		setCollectionInternByPips(obj);
+		super.update(obj);
+		setCollection("operacion", false);
 	}
 
 	@Override
@@ -262,14 +193,15 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	}
 
 	@Override
-	public List<MongoOrder> consultarOperacionesActivas(Date fechaBase, Date fechaFin, int filas)
+	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, Date fechaFin, int filas)
 			throws GeneticDAOException {
-		Bson filtros = Filters.and(Filters.lt("fechaApertura", fechaBase),
-				Filters.gt("fechaApertura", DateUtil.adicionarDias(fechaBase, -30)),
-				Filters.or(Filters.exists("fechaCierre", false), Filters.gt("fechaCierre", fechaBase)));
-		Bson sorts = Sorts.orderBy(Sorts.ascending("fechaApertura"));
-		MongoCursor<Document> cursor = this.collection.find(filtros).sort(sorts).limit(filas).iterator();
-		return getMapper().helpList(cursor);
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public Individuo consultarIndividuoOperacionActiva(String idIndividuo, Date fechaBase, int filas)
+			throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
@@ -278,7 +210,18 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	}
 
 	@Override
-	public void updateMaximosRetrocesoOperacion(Individuo individuo, MongoOrder operacion) throws GeneticDAOException {
+	public void update(Individuo individuo, MongoOrder operacion, Date fechaApertura) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public void updateMaximosRetrocesoOperacion(Individuo individuo, MongoOrder currentOrder)
+			throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public void insert(Individuo individuo, List<MongoOrder> operaciones) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
@@ -309,14 +252,8 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, Date fechaFin, int filas)
+	public List<MongoOrder> consultarOperacionesActivas(Date fechaBase, Date fechaFin, int filas)
 			throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
-
-	@Override
-	public Individuo consultarIndividuoOperacionActiva(String idIndividuo, Date fechaBase, int filas) {
-		throw new UnsupportedOperationException("UnsupportedOperationException");
-	}
-
 }

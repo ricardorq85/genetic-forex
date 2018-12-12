@@ -78,21 +78,21 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 	}
 
 	@Override
-	public void close() throws GeneticDAOException {
+	public void close() {
 	}
 
 	@Override
-	public void commit() throws GeneticDAOException {
+	public void commit() {
 	}
 
-	public void insertIfNoExists(E obj) throws GeneticDAOException {
+	public void insertIfNoExists(E obj) {
 		if (!exists(obj)) {
 			insert(obj);
 		}
 	}
 
 	@Override
-	public boolean exists(E obj) throws GeneticDAOException {
+	public boolean exists(E obj) {
 		Document filterPk = new Document(getMapper().toPrimaryKeyMap(obj));
 		return (this.collection.countDocuments(filterPk) > 0);
 	}
@@ -104,23 +104,23 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 	}
 
 	@Override
-	public void update(E obj) throws GeneticDAOException {
+	public void update(E obj) {
 		Document filterPk = new Document(getMapper().toPrimaryKeyMap(obj));
 		Document doc = new Document("$set", getMapper().toMap(obj));
 		this.collection.updateOne(filterPk, doc);
 	}
 
 	@Override
-	public boolean isClosed() throws GeneticDAOException {
+	public boolean isClosed() {
 		return false;
 	}
 
 	@Override
-	public void restoreConnection() throws GeneticDAOException {
+	public void restoreConnection() {
 	}
 
 	@Override
-	public void rollback() throws GeneticDAOException {
+	public void rollback() {
 	}
 
 	public MongoMapper<E> getMapper() {

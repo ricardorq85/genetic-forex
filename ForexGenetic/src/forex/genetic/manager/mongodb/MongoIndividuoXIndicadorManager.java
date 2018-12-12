@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.manager;
+package forex.genetic.manager.mongodb;
 
 import static forex.genetic.util.LogUtil.logTime;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,59 +29,31 @@ import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.ControllerFactory;
+import forex.genetic.manager.CrossoverIndividuoManager;
+import forex.genetic.manager.IndividuoXIndicadorManager;
+import forex.genetic.manager.MutationIndividuoManager;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.RandomUtil;
+import forex.genetic.util.jdbc.DataClient;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *
  * @author ricardorq85
  */
-public abstract class IndividuoXIndicadorManager {
+public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager {
 
-	private Connection conn = null;
-	private final OracleIndividuoDAO individuoDAO;
-	private final OracleDatoHistoricoDAO dhDAO;
-	private final IndicatorDAO indicadorDAO;
-	private final OracleOperacionesDAO operacionesDAO;
-	private OracleParametroDAO parametroDAO;
-	protected Date fechaMinima, fechaMaxima;
-	protected int parametroMeses, parametroRetroceso, parametroPips, parametroCantidadMutar, parametroCantidadCruzar;
-	protected int maximoMeses;
+	private DataClient dataClient;
 
-	protected final IndicadorController indicadorController = ControllerFactory
-			.createIndicadorController(ControllerFactory.ControllerType.Individuo);
-	protected boolean primeraVez = true;
-
-	public IndividuoXIndicadorManager() throws ClassNotFoundException, SQLException, GeneticDAOException {
+	public MongoIndividuoXIndicadorManager() {
 		this(null, null, 12);
 	}
 
-	public IndividuoXIndicadorManager(Date fechaMinima, Date fechaMaxima, int maximoMeses)
-			throws ClassNotFoundException, SQLException, GeneticDAOException {
-		conn = JDBCUtil.getConnection();
-		individuoDAO = new OracleIndividuoDAO(conn);
-		dhDAO = new OracleDatoHistoricoDAO(conn);
-		indicadorDAO = new IndicatorDAO(conn);
-		parametroDAO = new OracleParametroDAO(conn);
-		operacionesDAO = new OracleOperacionesDAO(conn);
-		this.fechaMinima = fechaMinima;
-		this.fechaMaxima = fechaMaxima;
-		if (fechaMinima == null) {
-			this.fechaMinima = parametroDAO.getDateValorParametro("FECHA_MINIMA_CREAR_INDIVIDUO");
-		}
-		if (fechaMaxima == null) {
-			this.fechaMaxima = parametroDAO.getDateValorParametro("FECHA_MAXIMA_CREAR_INDIVIDUO");
-		}
-		this.maximoMeses = maximoMeses;
-		parametroMeses = parametroDAO.getIntValorParametro("MESES_RANGOOPERACIONINDICADOR");
-		parametroRetroceso = parametroDAO.getIntValorParametro("RETROCESO_RANGOOPERACIONINDICADOR");
-		parametroPips = parametroDAO.getIntValorParametro("PIPS_RANGOOPERACIONINDICADOR");
-		parametroCantidadMutar = parametroDAO.getIntValorParametro("CANTIDAD_MUTAR");
-		parametroCantidadCruzar = parametroDAO.getIntValorParametro("CANTIDAD_CRUZAR");
+	public MongoIndividuoXIndicadorManager(Date fechaMinima, Date fechaMaxima, int maximoMeses) {
+		super(fechaMinima, fechaMaxima, maximoMeses);
 	}
 
 	public void crearIndividuos() throws SQLException, ClassNotFoundException, GeneticDAOException {

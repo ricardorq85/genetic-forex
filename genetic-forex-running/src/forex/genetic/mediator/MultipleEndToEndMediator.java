@@ -20,6 +20,7 @@ import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.factory.ProcesarTendenciasFactory;
 import forex.genetic.manager.IGeneticManager;
 import forex.genetic.manager.IndividuoManager;
+import forex.genetic.manager.oracle.OracleIndividuoXIndicadorManager;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
 import forex.genetic.tendencia.manager.TendenciaProcesoManager;
 import forex.genetic.util.DateUtil;
@@ -147,7 +148,7 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 //		manager.crearIndividuos();
 //		LogUtil.logTime("End Crear individuos x indicador", 1);
 //	}
-//
+
 //	class ExportThread extends Thread {
 //		Path path;
 //		ProcesarTendenciasBuySellManager manager;

@@ -19,7 +19,7 @@ import java.nio.charset.Charset;
 import java.sql.SQLException;
 
 import forex.genetic.exception.GeneticDAOException;
-import forex.genetic.manager.IndividuoXIndicadorManager;
+import forex.genetic.manager.oracle.OracleIndividuoXIndicadorManager;
 import forex.genetic.proxy.ProcesosAlternosProxy;
 
 /**
@@ -46,7 +46,7 @@ public class ForexCrearIndividuosXIndicador {
 		setErr(out);
 		logTime("Inicio: " + id, 1);
 		setId(Long.toString(id));
-		IndividuoXIndicadorManager manager = new IndividuoXIndicadorManager();
+		OracleIndividuoXIndicadorManager manager = new OracleIndividuoXIndicadorManager();
 		manager.crearIndividuos();
 		logTime("Fin: " + id, 1);
 		logTime("Lanzando Procesos alternos...", 1);
