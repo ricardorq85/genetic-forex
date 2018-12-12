@@ -24,7 +24,7 @@ public class MultipleDatoHistoricoFacadeImpl extends DatoHistoricoFacade {
 	 * @throws GeneticDAOException
 	 */
 	public void cargarDatoHistorico(List<Point> points) throws GeneticDAOException {
-		List<DataClient> dataClients = DriverDBFactory.createDataClient();
+		List<DataClient> dataClients = DriverDBFactory.createDataClients();
 		int countError = 0;
 		for (int k = 1; k < dataClients.size(); k++) {
 			LogUtil.logTime(new StringBuilder("DAO:").append(dataClients.get(k).getDaoDatoHistorico().getClass()).toString(), 1);

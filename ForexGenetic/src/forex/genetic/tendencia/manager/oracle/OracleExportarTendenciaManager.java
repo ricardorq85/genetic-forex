@@ -12,29 +12,25 @@ import forex.genetic.entities.Regresion;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.tendencia.manager.ExportarTendenciaManager;
-import forex.genetic.util.jdbc.JDBCUtil;
+import forex.genetic.util.jdbc.DataClient;
 
 public class OracleExportarTendenciaManager extends ExportarTendenciaManager {
 
-	private Connection conn = null;
 	protected OracleTendenciaProcesoBuySellDAO tendenciaProcesoDAO;
-
-	public OracleExportarTendenciaManager() throws GeneticBusinessException {
-		this(null);
-	}
 
 	public OracleExportarTendenciaManager(Connection c) throws GeneticBusinessException {
 		super();
-		if (c != null) {
-			this.conn = c;
-		} else {
-			try {
-				this.conn = JDBCUtil.getConnection();
-			} catch (ClassNotFoundException | SQLException e) {
-				throw new GeneticBusinessException(null, e);
-			}
+		try {
+			this.dataClient = DriverDBFactory.createOracleDataClient(c);
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		}
+	}
+
+	public OracleExportarTendenciaManager(DataClient dc) throws GeneticBusinessException {
+		super(dc);
 	}
 
 	protected List<TendenciaParaOperar> consultarTendencias() throws GeneticBusinessException {
@@ -51,7 +47,7 @@ public class OracleExportarTendenciaManager extends ExportarTendenciaManager {
 			throws GeneticBusinessException {
 		try {
 			TendenciaParaOperar op = tendencias.get(0);
-			OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
+			OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO((Connection) dataClient.getClient());
 			Date fechaConsultaHistorico;
 			fechaConsultaHistorico = datoHistoricoDAO.getFechaHistoricaMaxima(procesoTendencia.getFechaBase());
 			List<Point> historico = datoHistoricoDAO.consultarHistorico(fechaConsultaHistorico, fechaConsultaHistorico);

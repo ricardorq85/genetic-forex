@@ -5,11 +5,8 @@
 package forex.genetic.tendencia.manager;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -20,8 +17,8 @@ import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
-import forex.genetic.exception.GeneticException;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 
@@ -29,7 +26,7 @@ import forex.genetic.util.LogUtil;
  *
  * @author ricardorq85
  */
-public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellManager {
+public abstract class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellManager {
 
 	private List<TendenciaParaOperarMaxMin> tendenciasResultado;
 
@@ -38,8 +35,7 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 		tendenciasResultado = new ArrayList<>();
 	}
 
-	public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, GeneticException,
-			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+	public void procesarTendencias() throws GeneticBusinessException {
 		try {
 			LogUtil.logTime("Step exportacion=" + (parametroStep), 1);
 			LogUtil.logTime("Periodo exportacion=" + DateUtil.getDateString(parametroFechaInicio) + " - "
@@ -101,14 +97,19 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 					fechaProceso = parametroFechaFin;
 				}
 			}
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		} finally {
-			dataClient.close();
+			try {
+				dataClient.close();
+			} catch (GeneticDAOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	protected ProcesoTendenciaFiltradaBuySell procesarExporter(float tiempoTendencia, Date fechaBase)
-			throws ClassNotFoundException, SQLException, NoSuchMethodException, InstantiationException,
-			IllegalAccessException, InvocationTargetException, GeneticDAOException {
+			throws GeneticBusinessException {
 		String periodo = tiempoTendencia + "D";
 		double tiempoTendenciaMinutos = (tiempoTendencia) * 24 * 60;
 		ProcesoTendenciaFiltradaBuySell procesoTendencia = new ProcesoTendenciaFiltradaBuySell(periodo,
@@ -122,11 +123,6 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 	private boolean validarCantidadMinima(ProcesoTendenciaFiltradaBuySell procesoIndex) {
 		boolean valida = procesoIndex.isCantidadMinimaValida();
 		return valida;
-	}
-
-	@Override
-	protected ExportarTendenciaManager getExporter(Date fechaBase) {
-		return new ExportarTendenciaGrupalManager(dataClient, fechaBase);
 	}
 
 	@Override
@@ -152,11 +148,11 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 		Files.write(path, sb.toString().getBytes());
 	}
 
-	public List<TendenciaParaOperarMaxMin> getTendenciasResultado() {
+	public List<? extends TendenciaParaOperar> getTendenciasResultado() {
 		return tendenciasResultado;
 	}
 
-	public void setTendenciasResultado(List<? extends TendenciaParaOperar> tendenciasResultado) {
+	public void setTendenciasResultado(List<TendenciaParaOperarMaxMin> tendenciasResultado) {
 		this.tendenciasResultado = tendenciasResultado;
 	}
 

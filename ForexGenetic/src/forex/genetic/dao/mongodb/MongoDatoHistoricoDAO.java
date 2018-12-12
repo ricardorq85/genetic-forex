@@ -9,7 +9,6 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
@@ -113,7 +112,7 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	}
 
 	@Override
-	public Point consultarDatoHistorico(Date fecha) throws GeneticDAOException {
+	public Point consultarXFecha(Date fecha) throws GeneticDAOException {
 		int year = DateUtil.obtenerAnyo(fecha);
 		setCollection(year);
 		Point p = consultarHistoricoIntern(fecha);
@@ -490,4 +489,5 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	public List<? extends Point> consultarHistorico(Date fechaBase) throws GeneticDAOException {
 		throw new UnsupportedOperationException("UnsupportedOperationException");
 	}
+
 }

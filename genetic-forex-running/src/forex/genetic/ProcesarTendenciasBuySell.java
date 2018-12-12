@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
 import java.text.ParseException;
 
 import forex.genetic.exception.GeneticException;
@@ -51,7 +50,7 @@ public class ProcesarTendenciasBuySell {
             		//new ProcesarTendenciasIndividualManager(); 
             		//new ProcesarTendenciasBuySellManager();
             manager.procesarTendencias();
-        } catch (SQLException | GeneticException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+        } catch (GeneticException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
             ex.printStackTrace();
         }
         logTime("Fin: " + id, 1);

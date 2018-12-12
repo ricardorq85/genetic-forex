@@ -39,8 +39,7 @@ public class OperacionesTendenciaDAO extends OracleOperacionesDAO {
 		return sql;
 	}
 
-	public Individuo consultarIndividuoOperacionActiva(String idIndividuo, Date fechaBase, int filas)
-			throws SQLException {
+	public Individuo consultarIndividuoOperacionActiva(String idIndividuo, Date fechaBase, int filas) throws GeneticDAOException {
 		Individuo individuo = null;
 		String sql = this.getQuery() + " AND ID_INDIVIDUO=?";
 		PreparedStatement stmtConsulta = null;
@@ -58,6 +57,8 @@ public class OperacionesTendenciaDAO extends OracleOperacionesDAO {
 			resultado = stmtConsulta.executeQuery();
 
 			individuo = OperacionHelper.individuoOperacionActiva(resultado);
+		} catch (SQLException e) {
+			throw new GeneticDAOException(e);
 		} finally {
 			JDBCUtil.close(resultado);
 			JDBCUtil.close(stmtConsulta);

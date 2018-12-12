@@ -5,15 +5,12 @@
 package forex.genetic.tendencia.manager;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.Date;
 
 import forex.genetic.entities.ProcesoTendenciaBuySell;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
-import forex.genetic.exception.GeneticException;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
@@ -55,8 +52,7 @@ public abstract class ProcesarTendenciasBuySellManager {
 		return floatArray;
 	}
 
-	public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, GeneticException,
-			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+	public void procesarTendencias() throws GeneticBusinessException {
 		try {
 			LogUtil.logTime("Step=" + (parametroStep), 1);
 			LogUtil.logTime(
@@ -74,13 +70,15 @@ public abstract class ProcesarTendenciasBuySellManager {
 				fechaProceso = DateUtil.calcularFechaXDuracion(parametroStep, fechaProceso);
 			}
 		} finally {
-			dataClient.close();
+			try {
+				dataClient.close();
+			} catch (GeneticDAOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
-	protected ExportarTendenciaManager procesarExporter(ProcesoTendenciaBuySell paraProcesar)
-			throws ClassNotFoundException, SQLException, NoSuchMethodException, InstantiationException,
-			IllegalAccessException, InvocationTargetException, GeneticDAOException {
+	protected ExportarTendenciaManager procesarExporter(ProcesoTendenciaBuySell paraProcesar) throws GeneticBusinessException {
 		ExportarTendenciaManager exporter = getExporter(paraProcesar.getFechaBase());
 		exporter.setProcesoTendencia(paraProcesar);
 		exporter.procesar();
@@ -88,7 +86,7 @@ public abstract class ProcesarTendenciasBuySellManager {
 		return exporter;
 	}
 
-	protected abstract ExportarTendenciaManager getExporter(Date fechaBase);
+	protected abstract ExportarTendenciaManager getExporter(Date fechaBase) throws GeneticBusinessException;
 
 	public void export(Path path) throws IOException {
 

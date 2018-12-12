@@ -22,9 +22,9 @@ import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
 
-public class MongoTendenciaManager extends TendenciaProcesoManager {
+public class MongoTendenciaProcesoManager extends TendenciaProcesoManager {
 
-	public MongoTendenciaManager(DataClient dc) throws GeneticBusinessException {
+	public MongoTendenciaProcesoManager(DataClient dc) throws GeneticBusinessException {
 		super(dc);
 		operacionManager = new MongoOperacionesManager(dataClient);
 	}
@@ -38,20 +38,6 @@ public class MongoTendenciaManager extends TendenciaProcesoManager {
 					fechaBaseFinal);
 			for (Point point : pointsFechaTendencia) {
 				listaTendencias.addAll(this.calcularTendencias(point, filas));
-			}
-		} catch (GeneticDAOException e) {
-			throw new GeneticBusinessException(null, e);
-		}
-		return listaTendencias;
-	}
-
-	public List<TendenciaEstadistica> calcularTendencias(Date fechaBase, int filas) throws GeneticBusinessException {
-		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
-		try {
-			Point p;
-			p = dataClient.getDaoDatoHistorico().consultarDatoHistorico(fechaBase);
-			if (p != null) {
-				listaTendencias.addAll(this.calcularTendencias(p, filas));
 			}
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(null, e);
@@ -115,7 +101,8 @@ public class MongoTendenciaManager extends TendenciaProcesoManager {
 	}
 
 	@Override
-	protected Estadistica consultarEstadisticaHistorica(Date fechaBase, Individuo individuo) throws GeneticBusinessException {
+	protected Estadistica consultarEstadisticaHistorica(Date fechaBase, Individuo individuo)
+			throws GeneticBusinessException {
 		try {
 			LogUtil.logTime("Consultando estadística...", 3);
 			MongoEstadistica estadisticaHistorica = (MongoEstadistica) dataClient.getDaoEstadistica().getLast(individuo,

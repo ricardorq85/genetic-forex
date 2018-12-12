@@ -617,7 +617,7 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 	}
 
 	@Override
-	public Individuo consultarIndividuoOperacionActiva(String idIndividuo, Date fechaBase, int filas) {
+	public Individuo consultarIndividuoOperacionActiva(String idIndividuo, Date fechaBase, int filas) throws GeneticDAOException {
 		throw new UnsupportedOperationException("UnsupportedOperationException");
 	}
 }

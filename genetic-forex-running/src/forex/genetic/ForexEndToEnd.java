@@ -20,6 +20,7 @@ import java.text.ParseException;
 
 import forex.genetic.exception.GeneticException;
 import forex.genetic.mediator.EndToEndMediator;
+import forex.genetic.mediator.OracleEndToEndMediator;
 
 /**
  *
@@ -45,7 +46,7 @@ public class ForexEndToEnd {
 		logTime("Inicio: " + id, 1);
 		setId(Long.toString(id));
 		try {
-			EndToEndMediator mediator = new EndToEndMediator();
+			EndToEndMediator mediator = new OracleEndToEndMediator();
 			mediator.init();
 			mediator.start();
 		} catch (GeneticException ex) {

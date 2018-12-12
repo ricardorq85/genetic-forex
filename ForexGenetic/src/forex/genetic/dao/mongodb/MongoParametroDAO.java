@@ -37,7 +37,7 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 				"c:\\Users\\Angela\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\processed", 
 				"c:\\Users\\Angela\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\Export.properties", 
 				"c:\\Users\\Angela\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\estrategias\\live", new Integer(150), new Integer(200), 
-				"forex.genetic.tendencia.manager.ProcesarTendenciasGrupalManager"};
+				"forex.genetic.tendencia.manager.mongo.MongoProcesarTendenciasGrupalManager"};
 
 		for (int i = 0; i < paramNames.length; i++) {
 			ParametroDTO p = new ParametroDTO();

@@ -9,7 +9,7 @@ import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.DriverDBFactory;
-import forex.genetic.tendencia.manager.oracle.OracleTendenciaBuySellManager;
+import forex.genetic.tendencia.manager.oracle.OracleTendenciaProcesoManager;
 import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
@@ -17,7 +17,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
 
 public class TendenciaFacade implements IGeneticFacade {
 
-	private OracleTendenciaBuySellManager tendenciaManager;
+	private OracleTendenciaProcesoManager tendenciaManager;
 	private OracleParametroDAO parametroDAO;
 	private OracleTendenciaDAO tendenciaDAO;
 	protected Connection conn = null;
@@ -28,7 +28,7 @@ public class TendenciaFacade implements IGeneticFacade {
 	public TendenciaFacade() throws GeneticBusinessException {
 		try {
 			conn = JDBCUtil.getConnection();
-			tendenciaManager = new OracleTendenciaBuySellManager(DriverDBFactory.createOracleDataClient(conn));
+			tendenciaManager = new OracleTendenciaProcesoManager(DriverDBFactory.createOracleDataClient(conn));
 			parametroDAO = new OracleParametroDAO(conn);
 			tendenciaDAO = new OracleTendenciaDAO(conn);
 			parametroFechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_TENDENCIA");

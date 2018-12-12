@@ -1,26 +1,54 @@
 package forex.genetic.tendencia.manager;
 
+import java.util.Date;
 import java.util.List;
 
+import forex.genetic.dao.IDatoHistoricoDAO;
+import forex.genetic.entities.Point;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.Regresion;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.exception.GeneticBusinessException;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.Constants.OperationType;
 import forex.genetic.util.DateUtil;
+import forex.genetic.util.jdbc.DataClient;
 
 public abstract class ExportarTendenciaManager {
 
+	@SuppressWarnings("rawtypes")
+	protected DataClient dataClient;
 	protected ProcesoTendenciaBuySell procesoTendencia;
 	private static int index = 0;
+
+	public ExportarTendenciaManager(DataClient dc) {
+		this.dataClient = dc;
+	}
 
 	public ExportarTendenciaManager() {
 	}
 
 	protected abstract List<TendenciaParaOperar> consultarTendencias() throws GeneticBusinessException;
 
-	protected abstract void calcularPuntosDiferenciaInicial(List<TendenciaParaOperar> tendencias) throws GeneticBusinessException;
-
+	protected void calcularPuntosDiferenciaInicial(List<TendenciaParaOperar> tendencias) throws GeneticBusinessException {
+		try {
+			TendenciaParaOperar op = tendencias.get(0);
+			IDatoHistoricoDAO datoHistoricoDAO = dataClient.getDaoDatoHistorico();
+			Date fechaConsultaHistorico = datoHistoricoDAO.getFechaHistoricaMaxima(procesoTendencia.getFechaBase());
+			List<? extends Point> historico = datoHistoricoDAO.consultarHistorico(fechaConsultaHistorico, fechaConsultaHistorico);
+			Point point = null;
+			if ((historico != null) && (!historico.isEmpty())) {
+				point = historico.get(0);
+			}
+			double precioHistorico = (point.getClose() + point.getHigh() + point.getLow() + point.getOpen()) / 4;
+			double precioCalculado = op.getPrecioCalculado();
+			double diff = precioHistorico - precioCalculado;
+			procesoTendencia.setPuntosDiferenciaInicial(diff);
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
+		}
+	}
+	
 	protected abstract void procesarRegresion() throws GeneticBusinessException;
 
 	public void export() {

@@ -18,6 +18,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.mediator.MultipleEndToEndMediator;
 
@@ -49,7 +50,7 @@ public class MultipleEndToEnd {
 			MultipleEndToEndMediator mediator = new MultipleEndToEndMediator();
 			mediator.init();
 			mediator.start();
-		} catch (GeneticDAOException | InstantiationException ex) {
+		} catch (GeneticDAOException | GeneticBusinessException ex) {
 			ex.printStackTrace();
 		}
 		logTime("Fin: " + id, 1);

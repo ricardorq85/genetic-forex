@@ -9,7 +9,7 @@ import forex.genetic.tendencia.manager.oracle.OracleExportarTendenciaManager;
 public class ExportarTendenciaFiltroFechaTendenciaFechaBaseManager extends OracleExportarTendenciaManager {
 
 	public ExportarTendenciaFiltroFechaTendenciaFechaBaseManager() throws GeneticBusinessException {
-		super(null);
+		this(null);
 	}
 
 	public ExportarTendenciaFiltroFechaTendenciaFechaBaseManager(Connection c) throws GeneticBusinessException {

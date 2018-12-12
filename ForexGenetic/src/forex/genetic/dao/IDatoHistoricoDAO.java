@@ -20,6 +20,8 @@ import forex.genetic.exception.GeneticDAOException;
  */
 public interface IDatoHistoricoDAO extends IGeneticDAO<Point> {
 
+	public Point consultarXFecha(Date fechaBase) throws GeneticDAOException;
+
 	public int consultarCantidadPuntos() throws GeneticDAOException;
 
 	public int consultarCantidadPuntos(DateInterval interval) throws GeneticDAOException;
@@ -34,15 +36,16 @@ public interface IDatoHistoricoDAO extends IGeneticDAO<Point> {
 
 	public List<? extends Point> consultarHistorico(Date fechaBase1, Date fechaBase2) throws GeneticDAOException;
 
-	public List<? extends Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2) throws GeneticDAOException;
+	public List<? extends Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2)
+			throws GeneticDAOException;
 
 	public List<? extends Point> consultarHistorico(Date fechaBase) throws GeneticDAOException;
-	
-	public Point consultarDatoHistorico(Date fechaBase) throws GeneticDAOException;
 
-	public List<? extends Point> consultarPuntoByLow(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException;
+	public List<? extends Point> consultarPuntoByLow(Date fechaBase1, Date fechaBase2, double base)
+			throws GeneticDAOException;
 
-	public List<? extends Point> consultarPuntoByHigh(Date fechaBase1, Date fechaBase2, double base) throws GeneticDAOException;
+	public List<? extends Point> consultarPuntoByHigh(Date fechaBase1, Date fechaBase2, double base)
+			throws GeneticDAOException;
 
 	public DoubleInterval consultarMaximoMinimo(Date fecha1, Date fecha2) throws GeneticDAOException;
 
@@ -52,7 +55,8 @@ public interface IDatoHistoricoDAO extends IGeneticDAO<Point> {
 
 	public double consultarPrecioPonderado(Date fecha) throws GeneticDAOException;
 
-	public <H extends Order> Point consultarPuntoCierreByTakeOrStop(H order, DateInterval rango) throws GeneticDAOException;
+	public <H extends Order> Point consultarPuntoCierreByTakeOrStop(H order, DateInterval rango)
+			throws GeneticDAOException;
 
 	public Point consultarPuntoAnterior(Date fecha) throws GeneticDAOException;
 

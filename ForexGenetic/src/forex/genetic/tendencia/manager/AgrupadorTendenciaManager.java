@@ -92,7 +92,7 @@ public class AgrupadorTendenciaManager {
 	}
 
 	private void inactivarInvalidas() {
-		List<TendenciaParaOperarMaxMin> tendencias = this.tendenciasResultado;
+		List<? extends TendenciaParaOperar> tendencias = this.tendenciasResultado;
 		if (tendencias != null) {
 			tendencias.stream().forEach((tpo) -> {
 				try {

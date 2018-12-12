@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.tendencia.manager.ExportarTendenciaParaOperarManager;
 
 /**
@@ -46,7 +47,7 @@ public class ExportarTendenciaParaOperar {
 		setErr(out);
 		logTime("Inicio: " + id, 1);
 		setId(Long.toString(id));
-		ExportarTendenciaParaOperarManager manager = new ExportarTendenciaParaOperarManager();
+		ExportarTendenciaParaOperarManager manager = new ExportarTendenciaParaOperarManager(DriverDBFactory.createDataClient("oracle"));
 		manager.exportar();
 		logTime("Fin: " + id, 1);
 	}

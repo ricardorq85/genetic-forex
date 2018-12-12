@@ -9,8 +9,8 @@ import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.IGeneticManager;
 import forex.genetic.manager.mongodb.MongoProcesoIndividuoManager;
 import forex.genetic.manager.oracle.OracleProcesoIndividuoManager;
-import forex.genetic.tendencia.manager.mongo.MongoTendenciaManager;
-import forex.genetic.tendencia.manager.oracle.OracleTendenciaBuySellManager;
+import forex.genetic.tendencia.manager.mongo.MongoTendenciaProcesoManager;
+import forex.genetic.tendencia.manager.oracle.OracleTendenciaProcesoManager;
 import forex.genetic.util.jdbc.DataClient;
 import forex.genetic.util.jdbc.JDBCUtil;
 import forex.genetic.util.jdbc.OracleDataClient;
@@ -19,7 +19,7 @@ import forex.genetic.util.jdbc.mongodb.ConnectionMongoDB;
 public class DriverDBFactory extends GeneticFactory {
 
 	@SuppressWarnings("rawtypes")
-	public static List<DataClient> createDataClient() throws GeneticDAOException {
+	public static List<DataClient> createDataClients() throws GeneticDAOException {
 		List<DataClient> dc = new ArrayList<DataClient>(drivers.length);
 		for (int i = 0; i < drivers.length; i++) {
 			dc.add(createDataClient(drivers[i]));
@@ -44,7 +44,7 @@ public class DriverDBFactory extends GeneticFactory {
 		return dc;
 	}
 
-	public static IGeneticManager[] createManager(String entidad) throws GeneticBusinessException, GeneticDAOException {
+	public static IGeneticManager[] createManagers(String entidad) throws GeneticBusinessException, GeneticDAOException {
 		IGeneticManager[] instances = new IGeneticManager[drivers.length];
 		for (int i = 0; i < drivers.length; i++) {
 			if ("oracle".equals(drivers[i])) {
@@ -56,13 +56,13 @@ public class DriverDBFactory extends GeneticFactory {
 		return instances;
 	}
 
-	private static IGeneticManager createOracleManager(String entidad) throws GeneticBusinessException {
+	public static IGeneticManager createOracleManager(String entidad) throws GeneticBusinessException {
 		IGeneticManager instance = null;
 		try {
 			if ("procesoIndividuo".equals(entidad)) {
 				instance = new OracleProcesoIndividuoManager(createDataClient("oracle"));
 			} else if ("tendencia".equals(entidad)) {
-				instance = new OracleTendenciaBuySellManager(createDataClient("oracle"));
+				instance = new OracleTendenciaProcesoManager(createDataClient("oracle"));
 			} else {
 				throw new IllegalArgumentException(
 						new StringBuilder("Entidad no soportada para crear MANAGER: ").append(entidad).toString());
@@ -79,7 +79,7 @@ public class DriverDBFactory extends GeneticFactory {
 		if ("procesoIndividuo".equals(entidad)) {
 			instance = new MongoProcesoIndividuoManager(createDataClient("mongodb"));
 		} else if ("tendencia".equals(entidad)) {
-			instance = new MongoTendenciaManager(createDataClient("mongodb"));
+			instance = new MongoTendenciaProcesoManager(createDataClient("mongodb"));
 		} else {
 			throw new IllegalArgumentException(
 					new StringBuilder("Entidad no soportada para crear MANAGER: ").append(entidad).toString());

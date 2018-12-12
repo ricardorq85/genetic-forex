@@ -13,9 +13,9 @@ import forex.genetic.tendencia.manager.TendenciaProcesoManager;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
 
-public class OracleTendenciaBuySellManager extends TendenciaProcesoManager {
+public class OracleTendenciaProcesoManager extends TendenciaProcesoManager {
 
-	public OracleTendenciaBuySellManager(DataClient dc) throws GeneticBusinessException {
+	public OracleTendenciaProcesoManager(DataClient dc) throws GeneticBusinessException {
 		super(dc);
 		operacionManager = new OracleOperacionesManager(dataClient);
 	}

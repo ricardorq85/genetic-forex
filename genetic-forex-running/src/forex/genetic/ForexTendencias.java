@@ -13,12 +13,12 @@ import static java.lang.System.currentTimeMillis;
 import static java.lang.System.setErr;
 import static java.lang.System.setOut;
 
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
 
-import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.facade.TendenciaFacade;
 
 /**
@@ -31,8 +31,11 @@ public class ForexTendencias {
 	 * @param args
 	 *            the command line arguments
 	 * @throws java.lang.InterruptedException
+	 * @throws GeneticBusinessException 
+	 * @throws UnsupportedEncodingException 
+	 * @throws FileNotFoundException 
 	 */
-	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+	public static void main(String[] args) throws GeneticBusinessException, InterruptedException, FileNotFoundException, UnsupportedEncodingException {
 		long id = currentTimeMillis();
 		load().join();
 		logTime("Tendencias: " + id, 1);
@@ -42,12 +45,8 @@ public class ForexTendencias {
 		setErr(out);
 		logTime("Inicio: " + id, 1);
 		setId(Long.toString(id));
-		try {
-			TendenciaFacade facade = new TendenciaFacade();
-			facade.procesarTendencias();
-		} catch (SQLException | GeneticDAOException ex) {
-			ex.printStackTrace();
-		}
+		TendenciaFacade facade = new TendenciaFacade();
+		facade.procesarTendencias();
 		logTime("Fin: " + id, 1);
 	}
 

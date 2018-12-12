@@ -31,7 +31,7 @@ public class MultiplePoblacionFacade extends PoblacionFacade {
 	public void process(boolean onlyOne) throws GeneticBusinessException {
 		IGeneticManager[] managers;
 		try {
-			managers = DriverDBFactory.createManager("procesoIndividuo");
+			managers = DriverDBFactory.createManagers("procesoIndividuo");
 			Thread[] threads = new Thread[managers.length];
 			for (int i = 0; i < managers.length; i++) {
 				ProcesoIndividuoManager manager = (ProcesoIndividuoManager) managers[i];

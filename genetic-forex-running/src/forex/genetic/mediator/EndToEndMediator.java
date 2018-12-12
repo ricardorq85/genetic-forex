@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 
+import forex.genetic.dao.IParametroDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
@@ -24,20 +25,22 @@ import forex.genetic.delegate.PoblacionDelegate;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
+import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.factory.ProcesarTendenciasFactory;
 import forex.genetic.manager.IndividuoManager;
 import forex.genetic.manager.IndividuoXIndicadorManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.io.CopyFileVisitor;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
-import forex.genetic.tendencia.manager.oracle.OracleTendenciaBuySellManager;
+import forex.genetic.tendencia.manager.TendenciaProcesoManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.FileUtil;
 import forex.genetic.util.LogUtil;
+import forex.genetic.util.jdbc.DataClient;
 import forex.genetic.util.jdbc.JDBCUtil;
 
-public class EndToEndMediator extends GeneticMediator {
+public abstract class EndToEndMediator extends GeneticMediator {
 
 	protected int count = 1;
 	protected Connection connection;
@@ -68,7 +71,7 @@ public class EndToEndMediator extends GeneticMediator {
 	}
 
 	@Override
-	public void start() throws GeneticDAOException {
+	public void start() throws GeneticBusinessException {
 		try {
 			while (true) {
 				this.fechaHistoricaMaximaAnterior = datoHistoricoDAO.getFechaHistoricaMaxima();
@@ -81,7 +84,8 @@ public class EndToEndMediator extends GeneticMediator {
 						+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva)
 						+ ",count=" + count, 1);
 				this.procesarIndividuos();
-				this.procesarTendencias();
+				this.procesarTendencias(DriverDBFactory.createDataClient("oracle"),
+						(TendenciaProcesoManager) DriverDBFactory.createOracleManager("tendencia"));
 				this.exportarIndividuos();
 				this.crearNuevosIndividuos();
 				if (imported == 0) {
@@ -90,9 +94,8 @@ public class EndToEndMediator extends GeneticMediator {
 					count = 1;
 				}
 			}
-		} catch (SQLException | IOException | ClassNotFoundException | NoSuchMethodException | InstantiationException
-				| IllegalAccessException | InvocationTargetException | ParseException | GeneticException e) {
-			throw new GeneticDAOException("Error start", e);
+		} catch (SQLException | IOException | ClassNotFoundException | GeneticDAOException e) {
+			throw new GeneticBusinessException("Error start", e);
 		}
 	}
 
@@ -167,17 +170,23 @@ public class EndToEndMediator extends GeneticMediator {
 		logTime("End Procesar Individuos", 1);
 	}
 
-	protected void procesarTendencias() throws GeneticBusinessException {
+	protected void procesarTendencias(DataClient dataClient, TendenciaProcesoManager tendenciaProcesoManager)
+			throws GeneticBusinessException {
+		IParametroDAO parametroDAO;
 		try {
-			logTime("Init Procesar Tendencias", 1);
-			OracleParametroDAO parametroDAO = new OracleParametroDAO(connection);
-			int parametroStepTendencia;
-			parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
+			parametroDAO = dataClient.getDaoParametro();
+			LogUtil.logTime("Init Procesar Tendencias", 1);
+			int parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
 			int parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
+
 			Date fechaBaseFinal = fechaHistoricaMaximaNueva;
-			OracleTendenciaBuySellManager tendenciaManager = new OracleTendenciaBuySellManager();
+			try {
+				fechaBaseFinal = DateUtil.obtenerFecha("2008/08/12 15:30");
+			} catch (ParseException eDate) {
+				eDate.printStackTrace();
+			}
 			if (count == 1) {
-				tendenciaManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia / 2);
+				tendenciaProcesoManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia / 2);
 			}
 			long durMillis = DateUtil.calcularDuracionMillis(ultimaFechaBaseTendencia, fechaBaseFinal);
 			int diasDiferencia = (int) ((durMillis / (1000 * 60 * 60 * 24)) + 1);
@@ -196,41 +205,43 @@ public class EndToEndMediator extends GeneticMediator {
 				fechaBaseFinal = DateUtil.adicionarMinutos(fechaBaseFinal, -1 * (calcularFactorCount()));
 				int currentStep = -(parametroStepTendencia - count);
 				Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, currentStep);
-				// LogUtil.logEnter(1);
 				LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
 						+ DateUtil.getDateString(fechaBaseFinal), 1);
-				tendenciaManager.calcularTendencias(fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
+				tendenciaProcesoManager.calcularTendencias(fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
 				fechaBaseFinal = fechaBaseInicial;
 			}
-			logTime("End Procesar Tendencias", 1);
-		} catch (GeneticDAOException | SQLException | ClassNotFoundException e) {
-			throw new GeneticBusinessException(null, e);
+			LogUtil.logTime("End Procesar Tendencias", 1);
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		}
 	}
 
-	protected void exportarIndividuos()
-			throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
-			InvocationTargetException, SQLException, ParseException, GeneticException, IOException {
-		// this.refrescarDatosTendencia();
-		logTime("Init Exportar Individuos", 1);
-		boolean existNewData = this.existenNuevosDatosHistoricos();
-		if (existNewData) {
-			String fileName = sourceEstrategiasPath + "\\Tendencia" + IndividuoManager.nextId() + ".csv";
-			Path filePath = FileSystems.getDefault().getPath(fileName);
-			ProcesarTendenciasBuySellManager manager = ProcesarTendenciasFactory.createManager();
-			manager.setParametroFechaInicio(ultimaFechaBaseTendencia);
-			manager.setParametroFechaFin(fechaHistoricaMaximaNueva);
-			ExportThread exportThread = new ExportThread(filePath, manager);
-			logTime("Lanzando exportacion", 1);
-			exportThread.runExport();
-			// logTime("Lanzando hilo para exportacion", 1);
-			// exportThread.start();
-			// manager.procesarTendencias();
-			// manager.export(filePath);
-		} else {
-			logTime("No existen nuevos datos. No se procesara la exportacion", 1);
+	protected void exportarIndividuos() throws GeneticBusinessException {
+		try {
+			// this.refrescarDatosTendencia();
+			logTime("Init Exportar Individuos", 1);
+			boolean existNewData = this.existenNuevosDatosHistoricos();
+			if (existNewData) {
+				String fileName = sourceEstrategiasPath + "\\Tendencia" + IndividuoManager.nextId() + ".csv";
+				Path filePath = FileSystems.getDefault().getPath(fileName);
+				ProcesarTendenciasBuySellManager manager = ProcesarTendenciasFactory.createManager();
+				manager.setParametroFechaInicio(ultimaFechaBaseTendencia);
+				manager.setParametroFechaFin(fechaHistoricaMaximaNueva);
+				ExportThread exportThread = new ExportThread(filePath, manager);
+				logTime("Lanzando exportacion", 1);
+				exportThread.runExport();
+				// logTime("Lanzando hilo para exportacion", 1);
+				// exportThread.start();
+				// manager.procesarTendencias();
+				// manager.export(filePath);
+			} else {
+				logTime("No existen nuevos datos. No se procesara la exportacion", 1);
+			}
+			logTime("End Exportar Individuos", 1);
+		} catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException
+				| InvocationTargetException | GeneticDAOException | SQLException | ParseException | IOException e) {
+			throw new GeneticBusinessException(e);
 		}
-		logTime("End Exportar Individuos", 1);
 	}
 
 	private void refrescarDatosTendencia() throws GeneticDAOException {
@@ -272,9 +283,9 @@ public class EndToEndMediator extends GeneticMediator {
 			}
 		}
 
-		public void runExport()
-				throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
-				InvocationTargetException, SQLException, ParseException, GeneticException, IOException {
+		public void runExport() throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
+				IllegalAccessException, InvocationTargetException, SQLException, ParseException, IOException,
+				GeneticBusinessException, GeneticDAOException {
 			manager.procesarTendencias();
 			manager.export(path);
 		}

@@ -5,6 +5,7 @@
 package forex.genetic.tendencia.manager;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Arrays;
@@ -12,11 +13,11 @@ import java.util.Date;
 
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
-import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *
@@ -28,11 +29,10 @@ public class ProcesarTendenciasIndividualManager extends ProcesarTendenciasBuySe
 
 	public ProcesarTendenciasIndividualManager() throws ClassNotFoundException, SQLException, GeneticDAOException {
 		super();
-		tendenciaDAO = new OracleTendenciaDAO(conn);
+		tendenciaDAO = new OracleTendenciaDAO((Connection) getDataClient().getClient());
 	}
 
-	public void procesarTendencias() throws ClassNotFoundException, SQLException, ParseException, GeneticException,
-			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+	public void procesarTendencias() throws GeneticBusinessException {
 		try {
 			Date fechaProceso = parametroFechaInicio;
 			// float[] dias = { 0.25F, 0.5F, 1.0F, 2.0F, 3.0F };
@@ -56,14 +56,20 @@ public class ProcesarTendenciasIndividualManager extends ProcesarTendenciasBuySe
 					fechaProceso = parametroFechaFin;
 				}
 			}
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		} finally {
-			JDBCUtil.close(conn);
+			try {
+				dataClient.close();
+			} catch (GeneticDAOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	@Override
-	protected ExportarTendenciaManager getExporter(Date fechaBase) {
-		return new ExportarTendenciaFiltradaManager(conn);
-		//return new ExportarTendenciaFiltroFechaTendenciaFechaBaseManager(conn);
+	protected ExportarTendenciaManager getExporter(Date fechaBase) throws GeneticBusinessException {
+		return new ExportarTendenciaFiltradaManager((Connection) dataClient.getClient());
+		// return new ExportarTendenciaFiltroFechaTendenciaFechaBaseManager(conn);
 	}
 }

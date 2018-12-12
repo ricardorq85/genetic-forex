@@ -30,7 +30,7 @@ UPDATE PARAMETRO SET FECHA=SYSDATE, VALOR='10' WHERE NOMBRE='CANTIDAD_CRUZAR';
 
 UPDATE PARAMETRO SET FECHA=SYSDATE, VALOR='USDCAD' WHERE NOMBRE='MONEDA';
 
-UPDATE PARAMETRO SET FECHA=SYSDATE, VALOR='forex.genetic.tendencia.manager.ProcesarTendenciasGrupalManager'
+UPDATE PARAMETRO SET FECHA=SYSDATE, VALOR='forex.genetic.tendencia.manager.oracle.OracleProcesarTendenciasGrupalManager'
 --UPDATE PARAMETRO SET FECHA=SYSDATE, VALOR='forex.genetic.tendencia.manager.ProcesarTendenciasIndividualManager'
 --UPDATE PARAMETRO SET FECHA=SYSDATE, VALOR='forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager'
 --UPDATE PARAMETRO SET FECHA=SYSDATE, VALOR='forex.genetic.tendencia.manager.ExportarTendenciaGrupalManager'

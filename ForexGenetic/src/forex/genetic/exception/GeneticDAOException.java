@@ -8,4 +8,8 @@ public class GeneticDAOException extends GeneticException {
 		super(message, cause);
 	}
 
+	public GeneticDAOException(Throwable cause) {
+		super(null, cause);
+
+	}
 }

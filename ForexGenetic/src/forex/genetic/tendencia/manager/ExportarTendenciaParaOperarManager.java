@@ -11,6 +11,7 @@ import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.IndividuoManager;
+import forex.genetic.tendencia.manager.oracle.OracleProcesarTendenciasGrupalManager;
 import forex.genetic.util.jdbc.DataClient;
 
 public class ExportarTendenciaParaOperarManager {
@@ -40,9 +41,9 @@ public class ExportarTendenciaParaOperarManager {
 
 	private void exportar(List<? extends TendenciaParaOperar> list, String name)
 			throws IOException, ClassNotFoundException, GeneticDAOException {
-		ProcesarTendenciasGrupalManager grupalManager = new ProcesarTendenciasGrupalManager();
+		ProcesarTendenciasGrupalManager grupalManager = new OracleProcesarTendenciasGrupalManager();
 		grupalManager.setDataClient(dataClient);
-		grupalManager.setTendenciasResultado(list);
+		grupalManager.setTendenciasResultado((List<TendenciaParaOperarMaxMin>)list);
 
 		String fileName = sourceEstrategiasPath + "\\Tendencia" + name + ".csv";
 		Path filePath = FileSystems.getDefault().getPath(fileName);
