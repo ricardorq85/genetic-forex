@@ -177,4 +177,9 @@ public class OracleDatoAdicionalTPODAO extends OracleGeneticDAO<DatoAdicionalTPO
 		}
 		return index;
 	}
+
+	@Override
+	public long delete(DatoAdicionalTPO obj, Date fechaReferencia) {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
 }

@@ -1178,4 +1178,9 @@ public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements I
 		throw new UnsupportedOperationException("UnsupportedOperationException");
 	}
 
+	@Override
+	public long delete(Point obj, Date fechaReferencia) {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
+
 }

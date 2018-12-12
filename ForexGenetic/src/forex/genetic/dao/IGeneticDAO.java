@@ -16,7 +16,7 @@ public interface IGeneticDAO<E> {
 
 	public void insertOrUpdate(E obj) throws GeneticDAOException;
 
-	public long delete(E obj, Date fechaReferencia);
+	public long delete(E obj, Date fechaReferencia) throws GeneticDAOException;
 	
 	public void close() throws GeneticDAOException;
 

@@ -166,4 +166,9 @@ public class OracleParametroDAO extends OracleGeneticDAO<Parametro> implements I
 	public void insertIfNoExists(Parametro obj) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
+
+	@Override
+	public long delete(Parametro obj, Date fechaReferencia) {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
 }

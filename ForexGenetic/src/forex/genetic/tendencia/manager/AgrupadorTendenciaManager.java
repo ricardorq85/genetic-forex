@@ -25,6 +25,7 @@ public class AgrupadorTendenciaManager {
 	private List<ProcesoTendenciaFiltradaBuySell> listaTendencias;
 	protected List<TendenciaParaOperarMaxMin> tendenciasResultado;
 
+	@SuppressWarnings("rawtypes")
 	protected DataClient dataClient;
 
 	private Date fechaBase, maxFechaProceso;

@@ -18,12 +18,12 @@ import java.util.List;
 import forex.genetic.dao.ITendenciaDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
+import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
-import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
  *
@@ -156,7 +156,7 @@ public class ProcesarTendenciasGrupalManager extends ProcesarTendenciasBuySellMa
 		return tendenciasResultado;
 	}
 
-	public void setTendenciasResultado(List<TendenciaParaOperarMaxMin> tendenciasResultado) {
+	public void setTendenciasResultado(List<? extends TendenciaParaOperar> tendenciasResultado) {
 		this.tendenciasResultado = tendenciasResultado;
 	}
 

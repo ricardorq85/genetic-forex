@@ -610,4 +610,14 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 			throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
+
+	@Override
+	public long delete(Order obj, Date fechaReferencia) {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
+
+	@Override
+	public Individuo consultarIndividuoOperacionActiva(String idIndividuo, Date fechaBase, int filas) {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
 }

@@ -1,23 +1,24 @@
 package forex.genetic.tendencia.manager;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import forex.genetic.dao.TendenciaProcesoFiltroFechaTendenciaFechaBaseDAO;
-import forex.genetic.util.jdbc.JDBCUtil;
+import forex.genetic.exception.GeneticBusinessException;
+import forex.genetic.tendencia.manager.oracle.OracleExportarTendenciaManager;
 
-public class ExportarTendenciaFiltroFechaTendenciaFechaBaseManager extends ExportarTendenciaManager {
-	public ExportarTendenciaFiltroFechaTendenciaFechaBaseManager() throws ClassNotFoundException, SQLException {
-		super(JDBCUtil.getConnection());
+public class ExportarTendenciaFiltroFechaTendenciaFechaBaseManager extends OracleExportarTendenciaManager {
+
+	public ExportarTendenciaFiltroFechaTendenciaFechaBaseManager() throws GeneticBusinessException {
+		super(null);
 	}
 
-	public ExportarTendenciaFiltroFechaTendenciaFechaBaseManager(Connection c) {
+	public ExportarTendenciaFiltroFechaTendenciaFechaBaseManager(Connection c) throws GeneticBusinessException {
 		super(c);
 		super.tendenciaProcesoDAO = new TendenciaProcesoFiltroFechaTendenciaFechaBaseDAO(c);
 	}
 
 	@Override
-	protected void procesarRegresion() throws SQLException {
+	protected void procesarRegresion() throws GeneticBusinessException {
 		super.procesarRegresion();
 	}
 

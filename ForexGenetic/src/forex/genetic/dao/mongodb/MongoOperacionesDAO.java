@@ -8,7 +8,6 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
@@ -28,7 +27,6 @@ import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.DateUtil;
-import forex.genetic.util.LogUtil;
 
 /**
  *
@@ -314,6 +312,11 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, Date fechaFin, int filas)
 			throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public Individuo consultarIndividuoOperacionActiva(String idIndividuo, Date fechaBase, int filas) {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
 	}
 
 }

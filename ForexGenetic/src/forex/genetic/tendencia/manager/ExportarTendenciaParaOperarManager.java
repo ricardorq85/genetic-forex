@@ -38,7 +38,7 @@ public class ExportarTendenciaParaOperarManager {
 		// this.exportar(listMongo, "Mongo_" + indId);
 	}
 
-	private void exportar(List<TendenciaParaOperarMaxMin> list, String name)
+	private void exportar(List<? extends TendenciaParaOperar> list, String name)
 			throws IOException, ClassNotFoundException, GeneticDAOException {
 		ProcesarTendenciasGrupalManager grupalManager = new ProcesarTendenciasGrupalManager();
 		grupalManager.setDataClient(dataClient);

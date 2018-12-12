@@ -26,7 +26,7 @@ public class MongoEstadisticasManager {
 	public void addOrder(Order order) {
 		if ((order != null) && (order.getCloseDate() != null)) {
 			if (estadisticaAnterior == null) {
-				estadisticaAnterior = daoEstadisticas.getLast(individuo, order);
+				estadisticaAnterior = daoEstadisticas.getLast(individuo, order.getCloseDate());
 			}
 			MongoEstadistica estadisticaNueva = new MongoEstadistica();
 			estadisticaNueva.setIdIndividuo(individuo.getId());

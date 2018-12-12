@@ -5,10 +5,11 @@ import java.sql.SQLException;
 
 import forex.genetic.dao.oracle.OracleTendenciaProcesoFiltradaDAO;
 import forex.genetic.entities.Regresion;
+import forex.genetic.exception.GeneticBusinessException;
+import forex.genetic.tendencia.manager.oracle.OracleExportarTendenciaManager;
 import forex.genetic.util.Constants.OperationType;
-import forex.genetic.util.jdbc.JDBCUtil;
 
-public class ExportarTendenciaFiltradaManager extends ExportarTendenciaManager {
+public class ExportarTendenciaFiltradaManager extends OracleExportarTendenciaManager {
 
 	private static final double MIN_R2 = 0.2D;
 	private static final double MAX_R2 = 1.1D;
@@ -17,11 +18,11 @@ public class ExportarTendenciaFiltradaManager extends ExportarTendenciaManager {
 	private static final double MIN_PORCENTAJE_CANTIDAD_REGRESION = 0.5D;
 	private static final double MAX_DESVIACION = 10000.0D;
 
-	public ExportarTendenciaFiltradaManager() throws ClassNotFoundException, SQLException {
-		super(JDBCUtil.getConnection());
+	public ExportarTendenciaFiltradaManager() throws GeneticBusinessException {
+		this(null);
 	}
 
-	public ExportarTendenciaFiltradaManager(Connection c) {
+	public ExportarTendenciaFiltradaManager(Connection c) throws GeneticBusinessException {
 		super(c);
 		super.tendenciaProcesoDAO = new OracleTendenciaProcesoFiltradaDAO(c);
 	}
@@ -40,13 +41,18 @@ public class ExportarTendenciaFiltradaManager extends ExportarTendenciaManager {
 	}
 
 	@Override
-	protected void procesarRegresion() throws SQLException {
-		Regresion regresion = tendenciaProcesoDAO.consultarRegresion(procesoTendencia);
-		this.setParametrosRegresion(regresion);
-		String sqlRegresion = "SELECT PARAM.PERIODO PERIODO, REG.*  FROM PARAMETROS PARAM, REGRESION_FILTRADA REG";
-		Regresion regresionFiltrada = tendenciaProcesoDAO.consultarRegresion(procesoTendencia, sqlRegresion);
-		this.setParametrosRegresion(regresionFiltrada);
-		this.procesarRegresion(regresion, regresionFiltrada);
+	protected void procesarRegresion() throws GeneticBusinessException {
+		try {
+			Regresion regresion;
+			regresion = tendenciaProcesoDAO.consultarRegresion(procesoTendencia);
+			this.setParametrosRegresion(regresion);
+			String sqlRegresion = "SELECT PARAM.PERIODO PERIODO, REG.*  FROM PARAMETROS PARAM, REGRESION_FILTRADA REG";
+			Regresion regresionFiltrada = tendenciaProcesoDAO.consultarRegresion(procesoTendencia, sqlRegresion);
+			this.setParametrosRegresion(regresionFiltrada);
+			this.procesarRegresion(regresion, regresionFiltrada);
+		} catch (SQLException e) {
+			throw new GeneticBusinessException(null, e);
+		}
 	}
 
 	@Override

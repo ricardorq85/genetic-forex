@@ -947,4 +947,9 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia>
 	public IndividuoEstrategia consultarById(String idIndividuo) {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
+
+	@Override
+	public long delete(IndividuoEstrategia obj, Date fechaReferencia) {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
 }

@@ -7,5 +7,9 @@ public class GeneticBusinessException extends GeneticException {
 	public GeneticBusinessException(String message, Throwable cause) {
 		super(message, cause);
 	}
+	
+	public GeneticBusinessException(Throwable cause) {
+		super(null, cause);
+	}
 
 }

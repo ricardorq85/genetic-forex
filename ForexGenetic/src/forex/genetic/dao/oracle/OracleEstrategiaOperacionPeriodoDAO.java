@@ -345,4 +345,9 @@ public class OracleEstrategiaOperacionPeriodoDAO extends OracleGeneticDAO<Parame
 	public void insertIfNoExists(ParametroOperacionPeriodo obj) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
+
+	@Override
+	public long delete(ParametroOperacionPeriodo obj, Date fechaReferencia) {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
 }

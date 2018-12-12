@@ -105,7 +105,7 @@ public class OracleTendenciaParaOperarDAO extends OracleGeneticDAO<TendenciaPara
 	/**
 	 *
 	 * @param tpo
-	 * @throws GeneticDAOException 
+	 * @throws GeneticDAOException
 	 * @throws SQLException
 	 */
 	public void update(TendenciaParaOperar tpo) throws GeneticDAOException {
@@ -172,7 +172,7 @@ public class OracleTendenciaParaOperarDAO extends OracleGeneticDAO<TendenciaPara
 		} finally {
 			JDBCUtil.close(statement);
 		}
-		//return affected;
+		// return affected;
 	}
 
 	public boolean exists(TendenciaParaOperar tpo) throws GeneticDAOException {

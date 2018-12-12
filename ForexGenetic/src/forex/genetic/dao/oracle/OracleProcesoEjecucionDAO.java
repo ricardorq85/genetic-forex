@@ -342,4 +342,9 @@ public class OracleProcesoEjecucionDAO extends OracleGeneticDAO<ProcesoEjecucion
 	public void insertIfNoExists(ProcesoEjecucionDTO obj) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
+
+	@Override
+	public long delete(ProcesoEjecucionDTO obj, Date fechaReferencia) {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
 }

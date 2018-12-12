@@ -5,7 +5,7 @@ import java.util.List;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.Regresion;
 import forex.genetic.entities.TendenciaParaOperar;
-import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.util.Constants.OperationType;
 import forex.genetic.util.DateUtil;
 
@@ -17,11 +17,11 @@ public abstract class ExportarTendenciaManager {
 	public ExportarTendenciaManager() {
 	}
 
-	protected abstract List<TendenciaParaOperar> consultarTendencias() throws GeneticDAOException;
+	protected abstract List<TendenciaParaOperar> consultarTendencias() throws GeneticBusinessException;
 
-	protected abstract void calcularPuntosDiferenciaInicial(List<TendenciaParaOperar> tendencias) throws GeneticDAOException;
+	protected abstract void calcularPuntosDiferenciaInicial(List<TendenciaParaOperar> tendencias) throws GeneticBusinessException;
 
-	protected abstract void procesarRegresion() throws GeneticDAOException;
+	protected abstract void procesarRegresion() throws GeneticBusinessException;
 
 	public void export() {
 		List<TendenciaParaOperar> tendencias = procesoTendencia.getTendencias();
@@ -34,14 +34,14 @@ public abstract class ExportarTendenciaManager {
 		}
 	}
 
-	public void procesar() throws GeneticDAOException {
+	public void procesar() throws GeneticBusinessException {
 		this.procesarRegresion();
 		if ((this.procesoTendencia.getRegresion() != null) && (this.procesoTendencia.isRegresionValida())) {
 			this.procesarTendencia();
 		}
 	}
 
-	protected void procesarTendencia() throws GeneticDAOException {
+	protected void procesarTendencia() throws GeneticBusinessException {
 		List<TendenciaParaOperar> tendencias = this.consultarTendencias();
 		if ((tendencias != null) && (!tendencias.isEmpty())) {
 			this.calcularPuntosDiferenciaInicial(tendencias);
@@ -83,5 +83,4 @@ public abstract class ExportarTendenciaManager {
 	public void setProcesoTendencia(ProcesoTendenciaBuySell procesoTendencia) {
 		this.procesoTendencia = procesoTendencia;
 	}
-
 }
