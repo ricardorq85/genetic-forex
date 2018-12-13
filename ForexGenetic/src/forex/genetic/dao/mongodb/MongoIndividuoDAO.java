@@ -44,6 +44,17 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 	}
 
 	@Override
+	public void insertIndicadorIndividuo(IndicadorController indicadorController, IndividuoEstrategia individuo)
+			throws GeneticDAOException {
+		return;
+	}
+
+	@Override
+	public void insertarIndividuoIndicadoresColumnas(String idIndividuo) throws GeneticDAOException {
+		return;
+	}
+
+	@Override
 	public List<? extends IndividuoEstrategia> getListByProcesoEjecucion(String filtroAdicional, Date fechaHistorico) {
 		Bson filtroProcesoEjecucionNull = Filters.exists("procesoEjecucion.maxFechaHistorico", false);
 		Bson filtroFechaHistorica = Filters.ne("procesoEjecucion.maxFechaHistorico", fechaHistorico);
@@ -60,11 +71,6 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 
 	@Override
 	public void crearVistaIndicadoresIndividuo(String viewName, String idIndividuo) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
-	public void insertarIndividuoIndicadoresColumnas(String idIndividuo) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
@@ -134,17 +140,6 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 
 	@Override
 	public void consultarDetalleIndividuo(IndicadorController indicadorController, Individuo individuo)
-			throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
-	public void insertIndividuo(IndividuoEstrategia individuo) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
-	public void insertIndicadorIndividuo(IndicadorController indicadorController, IndividuoEstrategia individuo)
 			throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}

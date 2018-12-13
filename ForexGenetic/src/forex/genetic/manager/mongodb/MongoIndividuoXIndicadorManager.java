@@ -113,32 +113,10 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 		return individuosParaCruzar;
 	}
 
-	private Poblacion mutarIndividuos(Poblacion poblacion) {
-		// TODO: verificar mutacion cuando el indicador es NULL. Deberia generar
-		// valor y no ser siempre NULL
-		Poblacion poblacionMutados = new Poblacion();
-		List<IndividuoEstrategia> mutados = null;
-		MutationIndividuoManager mutator = new MutationIndividuoManager();
-		Poblacion[] mutacion = mutator.mutate(1, poblacion, parametroCantidadMutar);
-		if ((mutacion != null) && (mutacion.length > 0)) {
-			mutados = mutacion[1].getIndividuos();
-			mutados.stream().forEach((individuoMutado) -> {
-				try {
-					insertIndividuo(individuoMutado);
-					poblacionMutados.add(individuoMutado);
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new RuntimeException(e);
-				}
-			});
-		}
-		return poblacionMutados;
-	}
-
-	private void insertIndividuo(IndividuoEstrategia individuo) throws GeneticDAOException {
+	protected void insertIndividuo(IndividuoEstrategia individuo) throws GeneticDAOException {
 		if (individuo != null) {
-			individuoDAO.insertIndividuo(individuo);
-			individuoDAO.insertIndicadorIndividuo(indicadorController, individuo);
+			dataClient.getDaoIndividuo().insert(individuo);
+			dataClient.getDaoIndividuo().insertIndicadorIndividuo(indicadorController, individuo);
 			individuoDAO.insertarIndividuoIndicadoresColumnas(individuo.getId());
 			individuoDAO.commit();
 			logTime("Individuo insertado a BD:" + individuo.getId(), 1);

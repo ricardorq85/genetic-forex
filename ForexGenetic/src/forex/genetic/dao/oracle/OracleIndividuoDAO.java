@@ -29,8 +29,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class OracleIndividuoDAO extends OracleGeneticDAO<Individuo>
-		implements IIndividuoDAO<Individuo> {
+public class OracleIndividuoDAO extends OracleGeneticDAO<Individuo> implements IIndividuoDAO<Individuo> {
 
 	public OracleIndividuoDAO(Connection connection) {
 		super(connection);
@@ -553,7 +552,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<Individuo>
 	 * @param individuo
 	 * @throws SQLException
 	 */
-	public void insertIndividuo(IndividuoEstrategia individuo) throws GeneticDAOException {
+	public void insert(IndividuoEstrategia individuo) throws GeneticDAOException {
 		String sql = "INSERT INTO INDIVIDUO(ID, PARENT_ID_1, PARENT_ID_2, "
 				+ " TAKE_PROFIT, STOP_LOSS, LOTE, INITIAL_BALANCE, CREATION_DATE, "
 				+ " TIPO_OPERACION, TIPO_INDIVIDUO, MONEDA) " + " VALUES (?,?,?,?,?,?,?,?,?,?,?)";
@@ -922,11 +921,6 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<Individuo>
 
 	@Override
 	public boolean exists(Individuo obj) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
-	public void insert(Individuo obj) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 

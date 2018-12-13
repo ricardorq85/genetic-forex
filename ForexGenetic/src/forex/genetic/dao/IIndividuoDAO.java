@@ -56,8 +56,6 @@ public interface IIndividuoDAO<E extends IndividuoEstrategia> extends IGeneticDA
 	public void consultarDetalleIndividuo(IndicadorController indicadorController, Individuo individuo)
 			throws GeneticDAOException;
 
-	public void insertIndividuo(IndividuoEstrategia individuo) throws GeneticDAOException;
-
 	public void insertIndicadorIndividuo(IndicadorController indicadorController, IndividuoEstrategia individuo)
 			throws GeneticDAOException;
 

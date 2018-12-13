@@ -7,6 +7,8 @@ package forex.genetic.entities;
 import java.util.Date;
 import java.util.Objects;
 
+import forex.genetic.util.Constants.IndividuoType;
+
 /**
  *
  * @author ricardorq85
@@ -34,7 +36,11 @@ public class Individuo extends IndividuoEstrategia {
         super(id);
     }
 
-    /**
+    public Individuo(IndividuoType individuoType) {
+    	super(individuoType);
+	}
+
+	/**
      *
      * @return
      */

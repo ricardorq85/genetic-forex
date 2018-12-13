@@ -22,9 +22,6 @@ import forex.genetic.util.Constants.OperationType;
  */
 public class Poblacion implements Serializable, Cloneable {
 
-    /**
-     *
-     */
     public static final long serialVersionUID = 201101251800L;
     private List<IndividuoEstrategia> individuos = null;
     private OperationType operationType = null;

@@ -20,6 +20,7 @@ import forex.genetic.dao.oracle.OracleOperacionesDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
+import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.RangoCierreOperacionIndividuo;
@@ -151,8 +152,8 @@ public abstract class IndividuoXIndicadorManager {
 		logTime(rangoOperacionIndividuo.toString(), 2);
 		if (rangoValido) {
 			found_any = true;
-			IndividuoEstrategia individuoSell = createIndividuo(rangoOperacionIndividuo, Constants.OperationType.SELL);
-			IndividuoEstrategia individuoBuy = createIndividuo(rangoOperacionIndividuo, Constants.OperationType.BUY);
+			Individuo individuoSell = createIndividuo(rangoOperacionIndividuo, Constants.OperationType.SELL);
+			Individuo individuoBuy = createIndividuo(rangoOperacionIndividuo, Constants.OperationType.BUY);
 			try {
 				insertIndividuo(individuoSell);
 				insertIndividuo(individuoBuy);
@@ -226,9 +227,9 @@ public abstract class IndividuoXIndicadorManager {
 		return poblacionMutados;
 	}
 
-	private void insertIndividuo(IndividuoEstrategia individuo) throws GeneticDAOException {
+	protected void insertIndividuo(IndividuoEstrategia individuo) throws GeneticDAOException {
 		if (individuo != null) {
-			individuoDAO.insertIndividuo(individuo);
+			individuoDAO.insert(individuo);
 			individuoDAO.insertIndicadorIndividuo(indicadorController, individuo);
 			individuoDAO.insertarIndividuoIndicadoresColumnas(individuo.getId());
 			individuoDAO.commit();
@@ -345,7 +346,7 @@ public abstract class IndividuoXIndicadorManager {
 		return 0.7;
 	}
 
-	private IndividuoEstrategia createIndividuo(RangoOperacionIndividuo rango, Constants.OperationType tipoOperacion) {
+	private Individuo createIndividuo(RangoOperacionIndividuo rango, Constants.OperationType tipoOperacion) {
 		List<Indicator> openIndicators = new ArrayList<>(indicadorController.getIndicatorNumber());
 		List<Indicator> closeIndicators = new ArrayList<>(indicadorController.getIndicatorNumber());
 		int tp = rango.getTakeProfit();
@@ -380,9 +381,9 @@ public abstract class IndividuoXIndicadorManager {
 			}
 		}
 
-		IndividuoEstrategia ind = null;
+		Individuo ind = null;
 		if (counter > 4) {
-			ind = new IndividuoEstrategia(Constants.IndividuoType.INDICADOR_GANADOR);
+			ind = new Individuo(Constants.IndividuoType.INDICADOR_GANADOR);
 			ind.setTipoOperacion(tipoOperacion);
 			ind.setLot(0.1);
 			ind.setInitialBalance(2000);
