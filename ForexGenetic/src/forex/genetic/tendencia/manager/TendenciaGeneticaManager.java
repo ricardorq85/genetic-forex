@@ -312,7 +312,7 @@ public class TendenciaGeneticaManager {
                     fechaCierre = order.getCloseDate();
                     if (fechaCierre != null) {
                         if (first) {
-                            individuoDAO.insertIndividuo(individuo);
+                            individuoDAO.insert(individuo);
                             individuoDAO.insertIndicadorIndividuo(indicadorController, individuo);
                             first = false;
                         }                        
@@ -344,7 +344,7 @@ public class TendenciaGeneticaManager {
         if (individuo.getCurrentOrder() != null) {
             Order order = individuo.getCurrentOrder();
             if (first) {
-                individuoDAO.insertIndividuo(individuo);
+                individuoDAO.insert(individuo);
                 individuoDAO.insertIndicadorIndividuo(indicadorController, individuo);
                 first = false;
             }

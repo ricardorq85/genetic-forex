@@ -29,7 +29,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class OracleIndividuoDAO extends OracleGeneticDAO<Individuo> implements IIndividuoDAO<Individuo> {
+public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> implements IIndividuoDAO<IndividuoEstrategia> {
 
 	public OracleIndividuoDAO(Connection connection) {
 		super(connection);
@@ -920,22 +920,22 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<Individuo> implements I
 	}
 
 	@Override
-	public boolean exists(Individuo obj) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
-	public void update(Individuo obj) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
-	public long delete(Individuo obj, Date fechaReferencia) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
 	public Individuo consultarById(String idIndividuo) {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public boolean exists(IndividuoEstrategia obj) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public void update(IndividuoEstrategia obj) throws GeneticDAOException {
+		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public long delete(IndividuoEstrategia obj, Date fechaReferencia) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 

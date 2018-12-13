@@ -293,7 +293,7 @@ public class ProcesarTendenciasMaxMinManager {
                     fechaCierre = order.getCloseDate();
                     if (fechaCierre != null) {
                         if (first) {
-                            individuoDAO.insertIndividuo(individuo);
+                            individuoDAO.insert(individuo);
                             first = false;
                         }
                         operacionesDAO.insert(individuo, Collections.singletonList(order));
@@ -326,7 +326,7 @@ public class ProcesarTendenciasMaxMinManager {
         if (individuo.getCurrentOrder() != null) {
             Order order = individuo.getCurrentOrder();
             if (first) {
-                individuoDAO.insertIndividuo(individuo);
+                individuoDAO.insert(individuo);
                 first = false;
             }
             operacionesDAO.insert(individuo, Collections.singletonList(order));

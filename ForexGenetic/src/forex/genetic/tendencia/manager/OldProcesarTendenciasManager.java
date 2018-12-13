@@ -166,7 +166,7 @@ public class OldProcesarTendenciasManager {
                                 lastDate = fechaProcesoStep;
                             }
                             if (first) {
-                                individuoDAO.insertIndividuo(individuo);
+                                individuoDAO.insert(individuo);
                                 first = false;
                             }
                             while ((points != null) && (!points.isEmpty()) && (order.getCloseDate() == null)) {

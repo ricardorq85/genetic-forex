@@ -18,6 +18,7 @@ import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.oracle.OracleIndividuoXIndicadorManager;
 import forex.genetic.proxy.ProcesosAlternosProxy;
@@ -34,9 +35,10 @@ public class ForexCrearIndividuosXIndicador {
 	 * @throws java.io.IOException
 	 * @throws java.sql.SQLException
 	 * @throws GeneticDAOException 
+	 * @throws GeneticBusinessException 
 	 */
 	public static void main(String[] args)
-			throws IOException, ClassNotFoundException, InterruptedException, SQLException, GeneticDAOException {
+			throws IOException, ClassNotFoundException, InterruptedException, SQLException, GeneticDAOException, GeneticBusinessException {
 		long id = currentTimeMillis();
 		load().join();
 		logTime("ForexCrearIndividuosXIndicador.java: " + id, 1);

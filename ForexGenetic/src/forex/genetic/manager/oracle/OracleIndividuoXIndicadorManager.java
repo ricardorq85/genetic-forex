@@ -13,6 +13,7 @@ import java.util.List;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.RangoOperacionIndividuo;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.IndividuoXIndicadorManager;
@@ -24,12 +25,12 @@ import forex.genetic.manager.controller.IndicadorController;
  */
 public class OracleIndividuoXIndicadorManager extends IndividuoXIndicadorManager {
 
-	public OracleIndividuoXIndicadorManager() throws ClassNotFoundException, SQLException, GeneticDAOException {
+	public OracleIndividuoXIndicadorManager() throws GeneticBusinessException{
 		super();
 	}
 
 	public OracleIndividuoXIndicadorManager(Date fechaMinima, Date fechaMaxima, int maximoMeses)
-			throws ClassNotFoundException, SQLException, GeneticDAOException {
+			throws ClassNotFoundException, SQLException, GeneticDAOException, GeneticBusinessException {
 		super(fechaMinima, fechaMaxima, maximoMeses);
 	}
 

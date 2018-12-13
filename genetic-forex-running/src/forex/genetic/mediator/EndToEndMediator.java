@@ -94,7 +94,7 @@ public abstract class EndToEndMediator extends GeneticMediator {
 					count = 1;
 				}
 			}
-		} catch (SQLException | IOException | ClassNotFoundException | GeneticDAOException e) {
+		} catch (SQLException | IOException | GeneticDAOException e) {
 			throw new GeneticBusinessException("Error start", e);
 		}
 	}
@@ -256,11 +256,15 @@ public abstract class EndToEndMediator extends GeneticMediator {
 		return (countFile > 0);
 	}
 
-	protected void crearNuevosIndividuos() throws ClassNotFoundException, SQLException, GeneticDAOException {
+	protected void crearNuevosIndividuos() throws GeneticBusinessException {
 		logTime("Init Crear individuos x indicador", 1);
-		OracleIndividuoXIndicadorManager manager = new OracleIndividuoXIndicadorManager(ultimaFechaBaseTendencia,
-				fechaHistoricaMaximaNueva, 12);
-		manager.crearIndividuos();
+		OracleIndividuoXIndicadorManager manager;
+		try {
+			manager = new OracleIndividuoXIndicadorManager(ultimaFechaBaseTendencia, fechaHistoricaMaximaNueva, 12);
+			manager.crearIndividuos();
+		} catch (ClassNotFoundException | GeneticDAOException | SQLException e) {
+			throw new GeneticBusinessException(e);
+		}
 		logTime("End Crear individuos x indicador", 1);
 	}
 

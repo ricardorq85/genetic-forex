@@ -74,7 +74,7 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 					count = 1;
 				}
 			}
-		} catch (SQLException | IOException | ClassNotFoundException | GeneticDAOException e) {
+		} catch (IOException | GeneticDAOException e) {
 			throw new GeneticBusinessException("Error start", e);
 		}
 	}
