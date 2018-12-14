@@ -9,7 +9,9 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.BsonField;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
@@ -21,6 +23,7 @@ import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.RangoOperacionIndividuo;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.entities.mongo.MongoOrder;
@@ -55,6 +58,35 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		while (year <= currYear) {
 			setCollection(year++, true);
 		}
+	}
+
+	@Override
+	public void consultarRangoOperacionIndicador(RangoOperacionIndividuo r) {
+
+	}
+
+	private void consultarRangoOperacionIndicadorIntern(RangoOperacionIndividuo r) {
+		int cantidad = 10;
+		List<BsonField> accumulators = new ArrayList<>();
+		accumulators.add(Accumulators.sum("sumTakeProfit", "$takeProfit"));
+		accumulators.add(Accumulators.sum("sumStopLoss", "$stopLoss"));
+		accumulators.add(Accumulators.sum("cantidad", 1));
+
+		List<Bson> filters = new ArrayList<>();
+		filters.add(Filters.gte("fechaHistorico", r.getFechaFiltro()));
+		filters.add(Filters.lte("fechaHistorico", r.getFechaFiltro2()));
+
+		r.getFilterList().stream().forEach((one) -> {
+			filters.add(Filters.exists(one));
+			accumulators.add(Accumulators.sum("sum" + one, "$" + one));
+			accumulators.add(Accumulators.min("min" + one, "$" + one));
+			accumulators.add(Accumulators.max("max" + one, "$" + one));
+		});
+		MongoCursor<Document> cursor = this.collection.aggregate(Arrays.asList(Aggregates.match(Filters.and(filters)),
+				Aggregates.group(null, accumulators), Aggregates.sample(cantidad))).iterator();
+
+		List<Point> p = getMapper().helpList(cursor);
+
 	}
 
 	public void insertMany(List<Point> datos) {
@@ -126,8 +158,9 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 	}
 
 	private long consultarCantidadPuntosIntern(DateInterval interval) throws GeneticDAOException {
-		long count = this.collection.countDocuments(Filters.and(Filters.gte("fechaHistorico", interval.getLowInterval()),
-				Filters.lte("fechaHistorico", interval.getHighInterval())));
+		long count = this.collection
+				.countDocuments(Filters.and(Filters.gte("fechaHistorico", interval.getLowInterval()),
+						Filters.lte("fechaHistorico", interval.getHighInterval())));
 		return count;
 	}
 

@@ -96,7 +96,9 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 		}
 	}
 
-	protected List<IndividuoEstrategia> getIndividuosACruzar(RangoOperacionIndividuo rangoOperacionIndividuo) throws GeneticDAOException {
+	protected List<IndividuoEstrategia> getIndividuosACruzar(RangoOperacionIndividuo rangoOperacionIndividuo)
+			throws GeneticDAOException {
+
 		List<MongoEstadistica> estadisticasRandom = dataClient.getDaoEstadistica().consultarRandom(
 				rangoOperacionIndividuo.getFechaFiltro(), rangoOperacionIndividuo.getFechaFiltro2(),
 				parametroCantidadCruzar * 2);
@@ -117,8 +119,8 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 		if (individuo != null) {
 			dataClient.getDaoIndividuo().insert(individuo);
 			dataClient.getDaoIndividuo().insertIndicadorIndividuo(indicadorController, individuo);
-			individuoDAO.insertarIndividuoIndicadoresColumnas(individuo.getId());
-			individuoDAO.commit();
+			dataClient.getDaoIndividuo().insertarIndividuoIndicadoresColumnas(individuo.getId());
+			dataClient.commit();
 			logTime("Individuo insertado a BD:" + individuo.getId(), 1);
 		}
 	}
@@ -126,18 +128,28 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 	private void procesarRangoOperacionIndicadores(RangoOperacionIndividuo rangoOperacionIndividuo,
 			int cantidadPuntos) {
 		StringBuilder fields = new StringBuilder();
-		StringBuilder filters = new StringBuilder();
+		List<String> filters = new ArrayList<String>();
+
 		StringBuilder porcentajeCumplimiento = new StringBuilder();
 		int num_indicadores = indicadorController.getIndicatorNumber();
 		for (int i = 0; i < num_indicadores; i++) {
-			IntervalIndicatorManager<?> indManager = (IntervalIndicatorManager<?>) indicadorController
+			IntervalIndicatorManager<?> managerInstance = (IntervalIndicatorManager<?>) indicadorController
 					.getManagerInstance(i);
+			IntervalIndicator intervalIndicator = ((IntervalIndicator) managerInstance.getIndicatorInstance());
+			String[] nombreCalculado = managerInstance.getNombresCalculados();
+			for (int j = 0; j < nombreCalculado.length; j++) {
+				StringBuilder nombreIndicador = new StringBuilder("indicadores").append(".")
+						.append(intervalIndicator.getName()).append(".");
+				StringBuilder nombreIndicadorCalculado = new StringBuilder(nombreIndicador).append(nombreCalculado[j]);
+				filters.add(nombreIndicadorCalculado.toString());
+			}
+
 			String[] sqlIndicador = indManager.queryRangoOperacionIndicador();
 			porcentajeCumplimiento.append(indManager.queryPorcentajeCumplimientoIndicador());
 			fields.append(sqlIndicador[0]);
-			filters.append(sqlIndicador[1]);
+			//filters.append(sqlIndicador[1]);
 			RangoOperacionIndividuoIndicador rangoIndicador = new RangoOperacionIndividuoIndicador();
-			rangoIndicador.setIndicator(indManager.getIndicatorInstance());
+			rangoIndicador.setIndicator(indicatorInstance);
 
 			rangoOperacionIndividuo.getIndicadores().add(rangoIndicador);
 		}
@@ -151,58 +163,6 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 		}
 	}
 
-	private void asignarIntervaloXPorcentajeCumplimiento(RangoOperacionIndividuo rangoOperacionIndividuo,
-			int cantidadPuntos) {
-		int num_indicadores = indicadorController.getIndicatorNumber();
-		for (int i = 0; i < num_indicadores; i++) {
-			IntervalIndicatorManager<?> indManager = (IntervalIndicatorManager<?>) indicadorController
-					.getManagerInstance(i);
-			RangoOperacionIndividuoIndicador rangoIndicador = rangoOperacionIndividuo.getIndicadores().get(i);
-			IntervalIndicator intervalIndicator = ((IntervalIndicator) rangoIndicador.getIndicator());
-			DoubleInterval interval = (DoubleInterval) intervalIndicator.getInterval();
-			double porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager, intervalIndicator,
-					null, null, cantidadPuntos);
-			rangoIndicador.setPorcentajeCumplimiento(porcCumplimiento);
-			if (!rangoIndicador.cumplePorcentajeIndicador()) {
-				double temporal;
-				if ((rangoIndicador.getPromedio() - interval.getLowInterval()) < (interval.getHighInterval()
-						- rangoIndicador.getPromedio())) {
-					temporal = interval.getHighInterval();
-					porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager, intervalIndicator,
-							interval.getLowInterval(), rangoIndicador.getPromedio(), cantidadPuntos);
-				} else {
-					temporal = interval.getLowInterval();
-					porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager, intervalIndicator,
-							rangoIndicador.getPromedio(), interval.getHighInterval(), cantidadPuntos);
-				}
-				rangoIndicador.setPorcentajeCumplimiento(porcCumplimiento);
-				if (!rangoIndicador.cumplePorcentajeIndicador()) {
-					if ((rangoIndicador.getPromedio() - interval.getLowInterval()) < (interval.getHighInterval()
-							- rangoIndicador.getPromedio())) {
-						double temporal2 = temporal;
-						temporal = interval.getLowInterval();
-						porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager,
-								intervalIndicator, rangoIndicador.getPromedio(), temporal2, cantidadPuntos);
-					} else {
-						double temporal2 = temporal;
-						temporal = interval.getHighInterval();
-						porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager,
-								intervalIndicator, temporal2, rangoIndicador.getPromedio(), cantidadPuntos);
-					}
-					rangoIndicador.setPorcentajeCumplimiento(porcCumplimiento);
-					if (!rangoIndicador.cumplePorcentajeIndicador()) {
-						if ((rangoIndicador.getPromedio() - interval.getLowInterval()) < (interval.getHighInterval()
-								- rangoIndicador.getPromedio())) {
-							interval.setHighInterval(temporal);
-						} else {
-							interval.setLowInterval(temporal);
-						}
-					}
-				}
-			}
-		}
-	}
-
 	private double porcentajeCumplimiento(RangoOperacionIndividuo r, IntervalIndicatorManager<?> indManager,
 			IntervalIndicator intervalIndicator, Double i1, Double i2, int cantidadPuntos) {
 		DoubleInterval interval = (DoubleInterval) intervalIndicator.getInterval();
@@ -213,19 +173,8 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 		DateInterval dateInterval = new DateInterval(r.getFechaFiltro(), r.getFechaFiltro2());
 		double sumaPorcCumplimiento = indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager,
 				intervalIndicator, dateInterval);
-		/*
-		 * DateInterval di = DateUtil.obtenerIntervaloAnyo(minFechaHistorico); while
-		 * (di.getLowInterval().before(maxFechaHistorico)) { sumaPorcCumplimiento +=
-		 * indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager,
-		 * intervalIndicator, di); di =
-		 * DateUtil.obtenerIntervaloAnyo(di.getHighInterval()); }
-		 */
-		return (sumaPorcCumplimiento / cantidadPuntos);
-	}
 
-	private double porcentajeCumplimientoDummy(IntervalIndicatorManager<?> indManager,
-			IntervalIndicator intervalIndicator, Double i1, Double i2) {
-		return 0.7;
+		return (sumaPorcCumplimiento / cantidadPuntos);
 	}
 
 	private IndividuoEstrategia createIndividuo(RangoOperacionIndividuo rango, Constants.OperationType tipoOperacion) {

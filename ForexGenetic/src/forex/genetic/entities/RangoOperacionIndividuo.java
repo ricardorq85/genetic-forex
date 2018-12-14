@@ -24,7 +24,7 @@ public class RangoOperacionIndividuo {
 	private int cantidad;
 
 	private String fields;
-	private String filters;
+	private List<String> filterList;
 	private String filtroCumplimiento;
 
 	private boolean positivas;
@@ -78,6 +78,14 @@ public class RangoOperacionIndividuo {
 		return pips;
 	}
 
+	public List<String> getFilterList() {
+		return filterList;
+	}
+
+	public void setFilterList(List<String> filterList) {
+		this.filterList = filterList;
+	}
+
 	public void setPips(double pips) {
 		this.pips = pips;
 	}
@@ -107,11 +115,11 @@ public class RangoOperacionIndividuo {
 	}
 
 	public String getFilters() {
-		return filters;
-	}
-
-	public void setFilters(String filters) {
-		this.filters = filters;
+		StringBuilder b = new StringBuilder();
+		filterList.stream().forEach((one) -> {
+			b.append(one);
+		});
+		return b.toString();
 	}
 
 	public List<RangoOperacionIndividuoIndicador> getIndicadores() {

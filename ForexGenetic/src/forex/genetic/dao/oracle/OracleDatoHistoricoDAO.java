@@ -15,22 +15,26 @@ import java.util.List;
 
 import forex.genetic.dao.IDatoHistoricoDAO;
 import forex.genetic.dao.helper.BasePointHelper;
+import forex.genetic.dao.helper.IndicatorHelper;
 import forex.genetic.dao.helper.IndividuoHelper;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.RangoOperacionIndividuo;
 import forex.genetic.entities.indicator.Adx;
 import forex.genetic.entities.indicator.Average;
 import forex.genetic.entities.indicator.Bollinger;
 import forex.genetic.entities.indicator.Ichimoku;
+import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.entities.indicator.Macd;
 import forex.genetic.entities.indicator.Momentum;
 import forex.genetic.entities.indicator.Rsi;
 import forex.genetic.entities.indicator.Sar;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.PropertiesManager;
+import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.jdbc.JDBCUtil;
 
@@ -1180,6 +1184,99 @@ public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements I
 			JDBCUtil.close(stmtConsulta);
 		}
 		return fechas;
+	}
+
+	public void consultarRangoOperacionIndicador(RangoOperacionIndividuo r) throws GeneticDAOException {
+		String sql = "SELECT " + r.getFields() + "  ROUND(AVG(OPER.TAKE_PROFIT)) TP, ROUND(AVG(OPER.STOP_LOSS)) SL,"
+				+ " COUNT(*) REGISTROS " + " FROM DATOHISTORICO DH " + " INNER JOIN "
+				+ (r.isPositivas() ? "OPERACION_POSITIVAS" : "OPERACION_NEGATIVAS")
+				+ " OPER ON DH.FECHA=OPER.FECHA_APERTURA " + " WHERE "
+				+ (r.isPositivas() ? " OPER.PIPS >= ? AND (MAX_PIPS_RETROCESO >= ?) "
+						: " OPER.PIPS <= ? AND (MAX_PIPS_RETROCESO <= ?) ")
+				+ r.getFilters() + "  AND OPER.FECHA_APERTURA BETWEEN ? AND ? ";
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setDouble(1, r.getPips());
+			stmtConsulta.setDouble(2, r.getRetroceso());
+			stmtConsulta.setTimestamp(3, new Timestamp(r.getFechaFiltro().getTime()));
+			stmtConsulta.setTimestamp(4, new Timestamp(r.getFechaFiltro2().getTime()));
+			resultado = stmtConsulta.executeQuery();
+
+			IndicatorHelper.completeRangoOperacionIndicador(resultado, r);
+		} catch (SQLException e) {
+			throw new GeneticDAOException(e);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+	}
+
+	public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii)
+			throws GeneticDAOException {
+
+		String[] sqlIndicador = indManager.queryPorcentajeCumplimientoIndicador();
+		String sql = "SELECT COUNT(*) PUNTOS " + "FROM DATOHISTORICO DH " + "WHERE " + sqlIndicador[0];
+
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		try {
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setDouble(1, ii.getInterval().getLowInterval());
+			stmtConsulta.setDouble(2, ii.getInterval().getHighInterval());
+			if (indManager.isPriceDependence()) {
+				stmtConsulta.setDouble(3, ii.getInterval().getLowInterval());
+				stmtConsulta.setDouble(4, ii.getInterval().getHighInterval());
+			}
+			resultado = stmtConsulta.executeQuery();
+
+			if (resultado.next()) {
+				return resultado.getDouble("PUNTOS");
+			} else {
+				return -1;
+			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException(e);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
+	}
+
+	public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii,
+			DateInterval di) throws GeneticDAOException {
+
+		String[] sqlIndicador = indManager.queryPorcentajeCumplimientoIndicador();
+		String sql = "SELECT COUNT(*) PUNTOS " + "FROM DATOHISTORICO DH " + "WHERE " + sqlIndicador[0]
+				+ " AND DH.FECHA >= ? AND DH.FECHA < ?";
+
+		PreparedStatement stmtConsulta = null;
+		ResultSet resultado = null;
+		try {
+			int count = 0;
+			stmtConsulta = this.connection.prepareStatement(sql);
+			stmtConsulta.setDouble(++count, ii.getInterval().getLowInterval());
+			stmtConsulta.setDouble(++count, ii.getInterval().getHighInterval());
+			if (indManager.isPriceDependence()) {
+				stmtConsulta.setDouble(++count, ii.getInterval().getLowInterval());
+				stmtConsulta.setDouble(++count, ii.getInterval().getHighInterval());
+			}
+			stmtConsulta.setTimestamp(++count, new Timestamp(di.getLowInterval().getTime()));
+			stmtConsulta.setTimestamp(++count, new Timestamp(di.getHighInterval().getTime()));
+			resultado = stmtConsulta.executeQuery();
+
+			if (resultado.next()) {
+				return resultado.getDouble("PUNTOS");
+			} else {
+				return -1;
+			}
+		} catch (SQLException e) {
+			throw new GeneticDAOException(e);
+		} finally {
+			JDBCUtil.close(resultado);
+			JDBCUtil.close(stmtConsulta);
+		}
 	}
 
 	@Override

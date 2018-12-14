@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.IndicatorDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.dao.oracle.OracleOperacionesDAO;
@@ -47,7 +46,7 @@ public abstract class IndividuoXIndicadorManager {
 	private Connection conn = null;
 	protected final OracleIndividuoDAO individuoDAO;
 	private final OracleDatoHistoricoDAO dhDAO;
-	private final IndicatorDAO indicadorDAO;
+	//private final IndicatorDAO indicadorDAO;
 	private final OracleOperacionesDAO operacionesDAO;
 	private OracleParametroDAO parametroDAO;
 	protected Date fechaMinima, fechaMaxima;
@@ -68,7 +67,7 @@ public abstract class IndividuoXIndicadorManager {
 			conn = JDBCUtil.getConnection();
 			individuoDAO = new OracleIndividuoDAO(conn);
 			dhDAO = new OracleDatoHistoricoDAO(conn);
-			indicadorDAO = new IndicatorDAO(conn);
+			//indicadorDAO = new IndicatorDAO(conn);
 			parametroDAO = new OracleParametroDAO(conn);
 			operacionesDAO = new OracleOperacionesDAO(conn);
 			this.fechaMinima = fechaMinima;
@@ -260,17 +259,17 @@ public abstract class IndividuoXIndicadorManager {
 		rangoOperacionIndividuo.setFiltroCumplimiento(porcentajeCumplimiento.toString());
 
 		try {
-			indicadorDAO.consultarRangoOperacionIndicador(rangoOperacionIndividuo);
+			dhDAO.consultarRangoOperacionIndicador(rangoOperacionIndividuo);
 			if (rangoOperacionIndividuo.getIndicadores() != null) {
 				asignarIntervaloXPorcentajeCumplimiento(rangoOperacionIndividuo, cantidadPuntos);
 			}
-		} catch (SQLException e) {
+		} catch (GeneticDAOException | SQLException e) {
 			throw new GeneticBusinessException(e);
 		}
 	}
 
 	private void asignarIntervaloXPorcentajeCumplimiento(RangoOperacionIndividuo rangoOperacionIndividuo,
-			int cantidadPuntos) throws SQLException {
+			int cantidadPuntos) throws SQLException, GeneticDAOException {
 		int num_indicadores = indicadorController.getIndicatorNumber();
 		for (int i = 0; i < num_indicadores; i++) {
 			IntervalIndicatorManager<?> indManager = (IntervalIndicatorManager<?>) indicadorController
@@ -322,28 +321,17 @@ public abstract class IndividuoXIndicadorManager {
 	}
 
 	private double porcentajeCumplimiento(RangoOperacionIndividuo r, IntervalIndicatorManager<?> indManager,
-			IntervalIndicator intervalIndicator, Double i1, Double i2, int cantidadPuntos) throws SQLException {
+			IntervalIndicator intervalIndicator, Double i1, Double i2, int cantidadPuntos) throws SQLException, GeneticDAOException {
 		DoubleInterval interval = (DoubleInterval) intervalIndicator.getInterval();
 		if (i1 != null && i2 != null) {
 			interval.setLowInterval(i1);
 			interval.setHighInterval(i2);
 		}
 		DateInterval dateInterval = new DateInterval(r.getFechaFiltro(), r.getFechaFiltro2());
-		double sumaPorcCumplimiento = indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager,
+		double sumaPorcCumplimiento = dhDAO.consultarPorcentajeCumplimientoIndicador(indManager,
 				intervalIndicator, dateInterval);
-		/*
-		 * DateInterval di = DateUtil.obtenerIntervaloAnyo(minFechaHistorico); while
-		 * (di.getLowInterval().before(maxFechaHistorico)) { sumaPorcCumplimiento +=
-		 * indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager,
-		 * intervalIndicator, di); di =
-		 * DateUtil.obtenerIntervaloAnyo(di.getHighInterval()); }
-		 */
-		return (sumaPorcCumplimiento / cantidadPuntos);
-	}
 
-	private double porcentajeCumplimientoDummy(IntervalIndicatorManager<?> indManager,
-			IntervalIndicator intervalIndicator, Double i1, Double i2) throws SQLException {
-		return 0.7;
+		return (sumaPorcCumplimiento / cantidadPuntos);
 	}
 
 	private Individuo createIndividuo(RangoOperacionIndividuo rango, Constants.OperationType tipoOperacion) {

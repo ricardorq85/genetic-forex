@@ -12,7 +12,10 @@ import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.RangoOperacionIndividuo;
+import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.manager.indicator.IntervalIndicatorManager;
 
 /**
  *
@@ -67,4 +70,12 @@ public interface IDatoHistoricoDAO extends IGeneticDAO<Point> {
 	public List<Point> consultarProximosPuntosApertura(IndividuoEstrategia individuo, DateInterval rango);
 
 	public List<Point> consultarPuntosCierre(IndividuoEstrategia individuo, DateInterval rango);
+
+	public void consultarRangoOperacionIndicador(RangoOperacionIndividuo r) throws GeneticDAOException;
+
+	public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager<?> indManager,
+			IntervalIndicator ii) throws GeneticDAOException;
+
+	public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii,
+			DateInterval di) throws GeneticDAOException;
 }
