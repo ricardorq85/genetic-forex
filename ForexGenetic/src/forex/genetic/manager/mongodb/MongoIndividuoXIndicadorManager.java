@@ -13,19 +13,19 @@ import java.util.List;
 
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
+import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.entities.Poblacion;
 import forex.genetic.entities.RangoCierreOperacionIndividuo;
 import forex.genetic.entities.RangoOperacionIndividuo;
 import forex.genetic.entities.RangoOperacionIndividuoIndicador;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.entities.mongo.MongoEstadistica;
+import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.IndividuoXIndicadorManager;
-import forex.genetic.manager.MutationIndividuoManager;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.Constants;
@@ -38,8 +38,6 @@ import forex.genetic.util.jdbc.DataClient;
  * @author ricardorq85
  */
 public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager {
-
-	private DataClient dataClient;
 
 	public MongoIndividuoXIndicadorManager(DataClient dc) throws GeneticBusinessException {
 		this(dc, null, null, 12);
@@ -77,9 +75,9 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 						rangoNegativas.setRangoCierre(new RangoCierreOperacionIndividuo(rangoPositivas));
 
 						this.procesarRangoOperacionIndicadores(rangoPositivas, cantidadPuntos);
-						this.procesarRangoOperacionIndicadores(rangoNegativas, cantidadPuntos);
+//						this.procesarRangoOperacionIndicadores(rangoNegativas, cantidadPuntos);
 						this.crearIndividuos(rangoPositivas);
-						this.crearIndividuos(rangoNegativas);
+						// this.crearIndividuos(rangoNegativas);
 					}
 					meses++;
 				}
@@ -94,6 +92,11 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 				e.printStackTrace();
 			}
 		}
+	}
+
+	protected void procesarCruceIndividuos(RangoOperacionIndividuo rangoOperacionIndividuo, Individuo individuoSell,
+			Individuo individuoBuy) throws GeneticBusinessException {
+
 	}
 
 	protected List<IndividuoEstrategia> getIndividuosACruzar(RangoOperacionIndividuo rangoOperacionIndividuo)
@@ -115,18 +118,8 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 		return individuosParaCruzar;
 	}
 
-	protected void insertIndividuo(IndividuoEstrategia individuo) throws GeneticDAOException {
-		if (individuo != null) {
-			dataClient.getDaoIndividuo().insert(individuo);
-			dataClient.getDaoIndividuo().insertIndicadorIndividuo(indicadorController, individuo);
-			dataClient.getDaoIndividuo().insertarIndividuoIndicadoresColumnas(individuo.getId());
-			dataClient.commit();
-			logTime("Individuo insertado a BD:" + individuo.getId(), 1);
-		}
-	}
-
-	private void procesarRangoOperacionIndicadores(RangoOperacionIndividuo rangoOperacionIndividuo,
-			int cantidadPuntos) {
+	protected void procesarRangoOperacionIndicadores(RangoOperacionIndividuo rangoOperacionIndividuo,
+			int cantidadPuntos) throws GeneticBusinessException {
 		StringBuilder fields = new StringBuilder();
 		List<String> filters = new ArrayList<String>();
 
@@ -144,23 +137,27 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 				filters.add(nombreIndicadorCalculado.toString());
 			}
 
-			String[] sqlIndicador = indManager.queryRangoOperacionIndicador();
-			porcentajeCumplimiento.append(indManager.queryPorcentajeCumplimientoIndicador());
-			fields.append(sqlIndicador[0]);
-			//filters.append(sqlIndicador[1]);
+			// String[] sqlIndicador = indManager.queryRangoOperacionIndicador();
+			// porcentajeCumplimiento.append(indManager.queryPorcentajeCumplimientoIndicador());
+			// fields.append(sqlIndicador[0]);
+			// filters.append(sqlIndicador[1]);
 			RangoOperacionIndividuoIndicador rangoIndicador = new RangoOperacionIndividuoIndicador();
-			rangoIndicador.setIndicator(indicatorInstance);
+			rangoIndicador.setIndicator(intervalIndicator);
 
 			rangoOperacionIndividuo.getIndicadores().add(rangoIndicador);
 		}
-		rangoOperacionIndividuo.setFields(fields.toString());
-		rangoOperacionIndividuo.setFilters(filters.toString());
+		// rangoOperacionIndividuo.setFields(fields.toString());
+		rangoOperacionIndividuo.setFilterList(filters);
 		rangoOperacionIndividuo.setFiltroCumplimiento(porcentajeCumplimiento.toString());
 
-		indicadorDAO.consultarRangoOperacionIndicador(rangoOperacionIndividuo);
-		if (rangoOperacionIndividuo.getIndicadores() != null) {
-			asignarIntervaloXPorcentajeCumplimiento(rangoOperacionIndividuo, cantidadPuntos);
+		try {
+			dataClient.getDaoDatoHistorico().consultarRangoOperacionIndicador(rangoOperacionIndividuo);
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		}
+//		if (rangoOperacionIndividuo.getIndicadores() != null) {
+//			asignarIntervaloXPorcentajeCumplimiento(rangoOperacionIndividuo, cantidadPuntos);
+//		}
 	}
 
 	private double porcentajeCumplimiento(RangoOperacionIndividuo r, IntervalIndicatorManager<?> indManager,
@@ -171,62 +168,15 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 			interval.setHighInterval(i2);
 		}
 		DateInterval dateInterval = new DateInterval(r.getFechaFiltro(), r.getFechaFiltro2());
-		double sumaPorcCumplimiento = indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager,
-				intervalIndicator, dateInterval);
+		double sumaPorcCumplimiento = 0.0D;// indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager,
+											// intervalIndicator, dateInterval);
 
 		return (sumaPorcCumplimiento / cantidadPuntos);
 	}
 
-	private IndividuoEstrategia createIndividuo(RangoOperacionIndividuo rango, Constants.OperationType tipoOperacion) {
-		List<Indicator> openIndicators = new ArrayList<>(indicadorController.getIndicatorNumber());
-		List<Indicator> closeIndicators = new ArrayList<>(indicadorController.getIndicatorNumber());
-		int tp = rango.getTakeProfit();
-		int sl = rango.getStopLoss();
-		int counter = 0;
-		int countCierre = 0;
-		RangoOperacionIndividuo rangoCierre = rango.getRangoCierre();
-		for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
-			IntervalIndicatorManager<?> indManager = (IntervalIndicatorManager<?>) indicadorController
-					.getManagerInstance(i);
-			RangoOperacionIndividuoIndicador rangoIndicador = rango.getIndicadores().get(i);
-			RangoOperacionIndividuoIndicador rangoIndicadorCierre = null;
-			double porcentajeCumplimiento = rangoIndicador.getPorcentajeCumplimiento();
-			if (rangoIndicador.cumplePorcentajeIndicador()) {
-				openIndicators.add(rangoIndicador.getIndicator());
-				counter++;
-			} else {
-				openIndicators.add(null);
-				logTime("NO cumple porcentaje indicador. " + indManager.getId() + "=" + porcentajeCumplimiento, 1);
-			}
-			if (rangoCierre.isRangoValido()) {
-				rangoIndicadorCierre = rangoCierre.getIndicadores().get(i);
-				double porcentajeCumplimientoCierre = rangoIndicadorCierre.getPorcentajeCumplimiento();
-				if (rangoIndicadorCierre.cumplePorcentajeIndicador()) {
-					closeIndicators.add(rangoIndicadorCierre.getIndicator());
-					countCierre++;
-				} else {
-					closeIndicators.add(null);
-					logTime("NO cumple porcentaje indicador de cierre. " + indManager.getId() + "="
-							+ porcentajeCumplimientoCierre, 1);
-				}
-			}
-		}
-
-		IndividuoEstrategia ind = null;
-		if (counter > 4) {
-			ind = new IndividuoEstrategia(Constants.IndividuoType.INDICADOR_GANADOR);
-			ind.setTipoOperacion(tipoOperacion);
-			ind.setLot(0.1);
-			ind.setInitialBalance(2000);
-			ind.setTakeProfit(tp);
-			ind.setStopLoss(sl);
-			ind.setOpenIndicators(openIndicators);
-			ind.setCloseIndicators(
-					(countCierre > 4) ? closeIndicators : new ArrayList<>(indicadorController.getIndicatorNumber()));
-		} else {
-			logTime("No tiene suficientes indicadores con las caracteristicas necesarias. Individuo NO creado ", 1);
-		}
-		return (ind);
+	@Override
+	protected Individuo createIndividuoInstance() {
+		return new MongoIndividuo();
 	}
 
 }

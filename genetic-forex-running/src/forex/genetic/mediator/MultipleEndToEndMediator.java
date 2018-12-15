@@ -20,7 +20,8 @@ import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.factory.ProcesarTendenciasFactory;
 import forex.genetic.manager.IGeneticManager;
 import forex.genetic.manager.IndividuoManager;
-import forex.genetic.manager.oracle.OracleIndividuoXIndicadorManager;
+import forex.genetic.manager.IndividuoXIndicadorManager;
+import forex.genetic.manager.mongodb.MongoIndividuoXIndicadorManager;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
 import forex.genetic.tendencia.manager.TendenciaProcesoManager;
 import forex.genetic.util.DateUtil;
@@ -64,9 +65,9 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 						+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva)
 						+ ",count=" + count, 1);
 				//TODO rrojasq Hacer con hilos para cada driver
-				procesarIndividuos();
-				procesarTendencias();
-				exportarIndividuos();
+				//procesarIndividuos();
+	//			procesarTendencias();
+		//		exportarIndividuos();
 				crearNuevosIndividuos();
 				if (imported == 0) {
 					count++;
@@ -74,16 +75,21 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 					count = 1;
 				}
 			}
-		} catch (IOException | GeneticDAOException e) {
+		} catch ( GeneticDAOException e) {
 			throw new GeneticBusinessException("Error start", e);
 		}
 	}
 
-	protected void procesarIndividuos() throws FileNotFoundException {
+	protected void procesarIndividuos() throws GeneticBusinessException {
 		logTime("Init Procesar Individuos", 1);
-		GeneticDelegateBD delegate = new GeneticDelegateBD();
-		delegate.multipleProcess(true);
-		logTime("End Procesar Individuos", 1);
+		GeneticDelegateBD delegate;
+		try {
+			delegate = new GeneticDelegateBD();
+			delegate.multipleProcess(true);
+			logTime("End Procesar Individuos", 1);
+		} catch (FileNotFoundException e) {
+			throw new GeneticBusinessException(e);
+		}
 	}
 
 	public void procesarTendencias() throws GeneticBusinessException {
@@ -141,13 +147,13 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 //		return (countFile > 0);
 //	}
 //
-//	private void crearNuevosIndividuos() throws ClassNotFoundException, SQLException {
-//		LogUtil.logTime("Init Crear individuos x indicador", 1);
-//		IndividuoXIndicadorManager manager = new IndividuoXIndicadorManager(ultimaFechaBaseTendencia,
-//				fechaHistoricaMaximaNueva, 12);
-//		manager.crearIndividuos();
-//		LogUtil.logTime("End Crear individuos x indicador", 1);
-//	}
+	protected void crearNuevosIndividuos() throws GeneticBusinessException {
+		LogUtil.logTime("Init Crear individuos x indicador", 1);
+		IndividuoXIndicadorManager manager = new MongoIndividuoXIndicadorManager(dataClients.get(0), ultimaFechaBaseTendencia,
+				fechaHistoricaMaximaNueva, 12);
+		manager.crearIndividuos();
+		LogUtil.logTime("End Crear individuos x indicador", 1);
+	}
 
 //	class ExportThread extends Thread {
 //		Path path;

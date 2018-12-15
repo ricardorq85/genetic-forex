@@ -8,6 +8,7 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
@@ -18,6 +19,7 @@ import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Sorts;
 
 import forex.genetic.dao.IDatoHistoricoDAO;
+import forex.genetic.dao.helper.mongodb.MongoDatoHistoricoMapper;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.IndividuoEstrategia;
@@ -34,6 +36,7 @@ import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
+import forex.genetic.util.LogUtil;
 
 /**
  *
@@ -57,52 +60,6 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		int currYear = DateUtil.obtenerAnyo(new Date());
 		while (year <= currYear) {
 			setCollection(year++, true);
-		}
-	}
-
-	@Override
-	public void consultarRangoOperacionIndicador(RangoOperacionIndividuo r) {
-
-	}
-
-	private void consultarRangoOperacionIndicadorIntern(RangoOperacionIndividuo r) {
-		int cantidad = 10;
-		List<BsonField> accumulators = new ArrayList<>();
-		accumulators.add(Accumulators.sum("sumTakeProfit", "$takeProfit"));
-		accumulators.add(Accumulators.sum("sumStopLoss", "$stopLoss"));
-		accumulators.add(Accumulators.sum("cantidad", 1));
-
-		List<Bson> filters = new ArrayList<>();
-		filters.add(Filters.gte("fechaHistorico", r.getFechaFiltro()));
-		filters.add(Filters.lte("fechaHistorico", r.getFechaFiltro2()));
-
-		r.getFilterList().stream().forEach((one) -> {
-			filters.add(Filters.exists(one));
-			accumulators.add(Accumulators.sum("sum" + one, "$" + one));
-			accumulators.add(Accumulators.min("min" + one, "$" + one));
-			accumulators.add(Accumulators.max("max" + one, "$" + one));
-		});
-		MongoCursor<Document> cursor = this.collection.aggregate(Arrays.asList(Aggregates.match(Filters.and(filters)),
-				Aggregates.group(null, accumulators), Aggregates.sample(cantidad))).iterator();
-
-		List<Point> p = getMapper().helpList(cursor);
-
-	}
-
-	public void insertMany(List<Point> datos) {
-		int initialIndex = 0;
-		for (int i = 1; i < datos.size(); i++) {
-			int prev = DateUtil.obtenerAnyo(datos.get(i - 1).getDate());
-			int curr = DateUtil.obtenerAnyo(datos.get(i).getDate());
-			if ((curr != prev) || (i == datos.size() - 1)) {
-				List<Point> tempDatos = datos;
-				if ((initialIndex > 0) || (i < datos.size() - 1)) {
-					tempDatos = datos.subList(initialIndex, i);
-				}
-				setCollection(prev);
-				super.insertMany(tempDatos);
-				initialIndex = i;
-			}
 		}
 	}
 
@@ -142,6 +99,68 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 			}
 		}
 	}
+
+	@Override
+	public void consultarRangoOperacionIndicador(RangoOperacionIndividuo r) {
+		int initialYear = DateUtil.obtenerAnyo(r.getFechaFiltro());
+		int endYear = DateUtil.obtenerAnyo(r.getFechaFiltro2());
+		int year = endYear; 
+		// TODO ricardorq85 soporte multi años: year = initialYear;
+		while (year <= endYear) {
+			setCollection(year);
+			consultarRangoOperacionIndicadorIntern(r);
+			year++;
+		}
+	}
+
+	private void consultarRangoOperacionIndicadorIntern(RangoOperacionIndividuo r) {
+		int cantidad = 10;
+		List<BsonField> accumulators = new ArrayList<>();
+		accumulators.add(Accumulators.min("minLow", "$low"));
+		accumulators.add(Accumulators.max("maxHigh", "$high"));
+		accumulators.add(Accumulators.sum("registros", 1));
+
+		List<Bson> filters = new ArrayList<>();
+		filters.add(Filters.gte("fechaHistorico", r.getFechaFiltro()));
+		filters.add(Filters.lte("fechaHistorico", r.getFechaFiltro2()));
+
+		r.getFilterList().stream().forEach((one) -> {
+//			filters.add(Filters.exists(one));
+
+			String strNombre = one.toString().replaceAll("\\.", "");
+			accumulators.add(Accumulators.sum("sum" + strNombre, "$" + one));
+			accumulators.add(Accumulators.min("min" + strNombre, "$" + one));
+			accumulators.add(Accumulators.max("max" + strNombre, "$" + one));
+		});
+	
+//		LogUtil.logTime(
+	//			Filters.and(filters).toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
+
+
+		MongoCursor<Document> cursor = this.collection.aggregate(Arrays.asList(Aggregates.match(Filters.and(filters)),
+				Aggregates.unwind("$indicadores"),
+				Aggregates.group(null, accumulators), Aggregates.sample(cantidad))).iterator();
+
+		((MongoDatoHistoricoMapper) getMapper()).helpRangoOperacionIndividuo(cursor, r);
+	}
+
+	public void insertMany(List<Point> datos) {
+		int initialIndex = 0;
+		for (int i = 1; i < datos.size(); i++) {
+			int prev = DateUtil.obtenerAnyo(datos.get(i - 1).getDate());
+			int curr = DateUtil.obtenerAnyo(datos.get(i).getDate());
+			if ((curr != prev) || (i == datos.size() - 1)) {
+				List<Point> tempDatos = datos;
+				if ((initialIndex > 0) || (i < datos.size() - 1)) {
+					tempDatos = datos.subList(initialIndex, i);
+				}
+				setCollection(prev);
+				super.insertMany(tempDatos);
+				initialIndex = i;
+			}
+		}
+	}
+
 
 	@Override
 	public long consultarCantidadPuntos(DateInterval interval) throws GeneticDAOException {
@@ -305,8 +324,6 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 		filtros.add(Filters.or(filtrosTakeStop));
 
 		Bson bsonFiltrosCompletos = Filters.and(filtros);
-//		LogUtil.logTime(
-//				bsonFiltrosCompletos.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
 
 		Document doc = this.collection.find(bsonFiltrosCompletos).sort(Sorts.orderBy(Sorts.ascending("fechaHistorico")))
 				.limit(1).first();
@@ -528,6 +545,18 @@ public class MongoDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDa
 
 	@Override
 	public List<? extends Point> consultarHistorico(Date fechaBase) throws GeneticDAOException {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
+
+	@Override
+	public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii)
+			throws GeneticDAOException {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
+
+	@Override
+	public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii,
+			DateInterval di) throws GeneticDAOException {
 		throw new UnsupportedOperationException("UnsupportedOperationException");
 	}
 

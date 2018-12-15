@@ -171,6 +171,11 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 		}
 		this.parent2 = parent2;
 		this.individuoType = individuoType;
+		if (individuoType != null) {
+			this.tipoIndividuo = individuoType.name();
+		} else {
+			this.tipoIndividuo = IndividuoType.INITIAL.name();
+		}
 		this.creationDate = new Date();
 		this.optimizedCloseIndicators = Collections
 				.synchronizedList(new ArrayList<Indicator>(indicadorController.getIndicatorNumber()));
@@ -899,10 +904,9 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 		 * buffer.append("MinConsecutiveWonOperationsNumber=" +
 		 * this.fortaleza.getMinConsecutiveWonOperationsNumber() + ",");
 		 * buffer.append("AverageConsecutiveLostOperationsNumber=" +
-		 * Math.round(this.fortaleza.getAverageConsecutiveLostOperationsNumber()
-		 * ) + ","); buffer.append("AverageConsecutiveWonOperationsNumber=" +
-		 * Math.round(this.fortaleza.getAverageConsecutiveWonOperationsNumber())
-		 * + ",");
+		 * Math.round(this.fortaleza.getAverageConsecutiveLostOperationsNumber() ) +
+		 * ","); buffer.append("AverageConsecutiveWonOperationsNumber=" +
+		 * Math.round(this.fortaleza.getAverageConsecutiveWonOperationsNumber()) + ",");
 		 */
 		for (Indicator indicator : this.openIndicators) {
 			if (indicator != null) {
@@ -1253,39 +1257,37 @@ public class IndividuoEstrategia implements Comparable<IndividuoEstrategia>, Ser
 	protected int comparePattern(IndividuoEstrategia other) {
 		int compare = 0;
 		/*
-		 * if ((this.currentPatterns != null) && (other.currentPatterns !=
-		 * null)) { LogUtil.logTime(this.id + " compareTo.currentPatterns.0 " +
-		 * other.id, 1); if ((compare == 0) && (!this.currentPatterns.isEmpty())
-		 * && (other.currentPatterns.isEmpty())) { LogUtil.logTime(this.id +
-		 * " compareTo.currentPatterns.1 " + other.id, 1); compare = 1; } if
-		 * ((compare == 0) && (this.currentPatterns.isEmpty()) &&
+		 * if ((this.currentPatterns != null) && (other.currentPatterns != null)) {
+		 * LogUtil.logTime(this.id + " compareTo.currentPatterns.0 " + other.id, 1); if
+		 * ((compare == 0) && (!this.currentPatterns.isEmpty()) &&
+		 * (other.currentPatterns.isEmpty())) { LogUtil.logTime(this.id +
+		 * " compareTo.currentPatterns.1 " + other.id, 1); compare = 1; } if ((compare
+		 * == 0) && (this.currentPatterns.isEmpty()) &&
 		 * (!other.currentPatterns.isEmpty())) { LogUtil.logTime(this.id +
 		 * " compareTo.currentPatterns.-1 " + other.id, 1); compare = -1; } } if
 		 * ((this.patterns != null) && (other.patterns != null)) {
 		 * LogUtil.logTime(this.id + " compareTo.patterns.0 " + other.id, 1); if
-		 * ((compare == 0) && (!this.patterns.isEmpty()) &&
-		 * (other.patterns.isEmpty())) { LogUtil.logTime(this.id +
-		 * " compareTo.patterns.1 " + other.id, 1); compare = 1; } if ((compare
-		 * == 0) && (this.patterns.isEmpty()) && (!other.patterns.isEmpty())) {
-		 * LogUtil.logTime(this.id + " compareTo.patterns.-1 " + other.id, 1);
-		 * compare = -1; } } if ((this.ordenes != null) && (other.ordenes !=
-		 * null)) { LogUtil.logTime(this.id + " compareTo.ordenes.0 " +
-		 * other.id, 1); if ((compare == 0) && (!this.ordenes.isEmpty()) &&
-		 * (other.ordenes.isEmpty())) { LogUtil.logTime(this.id +
-		 * " compareTo.ordenes.1 " + other.id, 1); compare = 1; } if ((compare
-		 * == 0) && (this.ordenes.isEmpty()) && (!other.ordenes.isEmpty())) {
-		 * LogUtil.logTime(this.id + " compareTo.ordenes.-1 " + other.id, 1);
-		 * compare = -1; } } if ((this.fortaleza != null) && (other.fortaleza !=
-		 * null)) { LogUtil.logTime(this.id + " compareTo.fortaleza.0 " +
-		 * other.id, 1); if ((compare == 0) &&
-		 * (this.fortaleza.getOperationsNumber() != 0.0D) &&
-		 * (other.fortaleza.getOperationsNumber() == 0.0D)) {
-		 * LogUtil.logTime(this.id + " compareTo.fortaleza.1 " + other.id, 1);
-		 * compare = 1; } if ((compare == 0) &&
-		 * (this.getFortaleza().getOperationsNumber() == 0.0D) &&
+		 * ((compare == 0) && (!this.patterns.isEmpty()) && (other.patterns.isEmpty()))
+		 * { LogUtil.logTime(this.id + " compareTo.patterns.1 " + other.id, 1); compare
+		 * = 1; } if ((compare == 0) && (this.patterns.isEmpty()) &&
+		 * (!other.patterns.isEmpty())) { LogUtil.logTime(this.id +
+		 * " compareTo.patterns.-1 " + other.id, 1); compare = -1; } } if ((this.ordenes
+		 * != null) && (other.ordenes != null)) { LogUtil.logTime(this.id +
+		 * " compareTo.ordenes.0 " + other.id, 1); if ((compare == 0) &&
+		 * (!this.ordenes.isEmpty()) && (other.ordenes.isEmpty())) {
+		 * LogUtil.logTime(this.id + " compareTo.ordenes.1 " + other.id, 1); compare =
+		 * 1; } if ((compare == 0) && (this.ordenes.isEmpty()) &&
+		 * (!other.ordenes.isEmpty())) { LogUtil.logTime(this.id +
+		 * " compareTo.ordenes.-1 " + other.id, 1); compare = -1; } } if
+		 * ((this.fortaleza != null) && (other.fortaleza != null)) {
+		 * LogUtil.logTime(this.id + " compareTo.fortaleza.0 " + other.id, 1); if
+		 * ((compare == 0) && (this.fortaleza.getOperationsNumber() != 0.0D) &&
+		 * (other.fortaleza.getOperationsNumber() == 0.0D)) { LogUtil.logTime(this.id +
+		 * " compareTo.fortaleza.1 " + other.id, 1); compare = 1; } if ((compare == 0)
+		 * && (this.getFortaleza().getOperationsNumber() == 0.0D) &&
 		 * (other.getFortaleza().getOperationsNumber() != 0.0D)) {
-		 * LogUtil.logTime(this.id + " compareTo.fortaleza.-1 " + other.id, 1);
-		 * compare = -1; } }
+		 * LogUtil.logTime(this.id + " compareTo.fortaleza.-1 " + other.id, 1); compare
+		 * = -1; } }
 		 */
 		if (compare == 0) {
 			// LogUtil.logTime(this.id + " compareTo.value.0 " + other.id, 1);

@@ -35,6 +35,7 @@ import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.RandomUtil;
+import forex.genetic.util.jdbc.DataClient;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -42,6 +43,8 @@ import forex.genetic.util.jdbc.JDBCUtil;
  * @author ricardorq85
  */
 public abstract class IndividuoXIndicadorManager {
+
+	protected DataClient dataClient;
 
 	private Connection conn = null;
 	protected final OracleIndividuoDAO individuoDAO;
@@ -95,7 +98,7 @@ public abstract class IndividuoXIndicadorManager {
 	public void crearIndividuos() throws GeneticBusinessException {
 		try {
 			if (primeraVez) {
-				this.configurarAmbiente();
+				//this.configurarAmbiente();
 				primeraVez = false;
 			}
 			Date fechaFiltroFinal = new Date(fechaMaxima.getTime());
@@ -160,19 +163,24 @@ public abstract class IndividuoXIndicadorManager {
 				throw new GeneticBusinessException(e);
 			}
 
-			if ((individuoSell != null) && (individuoBuy != null)) {
-				Poblacion poblacion = new Poblacion();
-				poblacion.add(individuoSell);
-				poblacion.add(individuoBuy);
-				Poblacion mutados = mutarIndividuos(poblacion);
-				poblacion.addAll(mutados);
-				cruzarIndividuos(rangoOperacionIndividuo, poblacion);
-			}
+			procesarCruceIndividuos(rangoOperacionIndividuo, individuoSell, individuoBuy);
 
 		} else {
 			logTime("NO cumple con el rango valido.", 2);
 		}
 		return found_any;
+	}
+
+	protected void procesarCruceIndividuos(RangoOperacionIndividuo rangoOperacionIndividuo, Individuo individuoSell,
+			Individuo individuoBuy) throws GeneticBusinessException {
+		if ((individuoSell != null) && (individuoBuy != null)) {
+			Poblacion poblacion = new Poblacion();
+			poblacion.add(individuoSell);
+			poblacion.add(individuoBuy);
+			Poblacion mutados = mutarIndividuos(poblacion);
+			poblacion.addAll(mutados);
+			cruzarIndividuos(rangoOperacionIndividuo, poblacion);
+		}
 	}
 
 	protected void cruzarIndividuos(RangoOperacionIndividuo rangoOperacionIndividuo, Poblacion poblacionBase)
@@ -226,12 +234,13 @@ public abstract class IndividuoXIndicadorManager {
 		return poblacionMutados;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void insertIndividuo(IndividuoEstrategia individuo) throws GeneticDAOException {
 		if (individuo != null) {
-			individuoDAO.insert(individuo);
-			individuoDAO.insertIndicadorIndividuo(indicadorController, individuo);
-			individuoDAO.insertarIndividuoIndicadoresColumnas(individuo.getId());
-			individuoDAO.commit();
+			dataClient.getDaoIndividuo().insert(individuo);
+			dataClient.getDaoIndividuo().insertIndicadorIndividuo(indicadorController, individuo);
+			dataClient.getDaoIndividuo().insertarIndividuoIndicadoresColumnas(individuo.getId());
+			dataClient.commit();
 			logTime("Individuo insertado a BD:" + individuo.getId(), 1);
 		}
 	}
@@ -239,7 +248,7 @@ public abstract class IndividuoXIndicadorManager {
 	private void procesarRangoOperacionIndicadores(RangoOperacionIndividuo rangoOperacionIndividuo, int cantidadPuntos)
 			throws GeneticBusinessException {
 		StringBuilder fields = new StringBuilder();
-		StringBuilder filters = new StringBuilder();
+		List<String> filters = new ArrayList<String>();
 		StringBuilder porcentajeCumplimiento = new StringBuilder();
 		int num_indicadores = indicadorController.getIndicatorNumber();
 		for (int i = 0; i < num_indicadores; i++) {
@@ -248,14 +257,14 @@ public abstract class IndividuoXIndicadorManager {
 			String[] sqlIndicador = indManager.queryRangoOperacionIndicador();
 			porcentajeCumplimiento.append(indManager.queryPorcentajeCumplimientoIndicador());
 			fields.append(sqlIndicador[0]);
-			filters.append(sqlIndicador[1]);
+			filters.add(sqlIndicador[1]);
 			RangoOperacionIndividuoIndicador rangoIndicador = new RangoOperacionIndividuoIndicador();
 			rangoIndicador.setIndicator(indManager.getIndicatorInstance());
 
 			rangoOperacionIndividuo.getIndicadores().add(rangoIndicador);
 		}
 		rangoOperacionIndividuo.setFields(fields.toString());
-		rangoOperacionIndividuo.setFilters(filters.toString());
+		rangoOperacionIndividuo.setFilterList(filters);
 		rangoOperacionIndividuo.setFiltroCumplimiento(porcentajeCumplimiento.toString());
 
 		try {
@@ -371,7 +380,9 @@ public abstract class IndividuoXIndicadorManager {
 
 		Individuo ind = null;
 		if (counter > 4) {
-			ind = new Individuo(Constants.IndividuoType.INDICADOR_GANADOR);
+			ind = this.createIndividuoInstance();
+			ind.setIndividuoType(Constants.IndividuoType.INDICADOR_GANADOR);
+			ind.setTipoIndividuo(Constants.IndividuoType.INDICADOR_GANADOR.name());
 			ind.setTipoOperacion(tipoOperacion);
 			ind.setLot(0.1);
 			ind.setInitialBalance(2000);
@@ -385,5 +396,7 @@ public abstract class IndividuoXIndicadorManager {
 		}
 		return (ind);
 	}
+
+	protected abstract Individuo createIndividuoInstance();
 
 }

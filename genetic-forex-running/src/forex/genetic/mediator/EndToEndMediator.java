@@ -163,11 +163,16 @@ public abstract class EndToEndMediator extends GeneticMediator {
 		return fileVisitor.getCopiedFiles();
 	}
 
-	protected void procesarIndividuos() throws FileNotFoundException {
+	protected void procesarIndividuos() throws GeneticBusinessException {
 		logTime("Init Procesar Individuos", 1);
-		GeneticDelegateBD delegate = new GeneticDelegateBD();
-		delegate.process(true);
-		logTime("End Procesar Individuos", 1);
+		GeneticDelegateBD delegate;
+		try {
+			delegate = new GeneticDelegateBD();
+			delegate.process(true);
+			logTime("End Procesar Individuos", 1);
+		} catch (FileNotFoundException e) {
+			throw new GeneticBusinessException(e);
+		}
 	}
 
 	protected void procesarTendencias(DataClient dataClient, TendenciaProcesoManager tendenciaProcesoManager)

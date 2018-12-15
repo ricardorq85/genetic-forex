@@ -25,7 +25,7 @@ import forex.genetic.manager.controller.IndicadorController;
  */
 public class OracleIndividuoXIndicadorManager extends IndividuoXIndicadorManager {
 
-	public OracleIndividuoXIndicadorManager() throws GeneticBusinessException{
+	public OracleIndividuoXIndicadorManager() throws GeneticBusinessException {
 		super();
 	}
 
@@ -62,6 +62,11 @@ public class OracleIndividuoXIndicadorManager extends IndividuoXIndicadorManager
 			}
 		});
 		return individuosParaCruzar;
+	}
+
+	@Override
+	protected Individuo createIndividuoInstance() {
+		return new Individuo();
 	}
 
 }

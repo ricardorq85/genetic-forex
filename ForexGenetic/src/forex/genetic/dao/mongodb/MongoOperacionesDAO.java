@@ -44,6 +44,7 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		super("operacion", configure);
 		setCollection("operacionesPositivas", true);
 		setCollection("operacionesNegativas", true);
+		setCollection("operacion", true);
 	}
 
 	public void configureCollection() {
@@ -146,6 +147,15 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		super.insertIfNoExists(obj);
 		setCollectionInternByPips(obj);
 		super.insertIfNoExists(obj);
+		setCollection("operacion", false);
+	}
+
+	@Override
+	public void insertOrUpdate(MongoOrder obj) {
+		setCollection("operacion", false);
+		super.insertOrUpdate(obj);
+		setCollectionInternByPips(obj);
+		super.insertOrUpdate(obj);
 		setCollection("operacion", false);
 	}
 

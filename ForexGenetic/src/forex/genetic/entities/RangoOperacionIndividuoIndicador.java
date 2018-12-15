@@ -14,6 +14,7 @@ import forex.genetic.entities.indicator.Indicator;
 public class RangoOperacionIndividuoIndicador {
 
 	private Indicator indicator;
+	private int cantidad;
 	private double promedio;
 	private double porcentajeCumplimiento;
 
@@ -52,6 +53,14 @@ public class RangoOperacionIndividuoIndicador {
 
 	public void setPromedio(double promedio) {
 		this.promedio = promedio;
+	}
+
+	public int getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(int cantidad) {
+		this.cantidad = cantidad;
 	}
 
 }

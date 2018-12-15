@@ -32,13 +32,17 @@ public class RangoOperacionIndividuo {
 	private List<RangoOperacionIndividuoIndicador> indicadores;
 	private RangoCierreOperacionIndividuo rangoCierre;
 
+	public RangoOperacionIndividuo() {
+		indicadores = new ArrayList<RangoOperacionIndividuoIndicador>();
+	}
+
 	public RangoOperacionIndividuo(double c_pips, double retroceso, DateInterval fechaFiltro, boolean positivas) {
 		indicadores = new ArrayList<RangoOperacionIndividuoIndicador>();
 		this.setPositivas(positivas);
 		this.setPips(c_pips);
 		this.setRetroceso(retroceso);
 		this.setFechaFiltro(fechaFiltro.getLowInterval());
-		//this.setFechaFiltro2(DateUtil.adicionarMes(fechaFiltro, meses));
+		// this.setFechaFiltro2(DateUtil.adicionarMes(fechaFiltro, meses));
 		this.setFechaFiltro2(fechaFiltro.getHighInterval());
 	}
 
@@ -181,7 +185,7 @@ public class RangoOperacionIndividuo {
 	public boolean isRangoValido() {
 		return this.isRangoValido(4);
 	}
-	
+
 	protected boolean isRangoValido(int cantidad) {
 		return ((this.getIndicadores() != null) && containsCantidadIndicadores(cantidad)
 				&& (this.containsIndicadorNuevo()));
@@ -190,30 +194,27 @@ public class RangoOperacionIndividuo {
 	protected boolean containsCantidadIndicadores(int cantidad) {
 		return this.getIndicadores().size() > cantidad;
 	}
-	
-	
 
 	protected boolean containsIndicadorNuevo() {
 		return true;
 		/*
 		 * List<RangoOperacionIndicador> nuevos = new ArrayList<>();
 		 * RangoOperacionIndicador sar1200 = new RangoOperacionIndicador();
-		 * sar1200.setIdIndicator("SAR1200"); RangoOperacionIndicador adx168 =
-		 * new RangoOperacionIndicador(); adx168.setIdIndicator("ADX168");
+		 * sar1200.setIdIndicator("SAR1200"); RangoOperacionIndicador adx168 = new
+		 * RangoOperacionIndicador(); adx168.setIdIndicator("ADX168");
 		 * RangoOperacionIndicador rsi84 = new RangoOperacionIndicador();
-		 * rsi84.setIdIndicator("RSI84"); RangoOperacionIndicador bollinger240 =
-		 * new RangoOperacionIndicador();
-		 * bollinger240.setIdIndicator("BOLLINGER240"); RangoOperacionIndicador
-		 * momentum1200 = new RangoOperacionIndicador();
+		 * rsi84.setIdIndicator("RSI84"); RangoOperacionIndicador bollinger240 = new
+		 * RangoOperacionIndicador(); bollinger240.setIdIndicator("BOLLINGER240");
+		 * RangoOperacionIndicador momentum1200 = new RangoOperacionIndicador();
 		 * momentum1200.setIdIndicator("MOMENTUM1200"); RangoOperacionIndicador
 		 * ichiSignal6 = new RangoOperacionIndicador();
-		 * ichiSignal6.setIdIndicator("ICHIMOKU_SIGNAL6");
-		 * RangoOperacionIndicador ichiTrend6 = new RangoOperacionIndicador();
+		 * ichiSignal6.setIdIndicator("ICHIMOKU_SIGNAL6"); RangoOperacionIndicador
+		 * ichiTrend6 = new RangoOperacionIndicador();
 		 * ichiTrend6.setIdIndicator("ICHIMOKU_TREND6");
 		 * 
 		 * nuevos.add(sar1200); nuevos.add(adx168); nuevos.add(rsi84);
-		 * nuevos.add(bollinger240); nuevos.add(momentum1200);
-		 * nuevos.add(ichiSignal6); nuevos.add(ichiTrend6);
+		 * nuevos.add(bollinger240); nuevos.add(momentum1200); nuevos.add(ichiSignal6);
+		 * nuevos.add(ichiTrend6);
 		 * 
 		 * return !Collections.disjoint(l_rango, nuevos);
 		 */

@@ -10,15 +10,24 @@ import org.bson.Document;
 
 import com.mongodb.client.MongoCursor;
 
+import forex.genetic.entities.DoubleInterval;
+import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
+import forex.genetic.entities.RangoOperacionIndividuo;
+import forex.genetic.entities.RangoOperacionIndividuoIndicador;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
+import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.DateUtil;
+import forex.genetic.util.RandomUtil;
 
 public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
+
+	private static final IndicadorController indicadorController = ControllerFactory
+			.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 
 	@Override
 	public Map<String, Object> toPrimaryKeyMap(Point obj) {
@@ -115,7 +124,8 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 					indicadorController.getIndicatorNumber());
 			for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
 				IndicadorManager<Indicator> indicadorManager = indicadorController.getManagerInstance(i);
-				IntervalIndicator indicador = (IntervalIndicator)indicadorManager.getIndicatorInstance(indicadoresMap.get(i));
+				IntervalIndicator indicador = (IntervalIndicator) indicadorManager
+						.getIndicatorInstance(indicadoresMap.get(i));
 				indicadores.add(indicador);
 			}
 			obj.setIndicators(indicadores);
@@ -124,4 +134,58 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 		return obj;
 	}
 
+	public void helpRangoOperacionIndividuo(MongoCursor<Document> cursor,
+			RangoOperacionIndividuo rangoOperacionIndividuo) {
+		if (cursor.hasNext()) {
+			Document doc = cursor.next();
+			int cantidad = doc.getInteger("registros");
+			if (cantidad == 0) {
+				rangoOperacionIndividuo.setIndicadores(null);
+				return;
+			}
+
+			int num_indicadores = indicadorController.getIndicatorNumber();
+			for (int i = 0; i < num_indicadores; i++) {
+				IntervalIndicatorManager<?> indManager = (IntervalIndicatorManager<?>) indicadorController
+						.getManagerInstance(i);
+				RangoOperacionIndividuoIndicador rangoIndicador = rangoOperacionIndividuo.getIndicadores().get(i);
+				IntervalIndicator indicator = ((IntervalIndicator) rangoIndicador.getIndicator());
+
+				String[] nombreCalculado = indManager.getNombresCalculados();
+				double inferior = Double.MAX_VALUE;
+				double superior = Double.MIN_VALUE;
+				double promedio = 0.0D;
+				for (int j = 0; j < nombreCalculado.length; j++) {
+					StringBuilder nombreIndicador = new StringBuilder("indicadores").append(".")
+							.append(indicator.getName()).append(".");
+					StringBuilder nombreIndicadorCalculado = new StringBuilder(nombreIndicador)
+							.append(nombreCalculado[j]);
+					String strNombre = nombreIndicadorCalculado.toString().replaceAll("\\.", "");
+
+					Double min = doc.getDouble("min" + strNombre);
+					Double max = doc.getDouble("max" + strNombre);
+					if (min != null) {
+						inferior = Math.min(inferior, min);
+					}
+					if (max != null) {
+						superior = Math.max(superior, max);
+					}
+					// doc.getDouble("sum" + nombreIndicadorCalculado.toString());
+				}
+
+				Interval<Double> interval = new DoubleInterval(inferior, superior);
+				indicator.setInterval(interval);
+				rangoIndicador.setCantidad(cantidad);
+				rangoIndicador.setPorcentajeCumplimiento(RandomUtil.nextDouble() / 5.0D);
+			}
+
+			double minLow = doc.getDouble("minLow");
+			double maxHigh = doc.getDouble("maxHigh");
+			int diff = Math.min(3000, new Double((maxHigh - minLow) * 100000).intValue());
+			diff = Math.max(diff, 200);
+			rangoOperacionIndividuo.setTakeProfit(diff);
+			rangoOperacionIndividuo.setStopLoss(diff);
+			rangoOperacionIndividuo.setCantidad(cantidad);
+		}
+	}
 }

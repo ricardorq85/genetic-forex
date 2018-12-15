@@ -75,7 +75,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 
 	protected void runIndividuo(MongoIndividuo individuo) throws ClassNotFoundException, GeneticDAOException {
 		try {
-			int mesesAAdicionar = 6;
+			int mesesAAdicionar = 3;
 			if (!validarYBorrarIndividuoInvalido(individuo)) {
 				ProcesoEjecucionDTO procesoEjecucionIndividuo = individuo.getProcesoEjecucion();
 				Date fechaMayorQue = ((procesoEjecucionIndividuo == null)
