@@ -106,7 +106,7 @@ public class RsiIndicatorManager extends IntervalIndicatorManager<Rsi> {
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.RSI) BETWEEN ? AND ?) ";
 		return s;

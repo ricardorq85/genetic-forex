@@ -95,7 +95,7 @@ public class MacdIndicatorManager extends IntervalIndicatorManager<Macd> {
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.MACD_VALUE-DH.MACD_SIGNAL) BETWEEN ? AND ?) ";
 		return s;

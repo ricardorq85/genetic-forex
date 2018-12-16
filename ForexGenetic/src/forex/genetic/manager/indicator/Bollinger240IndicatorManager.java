@@ -37,7 +37,7 @@ public class Bollinger240IndicatorManager extends BollingerIndicatorManager {
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.BOLLINGER_UPPER240-DH.BOLLINGER_LOWER240) BETWEEN ? AND ?) ";
 		return s;

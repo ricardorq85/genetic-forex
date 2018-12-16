@@ -37,7 +37,7 @@ public class Adx168IndicatorManager extends AdxIndicatorManager {
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.ADX_VALUE168*(DH.ADX_PLUS168-DH.ADX_MINUS168)) BETWEEN ? AND ?) ";
 		return s;

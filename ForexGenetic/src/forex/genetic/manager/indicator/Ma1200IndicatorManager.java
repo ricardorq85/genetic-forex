@@ -37,7 +37,7 @@ public class Ma1200IndicatorManager extends MaIndicatorManager {
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.MA1200-DH.LOW) BETWEEN ? AND ? " + "  OR (DH.MA1200-DH.HIGH) BETWEEN ? AND ?) ";
 		return s;

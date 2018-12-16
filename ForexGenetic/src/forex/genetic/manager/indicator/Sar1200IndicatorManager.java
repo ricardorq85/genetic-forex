@@ -41,7 +41,7 @@ public class Sar1200IndicatorManager extends SarIndicatorManager {
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.SAR1200-DH.LOW) BETWEEN ? AND ? " + "  OR (DH.SAR1200-DH.HIGH) BETWEEN ? AND ? ) ";
 		return s;

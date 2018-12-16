@@ -36,7 +36,7 @@ public class Rsi84IndicatorManager extends RsiIndicatorManager {
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.RSI84) BETWEEN ? AND ?) ";
 		return s;

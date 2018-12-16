@@ -96,7 +96,7 @@ public class BollingerIndicatorManager extends IntervalIndicatorManager<Bollinge
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.BOLLINGER_UPPER-DH.BOLLINGER_LOWER) BETWEEN ? AND ?) ";
 		return s;

@@ -37,7 +37,7 @@ public class CompareMa1200IndicatorManager extends CompareMaIndicatorManager {
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.AVERAGE_COMPARE1200-DH.COMPARE_VALUE) BETWEEN ? AND ?) ";
 		return s;

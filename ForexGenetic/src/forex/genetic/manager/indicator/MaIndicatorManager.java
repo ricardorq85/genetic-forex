@@ -111,7 +111,7 @@ public class MaIndicatorManager extends IntervalIndicatorManager<Average> {
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.AVERAGE-DH.LOW) BETWEEN ? AND ? " + "  OR (DH.AVERAGE-DH.HIGH) BETWEEN ? AND ?) ";
 		return s;

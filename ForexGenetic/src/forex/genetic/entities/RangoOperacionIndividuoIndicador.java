@@ -15,6 +15,7 @@ public class RangoOperacionIndividuoIndicador {
 
 	private Indicator indicator;
 	private int cantidad;
+	private double suma;
 	private double promedio;
 	private double porcentajeCumplimiento;
 
@@ -61,6 +62,14 @@ public class RangoOperacionIndividuoIndicador {
 
 	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
+	}
+
+	public double getSuma() {
+		return suma;
+	}
+
+	public void setSuma(double suma) {
+		this.suma = suma;
 	}
 
 }

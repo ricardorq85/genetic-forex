@@ -154,7 +154,7 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 				String[] nombreCalculado = indManager.getNombresCalculados();
 				double inferior = Double.MAX_VALUE;
 				double superior = Double.MIN_VALUE;
-				double promedio = 0.0D;
+				double maxSum = 0.0D;
 				for (int j = 0; j < nombreCalculado.length; j++) {
 					StringBuilder nombreIndicador = new StringBuilder("indicadores").append(".")
 							.append(indicator.getName()).append(".");
@@ -162,21 +162,30 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 							.append(nombreCalculado[j]);
 					String strNombre = nombreIndicadorCalculado.toString().replaceAll("\\.", "");
 
+					System.out.println("Indicador:" + strNombre);
+					if ("indicadoresIchiTrendcalculado_trend_low".equals(strNombre)) {
+						System.out.println("Indicador trend low:" + strNombre);
+					}
 					Double min = doc.getDouble("min" + strNombre);
 					Double max = doc.getDouble("max" + strNombre);
+					Double sum = doc.getDouble("sum" + strNombre);
 					if (min != null) {
 						inferior = Math.min(inferior, min);
 					}
 					if (max != null) {
 						superior = Math.max(superior, max);
 					}
-					// doc.getDouble("sum" + nombreIndicadorCalculado.toString());
+					if (sum != null) {
+						maxSum = Math.max(maxSum, sum);
+					}
 				}
 
 				Interval<Double> interval = new DoubleInterval(inferior, superior);
 				indicator.setInterval(interval);
 				rangoIndicador.setCantidad(cantidad);
-				rangoIndicador.setPorcentajeCumplimiento(RandomUtil.nextDouble() / 5.0D);
+				rangoIndicador.setSuma(maxSum);
+				rangoIndicador.setPromedio(maxSum / cantidad);
+				// rangoIndicador.setPorcentajeCumplimiento(RandomUtil.nextDouble() / 5.0D);
 			}
 
 			double minLow = doc.getDouble("minLow");

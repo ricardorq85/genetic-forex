@@ -37,6 +37,18 @@ public class MongoParametroMapper extends MongoMapper<Parametro> {
 		obj.setParametro(dto);
 		return obj;
 	}
+	
+	public Parametro helpOneDate(Document one) {
+		Parametro obj = new Parametro();
+		ParametroDTO dto = new ParametroDTO();
+		dto.setNombre(one.getString("nombre"));
+		dto.setValor(one.getDate("valor"));
+		dto.setFecha(one.getDate("fecha"));
+		
+		obj.setParametro(dto);
+		return obj;
+	}
+
 
 	@Override
 	public Map<String, Object> toMapForDelete(Parametro obj, Date fechaReferencia) {

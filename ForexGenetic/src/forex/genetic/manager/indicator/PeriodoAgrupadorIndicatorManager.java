@@ -125,7 +125,7 @@ public class PeriodoAgrupadorIndicatorManager extends IntervalIndicatorManager<P
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		throw new UnsupportedOperationException("Not supported yet."); // To
 																		// change
 																		// body

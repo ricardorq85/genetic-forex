@@ -83,7 +83,7 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 	}
 
 	@Override
-	public void consultarRangoOperacionIndicador(RangoOperacionIndividuo r) {
+	public void consultarRangoOperacionIndicador(RangoOperacionIndividuo rangoOperacion) {
 		int cantidad = 10;
 		List<BsonField> accumulators = new ArrayList<>();
 		accumulators.add(Accumulators.min("minLow", "$low"));
@@ -91,10 +91,10 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 		accumulators.add(Accumulators.sum("registros", 1));
 
 		List<Bson> filters = new ArrayList<>();
-		filters.add(Filters.gte("fechaHistorico", r.getFechaFiltro()));
-		filters.add(Filters.lte("fechaHistorico", r.getFechaFiltro2()));
+		filters.add(Filters.gte("fechaHistorico", rangoOperacion.getFechaFiltro()));
+		filters.add(Filters.lte("fechaHistorico", rangoOperacion.getFechaFiltro2()));
 
-		r.getFilterList().stream().forEach((one) -> {
+		rangoOperacion.getFilterList().stream().forEach((one) -> {
 //			filters.add(Filters.exists(one));
 
 			String strNombre = one.toString().replaceAll("\\.", "");
@@ -102,16 +102,16 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 			accumulators.add(Accumulators.min("min" + strNombre, "$" + one));
 			accumulators.add(Accumulators.max("max" + strNombre, "$" + one));
 		});
-	
-//		LogUtil.logTime(
-	//			Filters.and(filters).toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
 
+//		LogUtil.logTime(
+		// Filters.and(filters).toBsonDocument(Document.class,
+		// MongoClient.getDefaultCodecRegistry()).toJson(), 1);
 
 		MongoCursor<Document> cursor = this.collection.aggregate(Arrays.asList(Aggregates.match(Filters.and(filters)),
-				Aggregates.unwind("$indicadores"),
-				Aggregates.group(null, accumulators), Aggregates.sample(cantidad))).iterator();
+				Aggregates.unwind("$indicadores"), Aggregates.group(null, accumulators), Aggregates.sample(cantidad)))
+				.iterator();
 
-		((MongoDatoHistoricoMapper) getMapper()).helpRangoOperacionIndividuo(cursor, r);
+		((MongoDatoHistoricoMapper) getMapper()).helpRangoOperacionIndividuo(cursor, rangoOperacion);
 	}
 
 	@Override
@@ -248,59 +248,64 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 		for (int i = 0; i < indicadores.size(); i++) {
 			IndicadorManager<?> managerInstance = indicadorController.getManagerInstance(i);
-			String[] nombreCalculado = managerInstance.getNombresCalculados();
-			List<Bson> filtrosDatosCalculados = new ArrayList<>();
-			List<Bson> filtrosIndicadorLow = new ArrayList<>();
-			List<Bson> filtrosIndicadorHigh = new ArrayList<>();
-			List<Bson> filtrosIndicadorLowReves = new ArrayList<>();
-			List<Bson> filtrosIndicadorHighReves = new ArrayList<>();
+			IntervalIndicator intervalIndicator = ((IntervalIndicator) indicadores.get(i));
 
-			for (int j = 0; j < nombreCalculado.length; j++) {
-				IntervalIndicator intervalIndicator = ((IntervalIndicator) indicadores.get(i));
-				if ((intervalIndicator != null) && (intervalIndicator.getInterval() != null)
-						&& (intervalIndicator.getInterval().getLowInterval() != null)
-						&& (intervalIndicator.getInterval().getHighInterval() != null)) {
-					StringBuilder nombreIndicador = new StringBuilder("indicadores").append(".")
-							.append(intervalIndicator.getName()).append(".");
-					StringBuilder nombreIndicadorCalculado = new StringBuilder(nombreIndicador)
-							.append(nombreCalculado[j]);
+			this.adicionarOneFiltroIndicador(filtros, managerInstance, intervalIndicator);
+		}
+	}
 
-					if (nombreCalculado[j].endsWith("low")) {
-						filtrosIndicadorHigh.add(Filters.gte(nombreIndicadorCalculado.toString(),
-								intervalIndicator.getInterval().getHighInterval()));
-						filtrosIndicadorLow.add(Filters.gte(nombreIndicadorCalculado.toString(),
-								intervalIndicator.getInterval().getLowInterval()));
+	private void adicionarOneFiltroIndicador(List<Bson> filtros, IndicadorManager<?> managerInstance,
+			IntervalIndicator intervalIndicator) {
+		String[] nombreCalculado = managerInstance.getNombresCalculados();
+		List<Bson> filtrosDatosCalculados = new ArrayList<>();
+		List<Bson> filtrosIndicadorLow = new ArrayList<>();
+		List<Bson> filtrosIndicadorHigh = new ArrayList<>();
+		List<Bson> filtrosIndicadorLowReves = new ArrayList<>();
+		List<Bson> filtrosIndicadorHighReves = new ArrayList<>();
 
-						filtrosIndicadorLowReves.add(Filters.gte(nombreIndicadorCalculado.toString(),
-								intervalIndicator.getInterval().getLowInterval()));
-						filtrosIndicadorLowReves.add(Filters.lte(nombreIndicadorCalculado.toString(),
-								intervalIndicator.getInterval().getHighInterval()));
+		for (int j = 0; j < nombreCalculado.length; j++) {
+			if ((intervalIndicator != null) && (intervalIndicator.getInterval() != null)
+					&& (intervalIndicator.getInterval().getLowInterval() != null)
+					&& (intervalIndicator.getInterval().getHighInterval() != null)) {
+				StringBuilder nombreIndicador = new StringBuilder("indicadores").append(".")
+						.append(intervalIndicator.getName()).append(".");
+				StringBuilder nombreIndicadorCalculado = new StringBuilder(nombreIndicador).append(nombreCalculado[j]);
 
-					} else if (nombreCalculado[j].endsWith("high")) {
-						filtrosIndicadorHigh.add(Filters.lte(nombreIndicadorCalculado.toString(),
-								intervalIndicator.getInterval().getHighInterval()));
-						filtrosIndicadorLow.add(Filters.lte(nombreIndicadorCalculado.toString(),
-								intervalIndicator.getInterval().getLowInterval()));
+				if (nombreCalculado[j].endsWith("low")) {
+					filtrosIndicadorHigh.add(Filters.gte(nombreIndicadorCalculado.toString(),
+							intervalIndicator.getInterval().getHighInterval()));
+					filtrosIndicadorLow.add(Filters.gte(nombreIndicadorCalculado.toString(),
+							intervalIndicator.getInterval().getLowInterval()));
 
-						filtrosIndicadorHighReves.add(Filters.gte(nombreIndicadorCalculado.toString(),
-								intervalIndicator.getInterval().getLowInterval()));
-						filtrosIndicadorHighReves.add(Filters.lte(nombreIndicadorCalculado.toString(),
-								intervalIndicator.getInterval().getHighInterval()));
-					} else {
-						Bson filtroLow = Filters.gte(nombreIndicadorCalculado.toString(),
-								intervalIndicator.getInterval().getLowInterval());
-						Bson filtroHigh = Filters.lte(nombreIndicadorCalculado.toString(),
-								intervalIndicator.getInterval().getHighInterval());
-						filtrosDatosCalculados.add(Filters.and(filtroLow, filtroHigh));
-					}
+					filtrosIndicadorLowReves.add(Filters.gte(nombreIndicadorCalculado.toString(),
+							intervalIndicator.getInterval().getLowInterval()));
+					filtrosIndicadorLowReves.add(Filters.lte(nombreIndicadorCalculado.toString(),
+							intervalIndicator.getInterval().getHighInterval()));
+
+				} else if (nombreCalculado[j].endsWith("high")) {
+					filtrosIndicadorHigh.add(Filters.lte(nombreIndicadorCalculado.toString(),
+							intervalIndicator.getInterval().getHighInterval()));
+					filtrosIndicadorLow.add(Filters.lte(nombreIndicadorCalculado.toString(),
+							intervalIndicator.getInterval().getLowInterval()));
+
+					filtrosIndicadorHighReves.add(Filters.gte(nombreIndicadorCalculado.toString(),
+							intervalIndicator.getInterval().getLowInterval()));
+					filtrosIndicadorHighReves.add(Filters.lte(nombreIndicadorCalculado.toString(),
+							intervalIndicator.getInterval().getHighInterval()));
+				} else {
+					Bson filtroLow = Filters.gte(nombreIndicadorCalculado.toString(),
+							intervalIndicator.getInterval().getLowInterval());
+					Bson filtroHigh = Filters.lte(nombreIndicadorCalculado.toString(),
+							intervalIndicator.getInterval().getHighInterval());
+					filtrosDatosCalculados.add(Filters.and(filtroLow, filtroHigh));
 				}
 			}
-			if (!filtrosDatosCalculados.isEmpty()) {
-				filtros.addAll(filtrosDatosCalculados);
-			} else if ((!filtrosIndicadorLow.isEmpty()) && (!filtrosIndicadorHigh.isEmpty())) {
-				filtros.add(Filters.or(Filters.and(filtrosIndicadorLow), Filters.and(filtrosIndicadorHigh),
-						Filters.and(filtrosIndicadorLowReves), Filters.and(filtrosIndicadorHighReves)));
-			}
+		}
+		if (!filtrosDatosCalculados.isEmpty()) {
+			filtros.addAll(filtrosDatosCalculados);
+		} else if ((!filtrosIndicadorLow.isEmpty()) && (!filtrosIndicadorHigh.isEmpty())) {
+			filtros.add(Filters.or(Filters.and(filtrosIndicadorLow), Filters.and(filtrosIndicadorHigh),
+					Filters.and(filtrosIndicadorLowReves), Filters.and(filtrosIndicadorHighReves)));
 		}
 	}
 
@@ -314,8 +319,7 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 	}
 
 	@Override
-	public List<Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2)
-			throws GeneticDAOException {
+	public List<Point> consultarHistoricoOrderByPrecio(Date fechaBase1, Date fechaBase2) throws GeneticDAOException {
 		// final double FACTOR_NUMERO_RANDOM_TENDENCIAS = 0.3;
 		// TODO Parametro de entrada, o calcular acá
 		int numeroRegistros = 10;
@@ -326,6 +330,20 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 				Arrays.asList(Aggregates.match(filtros), Aggregates.sample(numeroRegistros), Aggregates.sort(sorts)))
 				.iterator();
 		return getMapper().helpList(cursor);
+	}
+
+	@Override
+	public double contarCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii,
+			DateInterval di) throws GeneticDAOException {
+		List<Bson> filtros = new ArrayList<>();
+		filtros.add(Filters.gt("fechaHistorico", di.getLowInterval()));
+		filtros.add(Filters.lte("fechaHistorico", di.getHighInterval()));
+
+		adicionarOneFiltroIndicador(filtros, indManager, ii);
+
+		Bson bsonFiltrosCompletos = Filters.and(filtros);
+		long count = this.collection.countDocuments(bsonFiltrosCompletos);
+		return count;
 	}
 
 	@Override
@@ -391,14 +409,8 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 	}
 
 	@Override
-	public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii)
+	public double contarCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii)
 			throws GeneticDAOException {
-		throw new UnsupportedOperationException("UnsupportedOperationException");
-	}
-
-	@Override
-	public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii,
-			DateInterval di) throws GeneticDAOException {
 		throw new UnsupportedOperationException("UnsupportedOperationException");
 	}
 

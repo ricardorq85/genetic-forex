@@ -99,7 +99,7 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.ADX_VALUE*(DH.ADX_PLUS-DH.ADX_MINUS)) BETWEEN ? AND ?) ";
 		return s;

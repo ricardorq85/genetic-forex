@@ -18,6 +18,7 @@ import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.IndividuoXIndicadorManager;
 import forex.genetic.manager.controller.IndicadorController;
+import forex.genetic.util.jdbc.DataClient;
 
 /**
  *
@@ -29,16 +30,18 @@ public class OracleIndividuoXIndicadorManager extends IndividuoXIndicadorManager
 		super();
 	}
 
-	public OracleIndividuoXIndicadorManager(Date fechaMinima, Date fechaMaxima, int maximoMeses)
+	public OracleIndividuoXIndicadorManager(DataClient oneDataClient, Date fechaMinima, Date fechaMaxima,
+			int maximoMeses)
 			throws ClassNotFoundException, SQLException, GeneticDAOException, GeneticBusinessException {
-		super(fechaMinima, fechaMaxima, maximoMeses);
+		super(oneDataClient, fechaMinima, fechaMaxima, maximoMeses);
 	}
 
 	protected List<IndividuoEstrategia> getIndividuosACruzar(RangoOperacionIndividuo rangoOperacionIndividuo) {
 		List<Individuo> individuosResumen = null;
 		try {
-			individuosResumen = individuoDAO.consultarIndividuosRandom(rangoOperacionIndividuo.getFechaFiltro(),
-					rangoOperacionIndividuo.getFechaFiltro2(), parametroCantidadCruzar * 2);
+			individuosResumen = dataClient.getDaoIndividuo().consultarIndividuosRandom(
+					rangoOperacionIndividuo.getFechaFiltro(), rangoOperacionIndividuo.getFechaFiltro2(),
+					parametroCantidadCruzar * 2);
 		} catch (GeneticDAOException e) {
 			e.printStackTrace();
 		}
@@ -55,7 +58,7 @@ public class OracleIndividuoXIndicadorManager extends IndividuoXIndicadorManager
 		List<IndividuoEstrategia> individuosParaCruzar = new ArrayList<>(individuosResumen);
 		individuosParaCruzar.stream().forEach((individuoParaCruzar) -> {
 			try {
-				individuoDAO.consultarDetalleIndividuo(indicadorController, (Individuo) individuoParaCruzar);
+				dataClient.getDaoIndividuo().consultarDetalleIndividuo(indicadorController, (Individuo) individuoParaCruzar);
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new RuntimeException(e);

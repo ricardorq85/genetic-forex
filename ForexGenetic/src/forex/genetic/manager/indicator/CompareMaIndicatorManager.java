@@ -98,7 +98,7 @@ public class CompareMaIndicatorManager extends MaIndicatorManager {
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.AVERAGE_COMPARE-DH.COMPARE_VALUE) BETWEEN ? AND ?) ";
 		return s;

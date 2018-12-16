@@ -45,7 +45,7 @@ public abstract class IntervalIndicatorManager<E extends IntervalIndicator> exte
 
 	public abstract String[] queryRangoOperacionIndicador();
 
-	public abstract String[] queryPorcentajeCumplimientoIndicador();
+	public abstract String[] queryCumplimientoIndicador();
 
 	public IntervalIndicatorManager() {
 		super(false, false);

@@ -106,7 +106,7 @@ public class MomentumIndicatorManager extends IntervalIndicatorManager<Momentum>
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.MOMENTUM) BETWEEN ? AND ?) ";
 		return s;

@@ -73,9 +73,9 @@ public interface IDatoHistoricoDAO extends IGeneticDAO<Point> {
 
 	public void consultarRangoOperacionIndicador(RangoOperacionIndividuo r) throws GeneticDAOException;
 
-	public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager<?> indManager,
+	public double contarCumplimientoIndicador(IntervalIndicatorManager<?> indManager,
 			IntervalIndicator ii) throws GeneticDAOException;
 
-	public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii,
+	public double contarCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii,
 			DateInterval di) throws GeneticDAOException;
 }

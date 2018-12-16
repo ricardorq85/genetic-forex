@@ -43,6 +43,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
 public abstract class EndToEndMediator extends GeneticMediator {
 
 	protected int count = 1;
+	protected DataClient oneDataClient;
 	protected Connection connection;
 	protected Date fechaHistoricaMaximaAnterior, fechaHistoricaMaximaNueva, ultimaFechaBaseTendencia;
 	protected OracleDatoHistoricoDAO datoHistoricoDAO;
@@ -60,6 +61,7 @@ public abstract class EndToEndMediator extends GeneticMediator {
 	@Override
 	public void init() throws GeneticDAOException {
 		this.connection = JDBCUtil.getGeneticConnection();
+		oneDataClient = DriverDBFactory.createOracleDataClient(connection);
 		this.datoHistoricoDAO = new OracleDatoHistoricoDAO(connection);
 		this.tendenciaDAO = new OracleTendenciaDAO(connection);
 		this.parametroDAO = new OracleParametroDAO(connection);
@@ -265,7 +267,7 @@ public abstract class EndToEndMediator extends GeneticMediator {
 		logTime("Init Crear individuos x indicador", 1);
 		OracleIndividuoXIndicadorManager manager;
 		try {
-			manager = new OracleIndividuoXIndicadorManager(ultimaFechaBaseTendencia, fechaHistoricaMaximaNueva, 12);
+			manager = new OracleIndividuoXIndicadorManager(oneDataClient, ultimaFechaBaseTendencia, fechaHistoricaMaximaNueva, 12);
 			manager.crearIndividuos();
 		} catch (ClassNotFoundException | GeneticDAOException | SQLException e) {
 			throw new GeneticBusinessException(e);

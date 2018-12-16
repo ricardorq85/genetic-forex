@@ -126,7 +126,7 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.SAR-DH.LOW) BETWEEN ? AND ? " + "  OR (DH.SAR-DH.HIGH) BETWEEN ? AND ? ) ";
 		return s;

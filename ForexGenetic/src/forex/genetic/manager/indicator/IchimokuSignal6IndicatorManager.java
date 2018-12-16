@@ -41,7 +41,7 @@ public class IchimokuSignal6IndicatorManager extends IchimokuSignalIndicatorMana
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.ICHIMOKUCHINKOUSPAN6*(DH.ICHIMOKUTENKANSEN6-DH.ICHIMOKUKIJUNSEN6)) BETWEEN ? AND ?) ";
 		return s;

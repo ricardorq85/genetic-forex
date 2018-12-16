@@ -119,7 +119,7 @@ public class IchimokuTrendIndicatorManager extends IchimokuIndicatorManager {
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-DH.LOW) BETWEEN ? AND ? "
 				+ "  OR (DH.ICHIMOKUSENKOUSPANA-DH.ICHIMOKUSENKOUSPANB-DH.HIGH) BETWEEN ? AND ?) ";

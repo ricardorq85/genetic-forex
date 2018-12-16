@@ -22,7 +22,6 @@ import forex.genetic.entities.indicator.Rsi;
 import forex.genetic.entities.indicator.Sar;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
-import forex.genetic.manager.indicator.IndicadorManager;
 
 /**
  *
@@ -48,7 +47,7 @@ public class BasePointHelper {
 		Rsi rsi;
 		Bollinger bollingerBand;
 		Momentum momentum;
-		Ichimoku ichimoku;
+		Ichimoku ichimokuTrend, ichimokuSignal;
 		Average average1200;
 		Macd macd20x;
 		Average compareAverage1200;
@@ -57,7 +56,7 @@ public class BasePointHelper {
 		Rsi rsi84;
 		Bollinger bollingerBand240;
 		Momentum momentum1200;
-		Ichimoku ichimoku6;
+		Ichimoku ichimoku6Trend, ichimoku6Signal;
 
 		IndicadorController indicadorController = ControllerFactory
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
@@ -166,74 +165,90 @@ public class BasePointHelper {
 			point.setSpread(spread);
 			point.setCloseCompare(compareCloseValue);
 
-			average = new Average("Ma");
+			int indicatorCounter = 0;
+			average = (Average)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			average.setAverage(baseAverage);
 
-			macd = new Macd("Macd");
+			macd = (Macd)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			macd.setMacdValue(baseMacdValue);
 			macd.setMacdSignal(baseMacdSignal);
-			compareAverage = new Average("MaCompare");
+
+			compareAverage = (Average)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			compareAverage.setAverage(compareAverageValue);
 
-			sar = new Sar("Sar");
+			sar = (Sar)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			sar.setSar(baseSar);
 
-			adx = new Adx("Adx");
+			adx = (Adx)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			adx.setAdxValue(baseAdxValue);
 			adx.setAdxPlus(baseAdxPlus);
 			adx.setAdxMinus(baseAdxMinus);
 
-			rsi = new Rsi("Rsi");
+			rsi = (Rsi)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			rsi.setRsi(baseRsi);
 
-			bollingerBand = new Bollinger("Bollinger");
+			bollingerBand = (Bollinger)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			bollingerBand.setUpper(baseBollingerUpper);
 			bollingerBand.setLower(baseBollingerLower);
 
-			momentum = new Momentum("Momentum");
+			momentum = (Momentum)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			momentum.setMomentum(baseMomentum);
 
-			ichimoku = new Ichimoku("Ichimoku");
-			ichimoku.setChinkouSpan(baseIchimokuChinkouSpan);
-			ichimoku.setKijunSen(baseIchimokuKijunSen);
-			ichimoku.setSenkouSpanA(baseIchimokuSenkouSpanA);
-			ichimoku.setSenkouSpanB(baseIchimokuSenkouSpanB);
-			ichimoku.setTenkanSen(baseIchimokuTenkanSen);
+			ichimokuTrend = (Ichimoku)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
+			ichimokuTrend.setChinkouSpan(baseIchimokuChinkouSpan);
+			ichimokuTrend.setKijunSen(baseIchimokuKijunSen);
+			ichimokuTrend.setSenkouSpanA(baseIchimokuSenkouSpanA);
+			ichimokuTrend.setSenkouSpanB(baseIchimokuSenkouSpanB);
+			ichimokuTrend.setTenkanSen(baseIchimokuTenkanSen);
 
-			average1200 = new Average("Ma1200");
+			ichimokuSignal = (Ichimoku)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
+			ichimokuSignal.setChinkouSpan(baseIchimokuChinkouSpan);
+			ichimokuSignal.setKijunSen(baseIchimokuKijunSen);
+			ichimokuSignal.setSenkouSpanA(baseIchimokuSenkouSpanA);
+			ichimokuSignal.setSenkouSpanB(baseIchimokuSenkouSpanB);
+			ichimokuSignal.setTenkanSen(baseIchimokuTenkanSen);
+			
+			average1200 = (Average)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			average1200.setAverage(baseAverage1200);
 
-			macd20x = new Macd("Macd20x");
+			macd20x = (Macd)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			macd20x.setMacdValue(baseMacd20xValue);
 			macd20x.setMacdSignal(baseMacd20xSignal);
 
-			compareAverage1200 = new Average("MaCompare1200");
+			compareAverage1200 = (Average)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			compareAverage1200.setAverage(compareAverage1200Value);
 
-			sar1200 = new Sar("Sar1200");
+			sar1200 = (Sar)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			sar1200.setSar(baseSar1200);
 
-			adx168 = new Adx("Adx168");
+			adx168 = (Adx)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			adx168.setAdxValue(baseAdxValue168);
 			adx168.setAdxPlus(baseAdxPlus168);
 			adx168.setAdxMinus(baseAdxMinus168);
 
-			rsi84 = new Rsi("Rsi84");
+			rsi84 = (Rsi)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			rsi84.setRsi(baseRsi84);
 
-			bollingerBand240 = new Bollinger("Bollinger240");
+			bollingerBand240 = (Bollinger)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			bollingerBand240.setUpper(baseBollingerUpper240);
 			bollingerBand240.setLower(baseBollingerLower240);
 
-			momentum1200 = new Momentum("Momentum1200");
+			momentum1200 = (Momentum)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 			momentum1200.setMomentum(baseMomentum1200);
 
-			ichimoku6 = new Ichimoku("Ichimoku6");
-			ichimoku6.setChinkouSpan(baseIchimokuChinkouSpan6);
-			ichimoku6.setKijunSen(baseIchimokuKijunSen6);
-			ichimoku6.setSenkouSpanA(baseIchimokuSenkouSpanA6);
-			ichimoku6.setSenkouSpanB(baseIchimokuSenkouSpanB6);
-			ichimoku6.setTenkanSen(baseIchimokuTenkanSen6);
+			ichimoku6Trend = (Ichimoku)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
+			ichimoku6Trend.setChinkouSpan(baseIchimokuChinkouSpan6);
+			ichimoku6Trend.setKijunSen(baseIchimokuKijunSen6);
+			ichimoku6Trend.setSenkouSpanA(baseIchimokuSenkouSpanA6);
+			ichimoku6Trend.setSenkouSpanB(baseIchimokuSenkouSpanB6);
+			ichimoku6Trend.setTenkanSen(baseIchimokuTenkanSen6);
+
+			ichimoku6Signal = (Ichimoku)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
+			ichimoku6Signal.setChinkouSpan(baseIchimokuChinkouSpan6);
+			ichimoku6Signal.setKijunSen(baseIchimokuKijunSen6);
+			ichimoku6Signal.setSenkouSpanA(baseIchimokuSenkouSpanA6);
+			ichimoku6Signal.setSenkouSpanB(baseIchimokuSenkouSpanB6);
+			ichimoku6Signal.setTenkanSen(baseIchimokuTenkanSen6);
 
 			indicators = new ArrayList<>(indicadorController.getIndicatorNumber());
 			indicators.add(average);// 0
@@ -244,8 +259,8 @@ public class BasePointHelper {
 			indicators.add(rsi);// 5
 			indicators.add(bollingerBand);// 6
 			indicators.add(momentum);// 7
-			indicators.add(ichimoku);// 8
-			indicators.add(ichimoku);// 9
+			indicators.add(ichimokuTrend);// 8
+			indicators.add(ichimokuSignal);// 9
 			indicators.add(average1200);// 10
 			indicators.add(macd20x);// 11
 			indicators.add(compareAverage1200);// 12
@@ -254,8 +269,8 @@ public class BasePointHelper {
 			indicators.add(rsi84);// 15
 			indicators.add(bollingerBand240);// 16
 			indicators.add(momentum1200);// 17
-			indicators.add(ichimoku6);// 18
-			indicators.add(ichimoku6);// 19
+			indicators.add(ichimoku6Trend);// 18
+			indicators.add(ichimoku6Signal);// 19
 
 			point.setIndicators(indicators);
 

@@ -31,12 +31,17 @@ public class MongoMigracionDatoHistoricoManager extends MigracionManager<Point> 
 
 	public void migrate() throws GeneticBusinessException {
 //		LogUtil.logTime(
-	//			new StringBuilder("Borrando collection: ").append(mongoDestinoDAO.getCollectionName()).toString(), 1);
-		// mongoDestinoDAO.clean();
+		// new StringBuilder("Borrando collection:
+		// ").append(mongoDestinoDAO.getCollectionName()).toString(), 1);
+		mongoDestinoDAO.clean();
 		Date fechaMinima, fechaMaxima;
 		try {
-			fechaMinima = DateUtil.adicionarMinutos(((MongoDatoHistoricoDAO) mongoDestinoDAO).getFechaHistoricaMaxima(),
-					1); // datoHistoricoDAO.getFechaHistoricaMinima();
+			fechaMinima =((MongoDatoHistoricoDAO) mongoDestinoDAO).getFechaHistoricaMaxima();
+			if (fechaMinima == null) {
+				fechaMinima = datoHistoricoDAO.getFechaHistoricaMinima();
+			}
+			fechaMinima = DateUtil.adicionarMinutos(fechaMinima, 1);
+
 			// Date fechaMinimaDestino = ((MongoDatoHistoricoDAO)
 			// mongoDestinoDAO).getFechaHistoricaMinima();
 			fechaMaxima = datoHistoricoDAO.getFechaHistoricaMaxima();
@@ -55,6 +60,7 @@ public class MongoMigracionDatoHistoricoManager extends MigracionManager<Point> 
 				List<Point> datosConsultados = datoHistoricoDAO
 						.consultarHistorico(DateUtil.adicionarMinutos(fechaInicialConsulta, -1), fechaFinalConsulta);
 				if (datosConsultados.size() > 1) {
+					LogUtil.logTime("Importando..." + datosConsultados.size(), 1);
 					mongoDestinoDAO.insertMany(datosConsultados.subList(1, datosConsultados.size() - 1));
 					fechaInicialConsulta = datosConsultados.get(datosConsultados.size() - 1).getDate();
 				} else {

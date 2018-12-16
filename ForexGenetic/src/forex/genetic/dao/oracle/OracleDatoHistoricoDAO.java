@@ -1213,10 +1213,10 @@ public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements I
 		}
 	}
 
-	public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii)
+	public double contarCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii)
 			throws GeneticDAOException {
 
-		String[] sqlIndicador = indManager.queryPorcentajeCumplimientoIndicador();
+		String[] sqlIndicador = indManager.queryCumplimientoIndicador();
 		String sql = "SELECT COUNT(*) PUNTOS " + "FROM DATOHISTORICO DH " + "WHERE " + sqlIndicador[0];
 
 		PreparedStatement stmtConsulta = null;
@@ -1244,10 +1244,10 @@ public class OracleDatoHistoricoDAO extends OracleGeneticDAO<Point> implements I
 		}
 	}
 
-	public double consultarPorcentajeCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii,
+	public double contarCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii,
 			DateInterval di) throws GeneticDAOException {
 
-		String[] sqlIndicador = indManager.queryPorcentajeCumplimientoIndicador();
+		String[] sqlIndicador = indManager.queryCumplimientoIndicador();
 		String sql = "SELECT COUNT(*) PUNTOS " + "FROM DATOHISTORICO DH " + "WHERE " + sqlIndicador[0]
 				+ " AND DH.FECHA >= ? AND DH.FECHA < ?";
 

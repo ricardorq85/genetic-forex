@@ -54,7 +54,7 @@ public class RandomFillDatoHistoricoManager {
 		Rsi rsi = null;
 		Bollinger bollingerBand = null;
 		Momentum momentum = null;
-		Ichimoku ichimoku = null;
+		Ichimoku ichimokuTrend, ichimokuSignal = null;
 		Average average1200 = null;
 		Macd macd20x = null;
 		Average compareAverage1200 = null;
@@ -63,7 +63,7 @@ public class RandomFillDatoHistoricoManager {
 		Rsi rsi84 = null;
 		Bollinger bollingerBand240 = null;
 		Momentum momentum1200 = null;
-		Ichimoku ichimoku6 = null;
+		Ichimoku ichimoku6Trend, ichimoku6Signal = null;
 
 		IndicadorController indicadorController = ControllerFactory
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
@@ -166,12 +166,19 @@ public class RandomFillDatoHistoricoManager {
 		momentum = new Momentum("Momentum");
 		momentum.setMomentum(NumberUtil.round(baseMomentum));
 
-		ichimoku = new Ichimoku("Ichimoku");
-		ichimoku.setChinkouSpan(NumberUtil.round(baseIchimokuChinkouSpan, true));
-		ichimoku.setKijunSen(NumberUtil.round(baseIchimokuKijunSen, true));
-		ichimoku.setSenkouSpanA(NumberUtil.round(baseIchimokuSenkouSpanA, true));
-		ichimoku.setSenkouSpanB(NumberUtil.round(baseIchimokuSenkouSpanB, true));
-		ichimoku.setTenkanSen(NumberUtil.round(baseIchimokuTenkanSen, true));
+		ichimokuTrend = new Ichimoku("IchiTrend");
+		ichimokuTrend.setChinkouSpan(NumberUtil.round(baseIchimokuChinkouSpan, true));
+		ichimokuTrend.setKijunSen(NumberUtil.round(baseIchimokuKijunSen, true));
+		ichimokuTrend.setSenkouSpanA(NumberUtil.round(baseIchimokuSenkouSpanA, true));
+		ichimokuTrend.setSenkouSpanB(NumberUtil.round(baseIchimokuSenkouSpanB, true));
+		ichimokuTrend.setTenkanSen(NumberUtil.round(baseIchimokuTenkanSen, true));
+		
+		ichimokuSignal = new Ichimoku("IchiSignal");
+		ichimokuSignal.setChinkouSpan(NumberUtil.round(baseIchimokuChinkouSpan, true));
+		ichimokuSignal.setKijunSen(NumberUtil.round(baseIchimokuKijunSen, true));
+		ichimokuSignal.setSenkouSpanA(NumberUtil.round(baseIchimokuSenkouSpanA, true));
+		ichimokuSignal.setSenkouSpanB(NumberUtil.round(baseIchimokuSenkouSpanB, true));
+		ichimokuSignal.setTenkanSen(NumberUtil.round(baseIchimokuTenkanSen, true));
 
 		average1200 = new Average("Ma1200");
 		average1200.setAverage(NumberUtil.round(baseAverage1200, true));
@@ -210,12 +217,19 @@ public class RandomFillDatoHistoricoManager {
 		momentum1200 = new Momentum("Momentum1200");
 		momentum1200.setMomentum(NumberUtil.round(baseMomentum1200));
 
-		ichimoku6 = new Ichimoku("Ichimoku6");
-		ichimoku6.setChinkouSpan(NumberUtil.round(baseIchimokuChinkouSpan6, true));
-		ichimoku6.setKijunSen(NumberUtil.round(baseIchimokuKijunSen6, true));
-		ichimoku6.setSenkouSpanA(NumberUtil.round(baseIchimokuSenkouSpanA6, true));
-		ichimoku6.setSenkouSpanB(NumberUtil.round(baseIchimokuSenkouSpanB6, true));
-		ichimoku6.setTenkanSen(NumberUtil.round(baseIchimokuTenkanSen6, true));
+		ichimoku6Trend = new Ichimoku("IchiTrend6");
+		ichimoku6Trend.setChinkouSpan(NumberUtil.round(baseIchimokuChinkouSpan6, true));
+		ichimoku6Trend.setKijunSen(NumberUtil.round(baseIchimokuKijunSen6, true));
+		ichimoku6Trend.setSenkouSpanA(NumberUtil.round(baseIchimokuSenkouSpanA6, true));
+		ichimoku6Trend.setSenkouSpanB(NumberUtil.round(baseIchimokuSenkouSpanB6, true));
+		ichimoku6Trend.setTenkanSen(NumberUtil.round(baseIchimokuTenkanSen6, true));
+		
+		ichimoku6Signal = new Ichimoku("IchiSignal6");
+		ichimoku6Signal.setChinkouSpan(NumberUtil.round(baseIchimokuChinkouSpan6, true));
+		ichimoku6Signal.setKijunSen(NumberUtil.round(baseIchimokuKijunSen6, true));
+		ichimoku6Signal.setSenkouSpanA(NumberUtil.round(baseIchimokuSenkouSpanA6, true));
+		ichimoku6Signal.setSenkouSpanB(NumberUtil.round(baseIchimokuSenkouSpanB6, true));
+		ichimoku6Signal.setTenkanSen(NumberUtil.round(baseIchimokuTenkanSen6, true));
 
 		indicators = Collections.synchronizedList(new ArrayList<>(indicadorController.getIndicatorNumber()));
 		indicators.add(average);// 0
@@ -226,8 +240,8 @@ public class RandomFillDatoHistoricoManager {
 		indicators.add(rsi);// 5
 		indicators.add(bollingerBand);// 6
 		indicators.add(momentum);// 7
-		indicators.add(ichimoku);// 8
-		indicators.add(ichimoku);// 9
+		indicators.add(ichimokuTrend);// 8
+		indicators.add(ichimokuSignal);// 9
 		indicators.add(average1200);// 10
 		indicators.add(macd20x);// 11
 		indicators.add(compareAverage1200);// 12
@@ -236,8 +250,8 @@ public class RandomFillDatoHistoricoManager {
 		indicators.add(rsi84);// 15
 		indicators.add(bollingerBand240);// 16
 		indicators.add(momentum1200);// 17
-		indicators.add(ichimoku6);// 18
-		indicators.add(ichimoku6);// 19
+		indicators.add(ichimoku6Trend);// 18
+		indicators.add(ichimoku6Signal);// 19
 
 		point.setIndicators(indicators);
 

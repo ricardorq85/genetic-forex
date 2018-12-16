@@ -91,7 +91,7 @@ public class Macd20XIndicatorManager extends MacdIndicatorManager {
 	}
 
 	@Override
-	public String[] queryPorcentajeCumplimientoIndicador() {
+	public String[] queryCumplimientoIndicador() {
 		String[] s = new String[1];
 		s[0] = " ((DH.MACD20X_VALUE+DH.MACD20X_SIGNAL) BETWEEN ? AND ?) ";
 		return s;

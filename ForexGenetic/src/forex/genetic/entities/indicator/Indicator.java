@@ -4,10 +4,6 @@
  */
 package forex.genetic.entities.indicator;
 
-import java.util.Map;
-
-import forex.genetic.entities.Point;
-
 /**
  *
  * @author ricardorq85

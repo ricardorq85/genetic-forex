@@ -12,13 +12,11 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.entities.DateInterval;
-import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.RangoCierreOperacionIndividuo;
 import forex.genetic.entities.RangoOperacionIndividuo;
 import forex.genetic.entities.RangoOperacionIndividuoIndicador;
-import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoIndividuo;
@@ -28,7 +26,6 @@ import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.IndividuoXIndicadorManager;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
-import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.RandomUtil;
 import forex.genetic.util.jdbc.DataClient;
@@ -45,7 +42,7 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 
 	public MongoIndividuoXIndicadorManager(DataClient dc, Date fechaMinima, Date fechaMaxima, int maximoMeses)
 			throws GeneticBusinessException {
-		super(fechaMinima, fechaMaxima, maximoMeses);
+		super(dc, fechaMinima, fechaMaxima, maximoMeses);
 		dataClient = dc;
 	}
 
@@ -150,28 +147,8 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 		rangoOperacionIndividuo.setFilterList(filters);
 		rangoOperacionIndividuo.setFiltroCumplimiento(porcentajeCumplimiento.toString());
 
-		try {
-			dataClient.getDaoDatoHistorico().consultarRangoOperacionIndicador(rangoOperacionIndividuo);
-		} catch (GeneticDAOException e) {
-			throw new GeneticBusinessException(e);
-		}
-//		if (rangoOperacionIndividuo.getIndicadores() != null) {
-//			asignarIntervaloXPorcentajeCumplimiento(rangoOperacionIndividuo, cantidadPuntos);
-//		}
-	}
+		consultarDatosRangoOperacion(rangoOperacionIndividuo, cantidadPuntos);
 
-	private double porcentajeCumplimiento(RangoOperacionIndividuo r, IntervalIndicatorManager<?> indManager,
-			IntervalIndicator intervalIndicator, Double i1, Double i2, int cantidadPuntos) {
-		DoubleInterval interval = (DoubleInterval) intervalIndicator.getInterval();
-		if (i1 != null && i2 != null) {
-			interval.setLowInterval(i1);
-			interval.setHighInterval(i2);
-		}
-		DateInterval dateInterval = new DateInterval(r.getFechaFiltro(), r.getFechaFiltro2());
-		double sumaPorcCumplimiento = 0.0D;// indicadorDAO.consultarPorcentajeCumplimientoIndicador(indManager,
-											// intervalIndicator, dateInterval);
-
-		return (sumaPorcCumplimiento / cantidadPuntos);
 	}
 
 	@Override

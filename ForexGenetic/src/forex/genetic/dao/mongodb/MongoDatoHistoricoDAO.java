@@ -1,5 +1,6 @@
 package forex.genetic.dao.mongodb;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,7 +9,10 @@ import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.RangoOperacionIndividuo;
+import forex.genetic.entities.RangoOperacionIndividuoIndicador;
+import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.DateUtil;
 
 /**
@@ -29,11 +33,19 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 
 	public MongoDatoHistoricoDAO(String name, boolean configure) {
 		super(name, configure);
-		int year = 2009;
+		if (configure) {
+			this.configureCollection();
+		}
+	}
+	
+	@Override
+	public void configureCollection() {
+		int year = 2008;
 		int currYear = DateUtil.obtenerAnyo(new Date());
 		while (year <= currYear) {
-			setCollection(year++, true);
-		}
+			setCollection(year, true);
+			year++;
+		}		
 	}
 
 	private void setCollection(int anyo) {
@@ -46,14 +58,39 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 	}
 
 	@Override
-	public void consultarRangoOperacionIndicador(RangoOperacionIndividuo r) {
-		int initialYear = DateUtil.obtenerAnyo(r.getFechaFiltro());
-		int endYear = DateUtil.obtenerAnyo(r.getFechaFiltro2());
-		int year = endYear;
-		// TODO ricardorq85 soporte multi años: year = initialYear;
-		while (year <= endYear) {
+	public void clean() {
+		int year = 2008;
+		int currYear = DateUtil.obtenerAnyo(new Date());
+		while (year <= currYear) {
+			setCollection(year++, false);
+			super.clean();
+		}
+	}
+
+	@Override
+	public void consultarRangoOperacionIndicador(RangoOperacionIndividuo rangoOperacion) {
+		int initialYear = DateUtil.obtenerAnyo(rangoOperacion.getFechaFiltro());
+		int endYear = DateUtil.obtenerAnyo(rangoOperacion.getFechaFiltro2());
+		int year = initialYear;
+		// TODO ricardorq85 soporte multi años;
+//		while (year <= endYear) {
+		if (true) {
 			setCollection(year);
-			super.consultarRangoOperacionIndicador(r);
+			RangoOperacionIndividuo newRangoOperacion = new RangoOperacionIndividuo();
+			List<RangoOperacionIndividuoIndicador> list = new ArrayList<>();
+			list.addAll(rangoOperacion.getIndicadores());
+			newRangoOperacion.setIndicadores(list);
+			newRangoOperacion.setFilterList(rangoOperacion.getFilterList());
+			newRangoOperacion.setFechaFiltro(rangoOperacion.getFechaFiltro());
+			newRangoOperacion.setFechaFiltro2(rangoOperacion.getFechaFiltro2());
+
+			super.consultarRangoOperacionIndicador(newRangoOperacion);
+
+//			r.setTakeProfit((r.getTakeProfit() + newRangoOperacion.getTakeProfit()) / 2);
+//			r.setStopLoss((r.getStopLoss() + newRangoOperacion.getStopLoss()) / 2);
+//			r.setCantidad(r.getCantidad() + newRangoOperacion.getCantidad());
+//			for (RangoOperacionIndividuoIndicador rangoOperacionIndividuoIndicador : list) {			}
+
 			year++;
 		}
 	}
@@ -213,4 +250,19 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 		}
 		return puntos;
 	}
+
+	@Override
+	public double contarCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii,
+			DateInterval di) throws GeneticDAOException {
+		int initialYear = DateUtil.obtenerAnyo(di.getLowInterval());
+		int endYear = DateUtil.obtenerAnyo(di.getHighInterval());
+		setCollection(initialYear);
+		double puntos = super.contarCumplimientoIndicador(indManager, ii, di);
+		if ((initialYear != endYear)) {
+			setCollection(endYear);
+			puntos += super.contarCumplimientoIndicador(indManager, ii, di);
+		}
+		return puntos;
+	}
+
 }
