@@ -137,6 +137,8 @@ public class MomentumIndicatorManager extends IntervalIndicatorManager<Momentum>
 					Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
 					if (values.containsKey("momentum")) {
 						instance.setMomentum(values.get("momentum"));
+					} else {
+						instance.setMomentum(Double.NEGATIVE_INFINITY);
 					}
 				}
 			}

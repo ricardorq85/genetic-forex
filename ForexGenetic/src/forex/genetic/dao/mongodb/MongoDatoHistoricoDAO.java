@@ -34,18 +34,18 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 	public MongoDatoHistoricoDAO(String name, boolean configure) {
 		super(name, configure);
 		if (configure) {
-			this.configureCollection();
+			this.configureCollectionInitial();
 		}
 	}
-	
-	@Override
-	public void configureCollection() {
+
+	public void configureCollectionInitial() {
 		int year = 2008;
 		int currYear = DateUtil.obtenerAnyo(new Date());
 		while (year <= currYear) {
-			setCollection(year, true);
+			setCollection(year, false);
+			configureCollection();
 			year++;
-		}		
+		}
 	}
 
 	private void setCollection(int anyo) {
@@ -55,6 +55,25 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 	protected void setCollection(int anyo, boolean configure) {
 		StringBuilder sb = new StringBuilder("datoHistorico").append(anyo);
 		setCollection(sb.toString(), configure);
+	}
+
+	@Override
+	public List<Point> consultarPuntosInfinity() {
+		List<Point> p = new ArrayList<>();
+		int year = 2008;
+		int currYear = DateUtil.obtenerAnyo(new Date());
+		while (year <= currYear) {
+			setCollection(year, false);
+			p.addAll(super.consultarPuntosInfinity());
+			year++;
+		}
+		return p;
+	}
+
+	@Override
+	public long delete(Point obj, Date fechaReferencia) {
+		setCollection(DateUtil.obtenerAnyo(obj.getDate()));
+		return super.delete(obj, fechaReferencia);
 	}
 
 	@Override

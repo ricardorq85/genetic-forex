@@ -19,6 +19,11 @@ public class RangoOperacionIndividuoIndicador {
 	private double promedio;
 	private double porcentajeCumplimiento;
 
+	
+	public RangoOperacionIndividuoIndicador() {
+		super();
+	}
+
 	public boolean cumplePorcentajeIndicador() {
 		return (porcentajeCumplimiento > 0.2);
 		/*

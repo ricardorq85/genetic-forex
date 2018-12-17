@@ -3,7 +3,9 @@ package forex.genetic.dao.mongodb;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -25,6 +27,7 @@ import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.RangoOperacionIndividuo;
+import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.entities.mongo.MongoOrder;
@@ -412,6 +415,23 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 	public double contarCumplimientoIndicador(IntervalIndicatorManager<?> indManager, IntervalIndicator ii)
 			throws GeneticDAOException {
 		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
+
+	public List<Point> consultarPuntosInfinity() {
+		List<Bson> filtros = new ArrayList<>();
+		filtros.add(Filters.eq("indicadores.IchiSignal.calculado_signal", Double.NEGATIVE_INFINITY));
+		filtros.add(Filters.eq("indicadores.IchiSignal.calculado_signal", Double.POSITIVE_INFINITY));
+		filtros.add(Filters.eq("indicadores.IchiSignal6.calculado_signal", Double.NEGATIVE_INFINITY));
+		filtros.add(Filters.eq("indicadores.IchiSignal6.calculado_signal", Double.POSITIVE_INFINITY));
+
+		filtros.add(Filters.eq("indicadores.IchiSignal.calculado_signal", Double.NaN));
+		filtros.add(Filters.eq("indicadores.IchiSignal6.calculado_signal", Double.NaN));
+
+		Bson bsonFiltrosCompletos = Filters.or(filtros);
+		MongoCursor<Document> cursor = this.collection.find(bsonFiltrosCompletos).iterator();
+
+		List<Point> p = getMapper().helpList(cursor);
+		return p;
 	}
 
 }

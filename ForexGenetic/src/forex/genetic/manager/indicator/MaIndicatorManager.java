@@ -143,6 +143,8 @@ public class MaIndicatorManager extends IntervalIndicatorManager<Average> {
 					Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
 					if (values.containsKey("average")) {
 						instance.setAverage(values.get("average"));
+					} else {
+						instance.setAverage(Double.NEGATIVE_INFINITY);
 					}
 				}
 			}

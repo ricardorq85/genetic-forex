@@ -29,7 +29,8 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> implements IIndividuoDAO<IndividuoEstrategia> {
+public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia>
+		implements IIndividuoDAO<IndividuoEstrategia> {
 
 	public OracleIndividuoDAO(Connection connection) {
 		super(connection);
@@ -937,6 +938,11 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia> im
 	@Override
 	public long delete(IndividuoEstrategia obj, Date fechaReferencia) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public void insertIndividuoEstrategia(IndividuoEstrategia obj) throws GeneticDAOException {
+		this.insert(obj);
 	}
 
 }

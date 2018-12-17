@@ -125,7 +125,8 @@ public class IchimokuSignalIndicatorManager extends IchimokuIndicatorManager {
 			objectMap.put("tenkanSen", indicator.getTenkanSen());
 		}
 		if (prevIndicator != null) {
-			if (!NumberUtil.isAnyInfiniteOrNan(prevIndicator.getSenkouSpanA(), prevIndicator.getSenkouSpanB())) {
+			if (!NumberUtil.isAnyInfiniteOrNan(prevIndicator.getChinkouSpan(), prevIndicator.getTenkanSen(),
+					prevIndicator.getKijunSen())) {
 				objectMap.put("calculado_signal", NumberUtil.round(
 						prevIndicator.getChinkouSpan() * (prevIndicator.getTenkanSen() - prevIndicator.getKijunSen())));
 			}
@@ -143,12 +144,18 @@ public class IchimokuSignalIndicatorManager extends IchimokuIndicatorManager {
 					Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
 					if (values.containsKey("chinkouSpan")) {
 						instance.setChinkouSpan(values.get("chinkouSpan"));
+					} else {
+						instance.setChinkouSpan(Double.NEGATIVE_INFINITY);
 					}
 					if (values.containsKey("kijunSen")) {
 						instance.setKijunSen(values.get("kijunSen"));
+					} else {
+						instance.setKijunSen(Double.NEGATIVE_INFINITY);
 					}
 					if (values.containsKey("tenkanSen")) {
 						instance.setTenkanSen(values.get("tenkanSen"));
+					} else {
+						instance.setTenkanSen(Double.NEGATIVE_INFINITY);
 					}
 				}
 			}

@@ -4,6 +4,7 @@
  */
 package forex.genetic.manager.mongodb;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -29,14 +30,40 @@ public class MongoMigracionDatoHistoricoManager extends MigracionManager<Point> 
 		datoHistoricoDAO = new OracleDatoHistoricoDAO(this.conn);
 	}
 
+	public void corregirMigrados() {
+		List<Point> datos = ((MongoDatoHistoricoDAO) this.mongoDestinoDAO).consultarPuntosInfinity();
+		Point p;
+		try {
+			Date d = DateUtil.obtenerFecha("2018/01/02 00:01");
+			p = datoHistoricoDAO.consultarHistorico(d,d).get(0);
+			datos.add(0, p);
+		} catch (GeneticDAOException | ParseException e1) {
+			e1.printStackTrace();
+		}
+		for (Point point : datos) {
+			try {
+				point.setPrevPoint(
+						((MongoDatoHistoricoDAO) this.mongoDestinoDAO).consultarPuntoAnterior(point.getDate()));
+			} catch (GeneticDAOException e) {
+				e.printStackTrace();
+			}
+			mongoDestinoDAO.delete(point, null);
+			mongoDestinoDAO.insert(point);
+		}
+	}
+
 	public void migrate() throws GeneticBusinessException {
+		corregirMigrados();
+	}
+
+	public void migrateTodo() throws GeneticBusinessException {
 //		LogUtil.logTime(
 		// new StringBuilder("Borrando collection:
 		// ").append(mongoDestinoDAO.getCollectionName()).toString(), 1);
-		mongoDestinoDAO.clean();
+		// mongoDestinoDAO.clean();
 		Date fechaMinima, fechaMaxima;
 		try {
-			fechaMinima =((MongoDatoHistoricoDAO) mongoDestinoDAO).getFechaHistoricaMaxima();
+			fechaMinima = ((MongoDatoHistoricoDAO) mongoDestinoDAO).getFechaHistoricaMaxima();
 			if (fechaMinima == null) {
 				fechaMinima = datoHistoricoDAO.getFechaHistoricaMinima();
 			}
@@ -77,6 +104,6 @@ public class MongoMigracionDatoHistoricoManager extends MigracionManager<Point> 
 
 	@Override
 	protected MongoGeneticDAO<Point> getDestinoDAO() throws GeneticBusinessException {
-		return new MongoDatoHistoricoDAO(false);
+		return new MongoDatoHistoricoDAO(true);
 	}
 }

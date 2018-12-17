@@ -9,7 +9,6 @@ import java.util.Map;
 
 import forex.genetic.entities.Interval;
 import forex.genetic.entities.Point;
-import forex.genetic.entities.indicator.Average;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.Macd;
 import forex.genetic.util.NumberUtil;
@@ -129,9 +128,13 @@ public class MacdIndicatorManager extends IntervalIndicatorManager<Macd> {
 					Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
 					if (values.containsKey("macdValue")) {
 						instance.setMacdValue(values.get("macdValue"));
+					} else {
+						instance.setMacdValue(Double.NEGATIVE_INFINITY);
 					}
 					if (values.containsKey("macdSignal")) {
 						instance.setMacdSignal(values.get("macdSignal"));
+					} else {
+						instance.setMacdSignal(Double.NEGATIVE_INFINITY);
 					}
 				}
 			}

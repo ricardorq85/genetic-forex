@@ -93,24 +93,20 @@ public abstract class IndividuoXIndicadorManager {
 					DateInterval dateInterval = new DateInterval();
 					dateInterval.setLowInterval(DateUtil.adicionarMes(fechaFiltroFinal, -meses));
 					dateInterval.setHighInterval(fechaFiltroFinal);
-					long cantidadPuntos = dataClient.getDaoDatoHistorico().consultarCantidadPuntos(dateInterval);
+					int cantidadPuntos = new Long(
+							dataClient.getDaoDatoHistorico().consultarCantidadPuntos(dateInterval)).intValue();
 					logTime("Fecha filtro: " + DateUtil.getDateString(dateInterval.getLowInterval()) + " - "
 							+ DateUtil.getDateString(dateInterval.getHighInterval()), 1);
 					int repeat = RandomUtil.nextInt(meses) + 1;
 					for (int i = 0; i < repeat; i++) {
 						int pips = RandomUtil.nextInt(this.parametroPips);
 						int retroceso = RandomUtil.nextInt(this.parametroRetroceso);
-						RangoOperacionIndividuo rangoPositivas = new RangoOperacionIndividuo(pips, retroceso,
-								dateInterval, true);
-						RangoOperacionIndividuo rangoNegativas = new RangoOperacionIndividuo(-pips, -retroceso,
-								dateInterval, false);
-						rangoPositivas.setRangoCierre(new RangoCierreOperacionIndividuo(rangoNegativas));
-						rangoNegativas.setRangoCierre(new RangoCierreOperacionIndividuo(rangoPositivas));
-
-						this.procesarRangoOperacionIndicadores(rangoPositivas, new Long(cantidadPuntos).intValue());
-						this.procesarRangoOperacionIndicadores(rangoNegativas, new Long(cantidadPuntos).intValue());
-						this.crearIndividuos(rangoPositivas);
-						this.crearIndividuos(rangoNegativas);
+						List<RangoOperacionIndividuo> listRangosOperacion = crearListaRangosOperacion(pips, retroceso,
+								dateInterval);
+						for (RangoOperacionIndividuo rangoOperacionIndividuo : listRangosOperacion) {
+							this.procesarRangoOperacionIndicadores(rangoOperacionIndividuo, cantidadPuntos);
+							this.crearIndividuos(rangoOperacionIndividuo);
+						}
 					}
 					meses++;
 				}
@@ -127,7 +123,22 @@ public abstract class IndividuoXIndicadorManager {
 		}
 	}
 
-	private void configurarAmbiente() throws GeneticDAOException {
+	protected List<RangoOperacionIndividuo> crearListaRangosOperacion(double pips, double retroceso,
+			DateInterval dateInterval) {
+		List<RangoOperacionIndividuo> listRangosOperacion = new ArrayList<>();
+
+		RangoOperacionIndividuo rangoPositivas = new RangoOperacionIndividuo(pips, retroceso, dateInterval, true);
+		RangoOperacionIndividuo rangoNegativas = new RangoOperacionIndividuo(-pips, -retroceso, dateInterval, false);
+		rangoPositivas.setRangoCierre(new RangoCierreOperacionIndividuo(rangoNegativas));
+		rangoNegativas.setRangoCierre(new RangoCierreOperacionIndividuo(rangoPositivas));
+
+		listRangosOperacion.add(rangoNegativas);
+		listRangosOperacion.add(rangoPositivas);
+
+		return listRangosOperacion;
+	}
+
+	protected void configurarAmbiente() throws GeneticDAOException {
 		this.configurarOperacionPositivasYNegativas();
 	}
 
@@ -225,7 +236,7 @@ public abstract class IndividuoXIndicadorManager {
 	@SuppressWarnings("unchecked")
 	protected void insertIndividuo(IndividuoEstrategia individuo) throws GeneticDAOException {
 		if (individuo != null) {
-			dataClient.getDaoIndividuo().insert(individuo);
+			dataClient.getDaoIndividuo().insertIndividuoEstrategia(individuo);
 			dataClient.getDaoIndividuo().insertIndicadorIndividuo(indicadorController, individuo);
 			dataClient.getDaoIndividuo().insertarIndividuoIndicadoresColumnas(individuo.getId());
 			dataClient.commit();
@@ -233,8 +244,8 @@ public abstract class IndividuoXIndicadorManager {
 		}
 	}
 
-	protected void procesarRangoOperacionIndicadores(RangoOperacionIndividuo rangoOperacionIndividuo, int cantidadPuntos)
-			throws GeneticBusinessException {
+	protected void procesarRangoOperacionIndicadores(RangoOperacionIndividuo rangoOperacionIndividuo,
+			int cantidadPuntos) throws GeneticBusinessException {
 		StringBuilder fields = new StringBuilder();
 		List<String> filters = new ArrayList<String>();
 		StringBuilder porcentajeCumplimiento = new StringBuilder();

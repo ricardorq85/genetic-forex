@@ -13,6 +13,7 @@ import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Sorts;
 
 import forex.genetic.dao.IIndividuoDAO;
+import forex.genetic.dao.helper.mongodb.MongoIndividuoMapper;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.IndividuoOptimo;
@@ -212,5 +213,11 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 	public List<MongoIndividuo> consultarIndividuosRandom(Date fechaInicial, Date fechaFinal, int cantidad)
 			throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
+	}
+
+	@Override
+	public void insertIndividuoEstrategia(IndividuoEstrategia obj) throws GeneticDAOException {
+		Document doc = new Document(((MongoIndividuoMapper) getMapper()).toMapIndividuoEstrategia(obj));
+		this.collection.insertOne(doc);
 	}
 }

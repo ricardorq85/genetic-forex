@@ -5,8 +5,6 @@
  */
 package forex.genetic.manager.mongodb;
 
-import static forex.genetic.util.LogUtil.logTime;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,14 +18,11 @@ import forex.genetic.entities.RangoOperacionIndividuoIndicador;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoIndividuo;
+import forex.genetic.entities.mongo.MongoRangoOperacionIndividuoIndicador;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
-import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.IndividuoXIndicadorManager;
-import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
-import forex.genetic.util.DateUtil;
-import forex.genetic.util.RandomUtil;
 import forex.genetic.util.jdbc.DataClient;
 
 /**
@@ -43,57 +38,24 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 	public MongoIndividuoXIndicadorManager(DataClient dc, Date fechaMinima, Date fechaMaxima, int maximoMeses)
 			throws GeneticBusinessException {
 		super(dc, fechaMinima, fechaMaxima, maximoMeses);
-		dataClient = dc;
 	}
+	
+	protected List<RangoOperacionIndividuo> crearListaRangosOperacion(double pips, double retroceso,
+			DateInterval dateInterval) {
+		List<RangoOperacionIndividuo> listRangosOperacion = new ArrayList<>();
 
-	public void crearIndividuos() throws GeneticBusinessException {
-		try {
-			Date fechaFiltroFinal = new Date(fechaMaxima.getTime());
-			while (fechaFiltroFinal.after(fechaMinima)) {
-				int meses = parametroMeses;
-				while (meses <= maximoMeses) {
-					logTime("Meses: " + meses, 1);
-					DateInterval dateInterval = new DateInterval();
-					dateInterval.setLowInterval(DateUtil.adicionarMes(fechaFiltroFinal, -meses));
-					dateInterval.setHighInterval(fechaFiltroFinal);
-					int cantidadPuntos = new Long(
-							dataClient.getDaoDatoHistorico().consultarCantidadPuntos(dateInterval)).intValue();
-					logTime("Fecha filtro: " + DateUtil.getDateString(dateInterval.getLowInterval()) + " - "
-							+ DateUtil.getDateString(dateInterval.getHighInterval()), 1);
-					int repeat = RandomUtil.nextInt(meses) + 1;
-					for (int i = 0; i < repeat; i++) {
-						int pips = RandomUtil.nextInt(this.parametroPips);
-						int retroceso = RandomUtil.nextInt(this.parametroRetroceso);
-						RangoOperacionIndividuo rangoPositivas = new RangoOperacionIndividuo(pips, retroceso,
-								dateInterval, true);
-						RangoOperacionIndividuo rangoNegativas = new RangoOperacionIndividuo(-pips, -retroceso,
-								dateInterval, false);
-						rangoPositivas.setRangoCierre(new RangoCierreOperacionIndividuo(rangoNegativas));
-						rangoNegativas.setRangoCierre(new RangoCierreOperacionIndividuo(rangoPositivas));
+		RangoOperacionIndividuo rangoPositivas = new RangoOperacionIndividuo(pips, retroceso, dateInterval, true);
+		RangoOperacionIndividuo rangoNegativas = new RangoOperacionIndividuo(-pips, -retroceso, dateInterval, false);
+		rangoPositivas.setRangoCierre(new RangoCierreOperacionIndividuo(rangoNegativas));
+		rangoNegativas.setRangoCierre(new RangoCierreOperacionIndividuo(rangoPositivas));
 
-						this.procesarRangoOperacionIndicadores(rangoPositivas, cantidadPuntos);
-//						this.procesarRangoOperacionIndicadores(rangoNegativas, cantidadPuntos);
-						this.crearIndividuos(rangoPositivas);
-						// this.crearIndividuos(rangoNegativas);
-					}
-					meses++;
-				}
-				fechaFiltroFinal = DateUtil.adicionarMes(fechaFiltroFinal, -1);
-			}
-		} catch (GeneticDAOException e) {
-			throw new GeneticBusinessException(e);
-		} finally {
-			try {
-				dataClient.close();
-			} catch (GeneticDAOException e) {
-				e.printStackTrace();
-			}
-		}
+		listRangosOperacion.add(rangoNegativas);
+		listRangosOperacion.add(rangoPositivas);
+
+		return listRangosOperacion;
 	}
-
-	protected void procesarCruceIndividuos(RangoOperacionIndividuo rangoOperacionIndividuo, Individuo individuoSell,
-			Individuo individuoBuy) throws GeneticBusinessException {
-
+	
+	protected void configurarAmbiente() throws GeneticDAOException {
 	}
 
 	protected List<IndividuoEstrategia> getIndividuosACruzar(RangoOperacionIndividuo rangoOperacionIndividuo)
@@ -105,9 +67,6 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 		if ((estadisticasRandom == null) || (estadisticasRandom.isEmpty())) {
 			return null;
 		}
-
-		IndicadorController indicadorController = ControllerFactory
-				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 		List<IndividuoEstrategia> individuosParaCruzar = new ArrayList<>();
 		for (MongoEstadistica estadistica : estadisticasRandom) {
 			individuosParaCruzar.add(dataClient.getDaoIndividuo().consultarById(estadistica.getIdIndividuo()));
@@ -117,9 +76,7 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 
 	protected void procesarRangoOperacionIndicadores(RangoOperacionIndividuo rangoOperacionIndividuo,
 			int cantidadPuntos) throws GeneticBusinessException {
-		StringBuilder fields = new StringBuilder();
 		List<String> filters = new ArrayList<String>();
-
 		StringBuilder porcentajeCumplimiento = new StringBuilder();
 		int num_indicadores = indicadorController.getIndicatorNumber();
 		for (int i = 0; i < num_indicadores; i++) {
@@ -133,22 +90,14 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 				StringBuilder nombreIndicadorCalculado = new StringBuilder(nombreIndicador).append(nombreCalculado[j]);
 				filters.add(nombreIndicadorCalculado.toString());
 			}
-
-			// String[] sqlIndicador = indManager.queryRangoOperacionIndicador();
-			// porcentajeCumplimiento.append(indManager.queryPorcentajeCumplimientoIndicador());
-			// fields.append(sqlIndicador[0]);
-			// filters.append(sqlIndicador[1]);
-			RangoOperacionIndividuoIndicador rangoIndicador = new RangoOperacionIndividuoIndicador();
+			RangoOperacionIndividuoIndicador rangoIndicador = new MongoRangoOperacionIndividuoIndicador();
 			rangoIndicador.setIndicator(intervalIndicator);
-
 			rangoOperacionIndividuo.getIndicadores().add(rangoIndicador);
 		}
-		// rangoOperacionIndividuo.setFields(fields.toString());
 		rangoOperacionIndividuo.setFilterList(filters);
 		rangoOperacionIndividuo.setFiltroCumplimiento(porcentajeCumplimiento.toString());
 
 		consultarDatosRangoOperacion(rangoOperacionIndividuo, cantidadPuntos);
-
 	}
 
 	@Override

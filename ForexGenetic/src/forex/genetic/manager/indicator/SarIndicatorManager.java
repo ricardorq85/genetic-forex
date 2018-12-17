@@ -157,6 +157,8 @@ public class SarIndicatorManager extends IntervalIndicatorManager<Sar> {
 					Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
 					if (values.containsKey("sar")) {
 						instance.setSar(values.get("sar"));
+					} else {
+						instance.setSar(Double.NEGATIVE_INFINITY);
 					}
 				}
 			}

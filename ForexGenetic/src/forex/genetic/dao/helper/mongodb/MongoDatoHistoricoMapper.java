@@ -30,6 +30,13 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 			.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 
 	@Override
+	public Map<String, Object> toMapForDelete(Point obj, Date fechaReferencia) {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		objectMap.put("fechaHistorico", obj.getDate());
+		return objectMap;
+	}
+
+	@Override
 	public Map<String, Object> toPrimaryKeyMap(Point obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 
@@ -95,11 +102,6 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 	}
 
 	@Override
-	public Map<String, Object> toMapForDelete(Point obj, Date fechaReferencia) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public Point helpOne(Document one) {
 		Point obj = null;
 		if ((one != null) && (!one.isEmpty())) {
@@ -162,10 +164,6 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 							.append(nombreCalculado[j]);
 					String strNombre = nombreIndicadorCalculado.toString().replaceAll("\\.", "");
 
-					System.out.println("Indicador:" + strNombre);
-					if ("indicadoresIchiTrendcalculado_trend_low".equals(strNombre)) {
-						System.out.println("Indicador trend low:" + strNombre);
-					}
 					Double min = doc.getDouble("min" + strNombre);
 					Double max = doc.getDouble("max" + strNombre);
 					Double sum = doc.getDouble("sum" + strNombre);

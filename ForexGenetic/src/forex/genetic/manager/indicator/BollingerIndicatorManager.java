@@ -130,9 +130,13 @@ public class BollingerIndicatorManager extends IntervalIndicatorManager<Bollinge
 					Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
 					if (values.containsKey("lower")) {
 						instance.setLower(values.get("lower"));
+					} else {
+						instance.setLower(Double.NEGATIVE_INFINITY);
 					}
 					if (values.containsKey("upper")) {
 						instance.setUpper(values.get("upper"));
+					} else {
+						instance.setUpper(Double.NEGATIVE_INFINITY);
 					}
 				}
 			}

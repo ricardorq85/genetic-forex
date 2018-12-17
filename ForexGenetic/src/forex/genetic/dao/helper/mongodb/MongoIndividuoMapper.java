@@ -58,7 +58,7 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 		return procesoEjecucion;
 	}
 
-	private Map<String, Object> toMapIndividuoEstrategia(IndividuoEstrategia obj) {
+	public Map<String, Object> toMapIndividuoEstrategia(IndividuoEstrategia obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		objectMap.put("idIndividuo", obj.getId());
 		objectMap.put("idParent1", obj.getIdParent1());

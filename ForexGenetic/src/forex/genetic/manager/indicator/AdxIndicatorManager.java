@@ -143,12 +143,18 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 					Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
 					if (values.containsKey("adxValue")) {
 						instance.setAdxValue(values.get("adxValue"));
+					} else {
+						instance.setAdxValue(Double.NEGATIVE_INFINITY);
 					}
 					if (values.containsKey("adxMinus")) {
 						instance.setAdxMinus(values.get("adxMinus"));
+					} else {
+						instance.setAdxMinus(Double.NEGATIVE_INFINITY);
 					}
 					if (values.containsKey("adxPlus")) {
 						instance.setAdxPlus(values.get("adxPlus"));
+					} else {
+						instance.setAdxPlus(Double.NEGATIVE_INFINITY);
 					}
 				}
 			}

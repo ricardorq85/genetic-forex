@@ -19,6 +19,8 @@ import forex.genetic.manager.controller.IndicadorController;
  */
 public interface IIndividuoDAO<E extends IndividuoEstrategia> extends IGeneticDAO<E> {
 
+	public void insertIndividuoEstrategia(IndividuoEstrategia obj) throws GeneticDAOException;
+
 	public List<? extends IndividuoEstrategia> getListByProcesoEjecucion(String filtroAdicional, Date fechaHistorico)
 			throws GeneticDAOException;
 

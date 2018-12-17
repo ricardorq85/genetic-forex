@@ -136,6 +136,8 @@ public class RsiIndicatorManager extends IntervalIndicatorManager<Rsi> {
 					Map<String, Double> values = ((Map<String, Double>) indMap.get(instance.getName()));
 					if (values.containsKey("rsi")) {
 						instance.setRsi(values.get("rsi"));
+					} else {
+						instance.setRsi(Double.NEGATIVE_INFINITY);
 					}
 				}
 			}
