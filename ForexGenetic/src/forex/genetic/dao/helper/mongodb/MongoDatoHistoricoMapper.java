@@ -178,12 +178,12 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 					}
 				}
 
-				Interval<Double> interval = new DoubleInterval(inferior, superior);
+				Interval<Double> interval = new DoubleInterval(inferior * (1 + RandomUtil.nextDouble()),
+						superior * (1 + RandomUtil.nextDouble()));
 				indicator.setInterval(interval);
 				rangoIndicador.setCantidad(cantidad);
 				rangoIndicador.setSuma(maxSum);
 				rangoIndicador.setPromedio(maxSum / cantidad);
-				// rangoIndicador.setPorcentajeCumplimiento(RandomUtil.nextDouble() / 5.0D);
 			}
 
 			double minLow = doc.getDouble("minLow");

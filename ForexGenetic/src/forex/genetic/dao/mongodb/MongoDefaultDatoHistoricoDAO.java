@@ -284,7 +284,6 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 							intervalIndicator.getInterval().getLowInterval()));
 					filtrosIndicadorLowReves.add(Filters.lte(nombreIndicadorCalculado.toString(),
 							intervalIndicator.getInterval().getHighInterval()));
-
 				} else if (nombreCalculado[j].endsWith("high")) {
 					filtrosIndicadorHigh.add(Filters.lte(nombreIndicadorCalculado.toString(),
 							intervalIndicator.getInterval().getHighInterval()));
