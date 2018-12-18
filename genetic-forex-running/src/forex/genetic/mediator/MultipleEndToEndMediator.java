@@ -59,7 +59,7 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 				}
 				// TODO ricardorq85
 				// this.exportarDatosHistoricos();
-				// this.setUltimaFechaTendencia(count);
+				setUltimaFechaTendencia(count);
 				LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
 						+ ",fechaHistoricaMaximaAnterior=" + DateUtil.getDateString(this.fechaHistoricaMaximaAnterior)
 						+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva)

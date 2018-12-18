@@ -41,8 +41,8 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 		Date feMinimaCrearIndividuo = null;
 		Date feMaximaCrearIndividuo = null;
 		try {
-			feMinimaCrearIndividuo = DateUtil.obtenerFecha("2018/01/01 00:00");
-			feMaximaCrearIndividuo = DateUtil.obtenerFecha("2019/01/01 00:00");
+			feMinimaCrearIndividuo = DateUtil.obtenerFecha("2009/01/01 00:00");
+			feMaximaCrearIndividuo = DateUtil.obtenerFecha("2018/01/01 00:00");
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -53,8 +53,8 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 				"c:\\Users\\Angela\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\estrategias\\live",
 				new Integer(150), new Integer(200),
 				"forex.genetic.tendencia.manager.mongo.MongoProcesarTendenciasGrupalManager", feMinimaCrearIndividuo,
-				feMaximaCrearIndividuo, new Integer(5), new Integer(800), new Integer(1500), new Integer(10),
-				new Integer(10) };
+				feMaximaCrearIndividuo, new Integer(6), new Integer(800), new Integer(1500), new Integer(100),
+				new Integer(100) };
 
 		for (int i = 0; i < paramNames.length; i++) {
 			ParametroDTO p = new ParametroDTO();
@@ -63,7 +63,8 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 			p.setFecha(new Date());
 
 			Parametro param = new Parametro(p);
-			insertIfNoExists(param);
+			//insertIfNoExists(param);
+			insertOrUpdate(param);
 		}
 	}
 
