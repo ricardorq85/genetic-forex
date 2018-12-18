@@ -12,12 +12,12 @@ import forex.genetic.entities.RangoOperacionIndividuoIndicador;
  * @author ricardorq85
  */
 public class MongoRangoOperacionIndividuoIndicador extends RangoOperacionIndividuoIndicador {
-
-	public boolean cumplePorcentajeIndicador() {
-		return (getPorcentajeCumplimiento() > 0.8);
-		/*
-		 * && (porcentajeCumplimiento < 0.8)
-		 */
-	}
+//
+//	public boolean cumplePorcentajeIndicador() {
+//		return (getPorcentajeCumplimiento() > 0.8);
+//		/*
+//		 * && (porcentajeCumplimiento < 0.8)
+//		 */
+//	}
 
 }

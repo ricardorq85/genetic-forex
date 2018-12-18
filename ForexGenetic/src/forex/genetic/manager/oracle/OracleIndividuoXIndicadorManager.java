@@ -5,6 +5,8 @@
  */
 package forex.genetic.manager.oracle;
 
+import static forex.genetic.util.LogUtil.logTime;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +36,15 @@ public class OracleIndividuoXIndicadorManager extends IndividuoXIndicadorManager
 			int maximoMeses)
 			throws ClassNotFoundException, SQLException, GeneticDAOException, GeneticBusinessException {
 		super(oneDataClient, fechaMinima, fechaMaxima, maximoMeses);
+	}
+	
+	protected void configurarAmbiente() throws GeneticDAOException {
+		this.configurarOperacionPositivasYNegativas();
+	}
+
+	private void configurarOperacionPositivasYNegativas() throws GeneticDAOException {
+		logTime("Configurando operaciones positivas y negativas", 1);
+		dataClient.getDaoOperaciones().actualizarOperacionesPositivasYNegativas();
 	}
 
 	protected List<IndividuoEstrategia> getIndividuosACruzar(RangoOperacionIndividuo rangoOperacionIndividuo) {

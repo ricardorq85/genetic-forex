@@ -25,9 +25,6 @@ public class MutationIndividuoManager extends MutationManager {
 
 	private final EspecificMutationManager especificMutationManager = EspecificMutationManager.getInstance();
 
-	/**
-	 *
-	 */
 	public MutationIndividuoManager() {
 		super(ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo));
 	}
@@ -58,92 +55,71 @@ public class MutationIndividuoManager extends MutationManager {
 			// int pos1 = counter % individuos.size();
 			int pos1 = random.nextInt(individuos.size());
 			if (pos1 < individuos.size()) {
-				try {
-					IndividuoEstrategia individuo1 = individuos.get(pos1);
-					IndividuoEstrategia hijo = new IndividuoEstrategia(generacion, individuo1, null,
-							IndividuoType.MUTATION);
-					hijo.setTipoOperacion(individuo1.getTipoOperacion());
-					List<Indicator> openIndicators = Collections
-							.synchronizedList(new ArrayList<>(indicadorController.getIndicatorNumber()));
-					List<Indicator> closeIndicators = Collections
-							.synchronizedList(new ArrayList<>(indicadorController.getIndicatorNumber()));
-					int countCloseNotNull = 0;
-					for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
-						Indicator openIndicator = null;
-						if (individuo1.getOpenIndicators().size() > i) {
-							openIndicator = individuo1.getOpenIndicators().get(i);
-						}
-						IndicadorManager indicatorManager = indicadorController.getManagerInstance(i);
-						Indicator indHijo = openIndicator;
-						if ((random.nextDouble() < 0.1)) {
-							indHijo = null;
-						} else if ((random.nextDouble() < 0.1)) {
-							indHijo = indicatorManager.mutate(openIndicator);
-						}
-						openIndicators.add(indHijo);
-						Indicator closeIndicator = null;
-						if (individuo1.getCloseIndicators().size() > i) {
-							closeIndicator = individuo1.getCloseIndicators().get(i);
-						}
-						indHijo = closeIndicator;
-						if ((random.nextDouble() < 0.1)) {
-							indHijo = null;
-						} else if ((countCloseNotNull > 0 && countCloseNotNull < 2) || (random.nextDouble() < 0.1)) {
-							indHijo = indicatorManager.mutate(closeIndicator);
-						}
-						if (indHijo != null) {
-							countCloseNotNull++;
-						}
-						closeIndicators.add(indHijo);
+				IndividuoEstrategia individuo1 = individuos.get(pos1);
+				IndividuoEstrategia hijo = new IndividuoEstrategia(generacion, individuo1, null,
+						IndividuoType.MUTATION);
+				hijo.setTipoOperacion(individuo1.getTipoOperacion());
+				List<Indicator> openIndicators = Collections
+						.synchronizedList(new ArrayList<>(indicadorController.getIndicatorNumber()));
+				List<Indicator> closeIndicators = Collections
+						.synchronizedList(new ArrayList<>(indicadorController.getIndicatorNumber()));
+				int countCloseNotNull = 0;
+				for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
+					Indicator openIndicator = null;
+					if (individuo1.getOpenIndicators().size() > i) {
+						openIndicator = individuo1.getOpenIndicators().get(i);
 					}
-					hijo.setOpenIndicators(openIndicators);
-					hijo.setCloseIndicators(closeIndicators);
-
-					int tp1 = individuo1.getTakeProfit();
-					int tpHijo = tp1;
-					if (random.nextBoolean()) {
-						tpHijo = especificMutationManager.mutate(tp1, minTP, maxTP);
+					IndicadorManager indicatorManager = indicadorController.getManagerInstance(i);
+					Indicator indHijo = openIndicator;
+					if ((random.nextDouble() < 0.1)) {
+						indHijo = null;
+					} else if ((random.nextDouble() < 0.1)) {
+						indHijo = indicatorManager.mutate(openIndicator);
 					}
-					hijo.setTakeProfit(tpHijo);
-
-					int sl1 = individuo1.getStopLoss();
-					int slHijo = sl1;
-					if (random.nextBoolean()) {
-						slHijo = especificMutationManager.mutate(sl1, minSL, maxSL);
-						// if (slHijo < 300) {
-						// slHijo = especificMutationManager.mutate(sl1, minSL,
-						// maxSL);
-						// }
+					openIndicators.add(indHijo);
+					Indicator closeIndicator = null;
+					if (individuo1.getCloseIndicators().size() > i) {
+						closeIndicator = individuo1.getCloseIndicators().get(i);
 					}
-					hijo.setStopLoss(slHijo);
-
-					double lot1 = individuo1.getLot();
-					double lotHijo = lot1;
-					// if (random.nextBoolean()) {
-					// lotHijo =
-					// NumberUtil.round(especificMutationManager.mutate(lot1,
-					// PropertiesManager.getMinLot(),
-					// PropertiesManager.getMaxLot()),
-					// PropertiesManager.getLotScaleRounding());
-					// }
-					hijo.setLot(lotHijo);
-
-					int balance1 = individuo1.getInitialBalance();
-					int balanceHijo = balance1;
-					// if (random.nextBoolean()) {
-					// balanceHijo = especificMutationManager.mutate(balance1,
-					// PropertiesManager.getMinBalance(),
-					// PropertiesManager.getMaxBalance());
-					// }
-					hijo.setInitialBalance(balanceHijo);
-
-					if (!hijos.contains(hijo)) {
-						parents.add(individuo1);
-						hijos.add(hijo);
-						// individuos.add(hijo);
+					indHijo = closeIndicator;
+					if ((random.nextDouble() < 0.1)) {
+						indHijo = null;
+					} else if ((countCloseNotNull > 0 && countCloseNotNull < 2) || (random.nextDouble() < 0.1)) {
+						indHijo = indicatorManager.mutate(closeIndicator);
 					}
-				} catch (ArrayIndexOutOfBoundsException ex) {
-					ex.printStackTrace();
+					if (indHijo != null) {
+						countCloseNotNull++;
+					}
+					closeIndicators.add(indHijo);
+				}
+				hijo.setOpenIndicators(openIndicators);
+				hijo.setCloseIndicators(closeIndicators);
+
+				int tp1 = individuo1.getTakeProfit();
+				int tpHijo = tp1;
+				if (random.nextBoolean()) {
+					tpHijo = especificMutationManager.mutate(tp1, minTP, maxTP);
+				}
+				hijo.setTakeProfit(tpHijo);
+
+				int sl1 = individuo1.getStopLoss();
+				int slHijo = sl1;
+				if (random.nextBoolean()) {
+					slHijo = especificMutationManager.mutate(sl1, minSL, maxSL);
+				}
+				hijo.setStopLoss(slHijo);
+
+				double lot1 = individuo1.getLot();
+				double lotHijo = lot1;
+				hijo.setLot(lotHijo);
+
+				int balance1 = individuo1.getInitialBalance();
+				int balanceHijo = balance1;
+				hijo.setInitialBalance(balanceHijo);
+
+				if (!hijos.contains(hijo)) {
+					parents.add(individuo1);
+					hijos.add(hijo);
 				}
 			} else {
 				LogUtil.logTime("MutationManager mutation Counter=" + counter + " pos1=" + pos1, 5);
@@ -157,5 +133,4 @@ public class MutationIndividuoManager extends MutationManager {
 
 		return poblacionArray;
 	}
-
 }

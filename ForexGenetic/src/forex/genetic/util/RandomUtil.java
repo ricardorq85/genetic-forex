@@ -3,6 +3,7 @@ package forex.genetic.util;
 import java.util.Random;
 
 public class RandomUtil {
+
 	private static final Random random = new Random();
 
 	public static int generateNegativePositive(int min, int max) {
@@ -49,7 +50,7 @@ public class RandomUtil {
 	public static int nextInt(int bound) {
 		return random.nextInt(bound);
 	}
-	
+
 	public static boolean nextBoolean() {
 		return random.nextBoolean();
 	}

@@ -106,12 +106,6 @@ public class AdxIndicatorManager extends IntervalIndicatorManager<Adx> {
 	}
 
 	@Override
-	public Indicator mutate(Adx obj) {
-		// TODO Auto-generated method stub
-		return super.mutate(obj);
-	}
-
-	@Override
 	public Map<String, Double> getCalculatedValues(Adx prevIndicator, Adx indicator, Point prevPoint, Point point) {
 		Map<String, Double> objectMap = new HashMap<String, Double>();
 		if (!NumberUtil.isInfiniteOrNan(indicator.getAdxValue())) {

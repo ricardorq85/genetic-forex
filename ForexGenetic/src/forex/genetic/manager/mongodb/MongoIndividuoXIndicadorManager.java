@@ -12,6 +12,7 @@ import java.util.List;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
+import forex.genetic.entities.Point;
 import forex.genetic.entities.RangoCierreOperacionIndividuo;
 import forex.genetic.entities.RangoOperacionIndividuo;
 import forex.genetic.entities.RangoOperacionIndividuoIndicador;
@@ -23,6 +24,7 @@ import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.IndividuoXIndicadorManager;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
+import forex.genetic.util.Constants;
 import forex.genetic.util.jdbc.DataClient;
 
 /**
@@ -39,23 +41,26 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 			throws GeneticBusinessException {
 		super(dc, fechaMinima, fechaMaxima, maximoMeses);
 	}
-	
+
+	@Override
+	protected Individuo createIndividuoInstance() {
+		return new MongoIndividuo();
+	}
+
+	protected void configurarAmbiente() throws GeneticDAOException {
+	}
+
 	protected List<RangoOperacionIndividuo> crearListaRangosOperacion(double pips, double retroceso,
 			DateInterval dateInterval) {
 		List<RangoOperacionIndividuo> listRangosOperacion = new ArrayList<>();
 
-		RangoOperacionIndividuo rangoPositivas = new RangoOperacionIndividuo(pips, retroceso, dateInterval, true);
-		RangoOperacionIndividuo rangoNegativas = new RangoOperacionIndividuo(-pips, -retroceso, dateInterval, false);
-		rangoPositivas.setRangoCierre(new RangoCierreOperacionIndividuo(rangoNegativas));
-		rangoNegativas.setRangoCierre(new RangoCierreOperacionIndividuo(rangoPositivas));
-
-		listRangosOperacion.add(rangoNegativas);
-		listRangosOperacion.add(rangoPositivas);
+		RangoOperacionIndividuo rango = new RangoOperacionIndividuo();
+		rango.setFechaFiltro(dateInterval.getLowInterval());
+		rango.setFechaFiltro2(dateInterval.getHighInterval());
+		rango.setRangoCierre(new RangoCierreOperacionIndividuo(rango));
+		listRangosOperacion.add(rango);
 
 		return listRangosOperacion;
-	}
-	
-	protected void configurarAmbiente() throws GeneticDAOException {
 	}
 
 	protected List<IndividuoEstrategia> getIndividuosACruzar(RangoOperacionIndividuo rangoOperacionIndividuo)
@@ -100,9 +105,17 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 		consultarDatosRangoOperacion(rangoOperacionIndividuo, cantidadPuntos);
 	}
 
-	@Override
-	protected Individuo createIndividuoInstance() {
-		return new MongoIndividuo();
+	protected Individuo createIndividuo(RangoOperacionIndividuo rango, Constants.OperationType tipoOperacion) {
+		Individuo ind = super.createIndividuo(rango, tipoOperacion);
+		try {
+			DateInterval dateInterval = new DateInterval(rango.getFechaFiltro(), rango.getFechaFiltro2());
+			List<Point> points = dataClient.getDaoDatoHistorico().consultarProximosPuntosApertura(ind, dateInterval);
+			if ((points == null) || (points.isEmpty())) {
+				ind = null;
+			}
+		} catch (GeneticDAOException e) {
+			e.printStackTrace();
+		}
+		return ind;
 	}
-
 }
