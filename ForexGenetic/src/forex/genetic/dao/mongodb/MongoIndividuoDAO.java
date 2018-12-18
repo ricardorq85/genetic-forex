@@ -20,6 +20,7 @@ import forex.genetic.entities.IndividuoOptimo;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.controller.IndicadorController;
+import forex.genetic.util.Constants;
 
 public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implements IIndividuoDAO<MongoIndividuo> {
 
@@ -63,7 +64,8 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		Bson ordenador = Sorts.orderBy(Sorts.ascending("procesoEjecucion.maxFechaHistorico"),
 				Sorts.descending("idIndividuo"));
 
-		Bson filtroIndividuo = Filters.regex("idIndividuo", "1544911864471.7");
+		Bson filtroIndividuo = Filters.and(Filters.regex("idIndividuo", "1545088344522.2"),
+				Filters.eq("tipoIndividuo", Constants.IndividuoType.INDICADOR_GANADOR.name()));
 //		Bson filtroIndividuo = Filters.regex("idIndividuo", "1544908361588.*");
 		Bson filtroCompleto = Filters.and(filtroIndividuo, filtroOr);
 

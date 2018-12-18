@@ -10,6 +10,7 @@ import forex.genetic.manager.OperacionesManager;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants;
 import forex.genetic.util.Constants.CloseType;
+import forex.genetic.util.NumberUtil;
 import forex.genetic.util.jdbc.DataClient;
 
 /**
@@ -70,8 +71,8 @@ public class MongoOperacionesManager extends OperacionesManager {
 								- openOperationValue) * PropertiesManager.getPairFactor()
 						: (-operationController.calculateTakePrice(points, i, Constants.OperationType.SELL)
 								+ openOperationValue) * PropertiesManager.getPairFactor();
-				stopLossPips = stopLossPips - (currentOrder.getOpenSpread());
-				takeProfitPips = takeProfitPips - (currentOrder.getOpenSpread());
+				stopLossPips = NumberUtil.round(stopLossPips - (currentOrder.getOpenSpread()));
+				takeProfitPips = NumberUtil.round(takeProfitPips - (currentOrder.getOpenSpread()));
 				boolean operate = (((takeProfitPips >= (takeProfit)) || (stopLossPips <= -(stopLoss))));
 				if (!operate) {
 					operate = operationController.operateClose(individuo, points, i);

@@ -13,7 +13,7 @@ public class RangoCierreOperacionIndividuo extends RangoOperacionIndividuo {
 			return true;
 		}
 
-		return super.isRangoValido(8);
+		return super.isRangoValidoXIndicadores(8);
 	}
 
 }

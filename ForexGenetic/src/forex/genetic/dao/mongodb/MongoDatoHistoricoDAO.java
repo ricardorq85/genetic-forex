@@ -95,15 +95,16 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 //		while (year <= endYear) {
 		if (true) {
 			setCollection(year);
-			RangoOperacionIndividuo newRangoOperacion = new RangoOperacionIndividuo();
-			List<RangoOperacionIndividuoIndicador> list = new ArrayList<>();
-			list.addAll(rangoOperacion.getIndicadores());
-			newRangoOperacion.setIndicadores(list);
-			newRangoOperacion.setFilterList(rangoOperacion.getFilterList());
-			newRangoOperacion.setFechaFiltro(rangoOperacion.getFechaFiltro());
-			newRangoOperacion.setFechaFiltro2(rangoOperacion.getFechaFiltro2());
+			
+//			RangoOperacionIndividuo newRangoOperacion = new RangoOperacionIndividuo();
+//			List<RangoOperacionIndividuoIndicador> list = new ArrayList<>();
+//			list.addAll(rangoOperacion.getIndicadores());
+//			newRangoOperacion.setIndicadores(list);
+//			newRangoOperacion.setFilterList(rangoOperacion.getFilterList());
+//			newRangoOperacion.setFechaFiltro(rangoOperacion.getFechaFiltro());
+//			newRangoOperacion.setFechaFiltro2(rangoOperacion.getFechaFiltro2());
 
-			super.consultarRangoOperacionIndicador(newRangoOperacion);
+			super.consultarRangoOperacionIndicador(rangoOperacion);
 
 //			r.setTakeProfit((r.getTakeProfit() + newRangoOperacion.getTakeProfit()) / 2);
 //			r.setStopLoss((r.getStopLoss() + newRangoOperacion.getStopLoss()) / 2);

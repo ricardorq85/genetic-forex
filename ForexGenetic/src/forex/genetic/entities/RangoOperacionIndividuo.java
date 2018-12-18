@@ -183,10 +183,18 @@ public class RangoOperacionIndividuo {
 	}
 
 	public boolean isRangoValido() {
-		return this.isRangoValido(4);
+		return isRangoValidoXTakeProfit() && isRangoValidoXStopLoss() && this.isRangoValidoXIndicadores(4);
 	}
 
-	protected boolean isRangoValido(int cantidad) {
+	protected boolean isRangoValidoXTakeProfit() {
+		return takeProfit > 100;
+	}
+
+	protected boolean isRangoValidoXStopLoss() {
+		return stopLoss > 100;
+	}
+
+	protected boolean isRangoValidoXIndicadores(int cantidad) {
 		return ((this.getIndicadores() != null) && containsCantidadIndicadores(cantidad)
 				&& (this.containsIndicadorNuevo()));
 	}

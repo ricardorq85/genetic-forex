@@ -178,7 +178,8 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 					}
 				}
 
-				Interval<Double> interval = new DoubleInterval(inferior * (1 + RandomUtil.nextDouble()),
+				Interval<Double> interval = new DoubleInterval(inferior, superior);
+				Interval<Double> intervalWide = new DoubleInterval(inferior * (1 + RandomUtil.nextDouble()),
 						superior * (1 + RandomUtil.nextDouble()));
 				indicator.setInterval(interval);
 				rangoIndicador.setCantidad(cantidad);
@@ -188,7 +189,7 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 
 			double minLow = doc.getDouble("minLow");
 			double maxHigh = doc.getDouble("maxHigh");
-			int diff = Math.min(3000, new Double((maxHigh - minLow) * 100000).intValue());
+			int diff = Math.min(3000, new Double((maxHigh - minLow) * 100000.0D).intValue());
 			diff = Math.max(diff, 200);
 			rangoOperacionIndividuo.setTakeProfit(diff);
 			rangoOperacionIndividuo.setStopLoss(diff);

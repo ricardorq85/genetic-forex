@@ -23,6 +23,7 @@ public class MongoOperacionMapper extends MongoMapper<MongoOrder> {
 	public Map<String, Object> toMap(MongoOrder obj) {
 		Map<String, Object> objMap = new HashMap<String, Object>();
 		objMap.put("idIndividuo", obj.getIdIndividuo());
+		objMap.put("tipoOperacion", obj.getTipo().name());
 		objMap.put("takeProfit", obj.getTakeProfit());
 		objMap.put("stopLoss", obj.getStopLoss());
 		objMap.put("fechaApertura", obj.getOpenDate());
@@ -55,6 +56,8 @@ public class MongoOperacionMapper extends MongoMapper<MongoOrder> {
 	public MongoOrder helpOne(Document one) {
 		MongoOrder order = new MongoOrder();
 		order.setIdIndividuo(one.getString("idIndividuo"));
+		order.setTipo("SELL".equalsIgnoreCase(one.getString("tipoOperacion")) ? Constants.OperationType.SELL
+				: Constants.OperationType.BUY);
 		order.setTakeProfit(one.getDouble("takeProfit"));
 		order.setStopLoss(one.getDouble("stopLoss"));
 		order.setOpenDate(one.getDate("fechaApertura"));

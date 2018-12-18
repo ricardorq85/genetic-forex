@@ -150,7 +150,8 @@ public class MongoProcesarIndividuoThread extends Thread {
 
 		MongoIndividuo individuo = estadisticasManager.getIndividuo();
 		Order order = individuo.getCurrentOrder();
-		if (order == null) {
+		if ((order == null) || (order.getCloseDate() != null)) {
+			individuo.setCurrentOrder(null);
 			order = procesarNuevaOperacion(individuo, intervaloFechasIndividuo, puntoApertura);
 		}
 
@@ -257,7 +258,9 @@ public class MongoProcesarIndividuoThread extends Thread {
 						LogUtil.logTime("despues de retrocesos:", 3);
 
 						daoOperaciones.insertOrUpdate(closedOrder);
+						individuo.setCurrentOrder(null);
 						updateProcesoIndividuo(individuo, closedOrder, closedOrder.getCloseDate());
+						individuo.setCurrentOrder(closedOrder);
 					}
 				}
 			}

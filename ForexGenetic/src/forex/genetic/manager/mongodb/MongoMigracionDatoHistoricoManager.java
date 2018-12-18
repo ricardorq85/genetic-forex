@@ -35,7 +35,7 @@ public class MongoMigracionDatoHistoricoManager extends MigracionManager<Point> 
 		Point p;
 		try {
 			Date d = DateUtil.obtenerFecha("2018/01/02 00:01");
-			p = datoHistoricoDAO.consultarHistorico(d,d).get(0);
+			p = datoHistoricoDAO.consultarHistorico(d, d).get(0);
 			datos.add(0, p);
 		} catch (GeneticDAOException | ParseException e1) {
 			e1.printStackTrace();
@@ -53,14 +53,14 @@ public class MongoMigracionDatoHistoricoManager extends MigracionManager<Point> 
 	}
 
 	public void migrate() throws GeneticBusinessException {
-		corregirMigrados();
+		// corregirMigrados();
+		migrateAll();
 	}
 
-	public void migrateTodo() throws GeneticBusinessException {
+	public void migrateAll() throws GeneticBusinessException {
 //		LogUtil.logTime(
-		// new StringBuilder("Borrando collection:
-		// ").append(mongoDestinoDAO.getCollectionName()).toString(), 1);
-		// mongoDestinoDAO.clean();
+//				new StringBuilder("Borrando collection:").append(mongoDestinoDAO.getCollectionName()).toString(), 1);
+//		mongoDestinoDAO.clean();
 		Date fechaMinima, fechaMaxima;
 		try {
 			fechaMinima = ((MongoDatoHistoricoDAO) mongoDestinoDAO).getFechaHistoricaMaxima();
@@ -89,6 +89,10 @@ public class MongoMigracionDatoHistoricoManager extends MigracionManager<Point> 
 				if (datosConsultados.size() > 1) {
 					LogUtil.logTime("Importando..." + datosConsultados.size(), 1);
 					mongoDestinoDAO.insertMany(datosConsultados.subList(1, datosConsultados.size() - 1));
+//					for (int i = 1; i < datosConsultados.size() - 1; i++) {
+//						Point point = datosConsultados.get(i);
+//						mongoDestinoDAO.insertOrUpdate(point);
+//					}
 					fechaInicialConsulta = datosConsultados.get(datosConsultados.size() - 1).getDate();
 				} else {
 					fechaInicialConsulta = DateUtil.adicionarDias(fechaMaxima, 1);

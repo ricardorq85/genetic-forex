@@ -3,13 +3,12 @@ package forex.genetic.dao.mongodb;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
@@ -27,7 +26,6 @@ import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.RangoOperacionIndividuo;
-import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.entities.mongo.MongoOrder;
@@ -37,6 +35,7 @@ import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.Constants;
+import forex.genetic.util.LogUtil;
 
 /**
  *
@@ -107,8 +106,7 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 		});
 
 //		LogUtil.logTime(
-		// Filters.and(filters).toBsonDocument(Document.class,
-		// MongoClient.getDefaultCodecRegistry()).toJson(), 1);
+//				Filters.and(filters).toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson(), 1);
 
 		MongoCursor<Document> cursor = this.collection.aggregate(Arrays.asList(Aggregates.match(Filters.and(filters)),
 				Aggregates.unwind("$indicadores"), Aggregates.group(null, accumulators), Aggregates.sample(cantidad)))
@@ -239,6 +237,7 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 		adicionarFiltroIndicadores(individuo.getOpenIndicators(), filtros);
 
 		Bson bsonFiltrosCompletos = Filters.and(filtros);
+
 		MongoCursor<Document> cursor = this.collection.find(bsonFiltrosCompletos)
 				.sort(Sorts.orderBy(Sorts.ascending("fechaHistorico"))).iterator();
 

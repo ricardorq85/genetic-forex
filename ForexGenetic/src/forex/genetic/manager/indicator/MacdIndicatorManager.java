@@ -112,7 +112,7 @@ public class MacdIndicatorManager extends IntervalIndicatorManager<Macd> {
 		if (prevIndicator != null) {
 			if (!NumberUtil.isAnyInfiniteOrNan(prevIndicator.getMacdSignal(), prevIndicator.getMacdSignal())) {
 				objectMap.put("calculado",
-						NumberUtil.round((prevIndicator.getMacdValue() - prevIndicator.getMacdSignal())));
+						NumberUtil.round((getValue(prevIndicator, prevPoint, point))));
 			}
 		}
 		return objectMap;

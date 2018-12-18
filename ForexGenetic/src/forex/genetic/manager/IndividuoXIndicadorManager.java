@@ -17,6 +17,7 @@ import forex.genetic.entities.DoubleInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Poblacion;
+import forex.genetic.entities.Point;
 import forex.genetic.entities.RangoCierreOperacionIndividuo;
 import forex.genetic.entities.RangoOperacionIndividuo;
 import forex.genetic.entities.RangoOperacionIndividuoIndicador;
@@ -186,7 +187,7 @@ public abstract class IndividuoXIndicadorManager {
 			throws GeneticBusinessException {
 		try {
 			List<IndividuoEstrategia> individuosParaCruzar = getIndividuosACruzar(rangoOperacionIndividuo);
-			if (individuosParaCruzar == null) {
+			if ((individuosParaCruzar == null) || individuosParaCruzar.isEmpty()) {
 				return;
 			}
 
@@ -396,6 +397,17 @@ public abstract class IndividuoXIndicadorManager {
 			ind.setOpenIndicators(openIndicators);
 			ind.setCloseIndicators(
 					(countCierre > 4) ? closeIndicators : new ArrayList<>(indicadorController.getIndicatorNumber()));
+
+			try {
+				DateInterval dateInterval = new DateInterval(rango.getFechaFiltro(), rango.getFechaFiltro2());
+				List<Point> points = dataClient.getDaoDatoHistorico().consultarProximosPuntosApertura(ind,
+						dateInterval);
+				if ((points == null) || (points.isEmpty())) {
+					ind = null;
+				}
+			} catch (GeneticDAOException e) {
+				e.printStackTrace();
+			}
 		} else {
 			logTime("No tiene suficientes indicadores con las caracteristicas necesarias. Individuo NO creado ", 1);
 		}
