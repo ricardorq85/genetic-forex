@@ -72,17 +72,22 @@ public class MongoProcesarIndividuoThread extends Thread {
 	}
 
 	protected void runIndividuo(MongoIndividuo individuo) throws ClassNotFoundException, GeneticDAOException {
-		runIndividuoByYear(individuo);
+		if (!validarYBorrarIndividuoInvalido(individuo)) {
+			runIndividuoByYear(individuo);
+
+			validarYBorrarIndividuoInvalido(individuo);
+		}
 	}
 
-	private DateInterval findNextInterval(Date currentDate) {
+	private DateInterval findNextInterval(Date currentDate, int maxMonths) {
 		DateInterval yearInterval;
 		if (currentDate.before(maxFechaHistorico)) {
 			yearInterval = DateUtil.obtenerIntervaloAnyo(currentDate);
+			Date fechaMasMeses = DateUtil.adicionarMes(currentDate, maxMonths);
 			Date ultimaFechaDelAnyo = DateUtil.obtenerFechaMinima(maxFechaHistorico,
 					DateUtil.adicionarMinutos(yearInterval.getHighInterval(), -1));
 			yearInterval.setLowInterval(currentDate);
-			yearInterval.setHighInterval(ultimaFechaDelAnyo);
+			yearInterval.setHighInterval(DateUtil.obtenerFechaMinima(ultimaFechaDelAnyo, fechaMasMeses));
 		} else {
 			yearInterval = new DateInterval(maxFechaHistorico, maxFechaHistorico);
 		}
@@ -90,95 +95,85 @@ public class MongoProcesarIndividuoThread extends Thread {
 	}
 
 	protected void runIndividuoByYear(MongoIndividuo individuo) throws ClassNotFoundException, GeneticDAOException {
-		if (!validarYBorrarIndividuoInvalido(individuo)) {
-			ProcesoEjecucionDTO procesoEjecucionIndividuo = individuo.getProcesoEjecucion();
-			DateInterval interval = null;
-			if ((procesoEjecucionIndividuo == null) || (procesoEjecucionIndividuo.getMaxFechaHistorico() == null)) {
-				interval = findNextInterval(procesoEjecucionIndividuo.getMaxFechaHistorico());
+		int maxMonths = 6;
+		ProcesoEjecucionDTO procesoEjecucionIndividuo = individuo.getProcesoEjecucion();
+		DateInterval interval = null;
+		if ((procesoEjecucionIndividuo == null) || (procesoEjecucionIndividuo.getMaxFechaHistorico() == null)) {
+			interval = findNextInterval(procesoEjecucionIndividuo.getMaxFechaHistorico(), maxMonths);
+		} else {
+			interval = findNextInterval(this.minFechaHistorico, maxMonths);
+		}
+
+		boolean processed = true;
+		MongoEstadisticasManager estadisticasManager = new MongoEstadisticasManager(individuo);
+		while (processed && !interval.getHighInterval().after(this.maxFechaHistorico)) {
+			LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + interval.toString(), 1);
+
+			LogUtil.logTime("Consultando puntos de apertura", 1);
+			List<Point> puntosApertura = daoDatoHistorico.consultarProximosPuntosApertura(individuo, interval);
+
+			LogUtil.logTime("Consultando puntos de cierre", 1);
+			List<Point> puntosCierre = daoDatoHistorico.consultarPuntosCierre(individuo, interval);
+
+			Date lastProcessedDate = null;
+			if (puntosApertura.isEmpty()) {
+				lastProcessedDate = interval.getHighInterval();
+				procesarIndividuo(estadisticasManager, interval, null, puntosCierre);
 			} else {
-				interval = findNextInterval(this.minFechaHistorico);
+				lastProcessedDate = interval.getLowInterval();
 			}
-
-			boolean processed = true;
-			MongoEstadisticasManager estadisticasManager = new MongoEstadisticasManager(individuo);
-			while (processed && !interval.getHighInterval().after(this.maxFechaHistorico)) {
-				LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + interval.toString(), 1);
-
-				LogUtil.logTime("Consultando puntos de apertura", 1);
-				List<Point> puntosApertura = daoDatoHistorico.consultarProximosPuntosApertura(individuo, interval);
-
-				LogUtil.logTime("Consultando puntos de cierre", 1);
-				List<Point> puntosCierre = daoDatoHistorico.consultarPuntosCierre(individuo, interval);
-
-				Date lastProcessedDate = null;
-				if (puntosApertura.isEmpty()) {
-					lastProcessedDate = interval.getHighInterval();
-					procesarIndividuo(estadisticasManager, interval, null, puntosCierre);
-				} else {
-					lastProcessedDate = interval.getLowInterval();
-				}
-				for (Point point : puntosApertura) {
-					if (point.getDate().after(lastProcessedDate)) {
-						lastProcessedDate = procesarIndividuo(estadisticasManager, interval, point, puntosCierre);
-					}
-				}
-				processed = (lastProcessedDate != null);
-				if (processed) {
-					interval = findNextInterval(DateUtil.adicionarMinutos(interval.getLowInterval(), 1));
+			for (Point point : puntosApertura) {
+				if (point.getDate().after(lastProcessedDate)) {
+					lastProcessedDate = procesarIndividuo(estadisticasManager, interval, point, puntosCierre);
 				}
 			}
-			if (processed && !validarYBorrarIndividuoInvalido(individuo)) {
-				// this.actualizarOperacionSemanal(individuo);
+			processed = (lastProcessedDate != null);
+			if (processed) {
+				interval = findNextInterval(DateUtil.adicionarMinutos(interval.getLowInterval(), 1), maxMonths);
 			}
 		}
 	}
 
 	protected void runIndividuoByInterval(MongoIndividuo individuo) throws ClassNotFoundException, GeneticDAOException {
 		int mesesAAdicionar = 3;
-		if (!validarYBorrarIndividuoInvalido(individuo)) {
-			ProcesoEjecucionDTO procesoEjecucionIndividuo = individuo.getProcesoEjecucion();
-			Date fechaMayorQue = ((procesoEjecucionIndividuo == null)
-					|| (procesoEjecucionIndividuo.getMaxFechaHistorico() == null)) ? this.minFechaHistorico
-							: procesoEjecucionIndividuo.getMaxFechaHistorico();
-			Date fechaMenorOIgualQue = DateUtil.obtenerFechaMinima(this.maxFechaHistorico,
-					DateUtil.adicionarMes(fechaMayorQue, mesesAAdicionar));
-			boolean processed = true;
+		ProcesoEjecucionDTO procesoEjecucionIndividuo = individuo.getProcesoEjecucion();
+		Date fechaMayorQue = ((procesoEjecucionIndividuo == null)
+				|| (procesoEjecucionIndividuo.getMaxFechaHistorico() == null)) ? this.minFechaHistorico
+						: procesoEjecucionIndividuo.getMaxFechaHistorico();
+		Date fechaMenorOIgualQue = DateUtil.obtenerFechaMinima(this.maxFechaHistorico,
+				DateUtil.adicionarMes(fechaMayorQue, mesesAAdicionar));
+		boolean processed = true;
 
-			MongoEstadisticasManager estadisticasManager = new MongoEstadisticasManager(individuo);
-			while (processed && !fechaMenorOIgualQue.after(this.maxFechaHistorico)
-					&& fechaMenorOIgualQue.after(fechaMayorQue)) {
-				DateInterval intervaloFechasIndividuo = new DateInterval(fechaMayorQue, fechaMenorOIgualQue);
+		MongoEstadisticasManager estadisticasManager = new MongoEstadisticasManager(individuo);
+		while (processed && !fechaMenorOIgualQue.after(this.maxFechaHistorico)
+				&& fechaMenorOIgualQue.after(fechaMayorQue)) {
+			DateInterval intervaloFechasIndividuo = new DateInterval(fechaMayorQue, fechaMenorOIgualQue);
 
-				LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + intervaloFechasIndividuo.toString(),
-						1);
-				LogUtil.logTime("Consultando puntos de apertura", 3);
-				List<Point> puntosApertura = daoDatoHistorico.consultarProximosPuntosApertura(individuo,
-						intervaloFechasIndividuo);
-				LogUtil.logTime("Consultando puntos de cierre", 3);
-				List<Point> puntosCierre = daoDatoHistorico.consultarPuntosCierre(individuo, intervaloFechasIndividuo);
+			LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + intervaloFechasIndividuo.toString(), 1);
+			LogUtil.logTime("Consultando puntos de apertura", 3);
+			List<Point> puntosApertura = daoDatoHistorico.consultarProximosPuntosApertura(individuo,
+					intervaloFechasIndividuo);
+			LogUtil.logTime("Consultando puntos de cierre", 3);
+			List<Point> puntosCierre = daoDatoHistorico.consultarPuntosCierre(individuo, intervaloFechasIndividuo);
 
-				Date lastProcessedDate = null;
-				if (puntosApertura.isEmpty()) {
-					lastProcessedDate = intervaloFechasIndividuo.getHighInterval();
-					procesarIndividuo(estadisticasManager, intervaloFechasIndividuo, null, puntosCierre);
-				} else {
-					lastProcessedDate = intervaloFechasIndividuo.getLowInterval();
-				}
-				for (Point point : puntosApertura) {
-					if (point.getDate().after(lastProcessedDate)) {
-						lastProcessedDate = procesarIndividuo(estadisticasManager, intervaloFechasIndividuo, point,
-								puntosCierre);
-					}
-				}
-				processed = (lastProcessedDate != null);
-				if (processed) {
-					fechaMayorQue = lastProcessedDate;
-					fechaMenorOIgualQue = DateUtil.obtenerFechaMinima(this.maxFechaHistorico,
-							DateUtil.adicionarMes(fechaMayorQue, mesesAAdicionar));
+			Date lastProcessedDate = null;
+			if (puntosApertura.isEmpty()) {
+				lastProcessedDate = intervaloFechasIndividuo.getHighInterval();
+				procesarIndividuo(estadisticasManager, intervaloFechasIndividuo, null, puntosCierre);
+			} else {
+				lastProcessedDate = intervaloFechasIndividuo.getLowInterval();
+			}
+			for (Point point : puntosApertura) {
+				if (point.getDate().after(lastProcessedDate)) {
+					lastProcessedDate = procesarIndividuo(estadisticasManager, intervaloFechasIndividuo, point,
+							puntosCierre);
 				}
 			}
-			if (processed && !validarYBorrarIndividuoInvalido(individuo)) {
-				// this.actualizarOperacionSemanal(individuo);
+			processed = (lastProcessedDate != null);
+			if (processed) {
+				fechaMayorQue = lastProcessedDate;
+				fechaMenorOIgualQue = DateUtil.obtenerFechaMinima(this.maxFechaHistorico,
+						DateUtil.adicionarMes(fechaMayorQue, mesesAAdicionar));
 			}
 		}
 	}
