@@ -9,7 +9,6 @@ import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.RangoOperacionIndividuo;
-import forex.genetic.entities.RangoOperacionIndividuoIndicador;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
@@ -95,7 +94,7 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 //		while (year <= endYear) {
 		if (true) {
 			setCollection(year);
-			
+
 //			RangoOperacionIndividuo newRangoOperacion = new RangoOperacionIndividuo();
 //			List<RangoOperacionIndividuoIndicador> list = new ArrayList<>();
 //			list.addAll(rangoOperacion.getIndicadores());
@@ -207,13 +206,12 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 			throws GeneticDAOException {
 		int initialYear = DateUtil.obtenerAnyo(rango.getLowInterval());
 		int endYear = DateUtil.obtenerAnyo(rango.getHighInterval());
-		setCollection(initialYear);
-		Point p1 = super.consultarPuntoCierreByTakeOrStop(order, rango);
-		Point p = p1;
-		if ((initialYear != endYear) && (p1 == null)) {
-			setCollection(endYear);
-			Point p2 = super.consultarPuntoCierreByTakeOrStop(order, rango);
-			p = p2;
+		int year = initialYear;
+		Point p = null;
+		if ((year <= endYear) && (p == null)) {
+			setCollection(year);
+			p = super.consultarPuntoCierreByTakeOrStop(order, rango);
+			year++;
 		}
 		return p;
 	}
@@ -222,11 +220,12 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 	public List<Point> consultarPuntosCierre(IndividuoEstrategia individuo, DateInterval rango) {
 		int initialYear = DateUtil.obtenerAnyo(rango.getLowInterval());
 		int endYear = DateUtil.obtenerAnyo(rango.getHighInterval());
-		setCollection(initialYear);
-		List<Point> p = super.consultarPuntosCierre(individuo, rango);
-		if ((initialYear != endYear)) {
-			setCollection(endYear);
+		int year = initialYear;
+		List<Point> p = new ArrayList<>();
+		if ((year <= endYear)) {
+			setCollection(year);
 			p.addAll(super.consultarPuntosCierre(individuo, rango));
+			year++;
 		}
 		return p;
 	}
@@ -235,11 +234,12 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 	public List<Point> consultarProximosPuntosApertura(IndividuoEstrategia individuo, DateInterval rango) {
 		int initialYear = DateUtil.obtenerAnyo(rango.getLowInterval());
 		int endYear = DateUtil.obtenerAnyo(rango.getHighInterval());
-		setCollection(initialYear);
-		List<Point> puntosApertura = super.consultarProximosPuntosApertura(individuo, rango);
-		if ((initialYear != endYear)) {
-			setCollection(endYear);
+		int year = initialYear;
+		List<Point> puntosApertura = new ArrayList<>();
+		while ((year <= endYear)) {
+			setCollection(year);
 			puntosApertura.addAll(super.consultarProximosPuntosApertura(individuo, rango));
+			year++;
 		}
 		return puntosApertura;
 	}

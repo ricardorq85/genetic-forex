@@ -4,8 +4,6 @@ close * To change this template, choose Tools | Templates
  */
 package forex.genetic.thread.mongo;
 
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -77,62 +75,56 @@ public class MongoProcesarIndividuoThread extends Thread {
 		runIndividuoByYear(individuo);
 	}
 
-	private DateInterval findNextYearlyInterval(Date currentDate) {
-		DateInterval yearInterval = DateUtil.obtenerIntervaloAnyo(currentDate);
-		Date ultimaFechaDelAnyo = DateUtil.obtenerFechaMinima(this.maxFechaHistorico,
-				DateUtil.adicionarMinutos(yearInterval.getHighInterval(), -1));
-		if (currentDate.equals(ultimaFechaDelAnyo)) {
-			yearInterval = findNextYearlyInterval(DateUtil.adicionarMinutos(currentDate, 1));
-		} else {
+	private DateInterval findNextInterval(Date currentDate) {
+		DateInterval yearInterval;
+		if (currentDate.before(maxFechaHistorico)) {
+			yearInterval = DateUtil.obtenerIntervaloAnyo(currentDate);
+			Date ultimaFechaDelAnyo = DateUtil.obtenerFechaMinima(maxFechaHistorico,
+					DateUtil.adicionarMinutos(yearInterval.getHighInterval(), -1));
 			yearInterval.setLowInterval(currentDate);
 			yearInterval.setHighInterval(ultimaFechaDelAnyo);
+		} else {
+			yearInterval = new DateInterval(maxFechaHistorico, maxFechaHistorico);
 		}
 		return yearInterval;
 	}
 
 	protected void runIndividuoByYear(MongoIndividuo individuo) throws ClassNotFoundException, GeneticDAOException {
-		int mesesAAdicionar = 3;
 		if (!validarYBorrarIndividuoInvalido(individuo)) {
 			ProcesoEjecucionDTO procesoEjecucionIndividuo = individuo.getProcesoEjecucion();
-			DateInterval yearInterval = null;
+			DateInterval interval = null;
 			if ((procesoEjecucionIndividuo == null) || (procesoEjecucionIndividuo.getMaxFechaHistorico() == null)) {
-				yearInterval = findNextYearlyInterval(procesoEjecucionIndividuo.getMaxFechaHistorico());
+				interval = findNextInterval(procesoEjecucionIndividuo.getMaxFechaHistorico());
 			} else {
-				yearInterval = findNextYearlyInterval(this.minFechaHistorico);
+				interval = findNextInterval(this.minFechaHistorico);
 			}
 
 			boolean processed = true;
 			MongoEstadisticasManager estadisticasManager = new MongoEstadisticasManager(individuo);
-			while (processed && !fechaMenorOIgualQue.after(this.maxFechaHistorico)
-					&& fechaMenorOIgualQue.after(fechaMayorQue)) {
-				DateInterval intervaloFechasIndividuo = new DateInterval(fechaMayorQue, fechaMenorOIgualQue);
+			while (processed && !interval.getHighInterval().after(this.maxFechaHistorico)) {
+				LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + interval.toString(), 1);
 
-				LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + intervaloFechasIndividuo.toString(),
-						1);
 				LogUtil.logTime("Consultando puntos de apertura", 1);
-				List<Point> puntosApertura = daoDatoHistorico.consultarProximosPuntosApertura(individuo,
-						intervaloFechasIndividuo);
+				List<Point> puntosApertura = daoDatoHistorico.consultarProximosPuntosApertura(individuo, interval);
+
 				LogUtil.logTime("Consultando puntos de cierre", 1);
-				List<Point> puntosCierre = daoDatoHistorico.consultarPuntosCierre(individuo, intervaloFechasIndividuo);
+				List<Point> puntosCierre = daoDatoHistorico.consultarPuntosCierre(individuo, interval);
 
 				Date lastProcessedDate = null;
 				if (puntosApertura.isEmpty()) {
-					lastProcessedDate = intervaloFechasIndividuo.getHighInterval();
-					procesarIndividuo(estadisticasManager, intervaloFechasIndividuo, null, puntosCierre);
+					lastProcessedDate = interval.getHighInterval();
+					procesarIndividuo(estadisticasManager, interval, null, puntosCierre);
 				} else {
-					lastProcessedDate = intervaloFechasIndividuo.getLowInterval();
+					lastProcessedDate = interval.getLowInterval();
 				}
 				for (Point point : puntosApertura) {
 					if (point.getDate().after(lastProcessedDate)) {
-						lastProcessedDate = procesarIndividuo(estadisticasManager, intervaloFechasIndividuo, point,
-								puntosCierre);
+						lastProcessedDate = procesarIndividuo(estadisticasManager, interval, point, puntosCierre);
 					}
 				}
 				processed = (lastProcessedDate != null);
 				if (processed) {
-					fechaMayorQue = lastProcessedDate;
-					fechaMenorOIgualQue = DateUtil.obtenerFechaMinima(this.maxFechaHistorico,
-							DateUtil.adicionarMes(fechaMayorQue, mesesAAdicionar));
+					interval = findNextInterval(DateUtil.adicionarMinutos(interval.getLowInterval(), 1));
 				}
 			}
 			if (processed && !validarYBorrarIndividuoInvalido(individuo)) {

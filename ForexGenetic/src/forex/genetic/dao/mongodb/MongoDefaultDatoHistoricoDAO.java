@@ -188,7 +188,7 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 	public <H extends Order> Point consultarPuntoCierreByTakeOrStop(H order, DateInterval rango)
 			throws GeneticDAOException {
 		List<Bson> filtros = new ArrayList<>();
-		filtros.add(Filters.gt("fechaHistorico", rango.getLowInterval()));
+		filtros.add(Filters.gte("fechaHistorico", rango.getLowInterval()));
 		filtros.add(Filters.lte("fechaHistorico", rango.getHighInterval()));
 
 		List<Bson> filtrosTakeStop = new ArrayList<>();
@@ -215,7 +215,7 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 	@Override
 	public List<Point> consultarPuntosCierre(IndividuoEstrategia individuo, DateInterval rango) {
 		List<Bson> filtros = new ArrayList<>();
-		filtros.add(Filters.gt("fechaHistorico", rango.getLowInterval()));
+		filtros.add(Filters.gte("fechaHistorico", rango.getLowInterval()));
 		filtros.add(Filters.lte("fechaHistorico", rango.getHighInterval()));
 
 		adicionarFiltroIndicadores(individuo.getCloseIndicators(), filtros);
@@ -231,7 +231,7 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 	@Override
 	public List<Point> consultarProximosPuntosApertura(IndividuoEstrategia individuo, DateInterval rango) {
 		List<Bson> filtros = new ArrayList<>();
-		filtros.add(Filters.gt("fechaHistorico", rango.getLowInterval()));
+		filtros.add(Filters.gte("fechaHistorico", rango.getLowInterval()));
 		filtros.add(Filters.lte("fechaHistorico", rango.getHighInterval()));
 
 		adicionarFiltroIndicadores(individuo.getOpenIndicators(), filtros);
