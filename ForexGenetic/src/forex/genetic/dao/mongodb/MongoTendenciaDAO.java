@@ -12,7 +12,6 @@ import forex.genetic.entities.ParametroTendenciaGenetica;
 import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.Tendencia;
-import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.exception.GeneticDAOException;
 
 /**
@@ -39,6 +38,11 @@ public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> implements ITe
 
 		this.collection.createIndex(Indexes.ascending("fechaBase", "idIndividuo"), indexOptions);
 		this.collection.createIndex(Indexes.ascending("fechaTendencia"));
+	}
+	
+	@Override
+	public List<Tendencia> consultar(ProcesoTendenciaBuySell procesoTendencia) {
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
@@ -125,7 +129,5 @@ public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> implements ITe
 		throw new UnsupportedOperationException("UnsupportedOperationException");
 	}
 
-	public List<TendenciaParaOperar> consultarTendencias(ProcesoTendenciaBuySell procesoTendencia) {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
+	
 }

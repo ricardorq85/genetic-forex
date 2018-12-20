@@ -58,8 +58,6 @@ public abstract class ProcesarTendenciasGrupalManager extends ProcesarTendencias
 				Date fechaBase = tendenciaProcesoDAO.nextFechaBase(fechaProceso);
 				if (fechaBase != null) {
 					long minutosDia = (24 * 60);
-					// LogUtil.logTime("Procesando dummy...", 1);
-					// procesarDummy();
 					long diffMinutosLastFechaBase = 0L;
 					if (lastFechaBaseParaMaxima != null) {
 						diffMinutosLastFechaBase = DateUtil.diferenciaMinutos(lastFechaBaseParaMaxima, fechaBase);
@@ -77,8 +75,6 @@ public abstract class ProcesarTendenciasGrupalManager extends ProcesarTendencias
 					}
 					AgrupadorTendenciaManager agrupadorTendenciaManager = new AgrupadorTendenciaFactorDatosManager(
 							fechaBase, lastFechaProcesoMaxima, dataClient);
-					// new AgrupadorTendenciaManager(fechaBase,
-					// lastFechaProcesoMaxima, conn);
 					LogUtil.logTime("Fecha base exportacion=" + DateUtil.getDateString(fechaBase), 1);
 					ProcesoTendenciaFiltradaBuySell procesoFromExporterLastIndex = procesarExporter(
 							dias[dias.length - 1], fechaBase);

@@ -66,8 +66,8 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 						+ ",count=" + count, 1);
 				//TODO rrojasq Hacer con hilos para cada driver
 				procesarIndividuos();
-	//			procesarTendencias();
-		//		exportarIndividuos();
+				procesarTendencias();
+				exportarTendenciaParaOperar();
 				crearNuevosIndividuos();
 				if (imported == 0) {
 					count++;
@@ -103,14 +103,14 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 		}
 	}
 
-	protected void exportarIndividuos() throws GeneticBusinessException {
+	protected void exportarTendenciaParaOperar() throws GeneticBusinessException {
 		try {
 			for (int i = 0; i < dataClients.size(); i++) {
 				LogUtil.logTime("Init Exportar Individuos", 1);
 				boolean existNewData;
 				existNewData = this.existenNuevosDatosHistoricos();
 				if (existNewData) {
-					String fileName = sourceEstrategiasPath + "\\Tendencia" + IndividuoManager.nextId() + ".csv";
+					String fileName = sourceEstrategiasPath + "\\TendenciaMongo" + IndividuoManager.nextId() + ".csv";
 					Path filePath = FileSystems.getDefault().getPath(fileName);
 					ProcesarTendenciasBuySellManager manager = ProcesarTendenciasFactory
 							.createManager(dataClients.get(i));

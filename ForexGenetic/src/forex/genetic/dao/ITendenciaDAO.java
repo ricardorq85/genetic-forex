@@ -10,6 +10,7 @@ import java.util.List;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.ParametroTendenciaGenetica;
 import forex.genetic.entities.ProcesoTendencia;
+import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.exception.GeneticDAOException;
 
@@ -55,5 +56,7 @@ public interface ITendenciaDAO extends IGeneticDAO<Tendencia> {
 	public String getTabla();
 
 	public void setTabla(String tabla);
+
+	List<Tendencia> consultar(ProcesoTendenciaBuySell procesoTendencia);
 
 }

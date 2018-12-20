@@ -88,7 +88,7 @@ public abstract class EndToEndMediator extends GeneticMediator {
 				this.procesarIndividuos();
 				this.procesarTendencias(DriverDBFactory.createDataClient("oracle"),
 						(TendenciaProcesoManager) DriverDBFactory.createOracleManager("tendencia"));
-				this.exportarIndividuos();
+				this.exportarTendenciaParaOperar();
 				this.crearNuevosIndividuos();
 				if (imported == 0) {
 					count++;
@@ -223,7 +223,7 @@ public abstract class EndToEndMediator extends GeneticMediator {
 		}
 	}
 
-	protected void exportarIndividuos() throws GeneticBusinessException {
+	protected void exportarTendenciaParaOperar() throws GeneticBusinessException {
 		try {
 			// this.refrescarDatosTendencia();
 			logTime("Init Exportar Individuos", 1);

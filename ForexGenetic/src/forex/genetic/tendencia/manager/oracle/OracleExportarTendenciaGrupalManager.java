@@ -17,7 +17,7 @@ import forex.genetic.util.jdbc.DataClient;
 
 public class OracleExportarTendenciaGrupalManager extends ExportarTendenciaGrupalManager {
 
-	private OracleTendenciaProcesoBuySellDAO tendenciaProcesoDAO;
+	private OracleTendenciaProcesoBuySellDAO tendenciaProcesoFiltradaDAO;
 	private OracleTendenciaProcesoBuySellDAO tendenciaProcesoCompletaDAO;
 
 	public OracleExportarTendenciaGrupalManager(DataClient dc) {
@@ -27,7 +27,7 @@ public class OracleExportarTendenciaGrupalManager extends ExportarTendenciaGrupa
 	public OracleExportarTendenciaGrupalManager(DataClient dc, Date fechaBase) {
 		super(dc);
 		if (DateUtil.cumpleFechaParaTendenciaUltimosDatos(fechaBase)) {
-			this.tendenciaProcesoDAO = new OracleTendenciaProcesoFiltradaUltimosDatosDAO((Connection) dc.getClient());
+			this.tendenciaProcesoFiltradaDAO = new OracleTendenciaProcesoFiltradaUltimosDatosDAO((Connection) dc.getClient());
 			this.tendenciaProcesoCompletaDAO = new OracleTendenciaProcesoFiltradaUltimosDatosDAO(
 					(Connection) dc.getClient()) {
 				@Override
@@ -36,7 +36,7 @@ public class OracleExportarTendenciaGrupalManager extends ExportarTendenciaGrupa
 				}
 			};
 		} else {
-			this.tendenciaProcesoDAO = new OracleTendenciaProcesoFiltradaDAO((Connection) dc.getClient());
+			this.tendenciaProcesoFiltradaDAO = new OracleTendenciaProcesoFiltradaDAO((Connection) dc.getClient());
 			this.tendenciaProcesoCompletaDAO = new OracleTendenciaProcesoFiltradaDAO((Connection) dc.getClient()) {
 				@Override
 				protected String getTablaTendenciaFiltrada() {
@@ -50,11 +50,11 @@ public class OracleExportarTendenciaGrupalManager extends ExportarTendenciaGrupa
 	protected void procesarRegresion() throws GeneticBusinessException {
 		Regresion regresion;
 		try {
-			regresion = tendenciaProcesoDAO.consultarRegresion(procesoTendencia);
+			regresion = tendenciaProcesoFiltradaDAO.consultarRegresion(procesoTendencia);
 			this.setParametrosRegresion(regresion);
 			String sqlRegresion = "SELECT PARAM.PERIODO PERIODO, PRITEN.PRECIO_CALCULADO PRIMERA_TENDENCIA, REG.*  FROM PARAMETROS PARAM, REGRESION_FILTRADA REG"
 					+ " LEFT JOIN PRIMERA_TENDENCIA PRITEN ON 1=1";
-			Regresion regresionFiltrada = tendenciaProcesoDAO.consultarRegresion(procesoTendencia, sqlRegresion);
+			Regresion regresionFiltrada = tendenciaProcesoFiltradaDAO.consultarRegresion(procesoTendencia, sqlRegresion);
 			this.setParametrosRegresion(regresionFiltrada);
 			this.procesarRegresion(regresion, regresionFiltrada);
 
@@ -82,7 +82,7 @@ public class OracleExportarTendenciaGrupalManager extends ExportarTendenciaGrupa
 	protected List<TendenciaParaOperar> consultarTendencias() throws GeneticBusinessException {
 		List<TendenciaParaOperar> tendencias;
 		try {
-			tendencias = tendenciaProcesoDAO.consultarTendencias(procesoTendencia);
+			tendencias = tendenciaProcesoFiltradaDAO.consultarTendencias(procesoTendencia);
 		} catch (SQLException e) {
 			throw new GeneticBusinessException(e);
 		}

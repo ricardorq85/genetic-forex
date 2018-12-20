@@ -17,6 +17,7 @@ import forex.genetic.dao.helper.TendenciaHelper;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.ParametroTendenciaGenetica;
 import forex.genetic.entities.ProcesoTendencia;
+import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.PropertiesManager;
@@ -583,6 +584,11 @@ public class OracleTendenciaDAO extends OracleGeneticDAO<Tendencia> implements I
 	@Override
 	public long delete(Tendencia obj, Date fechaReferencia) {
 		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
+
+	@Override
+	public List<Tendencia> consultar(ProcesoTendenciaBuySell procesoTendencia) {
+		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 }
