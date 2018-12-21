@@ -42,6 +42,7 @@ public class MongoTendenciaMapper extends MongoMapper<Tendencia> {
 		objectMap.put("fechaCierre", obj.getFechaCierre());
 		objectMap.put("tipoCalculo", obj.getTipoCalculo());
 		objectMap.put("pipsReales", obj.getPipsReales());
+		objectMap.put("duracionMinutos", obj.getDuracionMinutos());
 
 		return objectMap;
 	}
@@ -75,6 +76,7 @@ public class MongoTendenciaMapper extends MongoMapper<Tendencia> {
 		obj.setFechaCierre(one.getDate("fechaCierre"));
 		obj.setTipoCalculo(one.getString("tipoCalculo"));
 		obj.setPipsReales(one.getDouble("pipsReales"));
+		obj.setDuracionMinutos(one.getLong("duracionMinutos"));
 		
 		return obj;
 	}

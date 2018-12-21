@@ -1,11 +1,12 @@
 package forex.genetic.tendencia.manager.mongo;
 
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.time.DateUtils;
+
 import forex.genetic.dao.mongodb.MongoTendenciaDAO;
-import forex.genetic.dao.mongodb.MongoTendenciaUltimosDatosDAO;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.exception.GeneticBusinessException;
@@ -15,56 +16,100 @@ import forex.genetic.util.jdbc.DataClient;
 
 public class MongoExportarTendenciaGrupalManager extends ExportarTendenciaGrupalManager {
 
-	private MongoTendenciaDAO tendenciaProcesoFiltradaDAO;
-	private MongoTendenciaDAO tendenciaProcesoCompletaDAO;
+	private MongoTendenciaDAO tendenciaProcesoDAO;
 	private List<TendenciaParaOperar> tendenciasSinFiltrar, tendenciasFiltradas;
-	
-	//private static final int 
-	//TRUNC(PARAM.FECHA_PROCESO, 'HH24'))/60)) MAYORQ_EXIGIDA
 
 	public MongoExportarTendenciaGrupalManager(DataClient dc, Date fechaBase) {
 		super(dc);
 		if (DateUtil.cumpleFechaParaTendenciaUltimosDatos(fechaBase)) {
-			// TODO rrojasq Hacer filtrada
-			this.tendenciaProcesoFiltradaDAO = new MongoTendenciaUltimosDatosDAO();
-			this.tendenciaProcesoCompletaDAO = new MongoTendenciaDAO();
+			this.tendenciaProcesoDAO = new MongoTendenciaDAO();
 		} else {
-			// TODO rrojasq Hacer filtrada
-			this.tendenciaProcesoFiltradaDAO = new MongoTendenciaUltimosDatosDAO();
-			this.tendenciaProcesoCompletaDAO = new MongoTendenciaDAO();
+			this.tendenciaProcesoDAO = new MongoTendenciaDAO();
 		}
 	}
 
 	@Override
 	public void procesar() throws GeneticBusinessException {
+		this.procesarTendenciasIntern(this.tendenciaProcesoDAO.consultar(procesoTendencia));
 		this.procesarRegresionParaCalculoJava();
 	}
 
-	private void consultarTendenciasSinFiltrarIntern() {
-		List<Tendencia> tendencias = this.tendenciaProcesoCompletaDAO.consultar(procesoTendencia);
-		this.tendenciasSinFiltrar = tendenciasToTendenciasParaOperar(tendencias);
+	private void procesarTendenciasIntern(List<Tendencia> tendencias) {
+		// double sumPrecioCalculado = 0.0D; // , minPrecioCalculado = 0.0D,
+		// maxPrecioCalculado = 0.0D;
+		double sumProbabilidad = 0.0D, sumPrecioCalculadoXProbabilidad = 0.0D; // , sumPrecioBase = 0.0D;
+		double count = 0.0D;
+		// Date minFechatendencia = null, maxFechaTendencia = null;
+		Date fechaBase = this.getProcesoTendencia().getFechaBase();
+		String periodo = this.getProcesoTendencia().getPeriodo();
+		Date fechaTendenciaPorHoraActual = null;
+		for (int i = 0; i <= tendencias.size(); i++) {
+			Tendencia tendencia = null;
+			Date fechaTendencia = null;
+			Date fechaTendenciaPorHora = null;
+			if (i < tendencias.size()) {
+				tendencia = tendencias.get(i);
+				fechaTendencia = tendencia.getFechaTendencia();
+				fechaTendenciaPorHora = DateUtils.truncate(fechaTendencia, Calendar.HOUR_OF_DAY);
+			}
+			if ((fechaTendenciaPorHoraActual != null)
+					&& ((i == tendencias.size()) || (!fechaTendenciaPorHoraActual.equals(fechaTendenciaPorHora)))) {
+				// Sin filtrar
+				TendenciaParaOperar tpoSinFiltrar = new TendenciaParaOperar();
+				tpoSinFiltrar.setPeriodo(periodo);
+				tpoSinFiltrar.setFechaBase(fechaBase);
+				tpoSinFiltrar.setFechaTendencia(fechaTendenciaPorHoraActual);
+				tpoSinFiltrar.setPrecioCalculado(sumPrecioCalculadoXProbabilidad / sumProbabilidad);
+				tendenciasSinFiltrar.add(tpoSinFiltrar);
+
+				double cantidadExigida = this.calcularCantidadExigida(fechaTendenciaPorHoraActual);
+				if (count > cantidadExigida) {
+					TendenciaParaOperar tpoFiltrada = new TendenciaParaOperar();
+					tpoFiltrada.setPeriodo(periodo);
+					tpoFiltrada.setFechaBase(fechaBase);
+					tpoFiltrada.setFechaTendencia(fechaTendenciaPorHoraActual);
+					tpoFiltrada.setPrecioCalculado(sumPrecioCalculadoXProbabilidad / sumProbabilidad);
+					tendenciasFiltradas.add(tpoFiltrada);
+				}
+
+				// sumPrecioCalculado = 0.0D;
+				count = 0;
+				sumProbabilidad = 0.0D;
+				sumPrecioCalculadoXProbabilidad = 0.0D;
+				// sumPrecioBase = 0.0D;
+				fechaTendenciaPorHoraActual = null;
+			}
+			if (i < tendencias.size()) {
+				count++;
+				double precioCalculado = tendencia.getPrecioCalculado();
+				// sumPrecioCalculado += precioCalculado;
+				double probabilidad = tendencia.getProbabilidad();
+				sumProbabilidad += probabilidad;
+				double precioXProbabilidad = (precioCalculado * probabilidad);
+				sumPrecioCalculadoXProbabilidad += precioXProbabilidad;
+				// double precioBase = tendencia.getPrecioBase();
+				// sumPrecioBase += precioBase;
+
+				fechaTendenciaPorHoraActual = fechaTendenciaPorHora;
+			}
+		}
 	}
 
-	private void consultarTendenciasFiltradasIntern() {
-		List<Tendencia> tendencias = this.tendenciaProcesoFiltradaDAO.consultar(procesoTendencia);
-		this.tendenciasFiltradas = tendenciasToTendenciasParaOperar(tendencias);
-	}
+	private double calcularCantidadExigida(Date fechaTendenciaPorHora) {
+		final int FACTOR_SUMA_CANTIDAD_EXIGIDA = 5;
+		final int FACTOR_MULT_CANTIDAD_EXIGIDA = 2;
 
-	@Override
-	protected List<TendenciaParaOperar> consultarTendencias() throws GeneticBusinessException {
-		return consultarTendenciasSinFiltrar();
-	}
+		Date fechaBase = this.getProcesoTendencia().getFechaBase();
+		Date fechaProcesoPorHora = DateUtils.truncate(fechaBase, Calendar.HOUR_OF_DAY);
+		double tiempoTendencia = this.getProcesoTendencia().getTiempoTendencia();
+		double tiempoTendenciaHoras = tiempoTendencia / 60.0D;
+		long diffMinutos = DateUtil.calcularDuracionMinutos(fechaProcesoPorHora, fechaTendenciaPorHora);
+		double diffMinutosHoras = diffMinutos / 60.0D;
 
-	private List<TendenciaParaOperar> tendenciasToTendenciasParaOperar(List<Tendencia> tendencias) {
-		List<TendenciaParaOperar> list = new ArrayList<TendenciaParaOperar>();
-		tendencias.stream().forEach((tendencia) -> {
-			TendenciaParaOperar tpo = new TendenciaParaOperar();
-			tpo.setFechaBase(tendencia.getFechaBase());
-			tpo.setFechaTendencia(tendencia.getFechaTendencia());
-			tpo.setPrecioCalculado(tendencia.getPrecioCalculado());
-			list.add(tpo);
-		});
-		return list;
+		double cantidadExigida = (FACTOR_SUMA_CANTIDAD_EXIGIDA)
+				+ FACTOR_MULT_CANTIDAD_EXIGIDA * (tiempoTendenciaHoras - diffMinutosHoras);
+
+		return cantidadExigida;
 	}
 
 	@Override
@@ -81,4 +126,8 @@ public class MongoExportarTendenciaGrupalManager extends ExportarTendenciaGrupal
 		return tendenciasFiltradas;
 	}
 
+	@Override
+	protected List<TendenciaParaOperar> consultarTendencias() throws GeneticBusinessException {
+		return null;
+	}
 }

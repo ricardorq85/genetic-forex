@@ -60,11 +60,11 @@ public abstract class ExportarTendenciaGrupalManager extends ExportarTendenciaMa
 
 		if ((tendenciasSinFiltrar != null) && (!tendenciasSinFiltrar.isEmpty())) {
 			for (int i = 0; i < tendenciasSinFiltrar.size(); i++) {
-				TendenciaParaOperar ten = tendenciasSinFiltrar.get(i);
-				float diffDias = DateUtil.diferenciaMinutos(ten.getFechaBase(), ten.getFechaTendencia()) / 60.0F
+				TendenciaParaOperar tendenciaParaOperar = tendenciasSinFiltrar.get(i);
+				float diffDias = DateUtil.diferenciaMinutos(tendenciaParaOperar.getFechaBase(), tendenciaParaOperar.getFechaTendencia()) / 60.0F
 						/ 24.0F;
-				simpleRegressionProcessorSinFiltrar.addData(diffDias, ten.getPrecioCalculado());
-				sdDataSinFiltrar[i] = ten.getPrecioCalculado();
+				simpleRegressionProcessorSinFiltrar.addData(diffDias, tendenciaParaOperar.getPrecioCalculado());
+				sdDataSinFiltrar[i] = tendenciaParaOperar.getPrecioCalculado();
 			}
 			standardDeviationSinFiltrar.setData(sdDataSinFiltrar);
 			regSinFiltrarJava = TendenciaProcesoBuySellHelper.helpRegresion(procesoTendencia,

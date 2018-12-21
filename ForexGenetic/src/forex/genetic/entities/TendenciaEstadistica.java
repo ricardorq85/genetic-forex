@@ -71,6 +71,7 @@ public class TendenciaEstadistica extends Tendencia implements Serializable {
 	private void consolidarFecha() {
 		Date probDate = DateUtil.calcularFechaXDuracion(this.getDuracion(), this.getFechaBase());
 		this.setFechaTendencia(probDate);
+		this.setDuracionMinutos(DateUtil.calcularDuracionMinutos(getFechaBase(), getFechaTendencia()));
 	}
 
 	private void consolidarDuracion() {
@@ -134,16 +135,16 @@ public class TendenciaEstadistica extends Tendencia implements Serializable {
 
 	@Override
 	public String toString() {
-		return "TendenciaEstadistica [getIndividuo()=" + getIndividuo().getId() + ", getFechaCierre()=" + getFechaCierre()
-				+ ", getFecha()=" + getFecha() + ", getProbabilidad()=" + getProbabilidad() + ", getDuracionActual()="
-				+ getDuracionActual() + ", getPipsActuales()=" + getPipsActuales() + ", getDuracion()=" + getDuracion()
-				+ ", getTipoTendencia()=" + getTipoTendencia() + ", getTendencia()=" + getTendencia()
-				+ ", getFechaBase()=" + getFechaBase() + ", getFechaTendencia()=" + getFechaTendencia() + ", getPips()="
-				+ getPips() + ", getPrecioBase()=" + getPrecioBase() + ", getPrecioCalculado()=" + getPrecioCalculado()
-				+ ", getFechaApertura()=" + getFechaApertura() + ", getPrecioApertura()=" + getPrecioApertura()
-				+ ", getProbabilidadNegativos()=" + getProbabilidadNegativos() + ", getProbabilidadPositivos()="
-				+ getProbabilidadPositivos() + ", getPipsReales()=" + getPipsReales() + ", getTipoCalculo()="
-				+ getTipoCalculo() + "]";
+		return "TendenciaEstadistica [getIndividuo()=" + getIndividuo().getId() + ", getFechaCierre()="
+				+ getFechaCierre() + ", getFecha()=" + getFecha() + ", getProbabilidad()=" + getProbabilidad()
+				+ ", getDuracionActual()=" + getDuracionActual() + ", getPipsActuales()=" + getPipsActuales()
+				+ ", getDuracion()=" + getDuracion() + ", getTipoTendencia()=" + getTipoTendencia()
+				+ ", getTendencia()=" + getTendencia() + ", getFechaBase()=" + getFechaBase() + ", getFechaTendencia()="
+				+ getFechaTendencia() + ", getPips()=" + getPips() + ", getPrecioBase()=" + getPrecioBase()
+				+ ", getPrecioCalculado()=" + getPrecioCalculado() + ", getFechaApertura()=" + getFechaApertura()
+				+ ", getPrecioApertura()=" + getPrecioApertura() + ", getProbabilidadNegativos()="
+				+ getProbabilidadNegativos() + ", getProbabilidadPositivos()=" + getProbabilidadPositivos()
+				+ ", getPipsReales()=" + getPipsReales() + ", getTipoCalculo()=" + getTipoCalculo() + "]";
 	}
 
 }

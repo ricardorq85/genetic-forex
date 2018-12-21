@@ -37,6 +37,7 @@ public class Tendencia implements Serializable {
 	private Date fechaCierre;
 	private String tipoCalculo = "DEFAULT_2";
 	private double pipsReales;
+	private long duracionMinutos;
 
 	/**
 	 *
@@ -363,6 +364,14 @@ public class Tendencia implements Serializable {
 
 	public void setTipoCalculo(String tipoCalculo) {
 		this.tipoCalculo = tipoCalculo;
+	}
+
+	public long getDuracionMinutos() {
+		return duracionMinutos;
+	}
+
+	public void setDuracionMinutos(long duracionMinutos) {
+		this.duracionMinutos = duracionMinutos;
 	}
 
 	@Override

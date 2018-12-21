@@ -30,7 +30,7 @@ public abstract class ProcesarTendenciasGrupalManager extends ProcesarTendencias
 
 	private List<TendenciaParaOperarMaxMin> tendenciasResultado;
 
-	public ProcesarTendenciasGrupalManager() throws ClassNotFoundException, GeneticDAOException {
+	public ProcesarTendenciasGrupalManager() throws GeneticDAOException {
 		super();
 		tendenciasResultado = new ArrayList<>();
 	}

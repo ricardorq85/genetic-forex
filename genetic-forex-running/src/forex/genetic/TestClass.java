@@ -1,8 +1,10 @@
 package forex.genetic;
 
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.lang3.time.DateUtils;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.util.DateUtil;
 
@@ -12,11 +14,9 @@ public class TestClass {
 	}
 
 	public static void main(String[] args) throws ParseException {
-		Date d = DateUtil.obtenerFecha("2018/06/30 23:58");
-		DateInterval yearInterval = findNextInterval(DateUtil.adicionarMinutos(d, 1), 6);
-		System.out.println(yearInterval.toString());
-		yearInterval = findNextInterval(DateUtil.adicionarMinutos(yearInterval.getHighInterval(), 1), 6);
-		System.out.println(yearInterval.toString());
+		Date d = new Date(); //DateUtil.obtenerFecha("2018/06/30 23:58");
+		Date fechaPorHora = DateUtils.truncate(d, Calendar.HOUR_OF_DAY);
+		System.out.println(fechaPorHora.toString());
 	}
 
 	private static DateInterval findNextInterval(Date currentDate, int maxMonths) throws ParseException {

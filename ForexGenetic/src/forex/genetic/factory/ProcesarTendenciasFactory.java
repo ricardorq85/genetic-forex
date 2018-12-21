@@ -1,30 +1,37 @@
 package forex.genetic.factory;
 
-import java.lang.reflect.InvocationTargetException;
-
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
-import forex.genetic.util.LogUtil;
+import forex.genetic.tendencia.manager.mongo.MongoProcesarTendenciasGrupalManager;
+import forex.genetic.tendencia.manager.oracle.OracleProcesarTendenciasGrupalManager;
 import forex.genetic.util.jdbc.DataClient;
+import forex.genetic.util.jdbc.OracleDataClient;
+import forex.genetic.util.jdbc.mongodb.MongoDataClient;
 
 public final class ProcesarTendenciasFactory {
 
-	public static ProcesarTendenciasBuySellManager createManager() throws GeneticDAOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+	public static ProcesarTendenciasBuySellManager createManager() throws GeneticDAOException {
 		DataClient dc = DriverDBFactory.createDataClient("oracle");
 		return createManager(dc);
 	}
 
-	public static ProcesarTendenciasBuySellManager createManager(DataClient dc) throws GeneticDAOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-		String parametroTipoExportacion = dc.getDaoParametro().getValorParametro("TIPO_EXPORTACION_TENDENCIA");
-		LogUtil.logTime(parametroTipoExportacion, 1);
-		ProcesarTendenciasBuySellManager manager = create(parametroTipoExportacion);
-		manager.setDataClient(dc);
+	public static ProcesarTendenciasBuySellManager createManager(DataClient dc) throws GeneticDAOException {
+		ProcesarTendenciasBuySellManager manager = null;
+		if (dc instanceof OracleDataClient) {
+			manager = new OracleProcesarTendenciasGrupalManager();
+			manager.setDataClient(dc);
+		} else if (dc instanceof MongoDataClient) {
+			manager = new MongoProcesarTendenciasGrupalManager();
+			manager.setDataClient(dc);
+		} else {
+			manager = null;
+		}
 		return manager;
 	}
 
-	private static final ProcesarTendenciasBuySellManager create(String tipoExportacion) throws ClassNotFoundException,
-			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-		Class<?> exporterClass = Class.forName(tipoExportacion);
-		return (ProcesarTendenciasBuySellManager) exporterClass.newInstance();
-	}
+//	private static final ProcesarTendenciasBuySellManager create(String tipoExportacion) throws ClassNotFoundException,
+//			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+//		Class<?> exporterClass = Class.forName(tipoExportacion);
+//		return (ProcesarTendenciasBuySellManager) exporterClass.newInstance();
+//	}
 }

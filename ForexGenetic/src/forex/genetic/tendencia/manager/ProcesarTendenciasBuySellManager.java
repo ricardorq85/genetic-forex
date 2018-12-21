@@ -29,7 +29,7 @@ public abstract class ProcesarTendenciasBuySellManager {
 	protected String tipoTendencia;
 	protected float[] parametroDiasTendencia;
 
-	public ProcesarTendenciasBuySellManager() throws ClassNotFoundException, GeneticDAOException {
+	public ProcesarTendenciasBuySellManager() throws GeneticDAOException {
 		this.tipoTendencia = "BUY_SELL_20170204-2";
 
 		parametroFechaInicio = dataClient.getDaoParametro().getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");

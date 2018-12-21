@@ -8,7 +8,7 @@ import forex.genetic.tendencia.manager.ProcesarTendenciasGrupalManager;
 
 public class MongoProcesarTendenciasGrupalManager extends ProcesarTendenciasGrupalManager {
 
-	public MongoProcesarTendenciasGrupalManager() throws ClassNotFoundException, GeneticDAOException {
+	public MongoProcesarTendenciasGrupalManager() throws GeneticDAOException {
 		super();
 	}
 

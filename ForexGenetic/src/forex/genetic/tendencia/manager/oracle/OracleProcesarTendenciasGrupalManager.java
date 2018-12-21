@@ -8,7 +8,7 @@ import forex.genetic.tendencia.manager.ProcesarTendenciasGrupalManager;
 
 public class OracleProcesarTendenciasGrupalManager extends ProcesarTendenciasGrupalManager {
 
-	public OracleProcesarTendenciasGrupalManager() throws ClassNotFoundException, GeneticDAOException {
+	public OracleProcesarTendenciasGrupalManager() throws GeneticDAOException {
 		super();
 	}
 

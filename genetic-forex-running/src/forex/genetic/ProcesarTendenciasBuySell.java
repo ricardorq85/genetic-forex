@@ -15,7 +15,6 @@ import static java.lang.System.setOut;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 
@@ -50,7 +49,7 @@ public class ProcesarTendenciasBuySell {
             		//new ProcesarTendenciasIndividualManager(); 
             		//new ProcesarTendenciasBuySellManager();
             manager.procesarTendencias();
-        } catch (GeneticException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+        } catch (GeneticException ex) {
             ex.printStackTrace();
         }
         logTime("Fin: " + id, 1);
