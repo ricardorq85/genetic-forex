@@ -37,12 +37,16 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 				"EXPORTED_PROPERTY_FILE_NAME", "SOURCE_ESTRATEGIAS_PATH", "STEP_TENDENCIA", "INDIVIDUOS_X_TENDENCIA",
 				"TIPO_EXPORTACION_TENDENCIA", "FECHA_MINIMA_CREAR_INDIVIDUO", "FECHA_MAXIMA_CREAR_INDIVIDUO",
 				"MESES_RANGOOPERACIONINDICADOR", "RETROCESO_RANGOOPERACIONINDICADOR", "PIPS_RANGOOPERACIONINDICADOR",
-				"CANTIDAD_MUTAR", "CANTIDAD_CRUZAR" };
-		Date feMinimaCrearIndividuo = null;
-		Date feMaximaCrearIndividuo = null;
+				"CANTIDAD_MUTAR", "CANTIDAD_CRUZAR", "FECHA_INICIO_PROCESAR_TENDENCIA", "FECHA_FIN_PROCESAR_TENDENCIA",
+				"STEP_PROCESAR_TENDENCIA", "DIAS_EXPORTACION_TENDENCIA" };
+		Date feMinimaCrearIndividuo = null, feMaximaCrearIndividuo = null;
+		Date feMinimaProcesarTendencia = null, feMaximaProcesarTendencia = null;
 		try {
 			feMinimaCrearIndividuo = DateUtil.obtenerFecha("2009/01/01 00:00");
 			feMaximaCrearIndividuo = DateUtil.obtenerFecha("2018/01/01 00:00");
+
+			feMinimaProcesarTendencia = DateUtil.obtenerFecha("2018/01/01 00:00");
+			feMaximaProcesarTendencia = DateUtil.obtenerFecha("2019/01/01 00:00");
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -54,7 +58,8 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 				new Integer(150), new Integer(200),
 				"forex.genetic.tendencia.manager.mongo.MongoProcesarTendenciasGrupalManager", feMinimaCrearIndividuo,
 				feMaximaCrearIndividuo, new Integer(6), new Integer(800), new Integer(1500), new Integer(100),
-				new Integer(100) };
+				new Integer(100), feMinimaProcesarTendencia, feMaximaProcesarTendencia, new Integer(30),
+				"0.125,0.25,0.5,1,2,3,4,5,6,7,8,9,10,13" };
 
 		for (int i = 0; i < paramNames.length; i++) {
 			ParametroDTO p = new ParametroDTO();
@@ -63,7 +68,7 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 			p.setFecha(new Date());
 
 			Parametro param = new Parametro(p);
-			//insertIfNoExists(param);
+			// insertIfNoExists(param);
 			insertOrUpdate(param);
 		}
 	}
@@ -116,10 +121,12 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 		Parametro obj = null;
 		MongoCursor<Document> cursor = this.collection.find(Filters.eq("nombre", nombre)).iterator();
 		if (cursor.hasNext()) {
-			
-			obj = ((MongoParametroMapper)getMapper()).helpOneDate(cursor.next());
+
+			obj = ((MongoParametroMapper) getMapper()).helpOneDate(cursor.next());
+			return (Date) obj.getParametro().getValor();
+		} else {
+			return null;
 		}
-		return (Date)obj.getParametro().getValor();
 	}
 
 	@Override

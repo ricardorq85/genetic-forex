@@ -102,7 +102,7 @@ public abstract class EndToEndMediator extends GeneticMediator {
 	}
 
 	protected void setUltimaFechaTendencia(int count) throws GeneticDAOException {
-		this.ultimaFechaBaseTendencia = tendenciaDAO.maxFechaBaseTendencia();
+		this.ultimaFechaBaseTendencia = oneDataClient.getDaoTendencia().maxFechaBaseTendencia();
 		if ((this.ultimaFechaBaseTendencia == null) || (fechaHistoricaMaximaNueva.equals(ultimaFechaBaseTendencia))) {
 			int minutos = (int) (-(1440 * 0.7 * count + calcularFactorCount()));
 			this.ultimaFechaBaseTendencia = DateUtil.adicionarMinutos(fechaHistoricaMaximaNueva, minutos);

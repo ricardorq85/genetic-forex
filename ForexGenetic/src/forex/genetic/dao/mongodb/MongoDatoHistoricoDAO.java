@@ -13,6 +13,7 @@ import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.DateUtil;
+import forex.genetic.util.LogUtil;
 
 /**
  *
@@ -41,6 +42,7 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 		int year = 2008;
 		int currYear = DateUtil.obtenerAnyo(new Date());
 		while (year <= currYear) {
+			LogUtil.logTime(new StringBuilder("Configurando collection: ").append(getCollectionName()).toString(), 1);
 			setCollection(year, false);
 			configureCollection();
 			year++;

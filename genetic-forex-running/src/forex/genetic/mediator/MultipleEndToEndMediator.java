@@ -59,14 +59,15 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 				}
 				// TODO ricardorq85
 				// this.exportarDatosHistoricos();
+				this.oneDataClient = dataClients.get(0);
 				setUltimaFechaTendencia(count);
 				LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
 						+ ",fechaHistoricaMaximaAnterior=" + DateUtil.getDateString(this.fechaHistoricaMaximaAnterior)
 						+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva)
 						+ ",count=" + count, 1);
-				//TODO rrojasq Hacer con hilos para cada driver
-				procesarIndividuos();
-				procesarTendencias();
+				// TODO rrojasq Hacer con hilos para cada driver
+//				procesarIndividuos();
+				// procesarTendencias();
 				exportarTendenciaParaOperar();
 				crearNuevosIndividuos();
 				if (imported == 0) {
@@ -75,7 +76,7 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 					count = 1;
 				}
 			}
-		} catch ( GeneticDAOException e) {
+		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException("Error start", e);
 		}
 	}
@@ -149,8 +150,8 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 //
 	protected void crearNuevosIndividuos() throws GeneticBusinessException {
 		LogUtil.logTime("Init Crear individuos x indicador", 1);
-		IndividuoXIndicadorManager manager = new MongoIndividuoXIndicadorManager(dataClients.get(0), ultimaFechaBaseTendencia,
-				fechaHistoricaMaximaNueva, 12);
+		IndividuoXIndicadorManager manager = new MongoIndividuoXIndicadorManager(dataClients.get(0),
+				ultimaFechaBaseTendencia, fechaHistoricaMaximaNueva, 12);
 		manager.crearIndividuos();
 		LogUtil.logTime("End Crear individuos x indicador", 1);
 	}

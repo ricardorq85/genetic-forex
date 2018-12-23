@@ -31,7 +31,9 @@ public abstract class ProcesarTendenciasBuySellManager {
 
 	public ProcesarTendenciasBuySellManager() throws GeneticDAOException {
 		this.tipoTendencia = "BUY_SELL_20170204-2";
+	}
 
+	protected void consultarParametros() throws GeneticDAOException {
 		parametroFechaInicio = dataClient.getDaoParametro().getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");
 		parametroFechaFin = dataClient.getDaoParametro().getDateValorParametro("FECHA_FIN_PROCESAR_TENDENCIA");
 		parametroStep = dataClient.getDaoParametro().getIntValorParametro("STEP_PROCESAR_TENDENCIA");
@@ -54,6 +56,7 @@ public abstract class ProcesarTendenciasBuySellManager {
 
 	public void procesarTendencias() throws GeneticBusinessException {
 		try {
+			consultarParametros();
 			LogUtil.logTime("Step=" + (parametroStep), 1);
 			LogUtil.logTime(
 					DateUtil.getDateString(parametroFechaInicio) + " - " + DateUtil.getDateString(parametroFechaFin),
@@ -69,6 +72,8 @@ public abstract class ProcesarTendenciasBuySellManager {
 
 				fechaProceso = DateUtil.calcularFechaXDuracion(parametroStep, fechaProceso);
 			}
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		} finally {
 			try {
 				dataClient.close();
@@ -78,7 +83,8 @@ public abstract class ProcesarTendenciasBuySellManager {
 		}
 	}
 
-	protected ExportarTendenciaManager procesarExporter(ProcesoTendenciaBuySell paraProcesar) throws GeneticBusinessException {
+	protected ExportarTendenciaManager procesarExporter(ProcesoTendenciaBuySell paraProcesar)
+			throws GeneticBusinessException {
 		ExportarTendenciaManager exporter = getExporter(paraProcesar.getFechaBase());
 		exporter.setProcesoTendencia(paraProcesar);
 		exporter.procesar();

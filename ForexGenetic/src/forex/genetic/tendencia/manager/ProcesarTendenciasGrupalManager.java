@@ -37,6 +37,8 @@ public abstract class ProcesarTendenciasGrupalManager extends ProcesarTendencias
 
 	public void procesarTendencias() throws GeneticBusinessException {
 		try {
+			consultarParametros();
+
 			LogUtil.logTime("Step exportacion=" + (parametroStep), 1);
 			LogUtil.logTime("Periodo exportacion=" + DateUtil.getDateString(parametroFechaInicio) + " - "
 					+ DateUtil.getDateString(parametroFechaFin), 1);

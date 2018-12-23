@@ -3,8 +3,15 @@ package forex.genetic.dao.mongodb;
 import java.util.Date;
 import java.util.List;
 
+import org.bson.Document;
+import org.bson.conversions.Bson;
+
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Sorts;
 
 import forex.genetic.dao.ITendenciaDAO;
 import forex.genetic.entities.DateInterval;
@@ -39,10 +46,26 @@ public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> implements ITe
 		this.collection.createIndex(Indexes.ascending("fechaBase", "idIndividuo"), indexOptions);
 		this.collection.createIndex(Indexes.ascending("fechaTendencia"));
 	}
-	
+
+	@Override
+	public Date maxFechaBaseTendencia() throws GeneticDAOException {
+		Date fecha = null;
+		Document doc = this.collection.find().sort(Sorts.descending("fechaBase")).first();
+		if (doc != null) {
+			fecha = doc.getDate("fechaBase");
+		}
+		return fecha;
+	}
+
 	@Override
 	public List<Tendencia> consultar(ProcesoTendenciaBuySell procesoTendencia) {
-		throw new UnsupportedOperationException("Operacion no soportada");
+		Bson filtros = Filters.and(Filters.eq("tipoTendencia", procesoTendencia.getTipoTendencia()),
+				Filters.lt("duracionMinutos", procesoTendencia.getTiempoTendencia()),
+				Filters.lte("fechaBase", procesoTendencia.getFechaBase()),
+				Filters.gt("fechaTendencia", procesoTendencia.getFechaBase()));
+		Bson sorts = Sorts.orderBy(Sorts.ascending("fechaTendencia"));
+		MongoCursor<Document> cursor = this.collection.find(filtros).sort(sorts).iterator();
+		return getMapper().helpList(cursor);
 	}
 
 	@Override
@@ -67,12 +90,13 @@ public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> implements ITe
 
 	@Override
 	public Date nextFechaBase(Date fecha) throws GeneticDAOException {
-		throw new UnsupportedOperationException("UnsupportedOperationException");
-	}
-
-	@Override
-	public Date maxFechaBaseTendencia() throws GeneticDAOException {
-		throw new UnsupportedOperationException("UnsupportedOperationException");
+		Date fechaBase = null;
+		Document doc = this.collection.find(Filters.gt("fechaBase", fecha)).projection(Projections.include("fechaBase"))
+				.sort(Sorts.ascending("fechaBase")).first();
+		if (doc != null) {
+			fechaBase = doc.getDate("fechaBase");
+		}
+		return fechaBase;
 	}
 
 	@Override
@@ -129,5 +153,4 @@ public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> implements ITe
 		throw new UnsupportedOperationException("UnsupportedOperationException");
 	}
 
-	
 }

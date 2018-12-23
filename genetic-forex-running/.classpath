@@ -4,10 +4,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ForexGenetic"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/genetic-forex-bo"/>
-	<classpathentry kind="lib" path="D:/MyWS/Eclipse/Proyectos/genetic-forex/drivers/commons-math3-3.6.1.jar"/>
+	<classpathentry kind="lib" path="../drivers/commons-math3-3.6.1.jar"/>
 	<classpathentry kind="lib" path="../drivers/mongo-java-driver-3.8.2.jar"/>
 	<classpathentry kind="lib" path="../drivers/ojdbc6.jar"/>
-	<classpathentry kind="lib" path="../drivers/commons-lang3-3.8.1.jar" sourcepath="D:/MyWS/Eclipse/Proyectos/genetic-forex/drivers/commons-lang3-3.8.1-sources.jar">
+	<classpathentry kind="lib" path="../drivers/commons-lang3-3.8.1.jar" sourcepath="../drivers/commons-lang3-3.8.1-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:file:/../drivers/commons-lang3-3.8.1-javadoc.jar!/"/>
 		</attributes>
