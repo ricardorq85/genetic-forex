@@ -15,14 +15,14 @@ public class SimpleMutationManager extends EspecificMutationManager {
 
 	private double mutate(double base, double factor) {
 		double r = (RandomUtil.nextDouble() * factor);
-		int criterio = (RandomUtil.nextInt(3));
+		int criterio = (RandomUtil.nextInt(2) + 1);
 		double mutated = (base + r) / criterio;
 		return mutated;
 	}
 
 	private int mutate(int base, int factor) {
 		int r = RandomUtil.nextInt(Math.abs(factor));
-		int criterio = (RandomUtil.nextInt(3));
+		int criterio = (RandomUtil.nextInt(2) + 1);
 		int mutated = (int) ((base + r) / criterio);
 		return mutated;
 	}

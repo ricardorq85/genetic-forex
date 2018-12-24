@@ -22,7 +22,7 @@ public class SimpleCrossoverManager extends EspecificCrossoverManager {
 	 */
 	@Override
 	public double crossover(double d1, double d2, double min, double max) {
-		double d = (d1 + d2) / (RandomUtil.nextDouble() * 3);
+		double d = (d1 + d2) / (1 + RandomUtil.nextDouble() * 2);
 		if (d < min) {
 			d = min;
 		}
@@ -42,7 +42,7 @@ public class SimpleCrossoverManager extends EspecificCrossoverManager {
 	 */
 	@Override
 	public int crossover(int d1, int d2, int min, int max) {
-		int d = (d1 + d2) / (RandomUtil.nextInt(3));
+		int d = (d1 + d2) / (1 + RandomUtil.nextInt(2));
 		if (d < min) {
 			d = min;
 		}

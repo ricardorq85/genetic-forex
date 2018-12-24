@@ -21,7 +21,6 @@ import forex.genetic.entities.Order;
 import forex.genetic.entities.ParametroConsultaEstadistica;
 import forex.genetic.entities.ParametroOperacionPeriodo;
 import forex.genetic.exception.GeneticDAOException;
-import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.jdbc.JDBCUtil;
 
