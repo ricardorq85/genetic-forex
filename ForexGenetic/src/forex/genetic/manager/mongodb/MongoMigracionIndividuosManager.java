@@ -64,7 +64,7 @@ public class MongoMigracionIndividuosManager extends MigracionManager<MongoIndiv
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
-		logTime("Consultando fechas individuos", 1);
+		//logTime("Consultando fechas individuos", 1);
 		//MongoIndividuoManager indManager = new MongoIndividuoManager();
 		//List<Date> fechas = indManager.consultarPuntosApertura(individuos);
 		//fechas.toString();

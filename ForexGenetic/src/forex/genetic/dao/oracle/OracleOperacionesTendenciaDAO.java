@@ -1,4 +1,4 @@
-package forex.genetic.tendencia.manager;
+package forex.genetic.dao.oracle;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,15 +9,14 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.helper.OperacionHelper;
-import forex.genetic.dao.oracle.OracleOperacionesDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.Constants;
 import forex.genetic.util.jdbc.JDBCUtil;
 
-public class OperacionesTendenciaDAO extends OracleOperacionesDAO {
+public class OracleOperacionesTendenciaDAO extends OracleOperacionesDAO {
 
-	public OperacionesTendenciaDAO(Connection connection) {
+	public OracleOperacionesTendenciaDAO(Connection connection) {
 		super(connection);
 	}
 

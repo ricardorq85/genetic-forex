@@ -16,7 +16,7 @@ import forex.genetic.dao.TendenciaUltimosDatosDAO;
 import forex.genetic.dao.oracle.OracleDatoAdicionalTPODAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.dao.oracle.OracleIndividuoDAO;
-import forex.genetic.dao.oracle.OracleOperacionesDAO;
+import forex.genetic.dao.oracle.OracleOperacionesTendenciaDAO;
 import forex.genetic.dao.oracle.OracleParametroDAO;
 import forex.genetic.dao.oracle.OracleProcesoEjecucionDAO;
 import forex.genetic.dao.oracle.OracleTendenciaDAO;
@@ -85,7 +85,7 @@ public class OracleDataClient extends DataClient<Connection, IndividuoEstrategia
 	@Override
 	public IOperacionesDAO<Order> getDaoOperaciones() throws GeneticDAOException {
 		if (daoOperacion == null) {
-			daoOperacion = new OracleOperacionesDAO(client);
+			daoOperacion = new OracleOperacionesTendenciaDAO(client);
 		}
 		return daoOperacion;
 	}

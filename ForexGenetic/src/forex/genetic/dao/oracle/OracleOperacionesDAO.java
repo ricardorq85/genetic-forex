@@ -124,7 +124,8 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 	 * @throws GeneticDAOException
 	 */
 	@Override
-	public Estadistica consultarEstadisticas(Individuo individuo, ParametroConsultaEstadistica parametroConsultaEstadistica) throws GeneticDAOException {
+	public Estadistica consultarEstadisticas(Individuo individuo,
+			ParametroConsultaEstadistica parametroConsultaEstadistica) throws GeneticDAOException {
 		Estadistica estadistica = null;
 		String sql = "SELECT * FROM DETALLE_ESTADISTICAS WHERE ID_INDIVIDUO=?";
 
@@ -168,74 +169,7 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, int filas) throws GeneticDAOException {
 		return this.consultarIndividuoOperacionActiva(fechaBase, null, filas);
 	}
-
-	/**
-	 *
-	 * @param fechaBase
-	 * @param fechaFin
-	 * @param filas
-	 * @return
-	 * @throws GeneticDAOException
-	 */
-	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, Date fechaFin, int filas)
-			throws GeneticDAOException {
-		List<Individuo> list = null;
-		String sql = "SELECT * FROM ( " + " SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, "
-				+ " OPER.OPEN_PRICE, OPER.SPREAD, OPER.LOTE, OPER.PIPS, OPER.TIPO " + " FROM OPERACION OPER "
-				+ "     INNER JOIN PROCESO PROC ON PROC.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
-				+ "     AND (PROC.FECHA_HISTORICO>=?) "
-				+ " WHERE OPER.FECHA_APERTURA<? AND (OPER.FECHA_CIERRE IS NULL OR OPER.FECHA_CIERRE>?)"
-				+ " AND OPER.FECHA_APERTURA>?-30"
-				// + " AND OPER.TIPO = 'SELL'"
-				+ " AND OPER.ID_INDIVIDUO NOT IN (SELECT ID_INDIVIDUO FROM TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
-				// + " AND OPER.ID_INDIVIDUO IN (SELECT ID_INDIVIDUO FROM
-				// TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
-				+ "   AND TEND.FECHA_BASE=? AND TEND.TIPO_TENDENCIA=?) " + " AND EXISTS (SELECT 1 FROM OPERACION OPER2 "
-				+ "     WHERE OPER2.ID_INDIVIDUO=OPER.ID_INDIVIDUO "
-				+ "     AND OPER2.FECHA_CIERRE < OPER.FECHA_APERTURA) "
-				+ " AND EXISTS (SELECT 1 FROM INDICADOR_INDIVIDUO II "
-				+ "     WHERE II.ID_INDIVIDUO=OPER.ID_INDIVIDUO) "
-				// + " AND OPER.ID_INDIVIDUO='1341548450906.88346'"
-				+ " ORDER BY OPER.FECHA_APERTURA DESC) " + " WHERE ROWNUM < ? ";
-		/*
-		 * sql =
-		 * "SELECT OPER.ID_INDIVIDUO, OPER.FECHA_APERTURA, OPER.FECHA_CIERRE, OPER.OPEN_PRICE, OPER.SPREAD, OPER.LOTE, OPER.PIPS, OPER.TIPO "
-		 * + " FROM OPERACION OPER" + " WHERE " + "  SYSDATE>=? " +
-		 * " AND OPER.FECHA_APERTURA<? AND (OPER.FECHA_CIERRE IS NULL OR OPER.FECHA_CIERRE>?)"
-		 * + " AND OPER.FECHA_APERTURA>?-30" //* + " AND OPER.TIPO = 'SELL'" +
-		 * " AND (OPER.ID_INDIVIDUO NOT IN (SELECT ID_INDIVIDUO FROM TENDENCIA TEND WHERE TEND.ID_INDIVIDUO=OPER.ID_INDIVIDUO"
-		 * + " AND TEND.FECHA_BASE=? AND (TIPO_TENDENCIA=? OR 1=1)) " + " OR 1=1)" +
-		 * " AND OPER.ID_INDIVIDUO='1341461434490.61685'" + " AND ROWNUM < ?";
-		 */
-
-		PreparedStatement stmtConsulta = null;
-		ResultSet resultado = null;
-		try {
-			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setTimestamp(1, new Timestamp(fechaBase.getTime()));
-			stmtConsulta.setTimestamp(2, new Timestamp(fechaBase.getTime()));
-			if (fechaFin != null) {
-				stmtConsulta.setTimestamp(3, new Timestamp(fechaFin.getTime()));
-			} else {
-				stmtConsulta.setTimestamp(3, new Timestamp(fechaBase.getTime()));
-			}
-			stmtConsulta.setTimestamp(4, new Timestamp(fechaBase.getTime()));
-			stmtConsulta.setTimestamp(5, new Timestamp(fechaBase.getTime()));
-			stmtConsulta.setString(6, Constants.TIPO_TENDENCIA);
-			stmtConsulta.setInt(7, filas);
-			resultado = stmtConsulta.executeQuery();
-
-			list = OperacionHelper.individuosOperacionActiva(resultado);
-		} catch (SQLException e) {
-			throw new GeneticDAOException("Error OracleOperacionesDAO", e);
-		} finally {
-			JDBCUtil.close(resultado);
-			JDBCUtil.close(stmtConsulta);
-		}
-
-		return list;
-	}
-
+	
 	/**
 	 *
 	 * @param idIndividuo
@@ -547,7 +481,7 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 			JDBCUtil.close(stmtConsulta);
 		}
 	}
-	
+
 	public long duracionPromedioMinutos(String idIndividuo) throws GeneticDAOException {
 		String sql = "SELECT ROUND(AVG(OPER.FECHA_CIERRE-OPER.FECHA_APERTURA)*24*60) DURACION FROM OPERACION OPER\n"
 				+ " WHERE ID_INDIVIDUO = ? ";
@@ -571,7 +505,7 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 		}
 		return duracion;
 	}
-	
+
 	private void dropVistaMaterializada(String name) throws GeneticDAOException {
 		String sql = "DROP MATERIALIZED VIEW " + name;
 		PreparedStatement stmtConsulta = null;
@@ -617,7 +551,15 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 	}
 
 	@Override
-	public Individuo consultarIndividuoOperacionActiva(String idIndividuo, Date fechaBase, int filas) throws GeneticDAOException {
+	public Individuo consultarIndividuoOperacionActiva(String idIndividuo, Date fechaBase, int filas)
+			throws GeneticDAOException {
 		throw new UnsupportedOperationException("UnsupportedOperationException");
 	}
+
+	@Override
+	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, Date fechaFin, int filas)
+			throws GeneticDAOException {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
+
 }

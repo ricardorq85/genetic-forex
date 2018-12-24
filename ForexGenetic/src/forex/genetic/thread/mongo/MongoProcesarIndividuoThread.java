@@ -99,9 +99,9 @@ public class MongoProcesarIndividuoThread extends Thread {
 		ProcesoEjecucionDTO procesoEjecucionIndividuo = individuo.getProcesoEjecucion();
 		DateInterval interval = null;
 		if ((procesoEjecucionIndividuo == null) || (procesoEjecucionIndividuo.getMaxFechaHistorico() == null)) {
-			interval = findNextInterval(procesoEjecucionIndividuo.getMaxFechaHistorico(), maxMonths);
-		} else {
 			interval = findNextInterval(this.minFechaHistorico, maxMonths);
+		} else {
+			interval = findNextInterval(procesoEjecucionIndividuo.getMaxFechaHistorico(), maxMonths);
 		}
 
 		boolean processed = true;
@@ -122,14 +122,16 @@ public class MongoProcesarIndividuoThread extends Thread {
 			} else {
 				lastProcessedDate = interval.getLowInterval();
 			}
-			for (Point point : puntosApertura) {
+			for (int j = 0; ((j < puntosApertura.size())
+					&& (lastProcessedDate.before(interval.getHighInterval()))); j++) {
+				Point point = puntosApertura.get(j);
 				if (point.getDate().after(lastProcessedDate)) {
 					lastProcessedDate = procesarIndividuo(estadisticasManager, interval, point, puntosCierre);
 				}
 			}
 			processed = (lastProcessedDate != null);
 			if (processed) {
-				interval = findNextInterval(DateUtil.adicionarMinutos(interval.getLowInterval(), 1), maxMonths);
+				interval = findNextInterval(DateUtil.adicionarMinutos(lastProcessedDate, 1), maxMonths);
 			}
 		}
 	}
@@ -209,9 +211,9 @@ public class MongoProcesarIndividuoThread extends Thread {
 			DateInterval intervaloCierre = new DateInterval();
 			intervaloCierre.setLowInterval(
 					DateUtil.obtenerFechaMaxima(order.getOpenDate(), intervaloFechasIndividuo.getLowInterval()));
-			intervaloCierre.setHighInterval(
-					DateUtil.obtenerFechaMaxima(DateUtil.adicionarMes(intervaloCierre.getLowInterval()),
-							intervaloFechasIndividuo.getHighInterval()));
+			intervaloCierre.setHighInterval(intervaloFechasIndividuo.getHighInterval());
+//					DateUtil.obtenerFechaMaxima(DateUtil.adicionarMes(intervaloCierre.getLowInterval()),
+//							intervaloFechasIndividuo.getHighInterval()));
 
 			Date returnDate = procesarOperacionActiva(individuo, intervaloCierre, puntosCierre);
 			Order closeOrder = individuo.getCurrentOrder();

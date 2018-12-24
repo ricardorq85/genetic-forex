@@ -64,8 +64,8 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		Bson ordenador = Sorts.orderBy(Sorts.ascending("procesoEjecucion.maxFechaHistorico"),
 				Sorts.descending("idIndividuo"));
 
-		Bson filtroIndividuo = Filters.and(Filters.regex("idIndividuo", "1545088344522.2"),
-				Filters.eq("tipoIndividuo", Constants.IndividuoType.INDICADOR_GANADOR.name()));
+		Bson filtroIndividuo = Filters.and(Filters.regex("idIndividuo", "1394755200000.32"));//,
+				//Filters.eq("tipoIndividuo", Constants.IndividuoType.INDICADOR_GANADOR.name()));
 //		Bson filtroIndividuo = Filters.regex("idIndividuo", "1544908361588.*");
 		Bson filtroCompleto = Filters.and(filtroIndividuo, filtroOr);
 

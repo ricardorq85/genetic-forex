@@ -188,7 +188,7 @@ public abstract class EndToEndMediator extends GeneticMediator {
 
 			Date fechaBaseFinal = fechaHistoricaMaximaNueva;
 			try {
-				fechaBaseFinal = DateUtil.obtenerFecha("2008/08/12 15:30");
+				fechaBaseFinal = DateUtil.obtenerFecha("2008/10/27 13:43");
 			} catch (ParseException eDate) {
 				eDate.printStackTrace();
 			}

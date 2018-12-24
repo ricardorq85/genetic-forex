@@ -35,8 +35,8 @@ public class MongoTendenciaMapper extends MongoMapper<Tendencia> {
 		objectMap.put("duracion", obj.getDuracion());
 		objectMap.put("pipsActuales", obj.getPipsActuales());
 		objectMap.put("duracionActual", obj.getDuracionActual());
-		objectMap.put("propabilidadPipsPositivos", obj.getProbabilidadPositivos());
-		objectMap.put("probabilidadPipsNegativos", obj.getProbabilidadNegativos());
+		objectMap.put("propabilidadPositivos", obj.getProbabilidadPositivos());
+		objectMap.put("probabilidadNegativos", obj.getProbabilidadNegativos());
 		objectMap.put("probabilidad", obj.getProbabilidad());
 		objectMap.put("fecha", obj.getFecha());
 		objectMap.put("fechaCierre", obj.getFechaCierre());

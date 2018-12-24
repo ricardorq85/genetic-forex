@@ -12,6 +12,7 @@ import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
+import com.mongodb.client.result.DeleteResult;
 
 import forex.genetic.dao.ITendenciaDAO;
 import forex.genetic.entities.DateInterval;
@@ -80,7 +81,9 @@ public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> implements ITe
 
 	@Override
 	public int deleteTendenciaMenorQue(Date fechaBase) throws GeneticDAOException {
-		throw new UnsupportedOperationException("UnsupportedOperationException");
+		// DeleteOptions deleteOptions = new DeleteOptions();
+		DeleteResult result = this.collection.deleteMany(Filters.lt("fechaBase", fechaBase));
+		return new Long(result.getDeletedCount()).intValue();
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.BsonField;
@@ -26,6 +27,7 @@ import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.ParametroConsultaEstadistica;
 import forex.genetic.entities.ParametroOperacionPeriodo;
+import forex.genetic.entities.Point;
 import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
@@ -264,6 +266,19 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	@Override
 	public List<MongoOrder> consultarOperacionesActivas(Date fechaBase, Date fechaFin, int filas)
 			throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
+		int cantidad = 10;
+		Bson filtroFechaApertura = Filters.lt("fechaApertura", fechaBase);
+		Bson filtroFechaCierre = Filters.or(Filters.exists("fechaCierre", false), Filters.eq("fechaCierre", null),
+				Filters.gt("fechaCierre", fechaBase));
+		Bson filtroIndividuo = Filters.eq("idIndividuo", "1394755200000.32");
+
+		Bson bsonFiltrosCompletos = Filters.and(filtroFechaApertura, filtroFechaCierre, filtroIndividuo);
+		MongoCursor<Document> cursor = this.collection
+				.aggregate(Arrays.asList(Aggregates.match(Filters.and(bsonFiltrosCompletos)),
+						Aggregates.sample(cantidad), Aggregates.sort(Sorts.orderBy(Sorts.ascending("fechaApertura")))))
+				.iterator();
+
+		List<MongoOrder> list = getMapper().helpList(cursor);
+		return list;
 	}
 }

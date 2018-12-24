@@ -35,7 +35,18 @@ public class MongoEstadisticasManager {
 			} else {
 				estadisticaAnterior = new MongoEstadistica();
 			}
-
+			estadisticaNueva.getDataDuracion().addAll(estadisticaAnterior.getDataDuracion());
+			estadisticaNueva.getDataDuracionPositivos().addAll(estadisticaAnterior.getDataDuracionPositivos());
+			estadisticaNueva.getDataDuracionNegativos().addAll(estadisticaAnterior.getDataDuracionNegativos());
+			
+			estadisticaNueva.getDataPips().addAll(estadisticaAnterior.getDataPips());
+			estadisticaNueva.getDataPipsPositivos().addAll(estadisticaAnterior.getDataPipsPositivos());
+			estadisticaNueva.getDataPipsNegativos().addAll(estadisticaAnterior.getDataPipsNegativos());
+			
+			estadisticaNueva.getDataPipsRetroceso().addAll(estadisticaAnterior.getDataPipsRetroceso());
+			estadisticaNueva.getDataPipsRetrocesoPositivos().addAll(estadisticaAnterior.getDataPipsRetrocesoPositivos());
+			estadisticaNueva.getDataPipsRetrocesoNegativos().addAll(estadisticaAnterior.getDataPipsRetrocesoNegativos());
+			
 			estadisticaNueva.setFechaInicial(order.getCloseDate());
 			estadisticaNueva.getDataDuracion().add(new Long(order.getDuracionMinutos()).doubleValue());
 			estadisticaNueva.getDataPips().add(order.getPips());
