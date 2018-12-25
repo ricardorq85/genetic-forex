@@ -98,11 +98,7 @@ public abstract class ProcesarTendenciasGrupalManager extends ProcesarTendencias
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(e);
 		} finally {
-			try {
-				dataClient.close();
-			} catch (GeneticDAOException e) {
-				e.printStackTrace();
-			}
+			dataClient.close();
 		}
 	}
 

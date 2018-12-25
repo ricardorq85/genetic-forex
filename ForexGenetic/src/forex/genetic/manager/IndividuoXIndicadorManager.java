@@ -116,12 +116,6 @@ public abstract class IndividuoXIndicadorManager {
 			}
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(e);
-		} finally {
-			try {
-				dataClient.close();
-			} catch (GeneticDAOException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 

@@ -42,11 +42,11 @@ public class OracleDataClient extends DataClient<Connection, IndividuoEstrategia
 	}
 
 	@Override
-	public void close() throws GeneticDAOException {
+	public void close() {
 		try {
 			client.close();
 		} catch (SQLException e) {
-			throw new GeneticDAOException("close connection", e);
+			e.printStackTrace();
 		}
 	}
 

@@ -33,7 +33,7 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	}
 
 	@Override
-	public void close() throws GeneticDAOException {
+	public void close() {
 	}
 
 	@Override

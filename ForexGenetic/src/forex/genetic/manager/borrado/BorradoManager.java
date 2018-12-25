@@ -20,6 +20,7 @@ import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.LogUtil;
+import forex.genetic.util.jdbc.DataClient;
 
 /**
  *
@@ -29,6 +30,7 @@ public abstract class BorradoManager {
 
 	protected String tipoProceso = "DEFAULT";
 	protected Connection conn;
+	protected DataClient dataClient;
 	protected OracleIndividuoDAO individuoDAO;
 	protected OracleOperacionesDAO operacionDAO;
 	protected IProcesoEjecucionDAO procesoDAO;
@@ -48,6 +50,11 @@ public abstract class BorradoManager {
 		procesoDAO = new OracleProcesoEjecucionDAO(conn);
 		tendenciaDAO = new OracleTendenciaDAO(conn);
 		estrategiaDAO = new EstrategiaDAO(conn);
+	}
+
+	public BorradoManager(DataClient dc, String tipoProceso2) throws ClassNotFoundException {
+		this(null, null, tipoProceso2);
+		this.dataClient = dc;
 	}
 
 	protected abstract List<Individuo> consultarIndividuos(Individuo individuo)

@@ -51,7 +51,7 @@ public interface IIndividuoDAO<E extends IndividuoEstrategia> extends IGeneticDA
 	public List<Individuo> consultarIndividuoHijoRepetidoOperaciones(Individuo individuoHijo)
 			throws GeneticDAOException;
 
-	public List<Individuo> consultarIndividuoHijoRepetido(Individuo individuoHijo) throws GeneticDAOException;
+	public List<Individuo> consultarIndividuoHijoRepetido(Individuo individuo) throws GeneticDAOException;
 
 	public void consultarDetalleIndividuoProceso(Individuo individuo, Date fechaHistorico) throws GeneticDAOException;
 

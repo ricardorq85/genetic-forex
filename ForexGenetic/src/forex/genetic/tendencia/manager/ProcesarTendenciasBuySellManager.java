@@ -75,11 +75,7 @@ public abstract class ProcesarTendenciasBuySellManager {
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(e);
 		} finally {
-			try {
-				dataClient.close();
-			} catch (GeneticDAOException e) {
-				e.printStackTrace();
-			}
+			dataClient.close();
 		}
 	}
 

@@ -40,7 +40,7 @@ public abstract class DataClient<C, I extends IndividuoEstrategia, O extends Ord
 		this.client = client;
 	}
 
-	public abstract void close() throws GeneticDAOException;
+	public abstract void close();
 
 	public abstract void commit() throws GeneticDAOException;
 

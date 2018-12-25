@@ -32,7 +32,6 @@ public abstract class IntervalIndicator extends Indicator implements Serializabl
 	 */
 	public IntervalIndicator(String name) {
 		this.name = name;
-		// interval = new DoubleInterval(name);
 	}
 
 	/**

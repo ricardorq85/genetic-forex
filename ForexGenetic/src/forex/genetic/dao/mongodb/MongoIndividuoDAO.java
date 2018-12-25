@@ -1,5 +1,6 @@
 package forex.genetic.dao.mongodb;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,10 +18,13 @@ import forex.genetic.dao.helper.mongodb.MongoIndividuoMapper;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.IndividuoOptimo;
+import forex.genetic.entities.indicator.Indicator;
+import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
-import forex.genetic.util.Constants;
+import forex.genetic.manager.indicator.IndicadorManager;
 
 public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implements IIndividuoDAO<MongoIndividuo> {
 
@@ -64,14 +68,62 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		Bson ordenador = Sorts.orderBy(Sorts.ascending("procesoEjecucion.maxFechaHistorico"),
 				Sorts.descending("idIndividuo"));
 
-		Bson filtroIndividuo = Filters.and(Filters.regex("idIndividuo", "1394755200000.32"));// ,
+		// Bson filtroIndividuo = Filters.and(Filters.regex("idIndividuo",
+		// "1394755200000.32"));// ,
 		// Filters.eq("tipoIndividuo",
 		// Constants.IndividuoType.INDICADOR_GANADOR.name()));
 //		Bson filtroIndividuo = Filters.regex("idIndividuo", "1544908361588.*");
-		Bson filtroCompleto = Filters.and(filtroIndividuo, filtroOr);
+//		Bson filtroCompleto = Filters.and(filtroIndividuo, filtroOr);
 
+		Bson filtroCompleto = Filters.and(filtroOr);
 		MongoCursor<Document> cursor = collection.find(filtroCompleto).sort(ordenador).limit(10).iterator();
 		return getMapper().helpList(cursor);
+	}
+
+	@Override
+	public List<Individuo> consultarIndividuoHijoRepetido(Individuo individuo) throws GeneticDAOException {
+		List<Individuo> list = new ArrayList<>();
+		int cantidad = 10;
+
+		List<Bson> filtros = new ArrayList<>();
+		filtros.add(Filters.ne("idIndividuo", individuo.getId()));
+		filtros.add(Filters.lt("creationDate", individuo.getCreationDate()));
+		filtros.add(Filters.eq("takeProfit", individuo.getTakeProfit()));
+		filtros.add(Filters.eq("stopLoss", individuo.getStopLoss()));
+
+		this.adicionarFiltroIndicadores(individuo.getOpenIndicators(), filtros);
+
+		Bson bsonFiltrosCompletos = Filters.and(filtros);
+
+		MongoCursor<Document> cursor = collection.find(bsonFiltrosCompletos).limit(cantidad).iterator();
+
+		list.addAll(getMapper().helpList(cursor));
+
+		return list;
+	}
+
+	private void adicionarFiltroIndicadores(List<? extends Indicator> indicadores, List<Bson> filtros) {
+		IndicadorController indicadorController = ControllerFactory
+				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+		for (int i = 0; i < indicadorController.getIndicatorNumber(); i++) {
+			// for (int i = 0; i < 7; i++) {
+//			IndicadorManager<?> managerInstance = indicadorController.getManagerInstance(i);
+			StringBuilder nombreIndicador = new StringBuilder("openIndicadores").append(".")
+					.append(indicadorController.getIndicatorName(i));
+			if (indicadores.get(i) != null) {
+				IntervalIndicator intervalIndicator = ((IntervalIndicator) indicadores.get(i));
+				if (intervalIndicator.getInterval() != null) {
+					StringBuilder nombreIndicadorLow = new StringBuilder(nombreIndicador).append(".low");
+					StringBuilder nombreIndicadorHigh = new StringBuilder(nombreIndicador).append(".high");
+					filtros.add(Filters.eq(nombreIndicadorLow.toString(),
+							intervalIndicator.getInterval().getLowInterval()));
+					filtros.add(Filters.eq(nombreIndicadorHigh.toString(),
+							intervalIndicator.getInterval().getHighInterval()));
+				} else {
+					filtros.add(Filters.eq(nombreIndicador.toString(), null));
+				}
+			}
+		}
 	}
 
 	@Override
@@ -130,11 +182,6 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 	@Override
 	public List<Individuo> consultarIndividuoHijoRepetidoOperaciones(Individuo individuoHijo)
 			throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
-	public List<Individuo> consultarIndividuoHijoRepetido(Individuo individuoHijo) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 

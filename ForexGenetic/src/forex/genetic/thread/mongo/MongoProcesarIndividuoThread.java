@@ -4,6 +4,8 @@ close * To change this template, choose Tools | Templates
  */
 package forex.genetic.thread.mongo;
 
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +24,7 @@ import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.manager.mongodb.MongoEstadisticasManager;
 import forex.genetic.manager.mongodb.MongoOperacionesManager;
+import forex.genetic.proxy.MongoProcesosAlternosProxy;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
@@ -182,13 +185,16 @@ public class MongoProcesarIndividuoThread extends Thread {
 
 	private boolean validarYBorrarIndividuoInvalido(Individuo individuo) throws GeneticDAOException {
 		boolean borrado = false;
-		/*
-		 * try { ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(0);
-		 * alternosManager.procesar(individuo); Individuo indBorrado =
-		 * daoIndividuo.consultarIndividuo(individuo.getId()); borrado = (indBorrado ==
-		 * null); } catch (SQLException | ClassNotFoundException | FileNotFoundException
-		 * e) { e.printStackTrace(); }
-		 */
+
+		try {
+			MongoProcesosAlternosProxy alternosManager;
+			alternosManager = new MongoProcesosAlternosProxy(1, dataClient);
+			alternosManager.procesar(individuo);
+		} catch (ClassNotFoundException | SQLException | FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		Individuo indBorrado = dataClient.getDaoIndividuo().consultarIndividuo(individuo.getId());
+		borrado = (indBorrado == null);
 		return borrado;
 	}
 

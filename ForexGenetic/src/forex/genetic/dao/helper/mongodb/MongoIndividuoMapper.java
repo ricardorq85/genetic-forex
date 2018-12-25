@@ -83,14 +83,20 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 	}
 
 	private List<Map<String, Object>> getMapIndicadores(List<? extends Indicator> list) {
+		IndicadorController indicadorController = ControllerFactory
+				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
+
 		List<Map<String, Object>> indicadores = new ArrayList<Map<String, Object>>();
-		((List<IntervalIndicator>) list).stream().forEach((ind) -> {
-			if (ind != null) {
-				indicadores.add(ind.toIntervalMap());
+		for (int i = 0; i < list.size(); i++) {
+			IntervalIndicator ii = (IntervalIndicator) list.get(i);
+			IntervalIndicator iiToMap;
+			if (ii != null) {
+				iiToMap = ii;
 			} else {
-				indicadores.add(null);
+				iiToMap = (IntervalIndicator) indicadorController.getManagerInstance(i).getIndicatorInstance();
 			}
-		});
+			indicadores.add(iiToMap.toIntervalMap());
+		}
 		return indicadores;
 	}
 

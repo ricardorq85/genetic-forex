@@ -15,65 +15,69 @@ import forex.genetic.manager.indicator.IndicadorManager;
  */
 public abstract class IndicadorController {
 
-    /**
-     *
-     */
-    protected static List<IndicadorManager> list;
+	/**
+	 *
+	 */
+	protected static List<IndicadorManager> list;
 
-    /**
-     *
-     */
-    protected String nombreTabla;
+	/**
+	 *
+	 */
+	protected String nombreTabla;
 
-    /**
-     *
-     * @param nombreTabla
-     */
-    public IndicadorController(String nombreTabla) {
-        this.nombreTabla = nombreTabla;
-    }
+	/**
+	 *
+	 * @param nombreTabla
+	 */
+	public IndicadorController(String nombreTabla) {
+		this.nombreTabla = nombreTabla;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public String getNombreTabla() {
-        return nombreTabla;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public String getNombreTabla() {
+		return nombreTabla;
+	}
 
-    /**
-     *
-     * @return
-     */
-    public int getIndicatorNumber() {
-        int indicatorNumber = 0;
-        synchronized (this) {
-            if (list == null) {
-                load();
-            }
-            indicatorNumber = list.size();
-        }
-        return indicatorNumber;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public int getIndicatorNumber() {
+		int indicatorNumber = 0;
+		synchronized (this) {
+			if (list == null) {
+				load();
+			}
+			indicatorNumber = list.size();
+		}
+		return indicatorNumber;
+	}
 
-    /**
-     *
-     * @param i
-     * @return
-     */
-    public IndicadorManager getManagerInstance(int i) {
-        IndicadorManager im = null;
-        synchronized (this) {
-            if (list == null) {
-                load();
-            }
-            im = list.get(i);
-        }
-        return im;
-    }
+	/**
+	 *
+	 * @param i
+	 * @return
+	 */
+	public IndicadorManager getManagerInstance(int i) {
+		IndicadorManager im = null;
+		synchronized (this) {
+			if (list == null) {
+				load();
+			}
+			im = list.get(i);
+		}
+		return im;
+	}
 
-    /**
-     *
-     */
-    protected abstract void load();
+	public String getIndicatorName(int i) {
+		return (getManagerInstance(i).getIndicatorInstance().getName());
+	}
+
+	/**
+	 *
+	 */
+	protected abstract void load();
 }

@@ -187,11 +187,11 @@ public abstract class EndToEndMediator extends GeneticMediator {
 			int parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
 
 			Date fechaBaseFinal = fechaHistoricaMaximaNueva;
-			try {
-				fechaBaseFinal = DateUtil.obtenerFecha("2008/10/27 13:43");
-			} catch (ParseException eDate) {
-				eDate.printStackTrace();
-			}
+//			try {
+//				fechaBaseFinal = DateUtil.obtenerFecha("2008/10/27 13:43");
+//			} catch (ParseException eDate) {
+//				eDate.printStackTrace();
+//			}
 			if (count == 1) {
 				tendenciaProcesoManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia / 2);
 			}
@@ -267,7 +267,8 @@ public abstract class EndToEndMediator extends GeneticMediator {
 		logTime("Init Crear individuos x indicador", 1);
 		OracleIndividuoXIndicadorManager manager;
 		try {
-			manager = new OracleIndividuoXIndicadorManager(oneDataClient, ultimaFechaBaseTendencia, fechaHistoricaMaximaNueva, 12);
+			manager = new OracleIndividuoXIndicadorManager(oneDataClient, ultimaFechaBaseTendencia,
+					fechaHistoricaMaximaNueva, 12);
 			manager.crearIndividuos();
 		} catch (ClassNotFoundException | GeneticDAOException | SQLException e) {
 			throw new GeneticBusinessException(e);

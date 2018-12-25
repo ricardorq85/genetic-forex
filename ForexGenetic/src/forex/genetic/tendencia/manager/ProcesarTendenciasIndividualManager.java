@@ -4,10 +4,8 @@
  */
 package forex.genetic.tendencia.manager;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -15,7 +13,6 @@ import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
-import forex.genetic.exception.GeneticException;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 
@@ -59,11 +56,7 @@ public class ProcesarTendenciasIndividualManager extends ProcesarTendenciasBuySe
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(e);
 		} finally {
-			try {
-				dataClient.close();
-			} catch (GeneticDAOException e) {
-				e.printStackTrace();
-			}
+			dataClient.close();
 		}
 	}
 

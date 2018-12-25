@@ -4,13 +4,15 @@
  */
 package forex.genetic.manager.indicator;
 
+import forex.genetic.entities.indicator.Indicator;
+
 /**
  *
  * @author ricardorq85
  * @param <E>
  *            Indicador
  */
-public abstract class IndicadorIndividuoManager<E> extends IndicadorManager<E> {
+public abstract class IndicadorIndividuoManager<E extends Indicator> extends IndicadorManager<E> {
 
 	/**
 	 *

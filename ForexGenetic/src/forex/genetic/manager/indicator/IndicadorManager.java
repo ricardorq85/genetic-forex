@@ -16,7 +16,7 @@ import forex.genetic.entities.indicator.Indicator;
  * @author ricardorq85
  * @param <E> Tipo indicador
  */
-public abstract class IndicadorManager<E> {
+public abstract class IndicadorManager<E extends Indicator> {
 
 	private boolean priceDependence = false;
 	private boolean obligatory = false;
