@@ -43,8 +43,9 @@ public class MongoBorradoDuplicadoIndividuoManager extends BorradoManager {
 		if (individuosRepetidos.size() > 0) {
 			LogUtil.logTime("Individuos repetidos consultados: " + individuosRepetidos.size(), 1);
 		}
-		super.smartDelete(individuosRepetidos);
-		this.individuoDAO.commit();
+		//TODO borrar individuos
+		//super.smartDelete(individuosRepetidos);
+		this.dataClient.commit();
 	}
 
 	protected void borrarDuplicados(Individuo individuo) throws ClassNotFoundException, GeneticDAOException {
