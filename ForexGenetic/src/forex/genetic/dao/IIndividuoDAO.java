@@ -68,8 +68,8 @@ public interface IIndividuoDAO<E extends IndividuoEstrategia> extends IGeneticDA
 	public List<Individuo> consultarIndividuosResumenSemanal(Date fechaInicial, Date fechaFinal)
 			throws GeneticDAOException;
 
-	public List<? extends IndividuoEstrategia> consultarIndividuosRandom(Date fechaInicial, Date fechaFinal, int cantidad)
-			throws GeneticDAOException;
+	public List<? extends IndividuoEstrategia> consultarIndividuosRandom(Date fechaInicial, Date fechaFinal,
+			int cantidad) throws GeneticDAOException;
 
 	public List<? extends IndividuoEstrategia> consultarIndividuosRandom(int cantidad) throws GeneticDAOException;
 

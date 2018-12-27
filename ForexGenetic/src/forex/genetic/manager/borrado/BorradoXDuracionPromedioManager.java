@@ -6,11 +6,11 @@
 package forex.genetic.manager.borrado;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 import forex.genetic.dao.DuracionIndividuoDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 
 /**
@@ -19,17 +19,21 @@ import forex.genetic.exception.GeneticDAOException;
  */
 public class BorradoXDuracionPromedioManager extends BorradoManager {
 
-	public BorradoXDuracionPromedioManager(Connection conn) throws ClassNotFoundException, SQLException {
+	public BorradoXDuracionPromedioManager(Connection conn) {
 		super(conn, new DuracionIndividuoDAO(conn), "DURACION_PROMEDIO_MINIMA");
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuos(Individuo individuo) throws ClassNotFoundException, GeneticDAOException {
+	public List<Individuo> consultarIndividuos(Individuo individuo) throws GeneticBusinessException {
 		List<Individuo> individuos;
-		if (individuo == null) {
-			individuos = individuoDAO.consultarIndividuosParaBorrar(5);
-		} else {
-			individuos = individuoDAO.consultarIndividuosParaBorrar(individuo.getId(), 5);
+		try {
+			if (individuo == null) {
+				individuos = individuoDAO.consultarIndividuosParaBorrar(5);
+			} else {
+				individuos = individuoDAO.consultarIndividuosParaBorrar(individuo.getId(), 5);
+			}
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		}
 		return individuos;
 	}

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import forex.genetic.entities.Individuo;
-import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.manager.borrado.BorradoCantidadOperacionesExageradasManager;
 import forex.genetic.manager.borrado.BorradoDuplicadoIndividuoBorradoManager;
 import forex.genetic.manager.borrado.BorradoDuplicadoIndividuoManager;
@@ -35,45 +35,52 @@ public class ProcesosAlternosProxy {
 	protected Connection conn;
 	List<BorradoManager> managers;
 
-	public ProcesosAlternosProxy(long id) throws ClassNotFoundException, SQLException {
+	public ProcesosAlternosProxy(long id) throws GeneticBusinessException {
 		this.id = id;
-		conn = JDBCUtil.getConnection();
-	}
-
-	public void procesar()
-			throws ClassNotFoundException, SQLException, FileNotFoundException, UnsupportedEncodingException, GeneticDAOException {
-		managers = new ArrayList<>();
-		managers.add(new BorradoDuplicadoIndividuoManager(conn));
-		managers.add(new BorradoDuplicadoIndividuoBorradoManager(conn));
-		managers.add(new BorradoXIndicadoresCloseMinimos(conn));
-		managers.add(new BorradoInconsistentesStopLossManager(conn));
-		managers.add(new BorradoXIntervaloIndicadorManager(conn));
-		managers.add(new BorradoXDuracionPromedioManager(conn));
-		managers.add(new BorradoIndividuoSinOperacionesManager(conn));
-		managers.add(new BorradoCantidadOperacionesExageradasManager(conn));
-		managers.add(new BorradoDuplicadoOperacionesManager(conn));
-
-		StringBuilder name = new StringBuilder(getPropertyString(LOG_PATH));
-		name.append("ProcesosAlternos").append(id).append(".log");
-		PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
-		setOut(out);
-		setErr(out);
-		logTime("Init Procesos alternos", 2);
-		while (!managers.isEmpty()) {
-			int index = 0; // random.nextInt(managers.size());
-			BorradoManager manager = managers.get(index);
-			logTime(manager.getClass().getName(), 2);
-			manager.borrarIndividuos();
-			managers.remove(index);
+		try {
+			conn = JDBCUtil.getConnection();
+		} catch (ClassNotFoundException | SQLException e) {
+			throw new GeneticBusinessException(e);
 		}
-		JDBCUtil.close(conn);
-		logTime("Fin Procesos alternos", 1);
 	}
 
-	public void procesar(Individuo individuo) throws ClassNotFoundException, FileNotFoundException, GeneticDAOException {
+	public void procesar() throws GeneticBusinessException {
 		try {
 			managers = new ArrayList<>();
-			managers.add(new BorradoDuplicadoIndividuoManager(conn));		
+			managers.add(new BorradoDuplicadoIndividuoManager(conn));
+			managers.add(new BorradoDuplicadoIndividuoBorradoManager(conn));
+			managers.add(new BorradoXIndicadoresCloseMinimos(conn));
+			managers.add(new BorradoInconsistentesStopLossManager(conn));
+			managers.add(new BorradoXIntervaloIndicadorManager(conn));
+			managers.add(new BorradoXDuracionPromedioManager(conn));
+			managers.add(new BorradoIndividuoSinOperacionesManager(conn));
+			managers.add(new BorradoCantidadOperacionesExageradasManager(conn));
+			managers.add(new BorradoDuplicadoOperacionesManager(conn));
+
+			StringBuilder name = new StringBuilder(getPropertyString(LOG_PATH));
+			name.append("ProcesosAlternos").append(id).append(".log");
+			PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
+			setOut(out);
+			setErr(out);
+			logTime("Init Procesos alternos", 2);
+			while (!managers.isEmpty()) {
+				int index = 0; // random.nextInt(managers.size());
+				BorradoManager manager = managers.get(index);
+				logTime(manager.getClass().getName(), 2);
+				manager.borrarIndividuos();
+				managers.remove(index);
+			}
+			JDBCUtil.close(conn);
+			logTime("Fin Procesos alternos", 1);
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			throw new GeneticBusinessException(e);
+		}
+	}
+
+	public void procesar(Individuo individuo) {
+		try {
+			managers = new ArrayList<>();
+			managers.add(new BorradoDuplicadoIndividuoManager(conn));
 			managers.add(new BorradoDuplicadoIndividuoBorradoManager(conn));
 			managers.add(new BorradoXIndicadoresCloseMinimos(conn));
 			managers.add(new BorradoInconsistentesStopLossManager(conn));
@@ -92,8 +99,8 @@ public class ProcesosAlternosProxy {
 				manager.validarYBorrarIndividuo(individuo);
 				managers.remove(index);
 			}
-		} catch (SQLException e) {
-			logTime("SQLException: " + individuo.getId() + " " + e.getMessage(), 1);
+		} catch (GeneticBusinessException e) {
+			logTime("Exception: " + individuo.getId() + " " + e.getMessage(), 1);
 			e.printStackTrace();
 			JDBCUtil.rollback(conn);
 		} finally {

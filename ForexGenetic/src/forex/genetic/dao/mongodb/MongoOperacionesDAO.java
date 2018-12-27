@@ -27,7 +27,6 @@ import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.ParametroConsultaEstadistica;
 import forex.genetic.entities.ParametroOperacionPeriodo;
-import forex.genetic.entities.Point;
 import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
@@ -40,6 +39,16 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 
 	public MongoOperacionesDAO() throws GeneticDAOException {
 		this(true);
+	}
+
+	@Override
+	public int deleteByIndividuo(Individuo individuo) {
+		setCollection("operacionesPositivas", false);
+		super.deleteByIndividuo(individuo);
+		setCollection("operacionesNegativas", false);
+		super.deleteByIndividuo(individuo);
+		setCollection("operacion", false);
+		return super.deleteByIndividuo(individuo);
 	}
 
 	public MongoOperacionesDAO(boolean configure) {
@@ -136,47 +145,56 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		return avgDuracionMinutos;
 	}
 
-	private void setCollectionInternByPips(MongoOrder obj) {
-		if (obj.getPips() > 0) {
-			setCollection("operacionesPositivas", false);
-		} else {
-			setCollection("operacionesNegativas", false);
+	private boolean setCollectionInternByPips(MongoOrder obj) {
+		if (obj.getCloseDate() != null) {
+			if (obj.getPips() > 0) {
+				setCollection("operacionesPositivas", false);
+				return true;
+			} else {
+				setCollection("operacionesNegativas", false);
+				return true;
+			}
 		}
+		return false;
 	}
 
 	public void insertIfNoExists(MongoOrder obj) {
 		setCollection("operacion", false);
 		super.insertIfNoExists(obj);
-		setCollectionInternByPips(obj);
-		super.insertIfNoExists(obj);
-		setCollection("operacion", false);
+		if (setCollectionInternByPips(obj)) {
+			super.insertIfNoExists(obj);
+			setCollection("operacion", false);
+		}
 	}
 
 	@Override
 	public void insertOrUpdate(MongoOrder obj) {
 		setCollection("operacion", false);
 		super.insertOrUpdate(obj);
-		setCollectionInternByPips(obj);
-		super.insertOrUpdate(obj);
-		setCollection("operacion", false);
+		if (setCollectionInternByPips(obj)) {
+			super.insertOrUpdate(obj);
+			setCollection("operacion", false);
+		}
 	}
 
 	@Override
 	public void insert(MongoOrder obj) {
 		setCollection("operacion", false);
 		super.insert(obj);
-		setCollectionInternByPips(obj);
-		super.insert(obj);
-		setCollection("operacion", false);
+		if (setCollectionInternByPips(obj)) {
+			super.insert(obj);
+			setCollection("operacion", false);
+		}
 	}
 
 	@Override
 	public void update(MongoOrder obj) {
 		setCollection("operacion", false);
 		super.update(obj);
-		setCollectionInternByPips(obj);
-		super.update(obj);
-		setCollection("operacion", false);
+		if (setCollectionInternByPips(obj)) {
+			super.update(obj);
+			setCollection("operacion", false);
+		}
 	}
 
 	@Override
@@ -213,11 +231,6 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	@Override
 	public Individuo consultarIndividuoOperacionActiva(String idIndividuo, Date fechaBase, int filas)
 			throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
-	}
-
-	@Override
-	public int deleteOperaciones(String idIndividuo) throws GeneticDAOException {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 

@@ -53,10 +53,6 @@ public class ForexCrearIndividuosXIndicador {
 		logTime("Fin: " + id, 1);
 		logTime("Lanzando Procesos alternos...", 1);
 		ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(id);
-		try {
-			alternosManager.procesar();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		alternosManager.procesar();
 	}
 }

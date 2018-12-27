@@ -19,6 +19,7 @@ import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.text.ParseException;
 
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.IndividuosPeriodoManager;
 import forex.genetic.proxy.ProcesosAlternosProxy;
@@ -57,7 +58,7 @@ public class ForexProcesarIndividuosPeriodo {
 		try {
 			ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(id);
 			alternosManager.procesar();
-		} catch (SQLException | GeneticDAOException e) {
+		} catch (GeneticBusinessException e) {
 			e.printStackTrace();
 		}
 		logTime("Init Proceso alternos", 1);

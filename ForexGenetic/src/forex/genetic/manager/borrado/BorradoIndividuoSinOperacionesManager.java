@@ -6,13 +6,13 @@
 package forex.genetic.manager.borrado;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.IndividuoSinOperacionesDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.DateUtil;
 
@@ -22,26 +22,29 @@ import forex.genetic.util.DateUtil;
  */
 public class BorradoIndividuoSinOperacionesManager extends BorradoManager {
 
-	public BorradoIndividuoSinOperacionesManager(Connection conn) throws ClassNotFoundException, SQLException {
+	public BorradoIndividuoSinOperacionesManager(Connection conn) {
 		super(conn, new IndividuoSinOperacionesDAO(conn), "SIN_OPERACIONES");
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuos(Individuo individuo) throws ClassNotFoundException, GeneticDAOException {
+	public List<Individuo> consultarIndividuos(Individuo individuo) throws GeneticBusinessException {
 		List<Individuo> individuos;
-		Date fechaLimite;
 		try {
-			fechaLimite = DateUtil.obtenerFecha("2014/01/01 00:00");
-		} catch (ParseException e) {
-			fechaLimite = new Date();
-			e.printStackTrace();
-		}
-		if (individuo == null) {
-			individuos = individuoDAO.consultarIndividuosParaBorrar(fechaLimite);
-		} else {
-			individuos = individuoDAO.consultarIndividuosParaBorrar(individuo.getId(), fechaLimite);
+			Date fechaLimite;
+			try {
+				fechaLimite = DateUtil.obtenerFecha("2014/01/01 00:00");
+			} catch (ParseException e) {
+				fechaLimite = new Date();
+				e.printStackTrace();
+			}
+			if (individuo == null) {
+				individuos = individuoDAO.consultarIndividuosParaBorrar(fechaLimite);
+			} else {
+				individuos = individuoDAO.consultarIndividuosParaBorrar(individuo.getId(), fechaLimite);
+			}
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		}
 		return individuos;
 	}
-
 }

@@ -16,6 +16,7 @@ import com.mongodb.client.result.DeleteResult;
 
 import forex.genetic.dao.ITendenciaDAO;
 import forex.genetic.entities.DateInterval;
+import forex.genetic.entities.Individuo;
 import forex.genetic.entities.ParametroTendenciaGenetica;
 import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
@@ -68,14 +69,9 @@ public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> implements ITe
 		MongoCursor<Document> cursor = this.collection.find(filtros).sort(sorts).iterator();
 		return getMapper().helpList(cursor);
 	}
-
+	
 	@Override
-	public int deleteTendencia(String idIndividuo) throws GeneticDAOException {
-		throw new UnsupportedOperationException("UnsupportedOperationException");
-	}
-
-	@Override
-	public void deleteTendencia(String idIndividuo, Date fechaBase) throws GeneticDAOException {
+	public void deleteByIndividuo(Individuo individuo, Date fechaBase) throws GeneticDAOException {
 		throw new UnsupportedOperationException("UnsupportedOperationException");
 	}
 

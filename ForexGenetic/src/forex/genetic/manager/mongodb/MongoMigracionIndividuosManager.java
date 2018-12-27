@@ -4,10 +4,10 @@
  */
 package forex.genetic.manager.mongodb;
 
-import static forex.genetic.util.LogUtil.logTime;
-
 import java.sql.SQLException;
 import java.util.List;
+
+import org.bson.Document;
 
 import forex.genetic.dao.helper.mongodb.MongoIndividuoMapper;
 import forex.genetic.dao.mongodb.MongoGeneticDAO;
@@ -31,7 +31,7 @@ public class MongoMigracionIndividuosManager extends MigracionManager<MongoIndiv
 	/**
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
-	 * @throws GeneticBusinessException 
+	 * @throws GeneticBusinessException
 	 * @throws GeneticDAOException
 	 *
 	 */
@@ -41,12 +41,34 @@ public class MongoMigracionIndividuosManager extends MigracionManager<MongoIndiv
 	}
 
 	public void migrate() throws GeneticBusinessException {
+//		corregirMigrados();
+		migrateRandom();
+	}
+
+	private void corregirMigrados() {
+		try {
+			List<MongoIndividuo> individuos = mongoDestinoDAO.findAll();
+			MongoIndividuoMapper mapper = ((MongoIndividuoMapper) mongoDestinoDAO.getMapper());
+			for (MongoIndividuo mongoIndividuo : individuos) {
+				if (mongoIndividuo.getProcesoEjecucion() == null) {
+					mongoDestinoDAO.insertOrUpdate(
+							mapper.helpOne(new Document(mapper.toMapIndividuoEstrategia(mongoIndividuo))));
+				}
+			}
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+
+	}
+
+	public void migrateRandom() throws GeneticBusinessException {
 		IndicadorController indicadorController = ControllerFactory
 				.createIndicadorController(ControllerFactory.ControllerType.Individuo);
 
 		List<Individuo> individuos;
 		try {
 			individuos = individuoDAO.consultarIndividuosRandom(10);
+//			individuos = Collections.singletonList(individuoDAO.consultarIndividuo("1394755200000.32"));
 		} catch (GeneticDAOException e1) {
 			throw new GeneticBusinessException(null, e1);
 		}
@@ -61,13 +83,15 @@ public class MongoMigracionIndividuosManager extends MigracionManager<MongoIndiv
 		try {
 			MongoIndividuoMapper mapper = ((MongoIndividuoMapper) mongoDestinoDAO.getMapper());
 			mongoDestinoDAO.insertMany(mapper.toMongoIndividuo(individuos));
+			// mongoDestinoDAO.insertOrUpdate(mapper.helpOne(new
+			// Document(mapper.toMapIndividuoEstrategia(individuos.get(0)))));
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
-		//logTime("Consultando fechas individuos", 1);
-		//MongoIndividuoManager indManager = new MongoIndividuoManager();
-		//List<Date> fechas = indManager.consultarPuntosApertura(individuos);
-		//fechas.toString();
+		// logTime("Consultando fechas individuos", 1);
+		// MongoIndividuoManager indManager = new MongoIndividuoManager();
+		// List<Date> fechas = indManager.consultarPuntosApertura(individuos);
+		// fechas.toString();
 	}
 
 	@Override

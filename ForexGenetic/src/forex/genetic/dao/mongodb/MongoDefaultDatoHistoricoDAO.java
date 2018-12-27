@@ -188,7 +188,7 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 	public <H extends Order> Point consultarPuntoCierreByTakeOrStop(H order, DateInterval rango)
 			throws GeneticDAOException {
 		List<Bson> filtros = new ArrayList<>();
-		filtros.add(Filters.gte("fechaHistorico", rango.getLowInterval()));
+		filtros.add(Filters.gt("fechaHistorico", rango.getLowInterval()));
 		filtros.add(Filters.lte("fechaHistorico", rango.getHighInterval()));
 
 		List<Bson> filtrosTakeStop = new ArrayList<>();

@@ -18,9 +18,9 @@ import static java.lang.System.setOut;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
 
 import forex.genetic.delegate.PoblacionDelegate;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.proxy.ProcesosAlternosProxy;
 
@@ -59,7 +59,7 @@ public class ForexInsertDatosHistoricos {
 		try {
 			ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(id);
 			alternosManager.procesar();
-		} catch (SQLException e) {
+		} catch (GeneticBusinessException e) {
 			e.printStackTrace();
 		}
 		logTime("End Proceso alternos", 1);

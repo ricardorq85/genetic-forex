@@ -1,5 +1,6 @@
 package forex.genetic.dao.mongodb;
 
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,7 @@ import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.util.DateUtil;
 
 /**
  *
@@ -83,4 +85,18 @@ public class MongoEstadisticasIndividuoDAO extends MongoGeneticDAO<MongoEstadist
 		return getMapper().helpList(cursor);
 	}
 
+	@Override
+	public List<MongoEstadistica> consultarByDuracionPromedio(int duracionPromedioMinutosMinimos, int cantidad) {
+		Date fechaMinima = null;
+		try {
+			fechaMinima = DateUtil.obtenerFecha("2014/01/01 00:00");
+		} catch (ParseException e) {
+			fechaMinima = new Date();
+		}
+		Bson filtros = Filters.and(Filters.lt("duracionPromedio", duracionPromedioMinutosMinimos),
+				Filters.gt("fechaInicial", fechaMinima), Filters.exists("fechaFinal"));
+		MongoCursor<Document> cursor = this.collection
+				.aggregate(Arrays.asList(Aggregates.match(filtros), Aggregates.sample(cantidad))).iterator();
+		return getMapper().helpList(cursor);
+	}
 }

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import forex.genetic.dao.IGeneticDAO;
+import forex.genetic.entities.Individuo;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.jdbc.JDBCUtil;
 
@@ -14,7 +15,12 @@ public abstract class OracleGeneticDAO<E> implements IGeneticDAO<E> {
 	public OracleGeneticDAO(Connection connection) {
 		this.connection = connection;
 	}
-	
+
+	@Override
+	public int deleteByIndividuo(Individuo individuo) throws GeneticDAOException {
+		throw new UnsupportedOperationException("UnsupportedOperationException");
+	}
+
 	public void insertIfNoExists(E obj) throws GeneticDAOException {
 		if (!exists(obj)) {
 			insert(obj);
@@ -28,15 +34,14 @@ public abstract class OracleGeneticDAO<E> implements IGeneticDAO<E> {
 			throw new GeneticDAOException("Error cerrando conexion", e);
 		}
 	}
-	
-    public void rollback() throws GeneticDAOException {
-        try {
+
+	public void rollback() throws GeneticDAOException {
+		try {
 			this.connection.rollback();
 		} catch (SQLException e) {
 			throw new GeneticDAOException("Error isClosed()", e);
 		}
-    }
-	
+	}
 
 	public boolean isClosed() throws GeneticDAOException {
 		try {

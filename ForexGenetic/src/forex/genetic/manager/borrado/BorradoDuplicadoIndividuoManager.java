@@ -5,11 +5,11 @@
 package forex.genetic.manager.borrado;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.LogUtil;
 
@@ -19,37 +19,37 @@ import forex.genetic.util.LogUtil;
  */
 public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 
-	public BorradoDuplicadoIndividuoManager(Connection conn) throws ClassNotFoundException, SQLException {
+	public BorradoDuplicadoIndividuoManager(Connection conn) {
 		super(conn, "DUPLICADO_INDIVIDUO");
 	}
-	
-	public BorradoDuplicadoIndividuoManager(Connection conn, OracleIndividuoDAO individuoDAO, String tipoProceso)
-			throws ClassNotFoundException, SQLException {
+
+	public BorradoDuplicadoIndividuoManager(Connection conn, OracleIndividuoDAO individuoDAO, String tipoProceso) {
 		super(conn, individuoDAO, tipoProceso);
 	}
 
 	@Override
-	public void borrarIndividuos() throws ClassNotFoundException, GeneticDAOException {
+	public void borrarIndividuos() throws GeneticBusinessException {
 		borrarDuplicados();
 	}
 
 	@Override
-	protected List<Individuo> consultarIndividuos(Individuo individuo) throws ClassNotFoundException {
+	protected List<Individuo> consultarIndividuos(Individuo individuo) {
 		return null;
 	}
 
 	@Override
-	public void validarYBorrarIndividuo(Individuo individuo) throws ClassNotFoundException, GeneticDAOException {
+	public void validarYBorrarIndividuo(Individuo individuo) throws GeneticBusinessException {
 		borrarDuplicados(individuo);
 	}
 
 	/**
 	 *
 	 * @param tipoProceso
+	 * @throws GeneticBusinessException
 	 * @throws ClassNotFoundException
-	 * @throws GeneticDAOException 
+	 * @throws GeneticDAOException
 	 */
-	protected void borrarDuplicados() throws ClassNotFoundException, GeneticDAOException {
+	protected void borrarDuplicados() throws GeneticBusinessException {
 		try {
 			int count = 0;
 			List<Individuo> individuosRepetidos = individuoDAO.consultarIndividuosRepetidos();
@@ -59,28 +59,36 @@ public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 				individuosRepetidos = individuoDAO.consultarIndividuosRepetidos();
 			}
 			LogUtil.logTime("Individuos borrados: " + count, 1);
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		} finally {
 		}
 	}
 
-	protected void deleteRepetidos(List<Individuo> individuosRepetidos) throws GeneticDAOException {
+	protected void deleteRepetidos(List<Individuo> individuosRepetidos) throws GeneticBusinessException {
 		if (individuosRepetidos.size() > 0) {
 			LogUtil.logTime("Individuos repetidos consultados: " + individuosRepetidos.size(), 1);
 		}
 		super.smartDelete(individuosRepetidos);
-		this.individuoDAO.commit();
+		try {
+			this.individuoDAO.commit();
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
+		}
 	}
 
-	protected void borrarDuplicados(Individuo individuo) throws ClassNotFoundException, GeneticDAOException {
+	protected void borrarDuplicados(Individuo individuo) throws GeneticBusinessException {
+		int count = 0;
+		List<Individuo> individuosRepetidos;
 		try {
-			int count = 0;
-			List<Individuo> individuosRepetidos = individuoDAO.consultarIndividuoHijoRepetido(individuo);
+			individuosRepetidos = individuoDAO.consultarIndividuoHijoRepetido(individuo);
 			deleteRepetidos(individuosRepetidos);
 			count += individuosRepetidos.size();
 			if (count > 0) {
 				LogUtil.logTime("Individuos borrados: " + count, 1);
 			}
-		} finally {
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		}
 	}
 

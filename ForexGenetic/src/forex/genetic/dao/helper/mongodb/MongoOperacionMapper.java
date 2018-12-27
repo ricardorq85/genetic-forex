@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.bson.Document;
 
+import forex.genetic.entities.Individuo;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.util.Constants;
 
@@ -51,7 +52,7 @@ public class MongoOperacionMapper extends MongoMapper<MongoOrder> {
 	public Map<String, Object> toMapForDelete(MongoOrder obj, Date fechaReferencia) {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
-
+	
 	@Override
 	public MongoOrder helpOne(Document one) {
 		MongoOrder order = new MongoOrder();

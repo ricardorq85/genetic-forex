@@ -2,12 +2,15 @@ package forex.genetic.dao.helper.mongodb;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.bson.Document;
 
 import com.mongodb.client.MongoCursor;
+
+import forex.genetic.entities.Individuo;
 
 public abstract class MongoMapper<T> {
 
@@ -18,6 +21,12 @@ public abstract class MongoMapper<T> {
 	public abstract Map<String, Object> toMapForDelete(T obj, Date fechaReferencia);
 
 	public abstract T helpOne(Document one);
+
+	public Map<String, Object> toMapForDeleteByIndividuo(Individuo obj) {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		objectMap.put("idIndividuo", obj.getId());
+		return objectMap;
+	}
 
 	public List<T> helpList(MongoCursor<Document> cursor) {
 		List<T> list = new ArrayList<T>();

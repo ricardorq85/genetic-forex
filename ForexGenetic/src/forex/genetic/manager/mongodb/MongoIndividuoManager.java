@@ -1,46 +1,51 @@
 package forex.genetic.manager.mongodb;
 
-import java.text.ParseException;
-import java.util.ArrayList;
+import static forex.genetic.util.LogUtil.logTime;
+
+import java.util.Arrays;
 import java.util.List;
 
-import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
-import forex.genetic.dao.mongodb.MongoIndividuoDAO;
-import forex.genetic.entities.DateInterval;
-import forex.genetic.entities.IndividuoEstrategia;
-import forex.genetic.entities.Point;
+import forex.genetic.entities.Individuo;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
-import forex.genetic.util.DateUtil;
+import forex.genetic.factory.DriverDBFactory;
+import forex.genetic.manager.GeneticManager;
+import forex.genetic.util.jdbc.mongodb.MongoDataClient;
 
-public class MongoIndividuoManager {
+public class MongoIndividuoManager extends GeneticManager {
 
-	private MongoIndividuoDAO dao;
-	private MongoDatoHistoricoDAO dhDAO;
+	private MongoDataClient dataClient;
 
 	public MongoIndividuoManager() throws GeneticBusinessException {
 		try {
-			dao = new MongoIndividuoDAO();
-			dhDAO = new MongoDatoHistoricoDAO(true);
+			dataClient = (MongoDataClient) DriverDBFactory.createDataClient("mongodb");
 		} catch (GeneticDAOException e) {
-			throw new GeneticBusinessException("", e);
+			throw new GeneticBusinessException("MongoIndividuoManager:constructor", e);
 		}
 	}
 
-	public List<? extends Point> consultarPuntosApertura(List<? extends IndividuoEstrategia> individuos) {
-		final DateInterval rango = new DateInterval();
-		List<Point> puntosTotales = new ArrayList<Point>();
-		try {
-			rango.setLowInterval(DateUtil.obtenerFecha("2009/01/01 00:00"));
-			rango.setHighInterval(DateUtil.obtenerFecha("2009/06/01 00:00"));
+	public void delete(Individuo individuo) throws GeneticBusinessException {
+		this.delete(Arrays.asList(individuo));
+	}
 
-			IndividuoEstrategia ind = dao.consultarById("1394755200000.14");
-			return dhDAO.consultarProximosPuntosApertura(ind, rango);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void delete(List<Individuo> individuos) throws GeneticBusinessException {
+		try {
+			for (Individuo individuo : individuos) {
+				int r_operaciones = dataClient.getDaoOperaciones().deleteByIndividuo(individuo);
+				logTime("Individuo: " + individuo.getId() + ". Borrados OPERACIONES = " + r_operaciones, 1);
+				int r_estadisticas = dataClient.getDaoEstadistica().deleteByIndividuo(individuo);
+				logTime("Individuo: " + individuo.getId() + ". Borrados ESTADISTICAS = " + r_estadisticas, 1);
+				int r_tendencia = dataClient.getDaoTendencia().deleteByIndividuo(individuo);
+				logTime("Individuo: " + individuo.getId() + ". Borrados TENDENCIA = " + r_tendencia, 1);
+				
+				//TODO RROJASQ Insertar en individuoBorrado
+				//individuoDAO.smartDelete(individuo.getId(), tipoProceso, individuo.getIdParent1());
+				int r_individuo = dataClient.getDaoIndividuo().deleteByIndividuo(individuo);
+				logTime("Individuo: " + individuo.getId() + ". Borrados INDIVIDUO = " + r_individuo, 1);
+			}
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException("smartDelete", e);
 		}
-		return puntosTotales;
 	}
 
 }

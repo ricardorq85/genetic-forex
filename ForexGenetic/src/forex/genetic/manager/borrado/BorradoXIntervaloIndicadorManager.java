@@ -6,10 +6,10 @@
 package forex.genetic.manager.borrado;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 
 /**
@@ -18,17 +18,21 @@ import forex.genetic.exception.GeneticDAOException;
  */
 public class BorradoXIntervaloIndicadorManager extends BorradoManager {
 
-	public BorradoXIntervaloIndicadorManager(Connection conn) throws ClassNotFoundException, SQLException {
+	public BorradoXIntervaloIndicadorManager(Connection conn) {
 		super(conn, "INTERVALO_INDICADOR");
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuos(Individuo individuo) throws ClassNotFoundException, GeneticDAOException {
+	public List<Individuo> consultarIndividuos(Individuo individuo) throws GeneticBusinessException {
 		List<Individuo> individuos;
-		if (individuo == null) {
-			individuos = individuoDAO.consultarIndividuosIntervaloIndicadores();
-		} else {
-			individuos = individuoDAO.consultarIndividuosIntervaloIndicadores(individuo.getId());
+		try {
+			if (individuo == null) {
+				individuos = individuoDAO.consultarIndividuosIntervaloIndicadores();
+			} else {
+				individuos = individuoDAO.consultarIndividuosIntervaloIndicadores(individuo.getId());
+			}
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		}
 		return individuos;
 	}

@@ -136,18 +136,6 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 		}
 	}
 
-//	private void refrescarDatosTendencia() throws SQLException {
-//		String mv = "TENDENCIA_ULTIMOMES";
-//		LogUtil.logTime("Refrescando vista materializada: " + mv, 1);
-//		JDBCUtil.refreshMaterializedView(this.connection, mv, "C");
-//	}
-//
-//	private boolean existenNuevosDatosHistoricos() throws IOException {
-//		Path path = FileSystems.getDefault().getPath(sourceExportedHistoryDataPath);
-//		long countFile = Files.list(path).count();
-//		return (countFile > 0);
-//	}
-//
 	protected void crearNuevosIndividuos() throws GeneticBusinessException {
 		LogUtil.logTime("Init Crear individuos x indicador", 1);
 		IndividuoXIndicadorManager manager = new MongoIndividuoXIndicadorManager(dataClients.get(0),
@@ -155,32 +143,4 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 		manager.crearIndividuos();
 		LogUtil.logTime("End Crear individuos x indicador", 1);
 	}
-
-//	class ExportThread extends Thread {
-//		Path path;
-//		ProcesarTendenciasBuySellManager manager;
-//
-//		ExportThread(Path path, ProcesarTendenciasBuySellManager manager) {
-//			this.path = path;
-//			this.manager = manager;
-//		}
-//
-//		public void run() {
-//			try {
-//				runExport();
-//			} catch (IOException | ClassNotFoundException | NoSuchMethodException | InstantiationException
-//					| IllegalAccessException | InvocationTargetException | SQLException | ParseException
-//					| GeneticException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//
-//		public void runExport()
-//				throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
-//				InvocationTargetException, SQLException, ParseException, GeneticException, IOException {
-//			manager.procesarTendencias();
-//			manager.export(path);
-//		}
-//	}
-//
 }

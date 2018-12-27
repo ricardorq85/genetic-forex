@@ -12,28 +12,32 @@ import forex.genetic.manager.controller.IndicadorController;
  */
 public abstract class GeneticManager {
 
-    /**
-     *
-     */
-    protected boolean endProcess = false;
+	/**
+	 *
+	 */
+	protected boolean endProcess = false;
 
-    /**
-     *
-     */
-    protected final IndicadorController indicadorController;
+	/**
+	 *
+	 */
+	protected final IndicadorController indicadorController;
 
-    /**
-     *
-     * @param indicadorController
-     */
-    public GeneticManager(IndicadorController indicadorController) {
-        this.indicadorController = indicadorController;
-    }
+	public GeneticManager() {
+		indicadorController = null;
+	}
 
-    /**
-     *
-     */
-    public synchronized void endProcess() {
-        this.endProcess = true;
-    }
+	/**
+	 *
+	 * @param indicadorController
+	 */
+	public GeneticManager(IndicadorController indicadorController) {
+		this.indicadorController = indicadorController;
+	}
+
+	/**
+	 *
+	 */
+	public synchronized void endProcess() {
+		this.endProcess = true;
+	}
 }

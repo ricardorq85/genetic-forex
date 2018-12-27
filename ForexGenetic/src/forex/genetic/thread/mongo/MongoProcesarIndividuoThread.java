@@ -4,8 +4,6 @@ close * To change this template, choose Tools | Templates
  */
 package forex.genetic.thread.mongo;
 
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +12,7 @@ import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.dao.mongodb.MongoIndividuoDAO;
 import forex.genetic.dao.mongodb.MongoOperacionesDAO;
 import forex.genetic.entities.DateInterval;
-import forex.genetic.entities.Individuo;
+import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
 import forex.genetic.entities.dto.ProcesoEjecucionDTO;
@@ -62,9 +60,6 @@ public class MongoProcesarIndividuoThread extends Thread {
 			daoOperaciones = (MongoOperacionesDAO) dataClient.getDaoOperaciones();
 			daoIndividuo = (MongoIndividuoDAO) dataClient.getDaoIndividuo();
 			for (MongoIndividuo individuo : individuos) {
-				// TODO RROJASQ Quitar estas 2 lineas, solo para pruebas
-				// individuo.getProcesoEjecucion().setMaxFechaHistorico(getMinFechaHistorico());
-				// individuo.setCurrentOrder(null);
 				runIndividuo(individuo);
 			}
 		} catch (ClassNotFoundException ex) {
@@ -77,8 +72,6 @@ public class MongoProcesarIndividuoThread extends Thread {
 	protected void runIndividuo(MongoIndividuo individuo) throws ClassNotFoundException, GeneticDAOException {
 		if (!validarYBorrarIndividuoInvalido(individuo)) {
 			runIndividuoByYear(individuo);
-
-			validarYBorrarIndividuoInvalido(individuo);
 		}
 	}
 
@@ -108,14 +101,15 @@ public class MongoProcesarIndividuoThread extends Thread {
 		}
 
 		boolean processed = true;
+		boolean deleted = false;
 		MongoEstadisticasManager estadisticasManager = new MongoEstadisticasManager(individuo);
-		while (processed && this.maxFechaHistorico.before(interval.getHighInterval())) {
+		while (!deleted && processed && this.maxFechaHistorico.after(interval.getHighInterval())) {
 			LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + interval.toString(), 1);
 
-			LogUtil.logTime("Consultando puntos de apertura", 1);
+			LogUtil.logTime("Consultando puntos de apertura:" + individuo.getId(), 1);
 			List<Point> puntosApertura = daoDatoHistorico.consultarProximosPuntosApertura(individuo, interval);
 
-			LogUtil.logTime("Consultando puntos de cierre", 1);
+			LogUtil.logTime("Consultando puntos de cierre:" + individuo.getId(), 1);
 			List<Point> puntosCierre = daoDatoHistorico.consultarPuntosCierre(individuo, interval);
 
 			Date lastProcessedDate = null;
@@ -136,6 +130,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 			if (processed) {
 				interval = findNextInterval(DateUtil.adicionarMinutos(lastProcessedDate, 1), maxMonths);
 			}
+			deleted = validarYBorrarIndividuoInvalido(individuo);
 		}
 	}
 
@@ -183,17 +178,11 @@ public class MongoProcesarIndividuoThread extends Thread {
 		}
 	}
 
-	private boolean validarYBorrarIndividuoInvalido(Individuo individuo) throws GeneticDAOException {
+	private boolean validarYBorrarIndividuoInvalido(MongoIndividuo individuo) throws GeneticDAOException {
 		boolean borrado = false;
-
-		try {
-			MongoProcesosAlternosProxy alternosManager;
-			alternosManager = new MongoProcesosAlternosProxy(1, dataClient);
-			alternosManager.procesar(individuo);
-		} catch (ClassNotFoundException | SQLException | FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		Individuo indBorrado = dataClient.getDaoIndividuo().consultarIndividuo(individuo.getId());
+		MongoProcesosAlternosProxy alternosManager = new MongoProcesosAlternosProxy(1, dataClient);
+		alternosManager.procesar(individuo);
+		IndividuoEstrategia indBorrado = dataClient.getDaoIndividuo().consultarById(individuo.getId());
 		borrado = (indBorrado == null);
 		return borrado;
 	}
@@ -277,7 +266,8 @@ public class MongoProcesarIndividuoThread extends Thread {
 			LogUtil.logTime("antes de puntoCierreByIndicadores", 3);
 			Point puntoCierreByIndicadores = null;
 			for (Point point : puntosCierre) {
-				if (point.getDate().after(intervaloCierre.getLowInterval())) {
+				if (point.getDate().after(individuo.getCurrentOrder().getOpenDate())
+						&& point.getDate().after(intervaloCierre.getLowInterval())) {
 					puntoCierreByIndicadores = point;
 				}
 			}

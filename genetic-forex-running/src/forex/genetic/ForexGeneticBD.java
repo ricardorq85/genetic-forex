@@ -16,10 +16,9 @@ import static java.lang.System.setOut;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
 
 import forex.genetic.delegate.GeneticDelegateBD;
-import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.proxy.ProcesosAlternosProxy;
 
 /**
@@ -51,10 +50,7 @@ public class ForexGeneticBD {
 		try {
 			ProcesosAlternosProxy alternosManager = new ProcesosAlternosProxy(id);
 			alternosManager.procesar();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (GeneticDAOException e) {
-			// TODO Auto-generated catch block
+		} catch (GeneticBusinessException e) {
 			e.printStackTrace();
 		}
 		delegate.getFileOutManager().close();

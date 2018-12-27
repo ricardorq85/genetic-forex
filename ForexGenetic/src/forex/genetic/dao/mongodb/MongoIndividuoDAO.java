@@ -24,7 +24,7 @@ import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.ControllerFactory;
 import forex.genetic.manager.controller.IndicadorController;
-import forex.genetic.manager.indicator.IndicadorManager;
+import forex.genetic.util.RandomUtil;
 
 public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implements IIndividuoDAO<MongoIndividuo> {
 
@@ -60,23 +60,37 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		return;
 	}
 
+	private void addRandomSort(List<Bson> sorts, String field) {
+		if (RandomUtil.nextBoolean()) {
+			if (RandomUtil.nextBoolean()) {
+				sorts.add(Sorts.ascending(field));
+			} else {
+				sorts.add(Sorts.descending(field));
+			}
+		}
+	}
+
 	@Override
 	public List<? extends IndividuoEstrategia> getListByProcesoEjecucion(String filtroAdicional, Date fechaHistorico) {
+		int cantidad = 100;
 		Bson filtroProcesoEjecucionNull = Filters.exists("procesoEjecucion.maxFechaHistorico", false);
 		Bson filtroFechaHistorica = Filters.ne("procesoEjecucion.maxFechaHistorico", fechaHistorico);
 		Bson filtroOr = Filters.or(filtroProcesoEjecucionNull, filtroFechaHistorica);
-		Bson ordenador = Sorts.orderBy(Sorts.ascending("procesoEjecucion.maxFechaHistorico"),
-				Sorts.descending("idIndividuo"));
+		List<Bson> sorts = new ArrayList<>();
+		sorts.add(Sorts.ascending("procesoEjecucion.maxFechaHistorico"));
+		this.addRandomSort(sorts, "takeProfit");
+		this.addRandomSort(sorts, "stopLoss");
+		this.addRandomSort(sorts, "creationDate");
 
-		// Bson filtroIndividuo = Filters.and(Filters.regex("idIndividuo",
-		// "1394755200000.32"));// ,
+		Bson ordenador = Sorts.orderBy(sorts);
+//		Bson filtroIndividuo = Filters.and(Filters.regex("idIndividuo", "1394841600000.11"));// ,
 		// Filters.eq("tipoIndividuo",
 		// Constants.IndividuoType.INDICADOR_GANADOR.name()));
 //		Bson filtroIndividuo = Filters.regex("idIndividuo", "1544908361588.*");
 //		Bson filtroCompleto = Filters.and(filtroIndividuo, filtroOr);
 
 		Bson filtroCompleto = Filters.and(filtroOr);
-		MongoCursor<Document> cursor = collection.find(filtroCompleto).sort(ordenador).limit(10).iterator();
+		MongoCursor<Document> cursor = collection.find(filtroCompleto).sort(ordenador).limit(cantidad).iterator();
 		return getMapper().helpList(cursor);
 	}
 

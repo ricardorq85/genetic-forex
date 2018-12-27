@@ -168,19 +168,19 @@ public class OracleOperacionesDAO extends OracleGeneticDAO<Order> implements IOp
 	public List<Individuo> consultarIndividuoOperacionActiva(Date fechaBase, int filas) throws GeneticDAOException {
 		return this.consultarIndividuoOperacionActiva(fechaBase, null, filas);
 	}
-	
+
 	/**
 	 *
 	 * @param idIndividuo
 	 * @return
 	 * @throws GeneticDAOException
 	 */
-	public int deleteOperaciones(String idIndividuo) throws GeneticDAOException {
+	public int deleteByIndividuo(Individuo individuo) throws GeneticDAOException {
 		String sql = "DELETE FROM OPERACION WHERE ID_INDIVIDUO=?";
 		PreparedStatement stmtConsulta = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setString(1, idIndividuo);
+			stmtConsulta.setString(1, individuo.getId());
 			return stmtConsulta.executeUpdate();
 		} catch (SQLException e) {
 			throw new GeneticDAOException("Error OracleOperacionesDAO", e);

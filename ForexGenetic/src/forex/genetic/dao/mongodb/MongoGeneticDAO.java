@@ -6,6 +6,7 @@ import java.util.List;
 import org.bson.Document;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.InsertManyOptions;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
@@ -13,7 +14,7 @@ import com.mongodb.client.result.DeleteResult;
 import forex.genetic.dao.IGeneticDAO;
 import forex.genetic.dao.helper.mongodb.MongoMapper;
 import forex.genetic.dao.helper.mongodb.MongoMapperFactory;
-import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.entities.Individuo;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.mongodb.ConnectionMongoDB;
 
@@ -33,12 +34,18 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 		this.setCollectionName(name);
 		this.collection = ConnectionMongoDB.getDatabase().getCollection(name);
 		if (configure) {
-			LogUtil.logTime(new StringBuilder("Configurando collection: ").append(name).toString(), 1);
+			LogUtil.logTime(new StringBuilder("Configurando collection: ").append(name).toString(), 3);
 			this.configureCollection();
 		}
 	}
 
 	public abstract void configureCollection();
+
+	public List<E> findAll() {
+		MongoCursor<Document> cursor = this.collection.find().iterator();
+		List<E> list = getMapper().helpList(cursor);
+		return list;
+	}
 
 	public void insertMany(List<E> datos) {
 		List<Document> docs = getMapper().toMap(datos);
@@ -121,6 +128,12 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 
 	@Override
 	public void rollback() {
+	}
+
+	public int deleteByIndividuo(Individuo individuo) {
+		Document doc = new Document(getMapper().toMapForDeleteByIndividuo(individuo));
+		DeleteResult result = this.collection.deleteMany(doc);
+		return new Long(result.getDeletedCount()).intValue();
 	}
 
 	public MongoMapper<E> getMapper() {

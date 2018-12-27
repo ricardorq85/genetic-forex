@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.LogUtil;
 
@@ -18,17 +19,18 @@ import forex.genetic.util.LogUtil;
  */
 public class BorradoDuplicadoOperacionesManager extends BorradoDuplicadoIndividuoManager {
 
-	public BorradoDuplicadoOperacionesManager(Connection conn) throws ClassNotFoundException, SQLException {
+	public BorradoDuplicadoOperacionesManager(Connection conn) {
 		super(conn, null, "DUPLICADO_OPERACIONES");
 	}
 
 	/**
 	 *
 	 * @param tipoProceso
+	 * @throws GeneticBusinessException 
 	 * @throws ClassNotFoundException
 	 * @throws GeneticDAOException 
 	 */
-	protected void borrarDuplicados() throws ClassNotFoundException, GeneticDAOException {
+	protected void borrarDuplicados() throws GeneticBusinessException {
 		try {
 			List<Individuo> individuosPadres = individuoDAO.consultarIndividuosPadreRepetidos(tipoProceso);
 			LogUtil.logTime("Individuos padres consultados: " + individuosPadres.size(), 1);
@@ -48,19 +50,21 @@ public class BorradoDuplicadoOperacionesManager extends BorradoDuplicadoIndividu
 				}
 				individuosPadres = individuoDAO.consultarIndividuosPadreRepetidos(tipoProceso);
 			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
+		} catch (SQLException | GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		} finally {
 		}
 	}	
 
-	protected void borrarDuplicados(Individuo individuo) throws ClassNotFoundException, GeneticDAOException {
+	protected void borrarDuplicados(Individuo individuo) throws GeneticBusinessException {
 		try {
 			int count = 0;
 			List<Individuo> individuosRepetidos = individuoDAO.consultarIndividuoHijoRepetidoOperaciones(individuo);
 			deleteRepetidos(individuosRepetidos);
 			count += individuosRepetidos.size();
 			LogUtil.logTime("Individuos borrados: " + count, 1);
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		} finally {
 		}
 	}

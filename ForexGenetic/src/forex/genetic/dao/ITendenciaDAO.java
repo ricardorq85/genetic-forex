@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import forex.genetic.entities.DateInterval;
+import forex.genetic.entities.Individuo;
 import forex.genetic.entities.ParametroTendenciaGenetica;
 import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
@@ -20,9 +21,7 @@ import forex.genetic.exception.GeneticDAOException;
  */
 public interface ITendenciaDAO extends IGeneticDAO<Tendencia> {
 
-	public int deleteTendencia(String idIndividuo) throws GeneticDAOException;
-
-	public void deleteTendencia(String idIndividuo, Date fechaBase) throws GeneticDAOException;
+	public void deleteByIndividuo(Individuo individuo, Date fechaBase) throws GeneticDAOException;
 
 	public int deleteTendenciaMenorQue(Date fechaBase) throws GeneticDAOException;
 

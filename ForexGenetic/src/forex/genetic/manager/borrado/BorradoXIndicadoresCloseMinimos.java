@@ -6,11 +6,11 @@
 package forex.genetic.manager.borrado;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 
 /**
@@ -19,18 +19,22 @@ import forex.genetic.exception.GeneticDAOException;
  */
 public class BorradoXIndicadoresCloseMinimos extends BorradoManager {
 
-	public BorradoXIndicadoresCloseMinimos(Connection conn) throws ClassNotFoundException, SQLException {
+	public BorradoXIndicadoresCloseMinimos(Connection conn) {
 		super(conn, "IND_CLOSE_MINIMO");
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuos(Individuo individuo) throws GeneticDAOException {
+	public List<Individuo> consultarIndividuos(Individuo individuo) throws GeneticBusinessException {
 		List<Individuo> individuos;
-		OracleIndividuoDAO individuoDAO = new OracleIndividuoDAO(conn);
-		if (individuo == null) {
-			individuos = individuoDAO.consultarIndividuosIndicadoresCloseMinimos(2);
-		} else {
-			individuos = individuoDAO.consultarIndividuosIndicadoresCloseMinimos(2, individuo.getId());
+		try {
+			OracleIndividuoDAO individuoDAO = new OracleIndividuoDAO(conn);
+			if (individuo == null) {
+				individuos = individuoDAO.consultarIndividuosIndicadoresCloseMinimos(2);
+			} else {
+				individuos = individuoDAO.consultarIndividuosIndicadoresCloseMinimos(2, individuo.getId());
+			}
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		}
 		return individuos;
 	}

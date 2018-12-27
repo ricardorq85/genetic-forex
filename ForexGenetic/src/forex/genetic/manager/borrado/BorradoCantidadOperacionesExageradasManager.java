@@ -6,10 +6,10 @@
 package forex.genetic.manager.borrado;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 
 /**
@@ -18,18 +18,22 @@ import forex.genetic.exception.GeneticDAOException;
  */
 public class BorradoCantidadOperacionesExageradasManager extends BorradoManager {
 
-	public BorradoCantidadOperacionesExageradasManager(Connection conn) throws ClassNotFoundException, SQLException {
+	public BorradoCantidadOperacionesExageradasManager(Connection conn) {
 		super(conn, "CANTIDAD_LIMITE");
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuos(Individuo individuo) throws ClassNotFoundException, GeneticDAOException {
+	public List<Individuo> consultarIndividuos(Individuo individuo) throws GeneticBusinessException {
 		List<Individuo> individuos;
-		double cantidadLimite = 0.010;
-		if (individuo == null) {
-			individuos = individuoDAO.consultarIndividuosCantidadLimite(cantidadLimite);
-		} else {
-			individuos = individuoDAO.consultarIndividuosCantidadLimite(cantidadLimite, individuo.getId());
+		try {
+			double cantidadLimite = 0.010;
+			if (individuo == null) {
+				individuos = individuoDAO.consultarIndividuosCantidadLimite(cantidadLimite);
+			} else {
+				individuos = individuoDAO.consultarIndividuosCantidadLimite(cantidadLimite, individuo.getId());
+			}
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		}
 		return individuos;
 	}

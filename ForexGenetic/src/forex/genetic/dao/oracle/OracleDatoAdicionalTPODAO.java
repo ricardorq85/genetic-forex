@@ -14,6 +14,7 @@ import java.util.Date;
 import forex.genetic.dao.IDatoAdicionalTPODAO;
 import forex.genetic.entities.DatoAdicionalTPO;
 import forex.genetic.entities.Extremos;
+import forex.genetic.entities.Individuo;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.jdbc.JDBCUtil;
 

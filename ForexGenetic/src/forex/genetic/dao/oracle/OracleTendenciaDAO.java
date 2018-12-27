@@ -15,6 +15,7 @@ import java.util.List;
 import forex.genetic.dao.ITendenciaDAO;
 import forex.genetic.dao.helper.TendenciaHelper;
 import forex.genetic.entities.DateInterval;
+import forex.genetic.entities.Individuo;
 import forex.genetic.entities.ParametroTendenciaGenetica;
 import forex.genetic.entities.ProcesoTendencia;
 import forex.genetic.entities.ProcesoTendenciaBuySell;
@@ -150,12 +151,12 @@ public class OracleTendenciaDAO extends OracleGeneticDAO<Tendencia> implements I
 	 * @return
 	 * @throws GeneticDAOException
 	 */
-	public int deleteTendencia(String idIndividuo) throws GeneticDAOException {
+	public int deleteByIndividuo(Individuo individuo) throws GeneticDAOException {
 		String sql = "DELETE FROM " + tabla + " WHERE ID_INDIVIDUO=?";
 		PreparedStatement stmtConsulta = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setString(1, idIndividuo);
+			stmtConsulta.setString(1, individuo.getId());
 			return stmtConsulta.executeUpdate();
 		} catch (SQLException e) {
 			throw new GeneticDAOException("Error Tendencia DAO", e);
@@ -170,12 +171,12 @@ public class OracleTendenciaDAO extends OracleGeneticDAO<Tendencia> implements I
 	 * @param fechaBase
 	 * @throws GeneticDAOException
 	 */
-	public void deleteTendencia(String idIndividuo, Date fechaBase) throws GeneticDAOException {
+	public void deleteByIndividuo(Individuo individuo, Date fechaBase) throws GeneticDAOException {
 		String sql = "DELETE FROM " + tabla + " WHERE ID_INDIVIDUO=? AND FECHA_BASE=?";
 		PreparedStatement stmtConsulta = null;
 		try {
 			stmtConsulta = this.connection.prepareStatement(sql);
-			stmtConsulta.setString(1, idIndividuo);
+			stmtConsulta.setString(1, individuo.getId());
 			stmtConsulta.setTimestamp(2, new Timestamp(fechaBase.getTime()));
 			stmtConsulta.executeUpdate();
 		} catch (SQLException e) {

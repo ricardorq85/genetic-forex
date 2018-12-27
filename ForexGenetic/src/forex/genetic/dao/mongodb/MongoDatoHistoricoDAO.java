@@ -42,7 +42,7 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 		int year = 2008;
 		int currYear = DateUtil.obtenerAnyo(new Date());
 		while (year <= currYear) {
-			LogUtil.logTime(new StringBuilder("Configurando collection: ").append(getCollectionName()).toString(), 1);
+			LogUtil.logTime(new StringBuilder("Configurando collection: ").append(getCollectionName()).toString(), 3);
 			setCollection(year, false);
 			configureCollection();
 			year++;

@@ -141,7 +141,8 @@ public class OracleTendenciasManager {
 
 	private void calcularTendenciasFacade(Date fechaInicio, Date fechaFin, int stepTendencia, int filasTendencia)
 			throws ClassNotFoundException, SQLException, GeneticException {
-		OperacionesManager operacionManager = new OracleOperacionesManager(DriverDBFactory.createOracleDataClient(conn));
+		OperacionesManager operacionManager = new OracleOperacionesManager(
+				DriverDBFactory.createOracleDataClient(conn));
 		OracleOperacionesDAO operacionesDAO = new OracleOperacionesDAO(conn);
 		OracleDatoHistoricoDAO datoHistoricoDAO = new OracleDatoHistoricoDAO(conn);
 		OracleParametroDAO parametroDAO = new OracleParametroDAO(conn);
@@ -277,7 +278,7 @@ public class OracleTendenciasManager {
 						}
 						conn.commit();
 					} else {
-						tendenciaDAO.deleteTendencia(individuo.getId(), fechaProceso);
+						tendenciaDAO.deleteByIndividuo(individuo, fechaProceso);
 						conn.commit();
 					}
 				}
@@ -502,7 +503,8 @@ public class OracleTendenciasManager {
 
 	private void calcularProbabilidadExterna(Individuo individuo, CalculoTendencia calculoTendencia,
 			double pipsCalculados, double duracionCalculada, Estadistica estadistica, Estadistica estadisticaActual,
-			int tipoCalculo, double pipsActuales, DiferenciaMaximaHistorico diferenciaMaximaHistorico) throws GeneticDAOException {
+			int tipoCalculo, double pipsActuales, DiferenciaMaximaHistorico diferenciaMaximaHistorico)
+			throws GeneticDAOException {
 		// TENER EN CUENTA: NUMERO DE INDICADORES, PIPS PROMEDIO EN OPERACIONES,
 		// MUY AL PRINCIPIO ES ADIVINAR, SI LLEVA MUCHOS PIPS YA TAMPOCO ES BUEN
 		// PUNTO PARA OPERAR

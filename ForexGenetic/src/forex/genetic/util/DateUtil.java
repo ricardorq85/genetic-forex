@@ -315,4 +315,8 @@ public class DateUtil {
 		return new Date(time);
 	}
 
+	public static long diffMonths(Date dMayor, Date dMenor) {
+		return (diferenciaMinutos(dMenor, dMayor) / 60 / 24 / 30);
+	}
+
 }

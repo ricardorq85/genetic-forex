@@ -6,10 +6,10 @@
 package forex.genetic.manager.borrado;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 import forex.genetic.entities.Individuo;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 
 /**
@@ -18,17 +18,21 @@ import forex.genetic.exception.GeneticDAOException;
  */
 public class BorradoInconsistentesStopLossManager extends BorradoManager {
 
-	public BorradoInconsistentesStopLossManager(Connection conn) throws ClassNotFoundException, SQLException {
+	public BorradoInconsistentesStopLossManager(Connection conn) {
 		super(conn, "STOP_LOSS_MINIMO");
 	}
 
 	@Override
-	public List<Individuo> consultarIndividuos(Individuo individuo) throws ClassNotFoundException, GeneticDAOException {
+	public List<Individuo> consultarIndividuos(Individuo individuo) throws GeneticBusinessException {
 		List<Individuo> individuos;
-		if (individuo == null) {
-			individuos = individuoDAO.consultarIndividuosStopLossInconsistente(200);
-		} else {
-			individuos = individuoDAO.consultarIndividuosStopLossInconsistente(200, individuo.getId());
+		try {
+			if (individuo == null) {
+				individuos = individuoDAO.consultarIndividuosStopLossInconsistente(200);
+			} else {
+				individuos = individuoDAO.consultarIndividuosStopLossInconsistente(200, individuo.getId());
+			}
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		}
 		return individuos;
 	}

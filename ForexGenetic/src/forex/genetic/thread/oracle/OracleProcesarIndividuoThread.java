@@ -4,7 +4,6 @@ close * To change this template, choose Tools | Templates
  */
 package forex.genetic.thread.oracle;
 
-import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -20,6 +19,7 @@ import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.Order;
 import forex.genetic.entities.Point;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.manager.OperacionesManager;
@@ -123,8 +123,8 @@ public class OracleProcesarIndividuoThread extends Thread {
 			alternosManager.procesar(individuo);
 			Individuo indBorrado = daoIndividuo.consultarIndividuo(individuo.getId());
 			borrado = (indBorrado == null);
-		} catch (SQLException | ClassNotFoundException | FileNotFoundException e) {
-			e.printStackTrace();
+		} catch (GeneticBusinessException e) {
+			throw new GeneticDAOException(e);
 		}
 		return borrado;
 	}

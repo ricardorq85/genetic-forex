@@ -10,6 +10,7 @@ import java.util.List;
 import forex.genetic.entities.Estadistica;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
+import forex.genetic.entities.mongo.MongoEstadistica;
 
 /**
  *
@@ -17,9 +18,11 @@ import forex.genetic.entities.Order;
  */
 public interface IEstadisticaDAO<E extends Estadistica> extends IGeneticDAO<E> {
 
-	public <I extends IndividuoEstrategia> E getLast(I individuo);
+	<I extends IndividuoEstrategia> E getLast(I individuo);
 	
-	public List<E> consultarRandom(Date fechaInicial, Date fechaFinal, int cantidad);
+	List<E> consultarRandom(Date fechaInicial, Date fechaFinal, int cantidad);
 
-	public <I extends IndividuoEstrategia, O extends Order> E getLast(I individuo, Date fechaBase);
+	<I extends IndividuoEstrategia, O extends Order> E getLast(I individuo, Date fechaBase);
+
+	List<E> consultarByDuracionPromedio(int duracionPromedioMinutosMinimos, int cantidad);
 }
