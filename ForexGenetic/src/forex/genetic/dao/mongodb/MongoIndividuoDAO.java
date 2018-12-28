@@ -32,6 +32,10 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		super("individuo", true);
 	}
 
+	public MongoIndividuoDAO(String name, boolean configure) {
+		super(name, configure);
+	}
+
 	public void configureCollection() {
 		IndexOptions indexOptions = new IndexOptions();
 		indexOptions.unique(true);
@@ -83,7 +87,7 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		this.addRandomSort(sorts, "creationDate");
 
 		Bson ordenador = Sorts.orderBy(sorts);
-//		Bson filtroIndividuo = Filters.and(Filters.regex("idIndividuo", "1394841600000.11"));// ,
+//		Bson filtroIndividuo = Filters.and(Filters.regex("idIndividuo", "1394841600000.11"));
 		// Filters.eq("tipoIndividuo",
 		// Constants.IndividuoType.INDICADOR_GANADOR.name()));
 //		Bson filtroIndividuo = Filters.regex("idIndividuo", "1544908361588.*");

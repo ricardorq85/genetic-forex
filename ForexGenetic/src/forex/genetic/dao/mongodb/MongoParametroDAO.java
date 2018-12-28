@@ -38,15 +38,21 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 				"TIPO_EXPORTACION_TENDENCIA", "FECHA_MINIMA_CREAR_INDIVIDUO", "FECHA_MAXIMA_CREAR_INDIVIDUO",
 				"MESES_RANGOOPERACIONINDICADOR", "RETROCESO_RANGOOPERACIONINDICADOR", "PIPS_RANGOOPERACIONINDICADOR",
 				"CANTIDAD_MUTAR", "CANTIDAD_CRUZAR", "FECHA_INICIO_PROCESAR_TENDENCIA", "FECHA_FIN_PROCESAR_TENDENCIA",
-				"STEP_PROCESAR_TENDENCIA", "DIAS_EXPORTACION_TENDENCIA" };
+				"STEP_PROCESAR_TENDENCIA", "DIAS_EXPORTACION_TENDENCIA",
+				// Para tendencias
+				"FECHA_INICIO_TENDENCIA", "STEP_TENDENCIA", "INDIVIDUOS_X_TENDENCIA", "MESES_TENDENCIA",
+				"NUM_TENDENCIA_X_CANTIDAD" };
 		Date feMinimaCrearIndividuo = null, feMaximaCrearIndividuo = null;
 		Date feMinimaProcesarTendencia = null, feMaximaProcesarTendencia = null;
+		Date feInicioTendencia = null;
 		try {
 			feMinimaCrearIndividuo = DateUtil.obtenerFecha("2009/01/01 00:00");
 			feMaximaCrearIndividuo = DateUtil.obtenerFecha("2018/01/01 00:00");
 
 			feMinimaProcesarTendencia = DateUtil.obtenerFecha("2018/01/01 00:00");
 			feMaximaProcesarTendencia = DateUtil.obtenerFecha("2019/01/01 00:00");
+
+			feInicioTendencia = DateUtil.obtenerFecha("2016/01/01 00:00");
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -59,7 +65,9 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 				"forex.genetic.tendencia.manager.mongo.MongoProcesarTendenciasGrupalManager", feMinimaCrearIndividuo,
 				feMaximaCrearIndividuo, new Integer(6), new Integer(800), new Integer(1500), new Integer(100),
 				new Integer(100), feMinimaProcesarTendencia, feMaximaProcesarTendencia, new Integer(30),
-				"0.125,0.25,0.5,1,2,3,4,5,6,7,8,9,10,13" };
+				"0.125,0.25,0.5,1,2,3,4,5,6,7,8,9,10,13",
+				// Para tendencias
+				feInicioTendencia, new Integer(241), new Integer(51), new Integer(0), new Integer(0) };
 
 		for (int i = 0; i < paramNames.length; i++) {
 			ParametroDTO p = new ParametroDTO();

@@ -8,6 +8,7 @@ import java.util.List;
 
 import forex.genetic.entities.Individuo;
 import forex.genetic.entities.mongo.MongoEstadistica;
+import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.manager.mongodb.MongoIndividuoManager;
 import forex.genetic.util.LogUtil;
@@ -30,6 +31,13 @@ public abstract class MongoBorradoManager extends BorradoManager {
 	public void validarYBorrarIndividuo(Individuo individuo) throws GeneticBusinessException {
 		int count = 0;
 		List<Individuo> individuos = consultarIndividuos(individuo);
+		if ((individuos != null) && (individuos.size() > 0)) {
+			individuos.forEach((ind) -> {
+				((MongoIndividuo) ind).setIdParentBorrado(individuo.getId());
+				((MongoIndividuo) ind).setCausaBorrado(tipoProceso);
+			});
+		}
+
 		smartDelete(individuos);
 		count += individuos.size();
 		if (count > 0) {

@@ -14,6 +14,7 @@ import forex.genetic.dao.ITendenciaParaOperarDAO;
 import forex.genetic.dao.mongodb.MongoDatoAdicionalTPODAO;
 import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.dao.mongodb.MongoEstadisticasIndividuoDAO;
+import forex.genetic.dao.mongodb.MongoIndividuoBorradoDAO;
 import forex.genetic.dao.mongodb.MongoIndividuoDAO;
 import forex.genetic.dao.mongodb.MongoOperacionesDAO;
 import forex.genetic.dao.mongodb.MongoParametroDAO;
@@ -116,6 +117,14 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 			daoDatoAdicionalTPO= new MongoDatoAdicionalTPODAO();
 		}
 		return daoDatoAdicionalTPO;
+	}
+
+	@Override
+	public IIndividuoDAO<MongoIndividuo> getDaoIndividuoBorrado() throws GeneticDAOException {
+		if (daoIndividuoBorrado == null) {
+			daoIndividuoBorrado = new MongoIndividuoBorradoDAO();
+		}
+		return daoIndividuoBorrado;
 	}
 
 }

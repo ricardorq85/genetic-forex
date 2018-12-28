@@ -30,6 +30,7 @@ import forex.genetic.entities.ParametroOperacionPeriodo;
 import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.util.DateUtil;
 
 /**
  *
@@ -279,13 +280,18 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	@Override
 	public List<MongoOrder> consultarOperacionesActivas(Date fechaBase, Date fechaFin, int filas)
 			throws GeneticDAOException {
-		int cantidad = 10;
-		Bson filtroFechaApertura = Filters.lt("fechaApertura", fechaBase);
-		Bson filtroFechaCierre = Filters.or(Filters.exists("fechaCierre", false), Filters.eq("fechaCierre", null),
-				Filters.gt("fechaCierre", fechaBase));
-		Bson filtroIndividuo = Filters.eq("idIndividuo", "1394755200000.32");
-
-		Bson bsonFiltrosCompletos = Filters.and(filtroFechaApertura, filtroFechaCierre, filtroIndividuo);
+		int cantidad = 100;
+		Bson filtroFechaApertura = Filters.and(Filters.lt("fechaApertura", fechaBase),
+				Filters.gt("fechaApertura", DateUtil.adicionarMes(fechaBase, -1)));
+		Bson filtroFechaCierre = Filters.gt("fechaCierre", fechaBase);
+		if (fechaBase.after(DateUtil.adicionarMes(new Date(), -1))) {
+			filtroFechaCierre = Filters.or(Filters.exists("fechaCierre", false), Filters.eq("fechaCierre", null),
+					Filters.gt("fechaCierre", fechaBase));
+		}
+		// Bson filtroIndividuo = Filters.eq("idIndividuo", "1394755200000.32");
+		// Bson bsonFiltrosCompletos = Filters.and(filtroFechaApertura,
+		// filtroFechaCierre, filtroIndividuo);
+		Bson bsonFiltrosCompletos = Filters.and(filtroFechaApertura, filtroFechaCierre);
 		MongoCursor<Document> cursor = this.collection
 				.aggregate(Arrays.asList(Aggregates.match(Filters.and(bsonFiltrosCompletos)),
 						Aggregates.sample(cantidad), Aggregates.sort(Sorts.orderBy(Sorts.ascending("fechaApertura")))))

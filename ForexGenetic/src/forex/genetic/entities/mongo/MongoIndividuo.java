@@ -10,6 +10,8 @@ public class MongoIndividuo extends Individuo {
 	private static final long serialVersionUID = 1L;
 
 	private ProcesoEjecucionDTO procesoEjecucion;
+	private String causaBorrado;
+	private String idParentBorrado;
 
 	public MongoIndividuo() {
 	}
@@ -34,6 +36,22 @@ public class MongoIndividuo extends Individuo {
 
 	public void setProcesoEjecucion(ProcesoEjecucionDTO procesoEjecucion) {
 		this.procesoEjecucion = procesoEjecucion;
+	}
+
+	public String getCausaBorrado() {
+		return causaBorrado;
+	}
+
+	public void setCausaBorrado(String causaBorrado) {
+		this.causaBorrado = causaBorrado;
+	}
+
+	public String getIdParentBorrado() {
+		return idParentBorrado;
+	}
+
+	public void setIdParentBorrado(String idParentBorrado) {
+		this.idParentBorrado = idParentBorrado;
 	}
 
 }

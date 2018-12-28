@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.dao;
+package forex.genetic.dao.oracle;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import forex.genetic.dao.helper.IndividuoHelper;
-import forex.genetic.dao.oracle.OracleIndividuoDAO;
 import forex.genetic.entities.Individuo;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.jdbc.JDBCUtil;
@@ -20,13 +19,13 @@ import forex.genetic.util.jdbc.JDBCUtil;
  *
  * @author ricardorq85
  */
-public class IndividuoBorradoDAO extends OracleIndividuoDAO {
+public class OracleIndividuoBorradoDAO extends OracleIndividuoDAO {
 
 	/**
 	 *
 	 * @param connection
 	 */
-	public IndividuoBorradoDAO(Connection connection) {
+	public OracleIndividuoBorradoDAO(Connection connection) {
 		super(connection);
 	}
 

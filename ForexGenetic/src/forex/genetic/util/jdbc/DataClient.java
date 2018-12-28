@@ -27,6 +27,7 @@ public abstract class DataClient<C, I extends IndividuoEstrategia, O extends Ord
 	protected IEstadisticaDAO<E> daoEstadistica;
 	protected ITendenciaParaOperarDAO daoTendenciaParaOperar;
 	protected IDatoAdicionalTPODAO daoDatoAdicionalTPO;
+	protected IIndividuoDAO<I> daoIndividuoBorrado;
 
 	public DataClient(C client) {
 		this.client = client;
@@ -47,8 +48,9 @@ public abstract class DataClient<C, I extends IndividuoEstrategia, O extends Ord
 	public abstract IDatoHistoricoDAO getDaoDatoHistorico() throws GeneticDAOException;
 
 	public abstract ITendenciaDAO getDaoTendencia() throws GeneticDAOException;
+
 	public abstract ITendenciaDAO getDaoTendenciaUltimosDatos() throws GeneticDAOException;
-	
+
 	public abstract IParametroDAO getDaoParametro() throws GeneticDAOException;
 
 	public abstract IIndividuoDAO<I> getDaoIndividuo() throws GeneticDAOException;
@@ -58,8 +60,10 @@ public abstract class DataClient<C, I extends IndividuoEstrategia, O extends Ord
 	public abstract IProcesoEjecucionDAO getDaoProcesoEjecucion() throws GeneticDAOException;
 
 	public abstract IEstadisticaDAO<E> getDaoEstadistica() throws GeneticDAOException;
-	
+
 	public abstract ITendenciaParaOperarDAO getDaoTendenciaParaOperar() throws GeneticDAOException;
 
 	public abstract IDatoAdicionalTPODAO getDaoDatoAdicionalTPO() throws GeneticDAOException;
+
+	public abstract IIndividuoDAO<I> getDaoIndividuoBorrado() throws GeneticDAOException;
 }

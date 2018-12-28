@@ -21,6 +21,8 @@ public class MongoMapperFactory {
 			return new MongoTendenciaMapper();
 		} else if ("tendenciaUltimosDatos".equals(collectionName)) {
 			return new MongoTendenciaMapper();
+		} else if ("individuoBorrado".equals(collectionName)) {
+			return new MongoIndividuoBorradoMapper();
 		}
 		throw new IllegalArgumentException("Mapper. collectionName no soportado: " + collectionName);
 	}

@@ -45,6 +45,7 @@ public class MongoTendenciaProcesoManager extends TendenciaProcesoManager {
 		return listaTendencias;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<TendenciaEstadistica> calcularTendencias(Point puntoTendencia, int filas)
 			throws GeneticBusinessException {
 		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();

@@ -103,7 +103,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 		boolean processed = true;
 		boolean deleted = false;
 		MongoEstadisticasManager estadisticasManager = new MongoEstadisticasManager(individuo);
-		while (!deleted && processed && this.maxFechaHistorico.after(interval.getHighInterval())) {
+		while (!deleted && processed && this.maxFechaHistorico.after(interval.getLowInterval())) {
 			LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + interval.toString(), 1);
 
 			LogUtil.logTime("Consultando puntos de apertura:" + individuo.getId(), 1);
