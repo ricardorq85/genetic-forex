@@ -28,21 +28,24 @@ public abstract class MongoBorradoManager extends BorradoManager {
 	}
 
 	@Override
-	public void validarYBorrarIndividuo(Individuo individuo) throws GeneticBusinessException {
+	public boolean validarYBorrarIndividuo(Individuo individuo) throws GeneticBusinessException {
 		int count = 0;
+		boolean deleted = false;
 		List<Individuo> individuos = consultarIndividuos(individuo);
 		if ((individuos != null) && (individuos.size() > 0)) {
 			individuos.forEach((ind) -> {
 				((MongoIndividuo) ind).setIdParentBorrado(individuo.getId());
 				((MongoIndividuo) ind).setCausaBorrado(tipoProceso);
 			});
-		}
 
-		smartDelete(individuos);
-		count += individuos.size();
+			smartDelete(individuos);
+			count += individuos.size();
+			deleted = true;
+		}
 		if (count > 0) {
 			LogUtil.logTime("Individuos borrados: " + count, 1);
 		}
+		return deleted;
 	}
 
 	@Override
@@ -57,5 +60,4 @@ public abstract class MongoBorradoManager extends BorradoManager {
 			throw new GeneticBusinessException("smartDelete", e);
 		}
 	}
-
 }

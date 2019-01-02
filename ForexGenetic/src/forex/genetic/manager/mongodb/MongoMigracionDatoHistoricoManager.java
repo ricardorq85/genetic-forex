@@ -88,11 +88,11 @@ public class MongoMigracionDatoHistoricoManager extends MigracionManager<Point> 
 						.consultarHistorico(DateUtil.adicionarMinutos(fechaInicialConsulta, -1), fechaFinalConsulta);
 				if (datosConsultados.size() > 1) {
 					LogUtil.logTime("Importando..." + datosConsultados.size(), 1);
-					mongoDestinoDAO.insertMany(datosConsultados.subList(1, datosConsultados.size() - 1));
-//					for (int i = 1; i < datosConsultados.size() - 1; i++) {
-//						Point point = datosConsultados.get(i);
-//						mongoDestinoDAO.insertOrUpdate(point);
-//					}
+//					mongoDestinoDAO.insertMany(datosConsultados.subList(1, datosConsultados.size() - 1));
+					for (int i = 1; i < datosConsultados.size() - 1; i++) {
+						Point point = datosConsultados.get(i);
+						mongoDestinoDAO.insertOrUpdate(point);
+					}
 					fechaInicialConsulta = datosConsultados.get(datosConsultados.size() - 1).getDate();
 				} else {
 					fechaInicialConsulta = DateUtil.adicionarDias(fechaMaxima, 1);

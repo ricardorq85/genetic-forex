@@ -76,8 +76,8 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 			p.setFecha(new Date());
 
 			Parametro param = new Parametro(p);
-			// insertIfNoExists(param);
-			insertOrUpdate(param);
+			insertIfNoExists(param);
+			//insertOrUpdate(param);
 		}
 	}
 

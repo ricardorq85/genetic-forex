@@ -28,13 +28,12 @@ public class MongoBorradoIndividuoSinOperacionesManager extends MongoBorradoMana
 		super(dc, "SIN_OPERACIONES", ea);
 	}
 
-	@SuppressWarnings({ "unchecked" })
 	@Override
 	protected List<Individuo> consultarIndividuos(Individuo individuo) throws GeneticBusinessException {
 		List<Individuo> list = new ArrayList<>();
 		Date fechaMinima = null;
 		try {
-			fechaMinima = DateUtil.obtenerFecha("2010/01/01 00:00");
+			fechaMinima = DateUtil.obtenerFecha("2008/12/31 23:58");
 		} catch (ParseException e) {
 			fechaMinima = new Date();
 		}
@@ -43,9 +42,9 @@ public class MongoBorradoIndividuoSinOperacionesManager extends MongoBorradoMana
 		if ((procesoEjecucion != null) && (procesoEjecucion.getMaxFechaHistorico() != null)
 				&& (procesoEjecucion.getMaxFechaHistorico().after(fechaMinima))) {
 
-			long diffMonths = DateUtil.diffMonths(procesoEjecucion.getMaxFechaHistorico(), fechaMinima);
-			long minByMonth = 1;
-			long cantidadMinima = diffMonths * minByMonth;
+			float diffMonths = DateUtil.diffMonths(procesoEjecucion.getMaxFechaHistorico(), fechaMinima);
+			float minByMonth = 0.5F;
+			float cantidadMinima = diffMonths * minByMonth;
 			if ((estadisticaAnterior == null) || (estadisticaAnterior.getCantidadTotal() < (cantidadMinima))) {
 				list.add(individuo);
 			}

@@ -10,6 +10,8 @@ package forex.genetic.util;
  */
 public class Constants {
 
+	public static final String URI_MONGODB = "URI_MONGODB";
+
 	/**
 	 *
 	 */
@@ -440,6 +442,7 @@ public class Constants {
 	 *
 	 */
 	public static final double MIN_PERCENT_PROB = 0.5D;
+
 
 	/**
 	 *

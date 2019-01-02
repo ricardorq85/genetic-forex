@@ -22,19 +22,18 @@ import forex.genetic.util.jdbc.DataClient;
  *
  * @author ricardorq85
  */
-public class MongoBorradoXDuracionPromedioManager extends MongoBorradoManager {
+public class MongoBorradoCantidadOperacionesExageradasManager extends MongoBorradoManager {
 
-	public MongoBorradoXDuracionPromedioManager(DataClient dc, MongoEstadistica ea) {
-		super(dc, "DURACION_PROMEDIO_MINIMA", ea);
+	public MongoBorradoCantidadOperacionesExageradasManager(DataClient dc, MongoEstadistica ea) {
+		super(dc, "CANTIDAD_EXAGERADA", ea);
 	}
 
-	@SuppressWarnings({ "unchecked" })
 	@Override
 	protected List<Individuo> consultarIndividuos(Individuo individuo) throws GeneticBusinessException {
 		List<Individuo> list = new ArrayList<>();
 		Date fechaMinima = null;
 		try {
-			fechaMinima = DateUtil.obtenerFecha("2010/01/01 00:00");
+			fechaMinima = DateUtil.obtenerFecha("2008/06/01 00:00");
 		} catch (ParseException e) {
 			fechaMinima = new Date();
 		}
@@ -42,7 +41,11 @@ public class MongoBorradoXDuracionPromedioManager extends MongoBorradoManager {
 		ProcesoEjecucionDTO procesoEjecucion = ((MongoIndividuo) individuo).getProcesoEjecucion();
 		if ((procesoEjecucion != null) && (procesoEjecucion.getMaxFechaHistorico() != null)
 				&& (procesoEjecucion.getMaxFechaHistorico().after(fechaMinima))) {
-			if ((estadisticaAnterior != null) && (estadisticaAnterior.getDuracionPromedio() < 5)) {
+
+			float diffMonths = DateUtil.diffMonths(procesoEjecucion.getMaxFechaHistorico(), fechaMinima);
+			float maxByMonth = (10 * 20);
+			float cantidadMinima = diffMonths * maxByMonth;
+			if ((estadisticaAnterior != null) && (estadisticaAnterior.getCantidadTotal() > (cantidadMinima))) {
 				list.add(individuo);
 			}
 		}

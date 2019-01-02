@@ -63,11 +63,11 @@ public abstract class BorradoManager {
 		procesarBorradoIndividuos(null);
 	}
 
-	public void validarYBorrarIndividuo(Individuo individuo) throws GeneticBusinessException {
-		procesarBorradoIndividuos(individuo);
+	public boolean validarYBorrarIndividuo(Individuo individuo) throws GeneticBusinessException {
+		return procesarBorradoIndividuos(individuo);
 	}
 
-	protected void procesarBorradoIndividuos(Individuo individuo) throws GeneticBusinessException {
+	protected boolean procesarBorradoIndividuos(Individuo individuo) throws GeneticBusinessException {
 		List<Individuo> individuos = this.consultarIndividuos(individuo);
 		int count = 0;
 		while ((individuos != null) && (!individuos.isEmpty())) {
@@ -79,6 +79,7 @@ public abstract class BorradoManager {
 			}
 			individuos = this.consultarIndividuos(individuo);
 		}
+		return false;
 	}
 
 	protected void smartDelete(List<Individuo> individuos) throws GeneticBusinessException {

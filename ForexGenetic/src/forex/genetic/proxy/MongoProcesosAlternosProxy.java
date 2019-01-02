@@ -5,13 +5,14 @@ import static forex.genetic.util.LogUtil.logTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import forex.genetic.entities.Individuo;
 import forex.genetic.entities.dto.ProcesoEjecucionDTO;
 import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.borrado.BorradoManager;
+import forex.genetic.manager.borrado.MongoBorradoCantidadOperacionesExageradasManager;
+import forex.genetic.manager.borrado.MongoBorradoDuplicadoConBorradoIndividuoManager;
 import forex.genetic.manager.borrado.MongoBorradoDuplicadoIndividuoManager;
 import forex.genetic.manager.borrado.MongoBorradoIndividuoIncompletoManager;
 import forex.genetic.manager.borrado.MongoBorradoIndividuoSinOperacionesManager;
@@ -44,16 +45,15 @@ public class MongoProcesosAlternosProxy {
 			managers.add(new MongoBorradoIndividuoSinOperacionesManager(dataClient, estadisticaAnterior));
 			managers.add(new MongoBorradoXDuracionPromedioManager(dataClient, estadisticaAnterior));
 			managers.add(new MongoBorradoIndividuoIncompletoManager(dataClient, estadisticaAnterior));
+			managers.add(new MongoBorradoCantidadOperacionesExageradasManager(dataClient, estadisticaAnterior));
 			managers.add(new MongoBorradoDuplicadoIndividuoManager(dataClient, estadisticaAnterior));
-
+			managers.add(new MongoBorradoDuplicadoConBorradoIndividuoManager(dataClient, estadisticaAnterior));
 			logTime("Init Procesos alternos:" + individuo.getId(), 2);
-			int index = 0;
-			while (!managers.isEmpty()) {
-				// int index = random.nextInt(managers.size());
-				BorradoManager manager = managers.get(0);
-				logTime(manager.getClass().getName(), 2);
-				manager.validarYBorrarIndividuo(individuo);
-				managers.remove(index);
+			for (BorradoManager borradoManager : managers) {
+				logTime(borradoManager.getClass().getName(), 2);
+				if (borradoManager.validarYBorrarIndividuo(individuo)) {
+					break;
+				}
 			}
 		} catch (GeneticBusinessException e) {
 			e.printStackTrace();

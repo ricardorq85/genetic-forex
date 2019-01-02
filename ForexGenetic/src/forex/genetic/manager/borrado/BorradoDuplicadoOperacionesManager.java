@@ -56,7 +56,7 @@ public class BorradoDuplicadoOperacionesManager extends BorradoDuplicadoIndividu
 		}
 	}	
 
-	protected void borrarDuplicados(Individuo individuo) throws GeneticBusinessException {
+	protected boolean borrarDuplicados(Individuo individuo) throws GeneticBusinessException {
 		try {
 			int count = 0;
 			List<Individuo> individuosRepetidos = individuoDAO.consultarIndividuoHijoRepetidoOperaciones(individuo);
@@ -67,6 +67,7 @@ public class BorradoDuplicadoOperacionesManager extends BorradoDuplicadoIndividu
 			throw new GeneticBusinessException(e);
 		} finally {
 		}
+		return false;
 	}
 
 }

@@ -21,12 +21,12 @@ import forex.genetic.manager.mongodb.MongoMigracionIndividuosManager;
 public class MigracionDelegate {
 
 	public void migrarDatosHistoricos() throws FileNotFoundException, IOException, ClassNotFoundException, GeneticBusinessException {
-		MigracionManager<Point> migracionManager = new MongoMigracionDatoHistoricoManager();
+		MongoMigracionDatoHistoricoManager migracionManager = new MongoMigracionDatoHistoricoManager();
 		migracionManager.migrate();
 	}
 	
 	public void migrarIndividuos() throws FileNotFoundException, IOException, ClassNotFoundException, GeneticBusinessException {
-		MigracionManager<MongoIndividuo> migracionManager = new MongoMigracionIndividuosManager();
+		MongoMigracionIndividuosManager migracionManager = new MongoMigracionIndividuosManager();
 		migracionManager.migrate();
 	}
 

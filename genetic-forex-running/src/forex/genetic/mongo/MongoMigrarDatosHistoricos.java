@@ -44,9 +44,9 @@ public class MongoMigrarDatosHistoricos {
 		// Object t = new MongoDatoHistoricoDAO(true);
 		MigracionDelegate delegate = new MigracionDelegate();
 		logTime("Init Migrar Datos Historicos", 1);
-//		delegate.migrarDatosHistoricos();
+		delegate.migrarDatosHistoricos();
 		logTime("End Migrar Datos Historicos", 1);
-		delegate.migrarIndividuos();
+//		delegate.migrarIndividuos();
 //		MongoTendenciaParaOperarDAO tendenciaParaOperarDAO = new MongoTendenciaParaOperarDAO();
 		// Date fecha = tendenciaParaOperarDAO.getFechaBaseMinima();
 		// logTime(DateUtil.getDateString(fecha), 1);

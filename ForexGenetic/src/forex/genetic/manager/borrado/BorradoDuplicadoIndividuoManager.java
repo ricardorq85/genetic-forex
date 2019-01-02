@@ -38,8 +38,8 @@ public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 	}
 
 	@Override
-	public void validarYBorrarIndividuo(Individuo individuo) throws GeneticBusinessException {
-		borrarDuplicados(individuo);
+	public boolean validarYBorrarIndividuo(Individuo individuo) throws GeneticBusinessException {
+		return borrarDuplicados(individuo);
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 		}
 	}
 
-	protected void borrarDuplicados(Individuo individuo) throws GeneticBusinessException {
+	protected boolean borrarDuplicados(Individuo individuo) throws GeneticBusinessException {
 		int count = 0;
 		List<Individuo> individuosRepetidos;
 		try {
@@ -90,6 +90,6 @@ public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(e);
 		}
+		return false;
 	}
-
 }

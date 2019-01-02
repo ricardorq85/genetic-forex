@@ -70,27 +70,27 @@ public class MutationIndividuoManager extends MutationManager {
 						openIndicator = individuo1.getOpenIndicators().get(i);
 					}
 					IndicadorManager indicatorManager = indicadorController.getManagerInstance(i);
-					Indicator indHijo = openIndicator;
-					if ((random.nextDouble() < 0.1)) {
-						indHijo = null;
-					} else if ((random.nextDouble() < 0.1)) {
-						indHijo = indicatorManager.mutate(openIndicator);
+					Indicator indicadorHijo = openIndicator;
+					if ((random.nextDouble() < 0.4)) {
+						indicadorHijo = null;
+					} else if ((random.nextDouble() < 0.6)) {
+						indicadorHijo = indicatorManager.mutate(openIndicator);
 					}
-					openIndicators.add(indHijo);
+					openIndicators.add(indicadorHijo);
 					Indicator closeIndicator = null;
 					if (individuo1.getCloseIndicators().size() > i) {
 						closeIndicator = individuo1.getCloseIndicators().get(i);
 					}
-					indHijo = closeIndicator;
-					if ((random.nextDouble() < 0.1)) {
-						indHijo = null;
-					} else if ((countCloseNotNull > 0 && countCloseNotNull < 2) || (random.nextDouble() < 0.1)) {
-						indHijo = indicatorManager.mutate(closeIndicator);
+					indicadorHijo = closeIndicator;
+					if ((random.nextDouble() < 0.4)) {
+						indicadorHijo = null;
+					} else if ((countCloseNotNull > 0 && countCloseNotNull < 2) || (random.nextDouble() < 0.6)) {
+						indicadorHijo = indicatorManager.mutate(closeIndicator);
 					}
-					if (indHijo != null) {
+					if (indicadorHijo != null) {
 						countCloseNotNull++;
 					}
-					closeIndicators.add(indHijo);
+					closeIndicators.add(indicadorHijo);
 				}
 				hijo.setOpenIndicators(openIndicators);
 				hijo.setCloseIndicators(closeIndicators);
