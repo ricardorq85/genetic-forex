@@ -21,10 +21,18 @@ public class TendenciaProcesoBuySellHelper {
 		regresion = new Regresion();
 		regresion.setTiempoTendencia(procesoTendencia.getTiempoTendencia());
 		// regresion.setPrimeraTendencia(resultado.getDouble("PRIMERA_TENDENCIA"));
-		regresion.setR2(NumberUtil.round(simpleRegressionProcessor.getRSquare(), 5));
-		regresion.setPendiente(NumberUtil.round(simpleRegressionProcessor.getSlope(), 5));
-		regresion.setDesviacion(NumberUtil.round(standardDeviationProcessor.evaluate()));
-
+		double r2 = simpleRegressionProcessor.getRSquare();
+		double pendiente = simpleRegressionProcessor.getSlope();
+		double sd = standardDeviationProcessor.evaluate();
+		if (NumberUtil.isAnyInfiniteOrNan(r2, pendiente, sd)) {
+			regresion.setR2(0.0D);
+			regresion.setPendiente(0.0D);
+			regresion.setDesviacion(0.0D);
+		} else {
+			regresion.setR2(NumberUtil.round(r2, 5));
+			regresion.setPendiente(NumberUtil.round(pendiente, 5));
+			regresion.setDesviacion(NumberUtil.round(sd));
+		}
 		/*
 		 * regresion.setProbabilidad(resultado.getDouble("PROBABILIDAD"));
 		 * regresion.setMinPrecio(resultado.getDouble("MINPRECIO"));
