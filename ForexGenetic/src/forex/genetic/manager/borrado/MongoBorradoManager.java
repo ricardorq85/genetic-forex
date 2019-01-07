@@ -54,7 +54,7 @@ public abstract class MongoBorradoManager extends BorradoManager {
 			if (individuos.size() > 0) {
 				MongoIndividuoManager individuoManager = new MongoIndividuoManager();
 				individuoManager.delete(individuos);
-				LogUtil.logTime("Individuos consultados: " + individuos.size(), 1);
+				LogUtil.logTime("Individuos consultados: " + individuos.size(), 3);
 			}
 		} catch (GeneticBusinessException e) {
 			throw new GeneticBusinessException("smartDelete", e);

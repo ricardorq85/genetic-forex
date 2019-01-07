@@ -55,14 +55,14 @@ public abstract class ExportarTendenciaGrupalManager extends ExportarTendenciaMa
 		StandardDeviation standardDeviationSinFiltrar = new StandardDeviation();
 
 		List<TendenciaParaOperar> tendenciasSinFiltrar = consultarTendenciasSinFiltrar();
-		Regresion regSinFiltrarJava = null;
+		Regresion regSinFiltrarJava = new Regresion();
 		double[] sdDataSinFiltrar = new double[tendenciasSinFiltrar.size()];
 
 		if ((tendenciasSinFiltrar != null) && (!tendenciasSinFiltrar.isEmpty())) {
 			for (int i = 0; i < tendenciasSinFiltrar.size(); i++) {
 				TendenciaParaOperar tendenciaParaOperar = tendenciasSinFiltrar.get(i);
-				float diffDias = DateUtil.diferenciaMinutos(tendenciaParaOperar.getFechaBase(), tendenciaParaOperar.getFechaTendencia()) / 60.0F
-						/ 24.0F;
+				float diffDias = DateUtil.diferenciaMinutos(tendenciaParaOperar.getFechaBase(),
+						tendenciaParaOperar.getFechaTendencia()) / 60.0F / 24.0F;
 				simpleRegressionProcessorSinFiltrar.addData(diffDias, tendenciaParaOperar.getPrecioCalculado());
 				sdDataSinFiltrar[i] = tendenciaParaOperar.getPrecioCalculado();
 			}
@@ -75,7 +75,7 @@ public abstract class ExportarTendenciaGrupalManager extends ExportarTendenciaMa
 		StandardDeviation standardDeviationFiltrada = new StandardDeviation();
 
 		List<TendenciaParaOperar> tendenciasFiltradas = consultarTendenciasFiltradas();
-		Regresion regFiltradaJava = null;
+		Regresion regFiltradaJava = new Regresion();
 		double[] sdDataFiltrada = new double[tendenciasFiltradas.size()];
 
 		if ((tendenciasFiltradas != null) && (!tendenciasFiltradas.isEmpty())) {

@@ -17,10 +17,8 @@ public class TendenciaProcesoBuySellHelper {
 
 	public static Regresion helpRegresion(ProcesoTendenciaBuySell procesoTendencia,
 			SimpleRegression simpleRegressionProcessor, StandardDeviation standardDeviationProcessor) {
-		Regresion regresion = null;
-		regresion = new Regresion();
+		Regresion regresion = new Regresion();
 		regresion.setTiempoTendencia(procesoTendencia.getTiempoTendencia());
-		// regresion.setPrimeraTendencia(resultado.getDouble("PRIMERA_TENDENCIA"));
 		double r2 = simpleRegressionProcessor.getRSquare();
 		double pendiente = simpleRegressionProcessor.getSlope();
 		double sd = standardDeviationProcessor.evaluate();
@@ -33,17 +31,6 @@ public class TendenciaProcesoBuySellHelper {
 			regresion.setPendiente(NumberUtil.round(pendiente, 5));
 			regresion.setDesviacion(NumberUtil.round(sd));
 		}
-		/*
-		 * regresion.setProbabilidad(resultado.getDouble("PROBABILIDAD"));
-		 * regresion.setMinPrecio(resultado.getDouble("MINPRECIO"));
-		 * regresion.setMaxPrecio(resultado.getDouble("MAXPRECIO"));
-		 * regresion.setMinPrecioExtremo(resultado.getDouble("MINPRECIO_EXTREMO"));
-		 * regresion.setMaxPrecioExtremo(resultado.getDouble("MAXPRECIO_EXTREMO"));
-		 * regresion.setCantidad(resultado.getInt("CANTIDAD_TENDENCIAS"));
-		 * regresion.setCantidadTotal(resultado.getInt("CANTIDAD_TOTAL"));
-		 * regresion.setMinFechaTendencia(resultado.getTimestamp("MINFETENDENCIA"));
-		 * regresion.setMaxFechaTendencia(resultado.getTimestamp("MAXFETENDENCIA"));
-		 */
 		return regresion;
 	}
 

@@ -91,7 +91,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 	}
 
 	protected void runIndividuoByYear(MongoIndividuo individuo) throws ClassNotFoundException, GeneticDAOException {
-		int maxMonths = 12;
+		int maxMonths = 3;
 		ProcesoEjecucionDTO procesoEjecucionIndividuo = individuo.getProcesoEjecucion();
 		DateInterval interval = null;
 		if ((procesoEjecucionIndividuo == null) || (procesoEjecucionIndividuo.getMaxFechaHistorico() == null)) {
