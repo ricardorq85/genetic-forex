@@ -17,12 +17,12 @@ import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.mongodb.MongoOperacionesManager;
-import forex.genetic.tendencia.manager.TendenciaProcesoManager;
+import forex.genetic.tendencia.manager.TendenciaProcesoFacade;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
 
-public class MongoTendenciaProcesoManager extends TendenciaProcesoManager {
+public class MongoTendenciaProcesoManager extends TendenciaProcesoFacade {
 
 	public MongoTendenciaProcesoManager(DataClient dc) throws GeneticBusinessException {
 		super(dc);

@@ -32,7 +32,7 @@ import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.io.CopyFileVisitor;
 import forex.genetic.manager.oracle.OracleIndividuoXIndicadorManager;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
-import forex.genetic.tendencia.manager.TendenciaProcesoManager;
+import forex.genetic.tendencia.manager.TendenciaProcesoFacade;
 import forex.genetic.util.Constants;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.FileUtil;
@@ -87,7 +87,7 @@ public abstract class EndToEndMediator extends GeneticMediator {
 						+ ",count=" + count, 1);
 				this.procesarIndividuos();
 				this.procesarTendencias(DriverDBFactory.createDataClient("oracle"),
-						(TendenciaProcesoManager) DriverDBFactory.createOracleManager("tendencia"));
+						(TendenciaProcesoFacade) DriverDBFactory.createOracleManager("tendencia"));
 				this.exportarTendenciaParaOperar();
 				this.crearNuevosIndividuos();
 				if (imported == 0) {
@@ -177,7 +177,7 @@ public abstract class EndToEndMediator extends GeneticMediator {
 		}
 	}
 
-	protected void procesarTendencias(DataClient dataClient, TendenciaProcesoManager tendenciaProcesoManager)
+	protected void procesarTendencias(DataClient dataClient, TendenciaProcesoFacade tendenciaProcesoManager)
 			throws GeneticBusinessException {
 		IParametroDAO parametroDAO;
 		try {

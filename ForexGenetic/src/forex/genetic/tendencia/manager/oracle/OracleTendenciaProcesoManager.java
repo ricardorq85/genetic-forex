@@ -9,11 +9,11 @@ import forex.genetic.entities.ParametroConsultaEstadistica;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.oracle.OracleOperacionesManager;
-import forex.genetic.tendencia.manager.TendenciaProcesoManager;
+import forex.genetic.tendencia.manager.TendenciaProcesoFacade;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
 
-public class OracleTendenciaProcesoManager extends TendenciaProcesoManager {
+public class OracleTendenciaProcesoManager extends TendenciaProcesoFacade {
 
 	public OracleTendenciaProcesoManager(DataClient dc) throws GeneticBusinessException {
 		super(dc);

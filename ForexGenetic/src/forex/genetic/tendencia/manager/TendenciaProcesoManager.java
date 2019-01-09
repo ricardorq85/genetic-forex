@@ -12,80 +12,33 @@ import forex.genetic.entities.Tendencia;
 import forex.genetic.entities.TendenciaEstadistica;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
-import forex.genetic.manager.IGeneticManager;
-import forex.genetic.manager.OperacionesManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.RandomUtil;
 import forex.genetic.util.ThreadUtil;
 import forex.genetic.util.jdbc.DataClient;
 
-public abstract class TendenciaProcesoManager implements IGeneticManager {
+public abstract class TendenciaProcesoManager extends Thread {
 
-	@SuppressWarnings("rawtypes")
-	protected DataClient dataClient;
-	private static final double FACTOR_NUMERO_RANDOM_TENDENCIAS = 0.3;
-	protected OperacionesManager operacionManager;
+	private DataClient dataClient;
+	private Individuo individuo;
+	private Point puntoTendencia;
 	private Date fechaComparacion;
+	private List<TendenciaEstadistica> listaTendencias;
 
-	public TendenciaProcesoManager(DataClient dc) throws GeneticBusinessException {
+	public TendenciaProcesoManager(DataClient dc, Individuo ind, Point p, Date fc) throws GeneticBusinessException {
 		this.dataClient = dc;
-		setup();
+		this.individuo = ind;
+		this.puntoTendencia = p;
+		this.listaTendencias = new ArrayList<TendenciaEstadistica>();
+		this.fechaComparacion = fc;
 	}
 
-	public void setup() throws GeneticBusinessException {
-		this.fechaComparacion = DateUtil.calcularFechaComparacionParaTendenciaUltimosDatos();
-		LogUtil.logTime("Borrando tendencias ultimos datos...", 1);
-		try {
-			int affected = dataClient.getDaoTendenciaUltimosDatos().deleteTendenciaMenorQue(fechaComparacion);
-			dataClient.commit();
-			LogUtil.logTime("Tendencias borradas: " + affected, 1);
-		} catch (GeneticDAOException e) {
-			throw new GeneticBusinessException(null, e);
-		}
-	}
+	protected abstract Estadistica consultarEstadisticaFiltrada(Date fechaBase, Order ordenActual, Individuo individuo)
+			throws GeneticBusinessException;
 
-	public List<TendenciaEstadistica> calcularTendencias(Date fechaBaseInicial, Date fechaBaseFinal, int filas)
-			throws GeneticBusinessException {
-		return this.calcularTendencias(1, fechaBaseInicial, fechaBaseFinal, filas);
-	}
-
-	public List<TendenciaEstadistica> calcularTendencias(int cantidadVeces, Date fechaBaseInicial, Date fechaBaseFinal,
-			int filas) throws GeneticBusinessException {
-		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
-		try {
-			List<? extends Point> pointsFechaTendencia;
-			pointsFechaTendencia = dataClient.getDaoDatoHistorico().consultarHistoricoOrderByPrecio(fechaBaseInicial,
-					fechaBaseFinal);
-			int c = cantidadVeces + 1;
-			if ((pointsFechaTendencia != null) && (!pointsFechaTendencia.isEmpty())) {
-				int size = pointsFechaTendencia.size();
-				int sizeLimit = (int) (size * FACTOR_NUMERO_RANDOM_TENDENCIAS);
-				for (int i = 1; i < c; i++) {
-					int randomIndex = RandomUtil.nextInt(sizeLimit + 1);
-					listaTendencias.addAll(this.calcularTendencias(pointsFechaTendencia.get(randomIndex), filas));
-					listaTendencias
-							.addAll(this.calcularTendencias(pointsFechaTendencia.get(size - randomIndex - 1), filas));
-				}
-			}
-		} catch (GeneticDAOException e) {
-			throw new GeneticBusinessException(null, e);
-		}
-		return listaTendencias;
-	}
-
-	public List<TendenciaEstadistica> calcularTendencias(Date fechaBase, int filas) throws GeneticBusinessException {
-		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
-		try {
-			Point p = dataClient.getDaoDatoHistorico().consultarXFecha(fechaBase);
-			if (p != null) {
-				listaTendencias.addAll(this.calcularTendencias(p, filas));
-			}
-		} catch (GeneticDAOException e) {
-			throw new GeneticBusinessException(null, e);
-		}
-		return listaTendencias;
-	}
+	protected abstract Estadistica consultarEstadisticaHistorica(Date fechaBase, Individuo individuo)
+			throws GeneticBusinessException;
 
 	public List<TendenciaEstadistica> calcularTendencias(Point puntoTendencia, int filas)
 			throws GeneticBusinessException {
@@ -97,39 +50,23 @@ public abstract class TendenciaProcesoManager implements IGeneticManager {
 				List<Individuo> individuos = dataClient.getDaoOperaciones()
 						.consultarIndividuoOperacionActiva(puntoTendencia.getDate(), filas);
 				LogUtil.logTime("Individuos=" + individuos.size(), 1);
-				List<Thread> threads = new ArrayList<>(individuos.size());
 				for (Individuo individuo : individuos) {
-					Runnable runner = new Runnable() {
-						@Override
-						public void run() {
-							LogUtil.logTime("Running Thread:" + Thread.currentThread().getName(), 3);
-							TendenciaEstadistica tendencia;
-							LogUtil.logTime("Calculando..." + individuo.getId(), 2);
-							try {
-								tendencia = TendenciaProcesoManager.this.calcularTendencia(puntoTendencia, individuo);
-								if (tendencia != null) {
-									LogUtil.logTime("Guardando..." + individuo.getId(), 4);
-									LogUtil.logTime(tendencia.toString(), 2);
-									LogUtil.logAvance(1);
-									TendenciaProcesoManager.this.guardarTendencia(tendencia);
-									listaTendencias.add(tendencia);
-								}
-							} catch (GeneticBusinessException | GeneticDAOException e) {
-								e.printStackTrace();
-							}
-						}
-					};
-					Thread threadIndividuo = new Thread(runner);
-					threadIndividuo.setName(individuo.getId());
-					threads.add(threadIndividuo);
-					threadIndividuo.start();
+					TendenciaEstadistica tendencia;
+					tendencia = this.calcularTendencia(puntoTendencia, individuo);
+					if (tendencia != null) {
+						LogUtil.logTime("Guardando..." + individuo.getId(), 4);
+						LogUtil.logTime(tendencia.toString(), 2);
+						LogUtil.logAvance(1);
+						this.guardarTendencia(tendencia);
+						listaTendencias.add(tendencia);
+					}
 				}
-				ThreadUtil.joinThreads(threads);
 			} catch (GeneticDAOException e) {
 				throw new GeneticBusinessException(null, e);
 			}
 		}
 		return listaTendencias;
+
 	}
 
 	public void guardarTendencia(Tendencia tendencia) throws GeneticDAOException {
@@ -139,47 +76,6 @@ public abstract class TendenciaProcesoManager implements IGeneticManager {
 		}
 		dataClient.commit();
 	}
-
-	public TendenciaEstadistica calcularTendencia(Point currentPoint, Date fechaBase, String idIndividuo)
-			throws GeneticBusinessException {
-		Individuo individuo;
-		try {
-			individuo = dataClient.getDaoOperaciones().consultarIndividuoOperacionActiva(idIndividuo, fechaBase, 2);
-			return this.calcularTendencia(currentPoint, individuo);
-		} catch (GeneticDAOException e) {
-			throw new GeneticBusinessException(null, e);
-		}
-	}
-
-	public TendenciaEstadistica calcularTendencia(Date fechaBase, String idIndividuo) throws GeneticBusinessException {
-		try {
-			Individuo individuo;
-			individuo = dataClient.getDaoOperaciones().consultarIndividuoOperacionActiva(idIndividuo, fechaBase, 2);
-			return this.calcularTendencia(fechaBase, individuo);
-		} catch (GeneticDAOException e) {
-			throw new GeneticBusinessException(null, e);
-		}
-	}
-
-	public TendenciaEstadistica calcularTendencia(Date fechaBase, Individuo individuo) throws GeneticBusinessException {
-		TendenciaEstadistica tendenciaEstadistica = null;
-		try {
-			List<? extends Point> pointsFechaTendencia;
-			pointsFechaTendencia = dataClient.getDaoDatoHistorico().consultarHistorico(fechaBase, fechaBase);
-			if ((pointsFechaTendencia != null) && (!pointsFechaTendencia.isEmpty())) {
-				tendenciaEstadistica = this.calcularTendencia(pointsFechaTendencia.get(0), individuo);
-			}
-		} catch (GeneticDAOException e) {
-			throw new GeneticBusinessException(null, e);
-		}
-		return tendenciaEstadistica;
-	}
-
-	protected abstract Estadistica consultarEstadisticaFiltrada(Date fechaBase, Order ordenActual, Individuo individuo)
-			throws GeneticBusinessException;
-
-	protected abstract Estadistica consultarEstadisticaHistorica(Date fechaBase, Individuo individuo)
-			throws GeneticBusinessException;
 
 	public TendenciaEstadistica calcularTendencia(Point pointFecha, Individuo individuo)
 			throws GeneticBusinessException {
@@ -238,4 +134,5 @@ public abstract class TendenciaProcesoManager implements IGeneticManager {
 		ordenActual.setDuracionMinutos(duracionActual);
 		return ordenActual;
 	}
+
 }

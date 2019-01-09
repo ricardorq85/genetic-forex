@@ -23,7 +23,7 @@ import forex.genetic.manager.IndividuoManager;
 import forex.genetic.manager.IndividuoXIndicadorManager;
 import forex.genetic.manager.mongodb.MongoIndividuoXIndicadorManager;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
-import forex.genetic.tendencia.manager.TendenciaProcesoManager;
+import forex.genetic.tendencia.manager.TendenciaProcesoFacade;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
@@ -97,7 +97,7 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 		try {
 			IGeneticManager[] managers = DriverDBFactory.createManagers("tendencia");
 			for (int i = 0; i < dataClients.size(); i++) {
-				procesarTendencias(dataClients.get(i), (TendenciaProcesoManager) managers[i]);
+				procesarTendencias(dataClients.get(i), (TendenciaProcesoFacade) managers[i]);
 			}
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException("procesarTendencias", e);
