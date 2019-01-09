@@ -40,23 +40,23 @@ public class OracleTendenciaProcesoManager extends TendenciaProcesoManager {
 
 	private Estadistica consultarEstadisticasIndividuo(ParametroConsultaEstadistica parametroConsultaEstadistica) throws GeneticBusinessException {
 		try {
-			dataClient.getDaoParametro().updateDateValorParametro("FECHA_ESTADISTICAS",
-					parametroConsultaEstadistica.getFecha());
-			if (parametroConsultaEstadistica.getRetroceso() == null) {
-				dataClient.getDaoParametro().updateValorParametro("RETROCESO_ESTADISTICAS", null);
-			} else {
-				dataClient.getDaoParametro().updateValorParametro("RETROCESO_ESTADISTICAS",
-						String.valueOf(Math.round(parametroConsultaEstadistica.getRetroceso())));
-			}
-			if (parametroConsultaEstadistica.getDuracion() == null) {
-				dataClient.getDaoParametro().updateValorParametro("DURACION_ESTADISTICAS", null);
-			} else {
-				dataClient.getDaoParametro().updateValorParametro("DURACION_ESTADISTICAS",
-						String.valueOf(Math.round(parametroConsultaEstadistica.getDuracion())));
-			}
-			dataClient.commit();
-			return dataClient.getDaoOperaciones().consultarEstadisticas(parametroConsultaEstadistica.getIndividuo(),
-					null);
+//			dataClient.getDaoParametro().updateDateValorParametro("FECHA_ESTADISTICAS",
+//					parametroConsultaEstadistica.getFecha());
+//			if (parametroConsultaEstadistica.getRetroceso() == null) {
+//				dataClient.getDaoParametro().updateValorParametro("RETROCESO_ESTADISTICAS", null);
+//			} else {
+//				dataClient.getDaoParametro().updateValorParametro("RETROCESO_ESTADISTICAS",
+//						String.valueOf(Math.round(parametroConsultaEstadistica.getRetroceso())));
+//			}
+//			if (parametroConsultaEstadistica.getDuracion() == null) {
+//				dataClient.getDaoParametro().updateValorParametro("DURACION_ESTADISTICAS", null);
+//			} else {
+//				dataClient.getDaoParametro().updateValorParametro("DURACION_ESTADISTICAS",
+//						String.valueOf(Math.round(parametroConsultaEstadistica.getDuracion())));
+//			}
+//			dataClient.commit();
+			return dataClient.getDaoOperaciones().consultarEstadisticas(null,
+					parametroConsultaEstadistica);
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(null, e);
 		}

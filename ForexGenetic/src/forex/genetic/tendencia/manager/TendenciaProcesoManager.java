@@ -17,6 +17,7 @@ import forex.genetic.manager.OperacionesManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.RandomUtil;
+import forex.genetic.util.ThreadUtil;
 import forex.genetic.util.jdbc.DataClient;
 
 public abstract class TendenciaProcesoManager implements IGeneticManager {
@@ -96,18 +97,34 @@ public abstract class TendenciaProcesoManager implements IGeneticManager {
 				List<Individuo> individuos = dataClient.getDaoOperaciones()
 						.consultarIndividuoOperacionActiva(puntoTendencia.getDate(), filas);
 				LogUtil.logTime("Individuos=" + individuos.size(), 1);
+				List<Thread> threads = new ArrayList<>(individuos.size());
 				for (Individuo individuo : individuos) {
-					TendenciaEstadistica tendencia;
-					LogUtil.logTime("Calculando..." + individuo.getId(), 2);
-					tendencia = this.calcularTendencia(puntoTendencia, individuo);
-					if (tendencia != null) {
-						LogUtil.logTime("Guardando..." + individuo.getId(), 4);
-						LogUtil.logTime(tendencia.toString(), 2);
-						LogUtil.logAvance(1);
-						this.guardarTendencia(tendencia);
-						listaTendencias.add(tendencia);
-					}
+					Runnable runner = new Runnable() {
+						@Override
+						public void run() {
+							LogUtil.logTime("Running Thread:" + Thread.currentThread().getName(), 3);
+							TendenciaEstadistica tendencia;
+							LogUtil.logTime("Calculando..." + individuo.getId(), 2);
+							try {
+								tendencia = TendenciaProcesoManager.this.calcularTendencia(puntoTendencia, individuo);
+								if (tendencia != null) {
+									LogUtil.logTime("Guardando..." + individuo.getId(), 4);
+									LogUtil.logTime(tendencia.toString(), 2);
+									LogUtil.logAvance(1);
+									TendenciaProcesoManager.this.guardarTendencia(tendencia);
+									listaTendencias.add(tendencia);
+								}
+							} catch (GeneticBusinessException | GeneticDAOException e) {
+								e.printStackTrace();
+							}
+						}
+					};
+					Thread threadIndividuo = new Thread(runner);
+					threadIndividuo.setName(individuo.getId());
+					threads.add(threadIndividuo);
+					threadIndividuo.start();
 				}
+				ThreadUtil.joinThreads(threads);
 			} catch (GeneticDAOException e) {
 				throw new GeneticBusinessException(null, e);
 			}
