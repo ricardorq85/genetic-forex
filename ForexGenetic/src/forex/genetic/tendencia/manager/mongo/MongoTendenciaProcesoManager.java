@@ -17,35 +17,20 @@ import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.mongodb.MongoOperacionesManager;
-import forex.genetic.tendencia.manager.TendenciaProcesoFacade;
+import forex.genetic.tendencia.manager.TendenciaProcesoManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
 
-public class MongoTendenciaProcesoManager extends TendenciaProcesoFacade {
+public class MongoTendenciaProcesoManager extends TendenciaProcesoManager {
 
 	public MongoTendenciaProcesoManager(DataClient dc) throws GeneticBusinessException {
 		super(dc);
 		operacionManager = new MongoOperacionesManager(dataClient);
 	}
 
-	public List<TendenciaEstadistica> calcularTendencias(int cantidadVeces, Date fechaBaseInicial, Date fechaBaseFinal,
-			int filas) throws GeneticBusinessException {
-		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
-		List<? extends Point> pointsFechaTendencia;
-		try {
-			pointsFechaTendencia = dataClient.getDaoDatoHistorico().consultarHistoricoOrderByPrecio(fechaBaseInicial,
-					fechaBaseFinal);
-			for (Point point : pointsFechaTendencia) {
-				listaTendencias.addAll(this.calcularTendencias(point, filas));
-			}
-		} catch (GeneticDAOException e) {
-			throw new GeneticBusinessException(null, e);
-		}
-		return listaTendencias;
-	}
-
 	@SuppressWarnings("unchecked")
+	@Override
 	public List<TendenciaEstadistica> calcularTendencias(Point puntoTendencia, int filas)
 			throws GeneticBusinessException {
 		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();

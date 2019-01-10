@@ -1,42 +1,49 @@
 package forex.genetic.facade;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+import forex.genetic.dao.oracle.OracleParametroDAO;
+import forex.genetic.dao.oracle.OracleTendenciaDAO;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
-import forex.genetic.util.jdbc.mongodb.MongoDataClient;
+import forex.genetic.util.jdbc.JDBCUtil;
 
-public class MongoTendenciaFacade extends TendenciaFacade {
+public class OracleTendenciaFacade extends TendenciaFacade {
 
-//	private MongoTendenciaProcesoManager tendenciaProcesoManager;
-	private MongoDataClient dataClient;
+	private OracleParametroDAO parametroDAO;
+	private OracleTendenciaDAO tendenciaDAO;
+	protected Connection conn = null;
 	private List<Date> fechasXCantidad;
 	private Date parametroFechaInicio;
 	private int parametroStepTendencia, parametroFilasTendencia, parametroMesesTendencia, parametroNumXCantidad;
 
-	public MongoTendenciaFacade() throws GeneticBusinessException {
+	public OracleTendenciaFacade() throws GeneticBusinessException {
 		try {
-			dataClient = (MongoDataClient) DriverDBFactory.createDataClient("mongodb");
-			//tendenciaProcesoManager = new MongoTendenciaProcesoManager(dataClient);
-			tendenciaProcesoFacade = new MongoTendenciaProcesoFacade(dataClient);
-			parametroFechaInicio = dataClient.getDaoParametro().getDateValorParametro("FECHA_INICIO_TENDENCIA");
-			parametroStepTendencia = dataClient.getDaoParametro().getIntValorParametro("STEP_TENDENCIA");
-			parametroFilasTendencia = dataClient.getDaoParametro().getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
+			conn = JDBCUtil.getConnection();
+			//tendenciaManager = new OracleTendenciaProcesoManager(DriverDBFactory.createOracleDataClient(conn));
+			tendenciaProcesoFacade = new OracleTendenciaProcesoFacade(DriverDBFactory.createOracleDataClient(conn));
+			parametroDAO = new OracleParametroDAO(conn);
+			tendenciaDAO = new OracleTendenciaDAO(conn);
+			parametroFechaInicio = parametroDAO.getDateValorParametro("FECHA_INICIO_TENDENCIA");
+			parametroStepTendencia = parametroDAO.getIntValorParametro("STEP_TENDENCIA");
+			parametroFilasTendencia = parametroDAO.getIntValorParametro("INDIVIDUOS_X_TENDENCIA");
 			try {
-				parametroMesesTendencia = dataClient.getDaoParametro().getIntValorParametro("MESES_TENDENCIA");
+				parametroMesesTendencia = parametroDAO.getIntValorParametro("MESES_TENDENCIA");
 			} catch (NumberFormatException ex) {
 				parametroMesesTendencia = 0;
 			}
 			if (parametroMesesTendencia > 0) {
-				fechasXCantidad = dataClient.getDaoTendencia().consultarXCantidadFechaBase(parametroFechaInicio,
+				fechasXCantidad = tendenciaDAO.consultarXCantidadFechaBase(parametroFechaInicio,
 						parametroMesesTendencia);
-				parametroNumXCantidad = dataClient.getDaoParametro().getIntValorParametro("NUM_TENDENCIA_X_CANTIDAD");
+				parametroNumXCantidad = parametroDAO.getIntValorParametro("NUM_TENDENCIA_X_CANTIDAD");
 			}
-		} catch (GeneticDAOException e) {
+		} catch (ClassNotFoundException | SQLException | GeneticDAOException e) {
 			throw new GeneticBusinessException(null, e);
 		}
 	}

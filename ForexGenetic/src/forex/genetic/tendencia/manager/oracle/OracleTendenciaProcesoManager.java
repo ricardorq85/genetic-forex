@@ -9,36 +9,39 @@ import forex.genetic.entities.ParametroConsultaEstadistica;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.oracle.OracleOperacionesManager;
-import forex.genetic.tendencia.manager.TendenciaProcesoFacade;
+import forex.genetic.tendencia.manager.TendenciaProcesoManager;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
 
-public class OracleTendenciaProcesoManager extends TendenciaProcesoFacade {
+public class OracleTendenciaProcesoManager extends TendenciaProcesoManager {
 
 	public OracleTendenciaProcesoManager(DataClient dc) throws GeneticBusinessException {
 		super(dc);
 		operacionManager = new OracleOperacionesManager(dataClient);
 	}
-	
+
 	@Override
-	protected Estadistica consultarEstadisticaFiltrada(Date fechaBase, Order ordenActual, Individuo individuo) throws GeneticBusinessException {
-		ParametroConsultaEstadistica parametroConsultaEstadisticaFiltrada = new ParametroConsultaEstadistica(
-				fechaBase, ordenActual.getPips(), ordenActual.getDuracionMinutos(), individuo);
+	protected Estadistica consultarEstadisticaFiltrada(Date fechaBase, Order ordenActual, Individuo individuo)
+			throws GeneticBusinessException {
+		ParametroConsultaEstadistica parametroConsultaEstadisticaFiltrada = new ParametroConsultaEstadistica(fechaBase,
+				ordenActual.getPips(), ordenActual.getDuracionMinutos(), individuo);
 		LogUtil.logTime("Consultando estadística filtrada...", 5);
 		Estadistica estadisticaFiltradaActual = consultarEstadisticasIndividuo(parametroConsultaEstadisticaFiltrada);
 		return estadisticaFiltradaActual;
 	}
 
 	@Override
-	protected Estadistica consultarEstadisticaHistorica(Date fechaBase, Individuo individuo) throws GeneticBusinessException {
-		ParametroConsultaEstadistica parametroConsultaEstadistica = new ParametroConsultaEstadistica(fechaBase,
-				null, null, individuo);
+	protected Estadistica consultarEstadisticaHistorica(Date fechaBase, Individuo individuo)
+			throws GeneticBusinessException {
+		ParametroConsultaEstadistica parametroConsultaEstadistica = new ParametroConsultaEstadistica(fechaBase, null,
+				null, individuo);
 		LogUtil.logTime("Consultando estadística...", 3);
 		Estadistica estadisticaHistorica = this.consultarEstadisticasIndividuo(parametroConsultaEstadistica);
 		return estadisticaHistorica;
 	}
 
-	private Estadistica consultarEstadisticasIndividuo(ParametroConsultaEstadistica parametroConsultaEstadistica) throws GeneticBusinessException {
+	private Estadistica consultarEstadisticasIndividuo(ParametroConsultaEstadistica parametroConsultaEstadistica)
+			throws GeneticBusinessException {
 		try {
 //			dataClient.getDaoParametro().updateDateValorParametro("FECHA_ESTADISTICAS",
 //					parametroConsultaEstadistica.getFecha());
@@ -55,8 +58,7 @@ public class OracleTendenciaProcesoManager extends TendenciaProcesoFacade {
 //						String.valueOf(Math.round(parametroConsultaEstadistica.getDuracion())));
 //			}
 //			dataClient.commit();
-			return dataClient.getDaoOperaciones().consultarEstadisticas(null,
-					parametroConsultaEstadistica);
+			return dataClient.getDaoOperaciones().consultarEstadisticas(null, parametroConsultaEstadistica);
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(null, e);
 		}

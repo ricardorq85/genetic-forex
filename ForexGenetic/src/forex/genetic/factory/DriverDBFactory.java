@@ -61,7 +61,7 @@ public class DriverDBFactory extends GeneticFactory {
 		try {
 			if ("procesoIndividuo".equals(entidad)) {
 				instance = new OracleProcesoIndividuoManager(createDataClient("oracle"));
-			} else if ("tendencia".equals(entidad)) {
+			} else if ("tendenciaProceso".equals(entidad)) {
 				instance = new OracleTendenciaProcesoManager(createDataClient("oracle"));
 			} else {
 				throw new IllegalArgumentException(
@@ -78,7 +78,7 @@ public class DriverDBFactory extends GeneticFactory {
 		IGeneticManager instance = null;
 		if ("procesoIndividuo".equals(entidad)) {
 			instance = new MongoProcesoIndividuoManager(createDataClient("mongodb"));
-		} else if ("tendencia".equals(entidad)) {
+		} else if ("tendenciaProceso".equals(entidad)) {
 			instance = new MongoTendenciaProcesoManager(createDataClient("mongodb"));
 		} else {
 			throw new IllegalArgumentException(

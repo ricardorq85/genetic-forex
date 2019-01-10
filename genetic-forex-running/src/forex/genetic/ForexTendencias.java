@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 import forex.genetic.exception.GeneticBusinessException;
-import forex.genetic.facade.TendenciaFacade;
+import forex.genetic.facade.OracleTendenciaFacade;
 
 /**
  *
@@ -45,7 +45,7 @@ public class ForexTendencias {
 		setErr(out);
 		logTime("Inicio: " + id, 1);
 		setId(Long.toString(id));
-		TendenciaFacade facade = new TendenciaFacade();
+		OracleTendenciaFacade facade = new OracleTendenciaFacade();
 		facade.procesarTendencias();
 		logTime("Fin: " + id, 1);
 	}

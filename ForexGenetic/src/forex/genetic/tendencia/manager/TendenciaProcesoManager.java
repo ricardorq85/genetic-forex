@@ -12,26 +12,21 @@ import forex.genetic.entities.Tendencia;
 import forex.genetic.entities.TendenciaEstadistica;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.manager.IGeneticManager;
+import forex.genetic.manager.OperacionesManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
-import forex.genetic.util.RandomUtil;
-import forex.genetic.util.ThreadUtil;
 import forex.genetic.util.jdbc.DataClient;
 
-public abstract class TendenciaProcesoManager extends Thread {
+public abstract class TendenciaProcesoManager implements IGeneticManager {
 
-	private DataClient dataClient;
-	private Individuo individuo;
-	private Point puntoTendencia;
+	@SuppressWarnings("rawtypes")
+	protected DataClient dataClient;
 	private Date fechaComparacion;
-	private List<TendenciaEstadistica> listaTendencias;
+	protected OperacionesManager operacionManager;
 
-	public TendenciaProcesoManager(DataClient dc, Individuo ind, Point p, Date fc) throws GeneticBusinessException {
+	public TendenciaProcesoManager(DataClient dc) throws GeneticBusinessException {
 		this.dataClient = dc;
-		this.individuo = ind;
-		this.puntoTendencia = p;
-		this.listaTendencias = new ArrayList<TendenciaEstadistica>();
-		this.fechaComparacion = fc;
 	}
 
 	protected abstract Estadistica consultarEstadisticaFiltrada(Date fechaBase, Order ordenActual, Individuo individuo)
@@ -65,16 +60,8 @@ public abstract class TendenciaProcesoManager extends Thread {
 				throw new GeneticBusinessException(null, e);
 			}
 		}
+		dataClient.close();
 		return listaTendencias;
-
-	}
-
-	public void guardarTendencia(Tendencia tendencia) throws GeneticDAOException {
-		dataClient.getDaoTendencia().insertOrUpdate(tendencia);
-		if (tendencia.getFechaBase().after(fechaComparacion)) {
-			dataClient.getDaoTendenciaUltimosDatos().insertOrUpdate(tendencia);
-		}
-		dataClient.commit();
 	}
 
 	public TendenciaEstadistica calcularTendencia(Point pointFecha, Individuo individuo)
@@ -133,6 +120,22 @@ public abstract class TendenciaProcesoManager extends Thread {
 		ordenActual.setPips(pipsActuales);
 		ordenActual.setDuracionMinutos(duracionActual);
 		return ordenActual;
+	}
+
+	protected void guardarTendencia(Tendencia tendencia) throws GeneticDAOException {
+		dataClient.getDaoTendencia().insertOrUpdate(tendencia);
+		if (tendencia.getFechaBase().after(fechaComparacion)) {
+			dataClient.getDaoTendenciaUltimosDatos().insertOrUpdate(tendencia);
+		}
+		dataClient.commit();
+	}
+
+	public Date getFechaComparacion() {
+		return fechaComparacion;
+	}
+
+	public void setFechaComparacion(Date fechaComparacion) {
+		this.fechaComparacion = fechaComparacion;
 	}
 
 }
