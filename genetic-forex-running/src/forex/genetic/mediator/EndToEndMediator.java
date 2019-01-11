@@ -87,7 +87,7 @@ public abstract class EndToEndMediator extends GeneticMediator {
 						+ ",count=" + count, 1);
 				this.procesarIndividuos();
 				this.procesarTendencias(DriverDBFactory.createDataClient("oracle"),
-						(TendenciaProcesoFacade) DriverDBFactory.createOracleManager("tendencia"));
+						(TendenciaProcesoFacade) DriverDBFactory.createOracleManager("tendenciaProceso"));
 				this.exportarTendenciaParaOperar();
 				this.crearNuevosIndividuos();
 				if (imported == 0) {

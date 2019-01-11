@@ -26,11 +26,10 @@ public class MongoTendenciaProcesoFacade extends TendenciaProcesoFacade {
 		try {
 			pointsFechaTendencia = dataClient.getDaoDatoHistorico().consultarHistoricoOrderByPrecio(fechaBaseInicial,
 					fechaBaseFinal);
-			List<Thread> threads = new ArrayList<>();
 			for (Point point : pointsFechaTendencia) {
-				if (threads.size() > 5) {
-					ThreadUtil.joinThreads(threads);
-					threads = new ArrayList<>();
+				if (threads.size() > 3) {
+					ThreadUtil.joinThread(threads.get(0));
+					threads.remove(0);
 				}
 				Runnable runner = new Runnable() {
 					@Override
@@ -47,6 +46,7 @@ public class MongoTendenciaProcesoFacade extends TendenciaProcesoFacade {
 				};
 				Thread thread = new Thread(runner);
 				threads.add(thread);
+				thread.start();
 			}
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(null, e);

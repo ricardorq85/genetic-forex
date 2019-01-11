@@ -20,7 +20,7 @@ import forex.genetic.util.jdbc.DataClient;
 
 public class TendenciaProcesoFacade {
 
-	private static List<Thread> threads = new Vector<>();
+	protected static List<Thread> threads = new Vector<>();
 
 	protected DataClient dataClient;
 	private static final double FACTOR_NUMERO_RANDOM_TENDENCIAS = 0.3;
