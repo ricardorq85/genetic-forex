@@ -4,6 +4,7 @@
  */
 package forex.genetic.manager.mongodb;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +14,7 @@ import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.ProcesoIndividuoManager;
 import forex.genetic.thread.mongo.MongoProcesarIndividuoThread;
+import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.jdbc.DataClient;
 
@@ -29,11 +31,10 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 	public void process(boolean onlyOne) {
 		boolean any;
 		try {
-			// TODO rrojasq: cambiar para que no sea consultado cada vez que se necesita. Puede ser desde el DAO.
-			//maxFechaHistorico = DateUtil.obtenerFecha("2018/11/12 00:00");
 			//minFechaHistorico = DateUtil.obtenerFecha("2008/05/06 00:00");
 			Date minFechaHistorico = dataClient.getDaoDatoHistorico().getFechaHistoricaMinima();
 			Date maxFechaHistorico = dataClient.getDaoDatoHistorico().getFechaHistoricaMaxima();
+			maxFechaHistorico = DateUtil.obtenerFecha("2016/01/01 00:00");
 			do {
 				any = false;
 				List<Thread> threads = new ArrayList<>();
@@ -61,7 +62,7 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 					thread.join();
 				}
 			} while (any && !onlyOne);
-		} catch (InterruptedException | GeneticDAOException ex) {
+		} catch (InterruptedException | GeneticDAOException | ParseException ex) {
 			ex.printStackTrace();
 		}
 	}
