@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import forex.genetic.entities.Poblacion;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.facade.DatoHistoricoFacade;
 import forex.genetic.facade.PoblacionFacade;
@@ -28,7 +29,7 @@ public class MultiplePoblacionDelegate {
 	private DatoHistoricoFacade dhFacade;
 	private PoblacionFacade poblacionFacade;
 
-	public MultiplePoblacionDelegate() {
+	public MultiplePoblacionDelegate() throws GeneticBusinessException {
 		super();
 		dhFacade = (DatoHistoricoFacade) FacadeFactory.create("datoHistorico");
 		poblacionFacade = (PoblacionFacade) FacadeFactory.create("individuo");

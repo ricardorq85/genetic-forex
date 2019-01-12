@@ -18,7 +18,7 @@ import forex.genetic.util.RandomUtil;
 import forex.genetic.util.ThreadUtil;
 import forex.genetic.util.jdbc.DataClient;
 
-public class TendenciaProcesoFacade {
+public class TendenciaProcesoFacade implements IGeneticFacade {
 
 	protected static List<Thread> threads = new Vector<>();
 
@@ -71,15 +71,16 @@ public class TendenciaProcesoFacade {
 						public void run() {
 							try {
 								TendenciaProcesoManager tpm = (TendenciaProcesoManager) DriverDBFactory
-										.createOracleManager("tendenciaProceso");
+										.createManager(dataClient, "tendenciaProceso");
 								tpm.setFechaComparacion(fechaComparacion);
 								listaTendencias
 										.addAll(tpm.calcularTendencias(pointsFechaTendencia.get(randomIndex), filas));
-								tpm = (TendenciaProcesoManager) DriverDBFactory.createOracleManager("tendenciaProceso");
+								tpm = (TendenciaProcesoManager) DriverDBFactory.createManager(dataClient,
+										"tendenciaProceso");
 								tpm.setFechaComparacion(fechaComparacion);
 								listaTendencias.addAll(tpm
 										.calcularTendencias(pointsFechaTendencia.get(size - randomIndex - 1), filas));
-							} catch (GeneticBusinessException e) {
+							} catch (GeneticBusinessException | GeneticDAOException e) {
 								e.printStackTrace();
 							}
 						}
@@ -100,8 +101,8 @@ public class TendenciaProcesoFacade {
 		try {
 			Point p = dataClient.getDaoDatoHistorico().consultarXFecha(fechaBase);
 			if (p != null) {
-				TendenciaProcesoManager tpm = (TendenciaProcesoManager) DriverDBFactory
-						.createOracleManager("tendenciaProceso");
+				TendenciaProcesoManager tpm = (TendenciaProcesoManager) DriverDBFactory.createManager(dataClient,
+						"tendenciaProceso");
 				tpm.setFechaComparacion(fechaComparacion);
 				listaTendencias.addAll(tpm.calcularTendencias(p, filas));
 			}
@@ -116,8 +117,8 @@ public class TendenciaProcesoFacade {
 		Individuo individuo;
 		try {
 			individuo = dataClient.getDaoOperaciones().consultarIndividuoOperacionActiva(idIndividuo, fechaBase, 2);
-			TendenciaProcesoManager tpm = (TendenciaProcesoManager) DriverDBFactory
-					.createOracleManager("tendenciaProceso");
+			TendenciaProcesoManager tpm = (TendenciaProcesoManager) DriverDBFactory.createManager(dataClient,
+					"tendenciaProceso");
 			tpm.setFechaComparacion(fechaComparacion);
 
 			TendenciaEstadistica tendenciaEstadistica = tpm.calcularTendencia(currentPoint, individuo);
@@ -143,8 +144,8 @@ public class TendenciaProcesoFacade {
 			List<? extends Point> pointsFechaTendencia;
 			pointsFechaTendencia = dataClient.getDaoDatoHistorico().consultarHistorico(fechaBase, fechaBase);
 			if ((pointsFechaTendencia != null) && (!pointsFechaTendencia.isEmpty())) {
-				TendenciaProcesoManager tpm = (TendenciaProcesoManager) DriverDBFactory
-						.createOracleManager("tendenciaProceso");
+				TendenciaProcesoManager tpm = (TendenciaProcesoManager) DriverDBFactory.createManager(dataClient,
+						"tendenciaProceso");
 				tpm.setFechaComparacion(fechaComparacion);
 				tendenciaEstadistica = tpm.calcularTendencia(pointsFechaTendencia.get(0), individuo);
 			}

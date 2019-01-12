@@ -25,6 +25,7 @@ import forex.genetic.delegate.PoblacionDelegate;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.exception.GeneticException;
+import forex.genetic.facade.OracleTendenciaProcesoFacade;
 import forex.genetic.facade.TendenciaProcesoFacade;
 import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.factory.ProcesarTendenciasFactory;
@@ -86,8 +87,8 @@ public abstract class EndToEndMediator extends GeneticMediator {
 						+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva)
 						+ ",count=" + count, 1);
 				this.procesarIndividuos();
-				this.procesarTendencias(DriverDBFactory.createDataClient("oracle"),
-						(TendenciaProcesoFacade) DriverDBFactory.createOracleManager("tendenciaProceso"));
+				DataClient dc = DriverDBFactory.createDataClient("oracle");
+				this.procesarTendencias(dc, new OracleTendenciaProcesoFacade(dc));
 				this.exportarTendenciaParaOperar();
 				this.crearNuevosIndividuos();
 				if (imported == 0) {
@@ -177,7 +178,7 @@ public abstract class EndToEndMediator extends GeneticMediator {
 		}
 	}
 
-	protected void procesarTendencias(DataClient dataClient, TendenciaProcesoFacade tendenciaProcesoManager)
+	protected void procesarTendencias(DataClient dataClient, TendenciaProcesoFacade tendenciaProcesoFacade)
 			throws GeneticBusinessException {
 		IParametroDAO parametroDAO;
 		try {
@@ -193,7 +194,7 @@ public abstract class EndToEndMediator extends GeneticMediator {
 //				eDate.printStackTrace();
 //			}
 			if (count == 1) {
-				tendenciaProcesoManager.calcularTendencias(fechaBaseFinal, parametroFilasTendencia / 2);
+				tendenciaProcesoFacade.calcularTendencias(fechaBaseFinal, parametroFilasTendencia / 2);
 			}
 			long durMillis = DateUtil.calcularDuracionMillis(ultimaFechaBaseTendencia, fechaBaseFinal);
 			int diasDiferencia = (int) ((durMillis / (1000 * 60 * 60 * 24)) + 1);
@@ -214,7 +215,7 @@ public abstract class EndToEndMediator extends GeneticMediator {
 				Date fechaBaseInicial = DateUtil.adicionarMinutos(fechaBaseFinal, currentStep);
 				LogUtil.logTime("Fecha base inicial=" + DateUtil.getDateString(fechaBaseInicial) + ", Fecha base final="
 						+ DateUtil.getDateString(fechaBaseFinal), 1);
-				tendenciaProcesoManager.calcularTendencias(fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
+				tendenciaProcesoFacade.calcularTendencias(fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
 				fechaBaseFinal = fechaBaseInicial;
 			}
 			LogUtil.logTime("End Procesar Tendencias", 1);

@@ -63,7 +63,7 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 		this.collection.createIndex(Indexes.ascending("moneda", "periodo", "fechaHistorico"), indexOptions);
 		this.collection.createIndex(Indexes.ascending("fechaHistorico"), indexOptions);
 
-		//this.configureIndexIndicators();
+		this.configureIndexIndicators();
 	}
 
 	private void configureIndexIndicators() {

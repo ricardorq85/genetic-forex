@@ -12,32 +12,32 @@ import forex.genetic.util.jdbc.JDBCUtil;
 
 public class MonedaFactory {
 
-	private static Connection conn;
-	private static OracleParametroDAO parametroDAO;
+//	private static Connection conn;
+//	private static OracleParametroDAO parametroDAO;
 	private static boolean consultado = false;
 	private static Moneda moneda;
 
-	static {
-		try {
-			conn = JDBCUtil.getConnection();
-			parametroDAO = new OracleParametroDAO(conn);
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
-	}
+//	static {
+//		try {
+//			conn = JDBCUtil.getConnection();
+//			parametroDAO = new OracleParametroDAO(conn);
+//		} catch (ClassNotFoundException | SQLException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	public static Moneda getMoneda() {
 		if (!consultado) {
 			String nombreParametro = "MONEDA";
-			String m = null;
-			if (parametroDAO != null) {
-				try {
-					m = parametroDAO.getValorParametro(nombreParametro);
-				} catch (GeneticDAOException e) {
-					m = null;
-					e.printStackTrace();
-				}
-			}
+			String m = "USDCAD";
+//			if (parametroDAO != null) {
+//				try {
+//					m = parametroDAO.getValorParametro(nombreParametro);
+//				} catch (GeneticDAOException e) {
+//					m = null;
+//					e.printStackTrace();
+//				}
+//			}
 			moneda = getMoneda(m);
 			consultado = true;
 		}

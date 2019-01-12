@@ -18,6 +18,7 @@ import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.facade.TendenciaProcesoFacade;
 import forex.genetic.factory.DriverDBFactory;
+import forex.genetic.factory.FacadeFactory;
 import forex.genetic.factory.ProcesarTendenciasFactory;
 import forex.genetic.manager.IGeneticManager;
 import forex.genetic.manager.IndividuoManager;
@@ -97,7 +98,9 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 		try {
 			IGeneticManager[] managers = DriverDBFactory.createManagers("tendencia");
 			for (int i = 0; i < dataClients.size(); i++) {
-				procesarTendencias(dataClients.get(i), (TendenciaProcesoFacade) managers[i]);
+				TendenciaProcesoFacade facade = (TendenciaProcesoFacade) FacadeFactory.create(dataClients.get(i),
+						"tendenciaProceso");
+				procesarTendencias(dataClients.get(i), facade);
 			}
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException("procesarTendencias", e);

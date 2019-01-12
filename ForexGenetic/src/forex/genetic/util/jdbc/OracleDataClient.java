@@ -30,7 +30,7 @@ import forex.genetic.exception.GeneticDAOException;
 public class OracleDataClient extends DataClient<Connection, IndividuoEstrategia, Order, Estadistica> {
 
 	public OracleDataClient(Connection client) {
-		super(client);
+		super(client, DataClient.DriverType.ORACLE);
 	}
 
 	@Override

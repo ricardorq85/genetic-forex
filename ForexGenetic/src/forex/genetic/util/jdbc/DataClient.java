@@ -16,6 +16,10 @@ import forex.genetic.exception.GeneticDAOException;
 
 public abstract class DataClient<C, I extends IndividuoEstrategia, O extends Order, E extends Estadistica> {
 
+	public enum DriverType {
+		ORACLE, MONGODB
+	}
+
 	protected C client;
 
 	protected IDatoHistoricoDAO daoDatoHistorico;
@@ -29,8 +33,11 @@ public abstract class DataClient<C, I extends IndividuoEstrategia, O extends Ord
 	protected IDatoAdicionalTPODAO daoDatoAdicionalTPO;
 	protected IIndividuoDAO<I> daoIndividuoBorrado;
 
-	public DataClient(C client) {
+	private DriverType driverType;
+
+	public DataClient(C client, DriverType t) {
 		this.client = client;
+		this.setDriverType(t);
 	}
 
 	public C getClient() {
@@ -44,6 +51,14 @@ public abstract class DataClient<C, I extends IndividuoEstrategia, O extends Ord
 	public abstract void close();
 
 	public abstract void commit() throws GeneticDAOException;
+
+	public DriverType getDriverType() {
+		return driverType;
+	}
+
+	public void setDriverType(DriverType driverType) {
+		this.driverType = driverType;
+	}
 
 	public abstract IDatoHistoricoDAO getDaoDatoHistorico() throws GeneticDAOException;
 

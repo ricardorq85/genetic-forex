@@ -30,7 +30,7 @@ import forex.genetic.util.jdbc.DataClient;
 public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, MongoOrder, MongoEstadistica> {
 
 	public MongoDataClient(MongoClient client) {
-		super(client);
+		super(client, DataClient.DriverType.MONGODB);
 	}
 
 	@Override

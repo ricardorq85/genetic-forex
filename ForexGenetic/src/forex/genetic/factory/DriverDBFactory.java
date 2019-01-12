@@ -44,7 +44,20 @@ public class DriverDBFactory extends GeneticFactory {
 		return dc;
 	}
 
-	public static IGeneticManager[] createManagers(String entidad) throws GeneticBusinessException, GeneticDAOException {
+	public static IGeneticManager createManager(DataClient dc, String entidad)
+			throws GeneticBusinessException, GeneticDAOException {
+		if (DataClient.DriverType.ORACLE.equals(dc.getDriverType())) {
+			return createOracleManager(entidad);
+		} else if (DataClient.DriverType.ORACLE.equals(dc.getDriverType())) {
+			return createMongoManager(entidad);
+		} else {
+			throw new IllegalArgumentException(
+					new StringBuilder("DataClient no soportado para crear MANAGER: ").append(dc.getDriverType()).toString());
+		}
+	}
+
+	public static IGeneticManager[] createManagers(String entidad)
+			throws GeneticBusinessException, GeneticDAOException {
 		IGeneticManager[] instances = new IGeneticManager[drivers.length];
 		for (int i = 0; i < drivers.length; i++) {
 			if ("oracle".equals(drivers[i])) {

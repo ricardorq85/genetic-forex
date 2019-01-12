@@ -25,7 +25,7 @@ import forex.genetic.facade.OracleTendenciaFacade;
  *
  * @author ricardorq85
  */
-public class ForexTendencias {
+public class ForexOracleTendencias {
 
 	/**
 	 * @param args

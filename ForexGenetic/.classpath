@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="../drivers/ojdbc6.jar"/>
 	<classpathentry kind="lib" path="../drivers/sqljdbc42.jar"/>
-	<classpathentry kind="lib" path="../drivers/mongo-java-driver-3.8.2.jar" sourcepath="/drivers/mongodb-driver-3.8.2-sources.jar">
+	<classpathentry kind="lib" path="../drivers/mongo-java-driver-3.8.2.jar" sourcepath="C:/Users/Angela/Documents/ricardorq85/JavaProjects/Git/genetic-forex/drivers/mongodb-driver-3.8.2-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:file:../drivers/mongo-java-driver-3.9.0-rc0-javadoc.jar!/"/>
 		</attributes>
