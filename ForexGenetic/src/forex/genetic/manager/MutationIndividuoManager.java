@@ -71,9 +71,9 @@ public class MutationIndividuoManager extends MutationManager {
 					}
 					IndicadorManager indicatorManager = indicadorController.getManagerInstance(i);
 					Indicator indicadorHijo = openIndicator;
-					if ((random.nextDouble() < 0.4)) {
+					if ((random.nextDouble() < 0.5)) {
 						indicadorHijo = null;
-					} else if ((random.nextDouble() < 0.6)) {
+					} else if ((random.nextDouble() < 0.7)) {
 						indicadorHijo = indicatorManager.mutate(openIndicator);
 					}
 					openIndicators.add(indicadorHijo);
@@ -82,9 +82,9 @@ public class MutationIndividuoManager extends MutationManager {
 						closeIndicator = individuo1.getCloseIndicators().get(i);
 					}
 					indicadorHijo = closeIndicator;
-					if ((random.nextDouble() < 0.4)) {
+					if ((random.nextDouble() < 0.7)) {
 						indicadorHijo = null;
-					} else if ((countCloseNotNull > 0 && countCloseNotNull < 2) || (random.nextDouble() < 0.6)) {
+					} else if ((countCloseNotNull > 0 && countCloseNotNull < 2) || (random.nextDouble() < 0.9)) {
 						indicadorHijo = indicatorManager.mutate(closeIndicator);
 					}
 					if (indicadorHijo != null) {

@@ -141,7 +141,7 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 
 	protected void crearNuevosIndividuos() throws GeneticBusinessException {
 		LogUtil.logTime("Init Crear individuos x indicador", 1);
-		IndividuoXIndicadorManager manager = new MongoIndividuoXIndicadorManager(dataClients.get(0),
+		MongoIndividuoXIndicadorManager manager = new MongoIndividuoXIndicadorManager(dataClients.get(0),
 				ultimaFechaBaseTendencia, fechaHistoricaMaximaNueva, 12);
 		manager.crearIndividuos();
 		LogUtil.logTime("End Crear individuos x indicador", 1);

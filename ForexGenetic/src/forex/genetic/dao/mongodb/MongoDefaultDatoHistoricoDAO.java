@@ -219,12 +219,16 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 		filtros.add(Filters.lte("fechaHistorico", rango.getHighInterval()));
 
 		adicionarFiltroIndicadores(individuo.getCloseIndicators(), filtros);
+		List<Point> p;
+		if (filtros.size() > 2) {
+			Bson bsonFiltrosCompletos = Filters.and(filtros);
+			MongoCursor<Document> cursor = this.collection.find(bsonFiltrosCompletos)
+					.sort(Sorts.orderBy(Sorts.ascending("fechaHistorico"))).iterator();
 
-		Bson bsonFiltrosCompletos = Filters.and(filtros);
-		MongoCursor<Document> cursor = this.collection.find(bsonFiltrosCompletos)
-				.sort(Sorts.orderBy(Sorts.ascending("fechaHistorico"))).iterator();
-
-		List<Point> p = getMapper().helpList(cursor);
+			p = getMapper().helpList(cursor);
+		} else {
+			p = new ArrayList<>();
+		}
 		return p;
 	}
 

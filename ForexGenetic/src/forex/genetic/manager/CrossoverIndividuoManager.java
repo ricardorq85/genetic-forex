@@ -31,7 +31,8 @@ public class CrossoverIndividuoManager extends CrossoverManager {
 		super(ControllerFactory.createIndicadorController(ControllerFactory.ControllerType.Individuo));
 	}
 
-	public Poblacion[] crossover(int generacion, Poblacion poblacionBase, Poblacion poblacionParaCruzar, int percentValue) {
+	public Poblacion[] crossover(int generacion, Poblacion poblacionBase, Poblacion poblacionParaCruzar,
+			int percentValue) {
 		Poblacion[] poblacionArray = new Poblacion[2];
 		EspecificCrossoverManager especificCrossoverManager = EspecificCrossoverManager.getInstance();
 		Poblacion parentsPoblacion = new Poblacion();
@@ -42,7 +43,7 @@ public class CrossoverIndividuoManager extends CrossoverManager {
 		Random random = new Random();
 		List<IndividuoEstrategia> individuosBase = poblacionBase.getIndividuos();
 		List<IndividuoEstrategia> individuosParaCruzar = poblacionParaCruzar.getIndividuos();
-		if (individuosBase.isEmpty()||individuosParaCruzar.isEmpty()){
+		if (individuosBase.isEmpty() || individuosParaCruzar.isEmpty()) {
 			throw new IllegalArgumentException("individuosBase y individuosParaCruzar no pueden estar vacios");
 		}
 		int counter = 0;
@@ -77,14 +78,13 @@ public class CrossoverIndividuoManager extends CrossoverManager {
 						Indicator openIndicator2 = (openIndicators2.size() > i) ? openIndicators2.get(i) : null;
 						IndicadorManager<Indicator> indicatorManager = indicadorController.getManagerInstance(i);
 						/*
-						 * if (!indicatorManager.isObligatory() &&
-						 * (random.nextDouble() < 0.1)) {
+						 * if (!indicatorManager.isObligatory() && (random.nextDouble() < 0.1)) {
 						 * openIndicators.add(null); } else {
 						 */
-						if ((openIndicator1 == null) && (openIndicator2 == null)) {
-							openIndicator1 = indicatorManager.mutate(null);
-							openIndicator2 = indicatorManager.mutate(null);
-						}
+//						if ((openIndicator1 == null) && (openIndicator2 == null)) {
+//							openIndicator1 = indicatorManager.mutate(null);
+//							openIndicator2 = indicatorManager.mutate(null);
+//						}
 						Indicator indHijo = indicatorManager.crossover(openIndicator1, openIndicator2);
 						openIndicators.add(indHijo);
 						// }
@@ -93,14 +93,13 @@ public class CrossoverIndividuoManager extends CrossoverManager {
 						Indicator closeIndicator1 = (closeIndicators1.size() > i) ? closeIndicators1.get(i) : null;
 						Indicator closeIndicator2 = (closeIndicators2.size() > i) ? closeIndicators2.get(i) : null;
 						/*
-						 * if (!indicatorManager.isObligatory() &&
-						 * (random.nextDouble() < 0.1)) {
+						 * if (!indicatorManager.isObligatory() && (random.nextDouble() < 0.1)) {
 						 * closeIndicators.add(null); } else {
 						 */
-						if ((closeIndicator1 == null) && (closeIndicator2 == null)) {
-							closeIndicator1 = indicatorManager.mutate(null);
-							closeIndicator2 = indicatorManager.mutate(null);
-						}
+//						if ((closeIndicator1 == null) && (closeIndicator2 == null)) {
+//							closeIndicator1 = indicatorManager.mutate(null);
+//							closeIndicator2 = indicatorManager.mutate(null);
+//						}
 						indHijo = indicatorManager.crossover(closeIndicator1, closeIndicator2);
 						closeIndicators.add(indHijo);
 						// }
