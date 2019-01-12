@@ -8,6 +8,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
@@ -28,12 +29,12 @@ import forex.genetic.util.RandomUtil;
 
 public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implements IIndividuoDAO<MongoIndividuo> {
 
-	public MongoIndividuoDAO() throws GeneticDAOException {
-		super("individuo", true);
+	public MongoIndividuoDAO(MongoDatabase db) throws GeneticDAOException {
+		super(db, "individuo", true);
 	}
 
-	public MongoIndividuoDAO(String name, boolean configure) {
-		super(name, configure);
+	public MongoIndividuoDAO(MongoDatabase db, String name, boolean configure) {
+		super(db, name, configure);
 	}
 
 	public void configureCollection() {
@@ -80,6 +81,8 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		Bson filtroProcesoEjecucionNull = Filters.exists("procesoEjecucion.maxFechaHistorico", false);
 		Bson filtroFechaHistorica = Filters.ne("procesoEjecucion.maxFechaHistorico", fechaHistorico);
 		Bson filtroOr = Filters.or(filtroProcesoEjecucionNull, filtroFechaHistorica);
+		Bson bsonFiltroAdicional = Filters.regex("idIndividuo", filtroAdicional + "$");
+
 		List<Bson> sorts = new ArrayList<>();
 		sorts.add(Sorts.ascending("procesoEjecucion.maxFechaHistorico"));
 		this.addRandomSort(sorts, "takeProfit");
@@ -93,7 +96,7 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 //		Bson filtroIndividuo = Filters.regex("idIndividuo", "1544908361588.*");
 //		Bson filtroCompleto = Filters.and(filtroIndividuo, filtroOr);
 
-		Bson filtroCompleto = Filters.and(filtroOr);
+		Bson filtroCompleto = Filters.and(filtroOr, bsonFiltroAdicional);
 		MongoCursor<Document> cursor = collection.find(filtroCompleto).sort(ordenador).limit(cantidad).iterator();
 		return getMapper().helpList(cursor);
 	}

@@ -8,6 +8,7 @@ import forex.genetic.entities.Order;
 import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.util.NumberUtil;
 
 public class MongoEstadisticasManager {
@@ -19,7 +20,8 @@ public class MongoEstadisticasManager {
 	private MongoEstadistica estadisticaAnterior = null;
 
 	public MongoEstadisticasManager(MongoIndividuo individuo) throws GeneticDAOException {
-		this.daoEstadisticas = new MongoEstadisticasIndividuoDAO(false);
+		this.daoEstadisticas = (MongoEstadisticasIndividuoDAO) DriverDBFactory.createDataClient("mongodb")
+				.getDaoEstadistica();
 		this.individuo = individuo;
 	}
 
@@ -38,15 +40,17 @@ public class MongoEstadisticasManager {
 			estadisticaNueva.getDataDuracion().addAll(estadisticaAnterior.getDataDuracion());
 			estadisticaNueva.getDataDuracionPositivos().addAll(estadisticaAnterior.getDataDuracionPositivos());
 			estadisticaNueva.getDataDuracionNegativos().addAll(estadisticaAnterior.getDataDuracionNegativos());
-			
+
 			estadisticaNueva.getDataPips().addAll(estadisticaAnterior.getDataPips());
 			estadisticaNueva.getDataPipsPositivos().addAll(estadisticaAnterior.getDataPipsPositivos());
 			estadisticaNueva.getDataPipsNegativos().addAll(estadisticaAnterior.getDataPipsNegativos());
-			
+
 			estadisticaNueva.getDataPipsRetroceso().addAll(estadisticaAnterior.getDataPipsRetroceso());
-			estadisticaNueva.getDataPipsRetrocesoPositivos().addAll(estadisticaAnterior.getDataPipsRetrocesoPositivos());
-			estadisticaNueva.getDataPipsRetrocesoNegativos().addAll(estadisticaAnterior.getDataPipsRetrocesoNegativos());
-			
+			estadisticaNueva.getDataPipsRetrocesoPositivos()
+					.addAll(estadisticaAnterior.getDataPipsRetrocesoPositivos());
+			estadisticaNueva.getDataPipsRetrocesoNegativos()
+					.addAll(estadisticaAnterior.getDataPipsRetrocesoNegativos());
+
 			estadisticaNueva.setFechaInicial(order.getCloseDate());
 			estadisticaNueva.getDataDuracion().add(new Long(order.getDuracionMinutos()).doubleValue());
 			estadisticaNueva.getDataPips().add(order.getPips());

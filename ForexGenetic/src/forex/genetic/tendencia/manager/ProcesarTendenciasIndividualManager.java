@@ -24,7 +24,7 @@ public class ProcesarTendenciasIndividualManager extends ProcesarTendenciasBuySe
 
 	private OracleTendenciaDAO tendenciaDAO;
 
-	public ProcesarTendenciasIndividualManager() throws ClassNotFoundException, SQLException, GeneticDAOException {
+	public ProcesarTendenciasIndividualManager() throws ClassNotFoundException, SQLException, GeneticBusinessException{
 		super();
 		tendenciaDAO = new OracleTendenciaDAO((Connection) getDataClient().getClient());
 	}

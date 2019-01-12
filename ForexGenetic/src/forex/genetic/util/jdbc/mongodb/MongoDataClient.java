@@ -1,6 +1,7 @@
 package forex.genetic.util.jdbc.mongodb;
 
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
 
 import forex.genetic.dao.IDatoAdicionalTPODAO;
 import forex.genetic.dao.IDatoHistoricoDAO;
@@ -32,9 +33,14 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	public MongoDataClient(MongoClient client) {
 		super(client, DataClient.DriverType.MONGODB);
 	}
+	
+	private MongoDatabase getDatabase() {
+		return client.getDatabase("forex");
+	}
 
 	@Override
 	public void close() {
+		client.close();
 	}
 
 	@Override
@@ -44,7 +50,7 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	@Override
 	public IDatoHistoricoDAO getDaoDatoHistorico() throws GeneticDAOException {
 		if (daoDatoHistorico == null) {
-			daoDatoHistorico = new MongoDatoHistoricoDAO();
+			daoDatoHistorico = new MongoDatoHistoricoDAO(getDatabase());
 		}
 		return daoDatoHistorico;
 	}
@@ -52,7 +58,7 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	@Override
 	public ITendenciaDAO getDaoTendencia() throws GeneticDAOException {
 		if (daoTendencia == null) {
-			daoTendencia = new MongoTendenciaDAO();
+			daoTendencia = new MongoTendenciaDAO(getDatabase());
 		}
 		return daoTendencia;
 	}
@@ -60,7 +66,7 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	@Override
 	public ITendenciaDAO getDaoTendenciaUltimosDatos() throws GeneticDAOException {
 		if (daoTendenciaUltimosDatos == null) {
-			daoTendenciaUltimosDatos = new MongoTendenciaUltimosDatosDAO();
+			daoTendenciaUltimosDatos = new MongoTendenciaUltimosDatosDAO(getDatabase());
 		}
 		return daoTendenciaUltimosDatos;
 	}
@@ -68,7 +74,7 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	@Override
 	public IParametroDAO getDaoParametro() throws GeneticDAOException {
 		if (daoParametro == null) {
-			daoParametro = new MongoParametroDAO();
+			daoParametro = new MongoParametroDAO(getDatabase());
 		}
 		return daoParametro;
 	}
@@ -76,7 +82,7 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	@Override
 	public IIndividuoDAO<MongoIndividuo> getDaoIndividuo() throws GeneticDAOException {
 		if (daoIndividuo == null) {
-			daoIndividuo = new MongoIndividuoDAO();
+			daoIndividuo = new MongoIndividuoDAO(getDatabase());
 		}
 		return daoIndividuo;
 	}
@@ -84,7 +90,7 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	@Override
 	public IOperacionesDAO<MongoOrder> getDaoOperaciones() throws GeneticDAOException {
 		if (daoOperacion == null) {
-			daoOperacion = new MongoOperacionesDAO();
+			daoOperacion = new MongoOperacionesDAO(getDatabase());
 		}
 		return daoOperacion;
 	}
@@ -98,7 +104,7 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	@Override
 	public IEstadisticaDAO<MongoEstadistica> getDaoEstadistica() throws GeneticDAOException {
 		if (daoEstadistica == null) {
-			daoEstadistica = new MongoEstadisticasIndividuoDAO();
+			daoEstadistica = new MongoEstadisticasIndividuoDAO(getDatabase());
 		}
 		return daoEstadistica;
 	}
@@ -106,7 +112,7 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	@Override
 	public ITendenciaParaOperarDAO getDaoTendenciaParaOperar() throws GeneticDAOException {
 		if (daoTendenciaParaOperar == null) {
-			daoTendenciaParaOperar = new MongoTendenciaParaOperarDAO();
+			daoTendenciaParaOperar = new MongoTendenciaParaOperarDAO(getDatabase());
 		}
 		return daoTendenciaParaOperar;
 	}
@@ -114,7 +120,7 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	@Override
 	public IDatoAdicionalTPODAO getDaoDatoAdicionalTPO() throws GeneticDAOException {
 		if (daoDatoAdicionalTPO == null) {
-			daoDatoAdicionalTPO= new MongoDatoAdicionalTPODAO();
+			daoDatoAdicionalTPO= new MongoDatoAdicionalTPODAO(getDatabase());
 		}
 		return daoDatoAdicionalTPO;
 	}
@@ -122,7 +128,7 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	@Override
 	public IIndividuoDAO<MongoIndividuo> getDaoIndividuoBorrado() throws GeneticDAOException {
 		if (daoIndividuoBorrado == null) {
-			daoIndividuoBorrado = new MongoIndividuoBorradoDAO();
+			daoIndividuoBorrado = new MongoIndividuoBorradoDAO(getDatabase());
 		}
 		return daoIndividuoBorrado;
 	}

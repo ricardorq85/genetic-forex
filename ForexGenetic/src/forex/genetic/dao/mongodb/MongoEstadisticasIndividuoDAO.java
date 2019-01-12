@@ -9,6 +9,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
@@ -30,12 +31,12 @@ import forex.genetic.util.DateUtil;
 public class MongoEstadisticasIndividuoDAO extends MongoGeneticDAO<MongoEstadistica>
 		implements IEstadisticaDAO<MongoEstadistica> {
 
-	public MongoEstadisticasIndividuoDAO() throws GeneticDAOException {
-		this(true);
+	public MongoEstadisticasIndividuoDAO(MongoDatabase db) throws GeneticDAOException {
+		this(db, true);
 	}
 
-	public MongoEstadisticasIndividuoDAO(boolean configure) throws GeneticDAOException {
-		super("estadisticaIndividuo", configure);
+	public MongoEstadisticasIndividuoDAO(MongoDatabase db, boolean configure) throws GeneticDAOException {
+		super(db, "estadisticaIndividuo", configure);
 	}
 
 	public void configureCollection() {

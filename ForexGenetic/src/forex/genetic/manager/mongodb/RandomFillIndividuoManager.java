@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import forex.genetic.dao.IDatoHistoricoDAO;
 import forex.genetic.dao.helper.mongodb.MongoIndividuoMapper;
-import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.dao.mongodb.MongoIndividuoDAO;
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.IndividuoEstrategia;
@@ -14,18 +14,21 @@ import forex.genetic.entities.Point;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.manager.PoblacionManager;
 import forex.genetic.util.DateUtil;
+import forex.genetic.util.jdbc.DataClient;
 
 public class RandomFillIndividuoManager {
 
 	private MongoIndividuoDAO dao;
-	private MongoDatoHistoricoDAO dhDAO;
+	private IDatoHistoricoDAO dhDAO;
 
 	public RandomFillIndividuoManager() throws GeneticBusinessException {
 		try {
-			dao = new MongoIndividuoDAO();
-			dhDAO = new MongoDatoHistoricoDAO(true);
+			DataClient dc = DriverDBFactory.createDataClient("mongodb");
+			dao = (MongoIndividuoDAO) dc.getDaoIndividuo();
+			dhDAO = dc.getDaoDatoHistorico();
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException("", e);
 		}

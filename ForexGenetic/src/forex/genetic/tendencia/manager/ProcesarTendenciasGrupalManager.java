@@ -30,7 +30,7 @@ public abstract class ProcesarTendenciasGrupalManager extends ProcesarTendencias
 
 	private List<TendenciaParaOperarMaxMin> tendenciasResultado;
 
-	public ProcesarTendenciasGrupalManager() throws GeneticDAOException {
+	public ProcesarTendenciasGrupalManager() throws GeneticBusinessException {
 		super();
 		tendenciasResultado = new ArrayList<>();
 	}
@@ -49,15 +49,15 @@ public abstract class ProcesarTendenciasGrupalManager extends ProcesarTendencias
 			LogUtil.logTime("Dias exportacion=" + Arrays.toString(dias), 1);
 			Date lastFechaProcesoMaxima = null;
 			Date lastFechaBaseParaMaxima = null;
-			ITendenciaDAO tendenciaProcesoDAO;
+			ITendenciaDAO tendenciaDAO;
 			while (fechaProceso.before(parametroFechaFin)) {
 				if (DateUtil.cumpleFechaParaTendenciaUltimosDatos(fechaProceso)) {
-					tendenciaProcesoDAO = dataClient.getDaoTendenciaUltimosDatos();
+					tendenciaDAO = dataClient.getDaoTendenciaUltimosDatos();
 				} else {
-					tendenciaProcesoDAO = dataClient.getDaoTendencia();
+					tendenciaDAO = dataClient.getDaoTendencia();
 				}
-				LogUtil.logTime("DAO: " + tendenciaProcesoDAO.getClass().getSimpleName(), 1);
-				Date fechaBase = tendenciaProcesoDAO.nextFechaBase(fechaProceso);
+				LogUtil.logTime("DAO: " + tendenciaDAO.getClass().getSimpleName(), 1);
+				Date fechaBase = tendenciaDAO.nextFechaBase(fechaProceso);
 				if (fechaBase != null) {
 					long minutosDia = (24 * 60);
 					long diffMinutosLastFechaBase = 0L;
@@ -70,7 +70,7 @@ public abstract class ProcesarTendenciasGrupalManager extends ProcesarTendencias
 					if ((lastFechaProcesoMaxima == null) || (diffMinutosLastFechaBase > minutosDia)) {
 						DateInterval intervaloFechaProceso = new DateInterval(DateUtil.adicionarMes(fechaBase, -1),
 								fechaBase);
-						lastFechaProcesoMaxima = tendenciaProcesoDAO.maxFechaProcesoTendencia(intervaloFechaProceso);
+						lastFechaProcesoMaxima = tendenciaDAO.maxFechaProcesoTendencia(intervaloFechaProceso);
 						lastFechaBaseParaMaxima = fechaBase;
 						LogUtil.logTime(
 								"Nueva lastFechaProcesoMaxima=" + DateUtil.getDateString(lastFechaProcesoMaxima), 3);

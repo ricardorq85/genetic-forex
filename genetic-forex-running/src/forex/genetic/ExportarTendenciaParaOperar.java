@@ -19,6 +19,7 @@ import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.text.ParseException;
 
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.tendencia.manager.ExportarTendenciaParaOperarManager;
@@ -34,10 +35,11 @@ public class ExportarTendenciaParaOperar {
 	 *            the command line arguments
 	 * @throws java.lang.InterruptedException
 	 * @throws SQLException 
+	 * @throws GeneticBusinessException 
 	 * @throws GeneticDAOException 
 	 */
 	public static void main(String[] args)
-			throws IOException, ClassNotFoundException, InterruptedException, ParseException, SQLException, GeneticDAOException {
+			throws IOException, ClassNotFoundException, InterruptedException, ParseException, SQLException, GeneticBusinessException, GeneticDAOException {
 		long id = currentTimeMillis();
 		load().join();
 		logTime("ExportarTendenciaParaOperar: " + id, 1);

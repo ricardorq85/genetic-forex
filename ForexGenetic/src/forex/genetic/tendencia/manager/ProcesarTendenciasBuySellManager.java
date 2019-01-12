@@ -29,16 +29,21 @@ public abstract class ProcesarTendenciasBuySellManager {
 	protected String tipoTendencia;
 	protected float[] parametroDiasTendencia;
 
-	public ProcesarTendenciasBuySellManager() throws GeneticDAOException {
+	public ProcesarTendenciasBuySellManager() throws GeneticBusinessException {
 		this.tipoTendencia = "BUY_SELL_20170204-2";
 	}
 
-	protected void consultarParametros() throws GeneticDAOException {
-		parametroFechaInicio = dataClient.getDaoParametro().getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");
-		parametroFechaFin = dataClient.getDaoParametro().getDateValorParametro("FECHA_FIN_PROCESAR_TENDENCIA");
-		parametroStep = dataClient.getDaoParametro().getIntValorParametro("STEP_PROCESAR_TENDENCIA");
-		parametroDiasTendencia = convertArrayStringToFloat(
-				dataClient.getDaoParametro().getArrayStringParametro("DIAS_EXPORTACION_TENDENCIA"));
+	protected void consultarParametros() throws GeneticBusinessException {
+		try {
+			parametroFechaInicio = dataClient.getDaoParametro()
+					.getDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA");
+			parametroFechaFin = dataClient.getDaoParametro().getDateValorParametro("FECHA_FIN_PROCESAR_TENDENCIA");
+			parametroStep = dataClient.getDaoParametro().getIntValorParametro("STEP_PROCESAR_TENDENCIA");
+			parametroDiasTendencia = convertArrayStringToFloat(
+					dataClient.getDaoParametro().getArrayStringParametro("DIAS_EXPORTACION_TENDENCIA"));
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
+		}
 	}
 
 	private float[] convertArrayStringToFloat(String[] arrayStringParametro) {
@@ -72,8 +77,6 @@ public abstract class ProcesarTendenciasBuySellManager {
 
 				fechaProceso = DateUtil.calcularFechaXDuracion(parametroStep, fechaProceso);
 			}
-		} catch (GeneticDAOException e) {
-			throw new GeneticBusinessException(e);
 		} finally {
 			dataClient.close();
 		}

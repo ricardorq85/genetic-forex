@@ -7,6 +7,7 @@ import org.bson.Document;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.InsertManyOptions;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
@@ -16,23 +17,24 @@ import forex.genetic.dao.helper.mongodb.MongoMapper;
 import forex.genetic.dao.helper.mongodb.MongoMapperFactory;
 import forex.genetic.entities.Individuo;
 import forex.genetic.util.LogUtil;
-import forex.genetic.util.jdbc.mongodb.ConnectionMongoDB;
 
 public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 
+	private MongoDatabase database;
 	private String collectionName = null;
 	private MongoMapper<E> mapper;
 	protected MongoCollection<Document> collection = null;
 
 	@SuppressWarnings("unchecked")
-	public MongoGeneticDAO(String name, boolean configure) {
+	public MongoGeneticDAO(MongoDatabase db, String name, boolean configure) {
+		database = db;
 		this.setMapper((MongoMapper<E>) MongoMapperFactory.get(name));
 		setCollection(name, configure);
 	}
 
 	protected void setCollection(String name, boolean configure) {
 		this.setCollectionName(name);
-		this.collection = ConnectionMongoDB.getDatabase().getCollection(name);
+		this.collection = database.getCollection(name);
 		if (configure) {
 			LogUtil.logTime(new StringBuilder("Configurando collection: ").append(name).toString(), 3);
 			this.configureCollection();

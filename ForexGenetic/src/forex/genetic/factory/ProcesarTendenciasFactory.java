@@ -1,5 +1,6 @@
 package forex.genetic.factory;
 
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.tendencia.manager.ProcesarTendenciasBuySellManager;
 import forex.genetic.tendencia.manager.mongo.MongoProcesarTendenciasGrupalManager;
@@ -10,12 +11,12 @@ import forex.genetic.util.jdbc.mongodb.MongoDataClient;
 
 public final class ProcesarTendenciasFactory {
 
-	public static ProcesarTendenciasBuySellManager createManager() throws GeneticDAOException {
+	public static ProcesarTendenciasBuySellManager createManager() throws GeneticDAOException, GeneticBusinessException {
 		DataClient dc = DriverDBFactory.createDataClient("oracle");
 		return createManager(dc);
 	}
 
-	public static ProcesarTendenciasBuySellManager createManager(DataClient dc) throws GeneticDAOException {
+	public static ProcesarTendenciasBuySellManager createManager(DataClient dc) throws GeneticDAOException, GeneticBusinessException {
 		ProcesarTendenciasBuySellManager manager = null;
 		if (dc instanceof OracleDataClient) {
 			manager = new OracleProcesarTendenciasGrupalManager();

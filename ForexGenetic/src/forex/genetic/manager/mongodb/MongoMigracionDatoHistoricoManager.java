@@ -14,6 +14,7 @@ import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.entities.Point;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 
@@ -108,6 +109,10 @@ public class MongoMigracionDatoHistoricoManager extends MigracionManager<Point> 
 
 	@Override
 	protected MongoGeneticDAO<Point> getDestinoDAO() throws GeneticBusinessException {
-		return new MongoDatoHistoricoDAO(true);
+		try {
+			return (MongoDatoHistoricoDAO) DriverDBFactory.createDataClient("mongodb").getDaoDatoHistorico();
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
+		}
 	}
 }

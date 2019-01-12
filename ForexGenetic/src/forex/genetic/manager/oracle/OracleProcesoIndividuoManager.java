@@ -53,7 +53,6 @@ public class OracleProcesoIndividuoManager extends ProcesoIndividuoManager {
 						OracleProcesarIndividuoThread procesarIndividuoThread = new OracleProcesarIndividuoThread(
 								"FILTRO_ADICIONAL_" + countFiltro, individuos);
 						procesarIndividuoThread.setMaxFechaHistorico(maxFechaHistorico);
-						// procesarIndividuoThread.setMaxFechaHistorico(DateUtil.adicionarMinutos(maxFechaHistorico,1));
 						procesarIndividuoThread.setMinFechaHistorico(minFechaHistorico);
 						procesarIndividuoThread.start();
 						threads.add(procesarIndividuoThread);

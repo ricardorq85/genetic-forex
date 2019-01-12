@@ -6,31 +6,36 @@ import java.util.List;
 
 import org.apache.commons.lang3.time.DateUtils;
 
-import forex.genetic.dao.mongodb.MongoTendenciaDAO;
+import forex.genetic.dao.ITendenciaDAO;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.exception.GeneticBusinessException;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.tendencia.manager.ExportarTendenciaGrupalManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.jdbc.DataClient;
 
 public class MongoExportarTendenciaGrupalManager extends ExportarTendenciaGrupalManager {
 
-	private MongoTendenciaDAO tendenciaProcesoDAO;
+	private ITendenciaDAO tendenciaDAO;
 	private List<TendenciaParaOperar> tendenciasSinFiltrar, tendenciasFiltradas;
 
-	public MongoExportarTendenciaGrupalManager(DataClient dc, Date fechaBase) {
+	public MongoExportarTendenciaGrupalManager(DataClient dc, Date fechaBase) throws GeneticBusinessException {
 		super(dc);
-		if (DateUtil.cumpleFechaParaTendenciaUltimosDatos(fechaBase)) {
-			this.tendenciaProcesoDAO = new MongoTendenciaDAO();
-		} else {
-			this.tendenciaProcesoDAO = new MongoTendenciaDAO();
+		try {
+			if (DateUtil.cumpleFechaParaTendenciaUltimosDatos(fechaBase)) {
+				tendenciaDAO = dc.getDaoTendenciaUltimosDatos();
+			} else {
+				tendenciaDAO = dc.getDaoTendencia();
+			}
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
 		}
 	}
 
 	@Override
 	public void procesar() throws GeneticBusinessException {
-		this.procesarTendenciasIntern(this.tendenciaProcesoDAO.consultar(procesoTendencia));
+		this.procesarTendenciasIntern(this.tendenciaDAO.consultar(procesoTendencia));
 		this.procesarRegresionParaCalculoJava();
 	}
 

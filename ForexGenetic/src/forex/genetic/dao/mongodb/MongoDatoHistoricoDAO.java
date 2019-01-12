@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.mongodb.client.MongoDatabase;
+
 import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.IndividuoEstrategia;
 import forex.genetic.entities.Order;
@@ -23,16 +25,16 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 
 	private final int minYear = 2008;
 
-	public MongoDatoHistoricoDAO() {
-		this(true);
+	public MongoDatoHistoricoDAO(MongoDatabase db) {
+		this(db, true);
 	}
 
-	public MongoDatoHistoricoDAO(boolean configure) {
-		this("datoHistorico2008", configure);
+	public MongoDatoHistoricoDAO(MongoDatabase db, boolean configure) {
+		this(db, "datoHistorico2008", configure);
 	}
 
-	public MongoDatoHistoricoDAO(String name, boolean configure) {
-		super(name, configure);
+	public MongoDatoHistoricoDAO(MongoDatabase db, String name, boolean configure) {
+		super(db, name, configure);
 		if (configure) {
 			this.configureCollectionInitial();
 		}

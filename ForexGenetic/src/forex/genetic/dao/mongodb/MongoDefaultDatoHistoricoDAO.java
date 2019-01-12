@@ -8,8 +8,8 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.BsonField;
@@ -35,7 +35,6 @@ import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.Constants;
-import forex.genetic.util.LogUtil;
 
 /**
  *
@@ -43,16 +42,16 @@ import forex.genetic.util.LogUtil;
  */
 public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> implements IDatoHistoricoDAO {
 
-	public MongoDefaultDatoHistoricoDAO() {
-		this(true);
+	public MongoDefaultDatoHistoricoDAO(MongoDatabase db) {
+		this(db, true);
 	}
 
-	public MongoDefaultDatoHistoricoDAO(boolean configure) {
-		this("datoHistorico2008", configure);
+	public MongoDefaultDatoHistoricoDAO(MongoDatabase db, boolean configure) {
+		this(db, "datoHistorico2008", configure);
 	}
 
-	public MongoDefaultDatoHistoricoDAO(String name, boolean configure) {
-		super(name, configure);
+	public MongoDefaultDatoHistoricoDAO(MongoDatabase db, String name, boolean configure) {
+		super(db, name, configure);
 	}
 
 	@Override

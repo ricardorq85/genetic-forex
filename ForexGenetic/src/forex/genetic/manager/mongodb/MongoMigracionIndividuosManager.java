@@ -18,6 +18,7 @@ import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.ControllerFactory;
+import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.manager.controller.IndicadorController;
 
 /**
@@ -97,7 +98,7 @@ public class MongoMigracionIndividuosManager extends MigracionManager<MongoIndiv
 	@Override
 	protected MongoGeneticDAO<MongoIndividuo> getDestinoDAO() throws GeneticBusinessException {
 		try {
-			return new MongoIndividuoDAO();
+			return (MongoGeneticDAO<MongoIndividuo>)DriverDBFactory.createDataClient("mongodb").getDaoIndividuo();
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException("", e);
 		}

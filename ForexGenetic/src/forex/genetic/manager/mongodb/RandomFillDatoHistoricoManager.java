@@ -19,7 +19,9 @@ import forex.genetic.entities.indicator.Momentum;
 import forex.genetic.entities.indicator.Rsi;
 import forex.genetic.entities.indicator.Sar;
 import forex.genetic.exception.GeneticBusinessException;
+import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.ControllerFactory;
+import forex.genetic.factory.DriverDBFactory;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.util.NumberUtil;
 
@@ -28,7 +30,11 @@ public class RandomFillDatoHistoricoManager {
 	private MongoDatoHistoricoDAO dao;
 
 	public RandomFillDatoHistoricoManager() throws GeneticBusinessException {
-		dao = new MongoDatoHistoricoDAO(true);
+		try {
+			dao = (MongoDatoHistoricoDAO) DriverDBFactory.createDataClient("mongodb").getDaoDatoHistorico();
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(e);
+		}
 	}
 
 	public List<Point> fill() {
@@ -172,7 +178,7 @@ public class RandomFillDatoHistoricoManager {
 		ichimokuTrend.setSenkouSpanA(NumberUtil.round(baseIchimokuSenkouSpanA, true));
 		ichimokuTrend.setSenkouSpanB(NumberUtil.round(baseIchimokuSenkouSpanB, true));
 		ichimokuTrend.setTenkanSen(NumberUtil.round(baseIchimokuTenkanSen, true));
-		
+
 		ichimokuSignal = new Ichimoku("IchiSignal");
 		ichimokuSignal.setChinkouSpan(NumberUtil.round(baseIchimokuChinkouSpan, true));
 		ichimokuSignal.setKijunSen(NumberUtil.round(baseIchimokuKijunSen, true));
@@ -223,7 +229,7 @@ public class RandomFillDatoHistoricoManager {
 		ichimoku6Trend.setSenkouSpanA(NumberUtil.round(baseIchimokuSenkouSpanA6, true));
 		ichimoku6Trend.setSenkouSpanB(NumberUtil.round(baseIchimokuSenkouSpanB6, true));
 		ichimoku6Trend.setTenkanSen(NumberUtil.round(baseIchimokuTenkanSen6, true));
-		
+
 		ichimoku6Signal = new Ichimoku("IchiSignal6");
 		ichimoku6Signal.setChinkouSpan(NumberUtil.round(baseIchimokuChinkouSpan6, true));
 		ichimoku6Signal.setKijunSen(NumberUtil.round(baseIchimokuKijunSen6, true));

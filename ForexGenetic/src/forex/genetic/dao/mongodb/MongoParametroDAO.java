@@ -6,6 +6,7 @@ import java.util.Date;
 import org.bson.Document;
 
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
@@ -19,8 +20,8 @@ import forex.genetic.util.DateUtil;
 
 public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IParametroDAO {
 
-	public MongoParametroDAO() throws GeneticDAOException {
-		super("parametro", true);
+	public MongoParametroDAO(MongoDatabase db) throws GeneticDAOException {
+		super(db, "parametro", true);
 	}
 
 	public void configureCollection() {

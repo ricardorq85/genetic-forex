@@ -7,6 +7,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
@@ -29,16 +30,16 @@ import forex.genetic.exception.GeneticDAOException;
  */
 public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> implements ITendenciaDAO {
 
-	public MongoTendenciaDAO() {
-		this(true);
+	public MongoTendenciaDAO(MongoDatabase db) {
+		this(db, true);
 	}
 
-	public MongoTendenciaDAO(boolean configure) {
-		this("tendencia", configure);
+	public MongoTendenciaDAO(MongoDatabase db, boolean configure) {
+		this(db, "tendencia", configure);
 	}
 
-	public MongoTendenciaDAO(String name, boolean configure) {
-		super(name, configure);
+	public MongoTendenciaDAO(MongoDatabase db, String name, boolean configure) {
+		super(db, name, configure);
 	}
 
 	public void configureCollection() {

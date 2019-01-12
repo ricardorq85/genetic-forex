@@ -15,6 +15,7 @@ import java.util.Map;
 import org.bson.Document;
 
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Sorts;
@@ -31,8 +32,8 @@ import forex.genetic.exception.GeneticDAOException;
 public class MongoTendenciaParaOperarDAO extends MongoGeneticDAO<TendenciaParaOperar>
 		implements ITendenciaParaOperarDAO {
 
-	public MongoTendenciaParaOperarDAO() throws GeneticDAOException {
-		super("tendenciaParaOperar", true);
+	public MongoTendenciaParaOperarDAO(MongoDatabase db) throws GeneticDAOException {
+		super(db, "tendenciaParaOperar", true);
 	}
 
 	public void configureCollection() {

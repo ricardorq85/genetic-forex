@@ -1,16 +1,18 @@
 package forex.genetic.dao.mongodb;
 
+import com.mongodb.client.MongoDatabase;
+
 /**
  *
  * @author ricardorq85
  */
 public class MongoTendenciaUltimosDatosDAO extends MongoTendenciaDAO {
 
-	public MongoTendenciaUltimosDatosDAO() {
-		this(true);
+	public MongoTendenciaUltimosDatosDAO(MongoDatabase db) {
+		this(db, true);
 	}
 
-	public MongoTendenciaUltimosDatosDAO(boolean configure) {
-		super("tendenciaUltimosDatos", configure);
+	public MongoTendenciaUltimosDatosDAO(MongoDatabase db, boolean configure) {
+		super(db, "tendenciaUltimosDatos", configure);
 	}
 }

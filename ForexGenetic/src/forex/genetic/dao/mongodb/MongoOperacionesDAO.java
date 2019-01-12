@@ -13,6 +13,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.BsonField;
@@ -38,8 +39,15 @@ import forex.genetic.util.DateUtil;
  */
 public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements IOperacionesDAO<MongoOrder> {
 
-	public MongoOperacionesDAO() throws GeneticDAOException {
-		this(true);
+	public MongoOperacionesDAO(MongoDatabase db) throws GeneticDAOException {
+		this(db, true);
+	}
+
+	public MongoOperacionesDAO(MongoDatabase db, boolean configure) {
+		super(db, "operacion", configure);
+		setCollection("operacionesPositivas", true);
+		setCollection("operacionesNegativas", true);
+		setCollection("operacion", true);
 	}
 
 	@Override
@@ -52,12 +60,6 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		return super.deleteByIndividuo(individuo);
 	}
 
-	public MongoOperacionesDAO(boolean configure) {
-		super("operacion", configure);
-		setCollection("operacionesPositivas", true);
-		setCollection("operacionesNegativas", true);
-		setCollection("operacion", true);
-	}
 
 	public void configureCollection() {
 		IndexOptions indexOptions = new IndexOptions();
