@@ -42,7 +42,7 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 				"STEP_PROCESAR_TENDENCIA", "DIAS_EXPORTACION_TENDENCIA",
 				// Para tendencias
 				"FECHA_INICIO_TENDENCIA", "STEP_TENDENCIA", "INDIVIDUOS_X_TENDENCIA", "MESES_TENDENCIA",
-				"NUM_TENDENCIA_X_CANTIDAD" };
+				"NUM_TENDENCIA_X_CANTIDAD", "MONEDA" };
 		Date feMinimaCrearIndividuo = null, feMaximaCrearIndividuo = null;
 		Date feMinimaProcesarTendencia = null, feMaximaProcesarTendencia = null;
 		Date feInicioTendencia = null;
@@ -68,7 +68,8 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 				new Integer(100), feMinimaProcesarTendencia, feMaximaProcesarTendencia, new Integer(30),
 				"0.125,0.25,0.5,1,2,3,4,5,6,7,8,9,10,13",
 				// Para tendencias
-				feInicioTendencia, new Integer(241), new Integer(51), new Integer(0), new Integer(0) };
+				feInicioTendencia, new Integer(241), new Integer(51), new Integer(0), new Integer(0),
+				"USDCAD"};
 
 		for (int i = 0; i < paramNames.length; i++) {
 			ParametroDTO p = new ParametroDTO();

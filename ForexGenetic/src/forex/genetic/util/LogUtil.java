@@ -5,7 +5,10 @@
 package forex.genetic.util;
 
 import java.util.Date;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+import forex.genetic.entities.dto.LogMessage;
 import forex.genetic.manager.PropertiesManager;
 
 /**
@@ -15,6 +18,7 @@ import forex.genetic.manager.PropertiesManager;
 public class LogUtil {
 
 	private static boolean LOG_ENTER = false;
+//	private static Queue<LogMessage> messages = new ConcurrentLinkedQueue<>();
 
 	/**
 	 *
@@ -32,18 +36,27 @@ public class LogUtil {
 	 * @param tabLevel
 	 */
 	public static void logTime(String name, int logLevel, int tabLevel) {
-		logEnterBySwitch(logLevel);
-		if (logLevel <= PropertiesManager.getPropertyInt(Constants.LOG_LEVEL)) {
-			StringBuilder buffer = new StringBuilder();
-			// buffer.append("<log> ");
-			buffer.append(name);
-			buffer.append(" <- ");
-			buffer.append(DateUtil.getDateString(new Date()));
-			for (int i = 0; i < tabLevel; i++) {
-				buffer.append("\t");
+		Runnable runner = new Runnable() {
+			@Override
+			public void run() {
+//				LogMessage message = new LogMessage(name, logLevel, tabLevel);
+				// messages.offer(message);
+				logEnterBySwitch(logLevel);
+				if (logLevel <= PropertiesManager.getPropertyInt(Constants.LOG_LEVEL)) {
+					StringBuilder buffer = new StringBuilder();
+					// buffer.append("<log> ");
+					buffer.append(name);
+					buffer.append(" <- ");
+					buffer.append(DateUtil.getDateString(new Date()));
+					for (int i = 0; i < tabLevel; i++) {
+						buffer.append("\t");
+					}
+					System.out.println(buffer.toString());
+				}
 			}
-			System.out.println(buffer.toString());
-		}
+		};
+		Thread logThread = new Thread(runner);
+		logThread.start();
 	}
 
 	public static void logAvance(int logLevel) {
@@ -65,7 +78,7 @@ public class LogUtil {
 			if (LOG_ENTER) {
 				System.out.println("");
 				LOG_ENTER = false;
-			}			
+			}
 		}
 	}
 
