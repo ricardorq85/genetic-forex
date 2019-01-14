@@ -1,0 +1,97 @@
+cd "Program Files\MongoDB\Server\4.0\bin"
+mongo
+use 
+
+db.adminCommand({renameCollection: "forex.individuoBorrado", to: "usdcad.individuoBorrado"})
+datoHistorico2008
+
+{$and:[{"fechaApertura":{$lt:new Date("2018-12-11T12:59")}}, {"fechaCierre":{$gt:new Date("2018-12-11T12:59")}}]}
+
+{fechaApertura:{$gte:new Date("2015-12-31T19:58")}}
+{$and:[{fechaApertura:{$gte:new Date("2015-12-31T00:00")}}]}
+
+{$and:[{fechaApertura:{$gte:new Date("2015-12-31T00:00")}},{fechaApertura:{$lte:new Date("2015-12-31T23:59")}},{fechaCierre:{$gte:new Date("2015-12-31T23:59")}}]}
+{$and:[{fechaApertura:{$gte:new Date("2015-12-20T00:00")}},{fechaApertura:{$lte:new Date("2015-12-31T23:59")}},{fechaCierre:{$gte:new Date("2015-12-31T20:00")}}]}
+
+idIndividuo=1446768000000.3 <- 2018/11/19 20:31.21
+idIndividuo=1394841600000.83 <- 2018/11/19 20:33.43
+
+{idIndividuo:"1394841600000.16"}
+2008-11-13 16:59:00.000
+
+{
+  _id: "$idIndividuo",
+  count: {
+    $sum: 1
+  }
+}
+
+db.operacion.deleteMany({"idIndividuo":{$ne:"1394755200000.32"}})
+
+{"idIndividuo":"1394841600000.83"}
+{"idIndividuo":"1394841600000.73"}
+{"fechaHistorico":1}
+{"fechaApertura":1}
+{"fechaApertura":-1}
+{"fechaApertura":1,"fechaCierre":1}
+
+{idIndividuo:"1394755200000.32"}
+{idIndividuo:"1394755200000.32",fechaApertura:{$lte:new Date("2008-10-27T04:01")}}
+{idIndividuo:"1394755200000.32",fechaInicial:{$lte:new Date("2008-10-27T04:01")}}
+
+{idIndividuo:{$in:["1545088344522.1","1545088344522.99"]}}
+
+{fechaHistorico:new Date("2018-01-02T00:01")}
+{"indicadores.IchiSignal.calculado_signal":-Infinity}
+{"indicadores.IchiSignal6.calculado_signal":NaN}
+
+{ "$and" : [{ "fechaHistorico" : { "$gt" : new Date("2018-12-01T00:00"), "$lte" : new Date("2019-01-01T00:00") }}]}
+
+{ "$and" : [{ "fechaHistorico" : { "$gt" : new Date("2008-05-06T08:46"), "$lte" : new Date("2008-08-06T08:46") }}, { "$or" : [{ "indicadores.Ma.calculado_low" : { "$gte" : -0.00845 }, "indicadores.Ma.calculado_high" : { "$lte" : -0.00845 } }, { "indicadores.Ma.calculado_low" : { "$gte" : 0.00943 }, "indicadores.Ma.calculado_high" : { "$lte" : 0.00943 } }, { "indicadores.Ma.calculado_low" : { "$gte" : -0.00845, "$lte" : 0.00943 } }, { "indicadores.Ma.calculado_high" : { "$gte" : -0.00845, "$lte" : 0.00943 } }] }, { "indicadores.Macd.calculado" : { "$gte" : -0.0011, "$lte" : 0.00115 } }, { "indicadores.MaCompare.calculado" : { "$gte" : -0.00714, "$lte" : 0.00489 } }, { "$or" : [{ "indicadores.Sar.calculado_low" : { "$gte" : -0.00882 }, "indicadores.Sar.calculado_high" : { "$lte" : -0.00882 } }, { "indicadores.Sar.calculado_low" : { "$gte" : 0.00783 }, "indicadores.Sar.calculado_high" : { "$lte" : 0.00783 } }, { "indicadores.Sar.calculado_low" : { "$gte" : -0.00882, "$lte" : 0.00783 } }, { "indicadores.Sar.calculado_high" : { "$gte" : -0.00882, "$lte" : 0.00783 } }] }, { "indicadores.Adx.calculado" : { "$gte" : -4584.44187, "$lte" : 4545.82652 } }, { "indicadores.Rsi.calculado" : { "$gte" : 9.32287, "$lte" : 91.25877 } }, { "indicadores.Momentum.calculado" : { "$gte" : 99.22198, "$lte" : 100.77312 } }, { "$or" : [{ "indicadores.IchiTrend.calculado_trend_low" : { "$gte" : -1.34408 }, "indicadores.IchiTrend.calculado_trend_high" : { "$lte" : -1.34408 } }, { "indicadores.IchiTrend.calculado_trend_low" : { "$gte" : 4.9E-324 }, "indicadores.IchiTrend.calculado_trend_high" : { "$lte" : 4.9E-324 } }, { "indicadores.IchiTrend.calculado_trend_low" : { "$gte" : -1.34408, "$lte" : 4.9E-324 } }, { "indicadores.IchiTrend.calculado_trend_high" : { "$gte" : -1.34408, "$lte" : 4.9E-324 } }] }, { "indicadores.IchiSignal.calculado_signal" : { "$gte" : -0.00592, "$lte" : 0.00603 } }, { "$or" : [{ "indicadores.Ma1200.calculado_low" : { "$gte" : -0.01214 }, "indicadores.Ma1200.calculado_high" : { "$lte" : -0.01214 } }, { "indicadores.Ma1200.calculado_low" : { "$gte" : 0.01387 }, "indicadores.Ma1200.calculado_high" : { "$lte" : 0.01387 } }, { "indicadores.Ma1200.calculado_low" : { "$gte" : -0.01214, "$lte" : 0.01387 } }, { "indicadores.Ma1200.calculado_high" : { "$gte" : -0.01214, "$lte" : 0.01387 } }] }, { "indicadores.Macd20x.calculado" : { "$gte" : -0.00191, "$lte" : 0.00163 } }, { "indicadores.MaCompare1200.calculado" : { "$gte" : -0.00954, "$lte" : 0.00785 } }, { "$or" : [{ "indicadores.Sar1200.calculado_low" : { "$gte" : -0.00882 }, "indicadores.Sar1200.calculado_high" : { "$lte" : -0.00882 } }, { "indicadores.Sar1200.calculado_low" : { "$gte" : 0.00774 }, "indicadores.Sar1200.calculado_high" : { "$lte" : 0.00774 } }, { "indicadores.Sar1200.calculado_low" : { "$gte" : -0.00882, "$lte" : 0.00774 } }, { "indicadores.Sar1200.calculado_high" : { "$gte" : -0.00882, "$lte" : 0.00774 } }] }, { "indicadores.Adx168.calculado" : { "$gte" : -374.82924, "$lte" : 347.00058 } }, { "indicadores.Rsi84.calculado" : { "$gte" : 20.70953, "$lte" : 77.78682 } }, { "indicadores.Bollinger240.calculado" : { "$gte" : 0.00394, "$lte" : 0.25985 } }, { "indicadores.Momentum1200.calculado" : { "$gte" : 98.13671, "$lte" : 102.1445 } }, { "$or" : [{ "indicadores.IchiTrend6.calculado_trend_low" : { "$gte" : -1.34448 }, "indicadores.IchiTrend6.calculado_trend_high" : { "$lte" : -1.34448 } }, { "indicadores.IchiTrend6.calculado_trend_low" : { "$gte" : 4.9E-324 }, "indicadores.IchiTrend6.calculado_trend_high" : { "$lte" : 4.9E-324 } }, { "indicadores.IchiTrend6.calculado_trend_low" : { "$gte" : -1.34448, "$lte" : 4.9E-324 } }, { "indicadores.IchiTrend6.calculado_trend_high" : { "$gte" : -1.34448, "$lte" : 4.9E-324 } }] }, { "indicadores.IchiSignal6.calculado_signal" : { "$gte" : -0.00713, "$lte" : 0.00661 } }] } 
+
+
+{ "$and" : [{ "fechaHistorico" : { "$gt" : new Date("2009-01-05T08:44"), "$lte" : new Date("2009-02-05T08:43") }}, { "$or" : [{ "indicadores.Ma.calculado_low" : { "$gte" : -5.0E-4 }, "indicadores.Ma.calculado_high" : { "$lte" : -5.0E-4 } }, { "indicadores.Ma.calculado_low" : { "$gte" : 6.8E-4 }, "indicadores.Ma.calculado_high" : { "$lte" : 6.8E-4 } }, { "indicadores.Ma.calculado_low" : { "$gte" : -5.0E-4, "$lte" : 6.8E-4 } }, { "indicadores.Ma.calculado_high" : { "$gte" : -5.0E-4, "$lte" : 6.8E-4 } }] }, { "indicadores.Macd.calculado" : { "$gte" : -0.07051, "$lte" : 0.36117 } }, { "indicadores.MaCompare.calculado" : { "$gte" : -6.2E-4, "$lte" : 0.00275 } }, { "$or" : [{ "indicadores.Sar.calculado_low" : { "$gte" : -0.00118 }, "indicadores.Sar.calculado_high" : { "$lte" : -0.00118 } }, { "indicadores.Sar.calculado_low" : { "$gte" : -9.8E-4 }, "indicadores.Sar.calculado_high" : { "$lte" : -9.8E-4 } }, { "indicadores.Sar.calculado_low" : { "$gte" : -0.00118, "$lte" : -9.8E-4 } }, { "indicadores.Sar.calculado_high" : { "$gte" : -0.00118, "$lte" : -9.8E-4 } }] }, { "indicadores.Adx.calculado" : { "$gte" : 0.07297, "$lte" : 19.97581 } }, { "indicadores.Rsi.calculado" : { "$gte" : -4.43826, "$lte" : 62.03009 } }] }
+
+/**
+ * _id - The id of the group.
+ * field1 - The first field name.
+ */
+{
+  _id: "estadistica",
+  "minima": {
+    $min:{$toDouble:"$duracionMinutos"}
+  }
+}
+
+{ "idIndividuo" : "1394841600000.83", "fechaCierre" : { "$exists" : true, "$lt" : new Date("2008-08-12T15:30") }, "duracionMinutos" : { "$gte" : 1 }, "$or" : [{ "pips" : { "$gt" : 0 }, "maxPipsRetroceso" : { "$lte" : -49.9999999999978 } }, { "$and" : [{ "pips" : { "$lte" : 0 } }, { "pips" : { "$lte" : -49.9999999999978 } }] }] }
+
+{ "$and" : [{ "idIndividuo" : "1394841600000.83" }, { "fechaCierre" : { "$exists" : true, "$lt" : new Date("2008-08-12T15:30") } }, { "duracionMinutos" : { "$gte" : { "$numberLong" : "1" } } }, { "pips" : { "$lte" : 0.0 } }, { "pips" : { "$lte" : -49.9999999999978 } }] }
+
+{ "idIndividuo" : "1394841600000.83", "fechaCierre" : { "$exists" : true, "$lt" : new Date("2008-08-12T15:30") }, "duracionMinutos" : { "$gte" : 1 }, "$or" : [{ "pips" : { "$gt" : 0 }, "maxPipsRetroceso" : { "$lte" : -49.9999999999978 } }, { "$and" : [{ "pips" : { "$lte" : 0 } }, { "pips" : { "$lte" : -49.9999999999978 } }] }] }
+
+
+{ "fechaHistorico" : { "$gte" : new Date("2018-06-30T01:00"), "$lte" : new Date("2018-11-30T01:00") }, "indicadores.Ma.calculado_low" : { "$exists" : true }, "indicadores.Ma.calculado_high" : { "$exists" : true }, "indicadores.Macd.calculado" : { "$exists" : true }, "indicadores.MaCompare.calculado" : { "$exists" : true }, "indicadores.Sar.calculado_low" : { "$exists" : true }, "indicadores.Sar.calculado_high" : { "$exists" : true }, "indicadores.Adx.calculado" : { "$exists" : true }, "indicadores.Rsi.calculado" : { "$exists" : true }, "indicadores.Bollinger.calculado" : { "$exists" : true }, "indicadores.Momentum.calculado" : { "$exists" : true }, "indicadores.IchiTrend.calculado_trend_low" : { "$exists" : true }, "indicadores.IchiTrend.calculado_trend_high" : { "$exists" : true }, "indicadores.IchiSignal.calculado_signal" : { "$exists" : true }, "indicadores.Ma1200.calculado_low" : { "$exists" : true }, "indicadores.Ma1200.calculado_high" : { "$exists" : true }, "indicadores.Macd20x.calculado" : { "$exists" : true }, "indicadores.MaCompare1200.calculado" : { "$exists" : true }, "indicadores.Sar1200.calculado_low" : { "$exists" : true }, "indicadores.Sar1200.calculado_high" : { "$exists" : true }, "indicadores.Adx168.calculado" : { "$exists" : true }, "indicadores.Rsi84.calculado" : { "$exists" : true }, "indicadores.Bollinger240.calculado" : { "$exists" : true }, "indicadores.Momentum1200.calculado" : { "$exists" : true }, "indicadores.IchiTrend6.calculado_trend_low" : { "$exists" : true }, "indicadores.IchiTrend6.calculado_trend_high" : { "$exists" : true }, "indicadores.IchiSignal6.calculado_signal" : { "$exists" : true } }
+
+db.adminCommand({renameCollection: "forex.datoHistorico2008", to: "usdcad.datoHistorico2008"})
+db.adminCommand({renameCollection: "forex.datoHistorico2009", to: "usdcad.datoHistorico2009"})
+db.adminCommand({renameCollection: "forex.datoHistorico2010", to: "usdcad.datoHistorico2010"})
+db.adminCommand({renameCollection: "forex.datoHistorico2011", to: "usdcad.datoHistorico2011"})
+db.adminCommand({renameCollection: "forex.datoHistorico2012", to: "usdcad.datoHistorico2012"})
+db.adminCommand({renameCollection: "forex.datoHistorico2013", to: "usdcad.datoHistorico2013"})
+db.adminCommand({renameCollection: "forex.datoHistorico2014", to: "usdcad.datoHistorico2014"})
+db.adminCommand({renameCollection: "forex.datoHistorico2015", to: "usdcad.datoHistorico2015"})
+db.adminCommand({renameCollection: "forex.datoHistorico2016", to: "usdcad.datoHistorico2016"})
+db.adminCommand({renameCollection: "forex.datoHistorico2017", to: "usdcad.datoHistorico2017"})
+db.adminCommand({renameCollection: "forex.datoHistorico2018", to: "usdcad.datoHistorico2018"})
+db.adminCommand({renameCollection: "forex.datoHistorico2019", to: "usdcad.datoHistorico2019"})
+
+db.adminCommand({renameCollection: "forex.estadisticaIndividuo", to: "usdcad.estadisticaIndividuo"})
+db.adminCommand({renameCollection: "forex.individuo", to: "usdcad.individuo"})
+db.adminCommand({renameCollection: "forex.operacion", to: "usdcad.operacion"})
+db.adminCommand({renameCollection: "forex.operacionesNegativas", to: "usdcad.operacionesNegativas"})
+db.adminCommand({renameCollection: "forex.operacionesPositivas", to: "usdcad.operacionesPositivas"})
+db.adminCommand({renameCollection: "forex.parametro", to: "usdcad.parametro"})
+db.adminCommand({renameCollection: "forex.tendencia", to: "usdcad.tendencia"})
+db.adminCommand({renameCollection: "forex.tendenciaUltimosDatos", to: "usdcad.tendenciaUltimosDatos"})
+
+db.adminCommand({renameCollection: "forex.", to: "usdcad."})
