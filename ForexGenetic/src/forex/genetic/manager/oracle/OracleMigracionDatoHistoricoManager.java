@@ -2,18 +2,17 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package forex.genetic.manager.mongodb;
+package forex.genetic.manager.oracle;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import forex.genetic.dao.mongodb.MongoDatoHistoricoDAO;
 import forex.genetic.dao.oracle.OracleDatoHistoricoDAO;
 import forex.genetic.entities.Point;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.factory.DriverDBFactory;
+import forex.genetic.manager.mongodb.MigracionManager;
 import forex.genetic.util.DateUtil;
 import forex.genetic.util.LogUtil;
 
@@ -21,34 +20,16 @@ import forex.genetic.util.LogUtil;
  *
  * @author ricardorq85
  */
-public class MongoMigracionDatoHistoricoManager extends MigracionManager<MongoDatoHistoricoDAO> {
+public class OracleMigracionDatoHistoricoManager extends MigracionManager<OracleDatoHistoricoDAO> {
 
 	private OracleDatoHistoricoDAO datoHistoricoDAO;
 
-	public MongoMigracionDatoHistoricoManager() throws ClassNotFoundException, GeneticBusinessException {
+	public OracleMigracionDatoHistoricoManager() throws ClassNotFoundException, GeneticBusinessException {
 		super();
 		datoHistoricoDAO = new OracleDatoHistoricoDAO(this.conn);
 	}
 
 	public void corregirMigrados() {
-		List<Point> datos = this.mongoDestinoDAO.consultarPuntosInfinity();
-		Point p;
-		try {
-			Date d = DateUtil.obtenerFecha("2018/01/02 00:01");
-			p = datoHistoricoDAO.consultarHistorico(d, d).get(0);
-			datos.add(0, p);
-		} catch (GeneticDAOException | ParseException e1) {
-			e1.printStackTrace();
-		}
-		for (Point point : datos) {
-			try {
-				point.setPrevPoint(mongoDestinoDAO.consultarPuntoAnterior(point.getDate()));
-			} catch (GeneticDAOException e) {
-				e.printStackTrace();
-			}
-			mongoDestinoDAO.delete(point, null);
-			mongoDestinoDAO.insert(point);
-		}
 	}
 
 	public void migrate() throws GeneticBusinessException {
@@ -90,25 +71,23 @@ public class MongoMigracionDatoHistoricoManager extends MigracionManager<MongoDa
 //					mongoDestinoDAO.insertMany(datosConsultados.subList(1, datosConsultados.size() - 1));
 					for (int i = 1; i < datosConsultados.size() - 1; i++) {
 						Point point = datosConsultados.get(i);
-						mongoDestinoDAO.insertOrUpdate(point);
+//						mongoDestinoDAO.insertOrUpdate(point);
+//						mongoDestinoDAO.updateIndicadoresCalculados(point);
 					}
 					fechaInicialConsulta = datosConsultados.get(datosConsultados.size() - 1).getDate();
 				} else {
 					fechaInicialConsulta = DateUtil.adicionarDias(fechaMaxima, 1);
 				}
 			}
-			LogUtil.logTime(new StringBuilder("Configurando collection: ").append(mongoDestinoDAO.getCollectionName())
-					.toString(), 1);
-			mongoDestinoDAO.configureCollection();
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(null, e);
 		}
 	}
 
 	@Override
-	protected MongoDatoHistoricoDAO getDestinoDAO() throws GeneticBusinessException {
+	protected OracleDatoHistoricoDAO getDestinoDAO() throws GeneticBusinessException {
 		try {
-			return (MongoDatoHistoricoDAO) DriverDBFactory.createDataClient("mongodb").getDaoDatoHistorico();
+			return (OracleDatoHistoricoDAO) DriverDBFactory.createDataClient("mongodb").getDaoDatoHistorico();
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(e);
 		}

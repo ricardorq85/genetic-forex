@@ -26,6 +26,7 @@ import forex.genetic.entities.mongo.MongoEstadistica;
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.jdbc.DataClient;
 
 public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, MongoOrder, MongoEstadistica> {
@@ -35,7 +36,7 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	}
 	
 	private MongoDatabase getDatabase() {
-		return client.getDatabase("forex");
+		return client.getDatabase(PropertiesManager.getPair());
 	}
 
 	@Override

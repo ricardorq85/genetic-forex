@@ -36,7 +36,7 @@ public class MongoMigrarDatosHistoricos {
 		setId("" + id);
 		StringBuilder name = new StringBuilder();
 		name.append(getPropertyString(LOG_PATH)).append("MongoMigrarDatosHistoricos_");
-		name.append(getOperationType()).append(getPair()).append(id).append(".log");
+		name.append(getPair()).append(id).append(".log");
 		PrintStream out = new PrintStream(name.toString(), Charset.defaultCharset().name());
 		setOut(out);
 		setErr(out);

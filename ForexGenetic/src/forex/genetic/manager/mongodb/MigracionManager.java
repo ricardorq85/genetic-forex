@@ -7,9 +7,7 @@ package forex.genetic.manager.mongodb;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import forex.genetic.dao.mongodb.MongoGeneticDAO;
 import forex.genetic.exception.GeneticBusinessException;
-import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.util.jdbc.JDBCUtil;
 
 /**
@@ -19,7 +17,7 @@ import forex.genetic.util.jdbc.JDBCUtil;
 public abstract class MigracionManager<E> {
 
 	protected Connection conn;
-	protected MongoGeneticDAO<E> mongoDestinoDAO;
+	protected E mongoDestinoDAO;
 
 	/**
 	 * @throws SQLException
@@ -36,7 +34,7 @@ public abstract class MigracionManager<E> {
 		mongoDestinoDAO = getDestinoDAO();
 	}
 	
-	protected abstract MongoGeneticDAO<E> getDestinoDAO() throws GeneticBusinessException;
+	protected abstract E getDestinoDAO() throws GeneticBusinessException;
 
 	public abstract void migrate() throws GeneticBusinessException;
 }
