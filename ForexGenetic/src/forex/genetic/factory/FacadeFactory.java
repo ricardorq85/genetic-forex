@@ -23,7 +23,7 @@ public class FacadeFactory extends GeneticFactory {
 		} else if ("tendenciaProceso".equals(entidad)) {
 			if (DataClient.DriverType.ORACLE.equals(dc.getDriverType())) {
 				facade = new OracleTendenciaProcesoFacade(dc);
-			} else if (DataClient.DriverType.ORACLE.equals(dc.getDriverType())) {
+			} else if (DataClient.DriverType.MONGODB.equals(dc.getDriverType())) {
 				facade = new MongoTendenciaProcesoFacade(dc);
 			} else {
 				throw new IllegalArgumentException(new StringBuilder("DataClient no soportado para crear facade: ")
