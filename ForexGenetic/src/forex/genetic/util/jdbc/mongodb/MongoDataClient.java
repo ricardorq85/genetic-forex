@@ -36,7 +36,7 @@ public class MongoDataClient extends DataClient<MongoClient, MongoIndividuo, Mon
 	}
 	
 	private MongoDatabase getDatabase() {
-		return client.getDatabase(PropertiesManager.getPair());
+		return client.getDatabase(PropertiesManager.getPair().toLowerCase());
 	}
 
 	@Override

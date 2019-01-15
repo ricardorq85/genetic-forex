@@ -78,7 +78,7 @@ public abstract class EndToEndMediator extends GeneticMediator {
 		try {
 			while (true) {
 				this.fechaHistoricaMaximaAnterior = datoHistoricoDAO.getFechaHistoricaMaxima();
-				int imported = this.importarDatosHistoricos();
+				int imported = this.importarDatosHistoricos(oneDataClient);
 				this.fechaHistoricaMaximaNueva = datoHistoricoDAO.getFechaHistoricaMaxima();
 				this.exportarDatosHistoricos();
 				this.setUltimaFechaTendencia(count);
@@ -122,10 +122,10 @@ public abstract class EndToEndMediator extends GeneticMediator {
 		logTime("End Exportar Datos Historicos=" + fechaExportString, 1);
 	}
 
-	public int importarDatosHistoricos() throws GeneticDAOException, IOException {
+	public int importarDatosHistoricos(DataClient dataClient) throws GeneticDAOException, IOException {
 		logTime("Init Importar Datos Historicos", 1);
 		List<Path> files = this.copiarArchivosARuta();
-		this.ejecutarCarga(files);
+		this.ejecutarCarga(dataClient, files);
 		logTime("End Importar Datos Historicos. fechaMaximaNueva=" + DateUtil.getDateString(fechaHistoricaMaximaNueva),
 				1);
 		return files.size();
@@ -136,10 +136,11 @@ public abstract class EndToEndMediator extends GeneticMediator {
 		return spt;
 	}
 
-	protected void ejecutarCarga(List<Path> files) throws GeneticDAOException {
+	protected void ejecutarCarga(DataClient dataClient, List<Path> files) throws GeneticDAOException {
 		for (Path file : files) {
 			this.actualizarProperty(file);
 			PoblacionDelegate delegate = new PoblacionDelegate();
+			delegate.setDataClient(dataClient);
 			logTime("Init Insert Datos Historicos", 1);
 			delegate.cargarDatosHistoricos();
 			logTime("End Insert Datos Historicos", 1);

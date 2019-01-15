@@ -53,13 +53,11 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 					IDatoHistoricoDAO daoDatoHistorico = ((IDatoHistoricoDAO) dataClients.get(j).getDaoDatoHistorico());
 					fechaHistoricaMaximaAnterior = DateUtil.obtenerFechaMinima(
 							daoDatoHistorico.getFechaHistoricaMaxima(), fechaHistoricaMaximaAnterior);
-					// TODO ricardorq85
-					// imported = importarDatosHistoricos();
+					imported = importarDatosHistoricos(dataClients.get(j));
 					this.fechaHistoricaMaximaNueva = DateUtil
 							.obtenerFechaMinima(daoDatoHistorico.getFechaHistoricaMaxima(), fechaHistoricaMaximaNueva);
 				}
-				// TODO ricardorq85
-				// this.exportarDatosHistoricos();
+				this.exportarDatosHistoricos();
 				this.oneDataClient = dataClients.get(0);
 				setUltimaFechaTendencia(count);
 				LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)
@@ -77,7 +75,7 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 					count = 1;
 				}
 			}
-		} catch (GeneticDAOException e) {
+		} catch (GeneticDAOException | IOException | SQLException e) {
 			throw new GeneticBusinessException("Error start", e);
 		}
 	}

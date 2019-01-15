@@ -17,6 +17,7 @@ import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.util.Constants;
 import forex.genetic.util.LogUtil;
+import forex.genetic.util.jdbc.DataClient;
 
 /**
  *
@@ -26,6 +27,7 @@ public class PoblacionDelegate {
 
 	private DatoHistoricoFacade dhFacade;
 	private PoblacionFacade poblacionFacade;
+	private DataClient dataClient;
 
 	public PoblacionDelegate() {
 		super();
@@ -49,6 +51,7 @@ public class PoblacionDelegate {
 	 * @throws IOException
 	 */
 	public void cargarDatosHistoricos() throws GeneticDAOException {
+		dhFacade.setDataClient(dataClient);
 		int endPoblacion = PropertiesManager.getPropertyInt(Constants.END_POBLACION);
 		for (int poblacionIndex = PropertiesManager
 				.getPropertyInt(Constants.INITIAL_POBLACION); poblacionIndex <= endPoblacion
@@ -63,5 +66,9 @@ public class PoblacionDelegate {
 			dhFacade.cargarDatoHistorico(poblacionManager.getPoints());
 			LogUtil.logTime("Poblacion " + poblacionIndex + " Fecha = " + poblacionManager.getDateInterval(), 1);
 		}
+	}
+
+	public void setDataClient(DataClient dataClient) {
+		this.dataClient = dataClient;
 	}
 }
