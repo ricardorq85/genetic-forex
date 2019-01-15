@@ -30,7 +30,7 @@ public class CopyFileVisitor implements FileVisitor<Path> {
 
 	@Override
 	public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-		//Path targetdir = target.resolve(source.relativize(dir));
+		// Path targetdir = target.resolve(source.relativize(dir));
 		try {
 			Files.copy(dir, processedPath);
 		} catch (FileAlreadyExistsException e) {
@@ -42,7 +42,13 @@ public class CopyFileVisitor implements FileVisitor<Path> {
 
 	@Override
 	public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-		Files.copy(file, targetPath.resolve(sourcePath.relativize(file)), StandardCopyOption.REPLACE_EXISTING);
+		Files.createDirectories(targetPath);
+		Path resolvedPath = targetPath.resolve(sourcePath.relativize(file));
+		Files.createDirectories(resolvedPath.getParent());
+		Files.copy(file, resolvedPath, StandardCopyOption.REPLACE_EXISTING);
+		Files.createDirectories(processedPath);
+		Path movingResolvedPath = targetPath.resolve(sourcePath.relativize(file));
+		Files.createDirectories(movingResolvedPath.getParent());
 		Files.move(file, processedPath.resolve(sourcePath.relativize(file)), StandardCopyOption.REPLACE_EXISTING);
 		copiedFiles.add(file);
 		return FileVisitResult.CONTINUE;

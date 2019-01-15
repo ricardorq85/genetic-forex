@@ -26,32 +26,28 @@ public class DatoHistoricoFacade implements IGeneticFacade {
 	 */
 	public void cargarDatoHistorico(List<Point> points) throws GeneticDAOException {
 		// Connection conn = null;
-		try {
 //			conn = JDBCUtil.getConnection();
-			IDatoHistoricoDAO dao = dataClient.getDaoDatoHistorico();
-			// MongoDatoHistoricoDAO mongoDao = new MongoDatoHistoricoDAO(true);
-			int countError = 0;
+		IDatoHistoricoDAO dao = dataClient.getDaoDatoHistorico();
+		// MongoDatoHistoricoDAO mongoDao = new MongoDatoHistoricoDAO(true);
+		int countError = 0;
 
-			for (int i = 0; i < points.size(); i++) {
-				Point point = points.get(i);
-				// mongoDao.insertOrUpdate(point);
-				if (dao.exists(point)) {
-					dao.update(point);
-					System.out.print("*");
-				} else {
-					dao.insert(point);
-					System.out.print(".");
-				}
-				if ((i % 3000) == 0) {
-					dataClient.commit();
-					System.out.println();
-				}
+		for (int i = 0; i < points.size(); i++) {
+			Point point = points.get(i);
+			// mongoDao.insertOrUpdate(point);
+			if (dao.exists(point)) {
+				dao.update(point);
+				System.out.print("*");
+			} else {
+				dao.insert(point);
+				System.out.print(".");
 			}
-			dataClient.commit();
-			LogUtil.logTime("Datos cargados=" + (points.size() - countError) + ";Datos con error=" + countError, 1);
-		} finally {
-			dataClient.close();
+			if ((i % 3000) == 0) {
+				dataClient.commit();
+				System.out.println();
+			}
 		}
+		dataClient.commit();
+		LogUtil.logTime("Datos cargados=" + (points.size() - countError) + ";Datos con error=" + countError, 1);
 	}
 
 	public void setDataClient(DataClient dataClient) {
