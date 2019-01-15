@@ -117,6 +117,13 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 			year++;
 		}
 	}
+	
+	@Override
+	public void insertOrUpdate(Point dato) {
+		int year = DateUtil.obtenerAnyo(dato.getDate());
+		setCollection(year);
+		super.insertOrUpdate(dato);
+	}
 
 	@Override
 	public void insert(Point dato) {

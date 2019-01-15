@@ -33,11 +33,13 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 	}
 
 	protected void setCollection(String name, boolean configure) {
-		this.setCollectionName(name);
-		this.collection = database.getCollection(name);
-		if (configure) {
-			LogUtil.logTime(new StringBuilder("Configurando collection: ").append(name).toString(), 3);
-			this.configureCollection();
+		if ((collectionName == null) || (!collectionName.equals(name))) {
+			this.setCollectionName(name);
+			this.collection = database.getCollection(name);
+			if (configure) {
+				LogUtil.logTime(new StringBuilder("Configurando collection: ").append(name).toString(), 3);
+				this.configureCollection();
+			}
 		}
 	}
 

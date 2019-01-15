@@ -25,22 +25,12 @@ public class DatoHistoricoFacade implements IGeneticFacade {
 	 * @param points
 	 */
 	public void cargarDatoHistorico(List<Point> points) throws GeneticDAOException {
-		// Connection conn = null;
-//			conn = JDBCUtil.getConnection();
 		IDatoHistoricoDAO dao = dataClient.getDaoDatoHistorico();
-		// MongoDatoHistoricoDAO mongoDao = new MongoDatoHistoricoDAO(true);
 		int countError = 0;
 
 		for (int i = 0; i < points.size(); i++) {
 			Point point = points.get(i);
-			// mongoDao.insertOrUpdate(point);
-			if (dao.exists(point)) {
-				dao.update(point);
-				System.out.print("*");
-			} else {
-				dao.insert(point);
-				System.out.print(".");
-			}
+			dao.insertOrUpdate(point);
 			if ((i % 3000) == 0) {
 				dataClient.commit();
 				System.out.println();
