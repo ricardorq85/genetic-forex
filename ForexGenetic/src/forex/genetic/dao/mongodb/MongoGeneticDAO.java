@@ -68,6 +68,7 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 		UpdateOptions options = new UpdateOptions();
 		options.upsert(true);
 		this.collection.updateOne(filterPk, doc, options);
+		System.out.print("#");
 	}
 
 	public void clean() {

@@ -70,7 +70,6 @@ public class LogUtil {
 			buffer.append(c);
 			System.out.print(buffer.toString());
 		}
-
 	}
 
 	public static void logEnterBySwitch(int logLevel) {

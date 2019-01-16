@@ -36,7 +36,7 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 	private void configureParameters() {
 		String[] paramNames = { "SOURCE_EXPORTED_HISTORY_DATA_PATH", "PROCESSED_EXPORTED_HISTORY_DATA_PATH",
 				"EXPORTED_PROPERTY_FILE_NAME", "SOURCE_ESTRATEGIAS_PATH", "STEP_TENDENCIA", "INDIVIDUOS_X_TENDENCIA",
-				"TIPO_EXPORTACION_TENDENCIA", "FECHA_MINIMA_CREAR_INDIVIDUO", "FECHA_MAXIMA_CREAR_INDIVIDUO",
+				"FECHA_MINIMA_CREAR_INDIVIDUO", "FECHA_MAXIMA_CREAR_INDIVIDUO",
 				"MESES_RANGOOPERACIONINDICADOR", "RETROCESO_RANGOOPERACIONINDICADOR", "PIPS_RANGOOPERACIONINDICADOR",
 				"CANTIDAD_MUTAR", "CANTIDAD_CRUZAR", "FECHA_INICIO_PROCESAR_TENDENCIA", "FECHA_FIN_PROCESAR_TENDENCIA",
 				"STEP_PROCESAR_TENDENCIA", "DIAS_EXPORTACION_TENDENCIA",
@@ -63,7 +63,7 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 				"c:\\Users\\Angela\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\export\\Export.properties",
 				"c:\\Users\\Angela\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\estrategias\\live",
 				new Integer(150), new Integer(200),
-				"forex.genetic.tendencia.manager.mongo.MongoProcesarTendenciasGrupalManager", feMinimaCrearIndividuo,
+				feMinimaCrearIndividuo,
 				feMaximaCrearIndividuo, new Integer(6), new Integer(800), new Integer(1500), new Integer(100),
 				new Integer(100), feMinimaProcesarTendencia, feMaximaProcesarTendencia, new Integer(30),
 				"0.125,0.25,0.5,1,2,3,4,5,6,7,8,9,10,13",

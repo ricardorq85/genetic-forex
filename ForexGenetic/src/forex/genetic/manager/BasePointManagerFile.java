@@ -192,15 +192,13 @@ public class BasePointManagerFile {
 
 					bollingerBand = (Bollinger)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();
 					baseBollingerUpper = NumberUtil.round(baseBollingerUpper, true);
-					if (((!Double.isInfinite(baseBollingerUpper)) && (average.getAverage() > 0)
-							&& (baseBollingerUpper > average.getAverage()))) {
-						baseBollingerUpper = Double.POSITIVE_INFINITY;
-					}
+					//if (((!Double.isInfinite(baseBollingerUpper)) && (average.getAverage() > 0)		&& (baseBollingerUpper > average.getAverage()))) {
+						//baseBollingerUpper = Double.POSITIVE_INFINITY;
+					//}
 					bollingerBand.setUpper(baseBollingerUpper);
-					if (((!Double.isInfinite(baseBollingerLower)) && (average.getAverage() > 0)
-							&& (baseBollingerLower > average.getAverage()))) {
-						baseBollingerLower = Double.POSITIVE_INFINITY;
-					}
+					//if (((!Double.isInfinite(baseBollingerLower)) && (average.getAverage() > 0)	&& (baseBollingerLower > average.getAverage()))) {
+						//baseBollingerLower = Double.POSITIVE_INFINITY;
+					//}
 					bollingerBand.setLower(NumberUtil.round(baseBollingerLower, true));
 
 					momentum = (Momentum)indicadorController.getManagerInstance(indicatorCounter++).getIndicatorInstance();

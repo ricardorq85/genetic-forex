@@ -33,7 +33,6 @@ public class DatoHistoricoFacade implements IGeneticFacade {
 			dao.insertOrUpdate(point);
 			if ((i % 3000) == 0) {
 				dataClient.commit();
-				System.out.println();
 			}
 		}
 		dataClient.commit();
