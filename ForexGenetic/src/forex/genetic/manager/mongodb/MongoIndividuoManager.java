@@ -34,7 +34,9 @@ public class MongoIndividuoManager extends GeneticManager {
 			for (Individuo individuo : individuos) {
 				MongoIndividuo mongoIndividuo = (MongoIndividuo) individuo;
 				if (dataClient.getDaoIndividuo().exists(mongoIndividuo)) {
-					dataClient.getDaoIndividuoBorrado().insert(mongoIndividuo);
+					if (!dataClient.getDaoIndividuoBorrado().exists(mongoIndividuo)) {
+						dataClient.getDaoIndividuoBorrado().insert(mongoIndividuo);
+					}
 
 					int r_operaciones = dataClient.getDaoOperaciones().deleteByIndividuo(individuo);
 					logTime("Individuo: " + individuo.getId() + ". Borrados OPERACIONES = " + r_operaciones, 2);
