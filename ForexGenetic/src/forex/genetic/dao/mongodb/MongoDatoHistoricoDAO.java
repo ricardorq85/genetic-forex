@@ -117,7 +117,7 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 			year++;
 		}
 	}
-	
+
 	@Override
 	public void insertOrUpdate(Point dato) {
 		int year = DateUtil.obtenerAnyo(dato.getDate());
@@ -209,9 +209,15 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 
 	@Override
 	public Date getFechaHistoricaMinima() {
-		setCollection(minYear);
-		Date fecha = super.getFechaHistoricaMinima();
-		return fecha;
+		int year = minYear;
+		int maxYear = DateUtil.obtenerAnyo(new Date()) + 1;
+		Date date = null;
+		while ((year <= maxYear) && (date == null)) {
+			setCollection(year);
+			date = super.getFechaHistoricaMinima();
+			year++;
+		}
+		return date;
 	}
 
 	@Override
