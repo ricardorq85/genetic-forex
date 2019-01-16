@@ -48,7 +48,7 @@ public class DriverDBFactory extends GeneticFactory {
 			throws GeneticBusinessException, GeneticDAOException {
 		if (DataClient.DriverType.ORACLE.equals(dc.getDriverType())) {
 			return createOracleManager(entidad);
-		} else if (DataClient.DriverType.ORACLE.equals(dc.getDriverType())) {
+		} else if (DataClient.DriverType.MONGODB.equals(dc.getDriverType())) {
 			return createMongoManager(entidad);
 		} else {
 			throw new IllegalArgumentException(
