@@ -26,6 +26,13 @@ public class DateUtil {
 		return (fechaBase.after(fechaComparacion));
 	}
 
+	public static Date randomDate(Date fechaInicial, Date fechaFinal) {
+		long endTime = fechaFinal.getTime();
+		long beginTime = fechaInicial.getTime();
+		long diff = endTime - beginTime + 1;
+		return new Date(beginTime + (long) (Math.random() * diff));
+	}
+
 	public static Date calcularFechaComparacionParaTendenciaUltimosDatos() {
 		return DateUtil.adicionarDias(new Date(), -DIAS_ULTIMOSDATOS);
 	}

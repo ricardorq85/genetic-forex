@@ -89,12 +89,16 @@ public abstract class IndividuoXIndicadorManager {
 			}
 			Date fechaFiltroFinal = new Date(fechaMaxima.getTime());
 			while (fechaFiltroFinal.after(fechaMinima)) {
-				int meses = RandomUtil.nextInt(parametroMeses) + 1; // parametroMeses;
+				int meses = parametroMeses;
 				while (meses <= maximoMeses) {
 					logTime("Meses: " + meses, 1);
+					Date fechaFiltroInicial = DateUtil.adicionarMes(fechaFiltroFinal, -meses);
+					Date fecha1 = DateUtil.randomDate(fechaFiltroInicial, fechaFiltroFinal);
+					Date fecha2 = DateUtil.randomDate(fechaFiltroInicial, fechaFiltroFinal);
 					DateInterval dateInterval = new DateInterval();
-					dateInterval.setLowInterval(DateUtil.adicionarMes(fechaFiltroFinal, -meses));
-					dateInterval.setHighInterval(fechaFiltroFinal);
+					dateInterval.setLowInterval(DateUtil.obtenerFechaMinima(fecha1, fecha2));
+					dateInterval.setHighInterval(DateUtil.obtenerFechaMaxima(fecha1, fecha2));
+
 					int cantidadPuntos = new Long(
 							dataClient.getDaoDatoHistorico().consultarCantidadPuntos(dateInterval)).intValue();
 					logTime("Fecha filtro: " + DateUtil.getDateString(dateInterval.getLowInterval()) + " - "
