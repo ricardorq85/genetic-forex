@@ -43,7 +43,7 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 				List<Thread> threads = new ArrayList<>();
 				int numeroHilos = 0;
 				int filtroAdicional = 0;
-				while ((numeroHilos < 6) && (filtroAdicional < 10)) {
+				while ((numeroHilos < 1) && (filtroAdicional < 10)) {
 					if (RandomUtil.nextBoolean()) {
 						numeroHilos++;
 						LogUtil.logTime("Obteniendo individuos para el filtro " + filtroAdicional, 1);

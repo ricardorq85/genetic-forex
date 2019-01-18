@@ -53,7 +53,7 @@ public class MutationIndividuoManager extends MutationManager {
 		int maxSL = PropertiesManager.getMaxSL();
 		while ((counter < percentValue) && (!endProcess)) {
 			// int pos1 = counter % individuos.size();
-			int pos1 = random.nextInt(individuos.size());
+			int pos1 = 2;//random.nextInt(individuos.size());
 			if (pos1 < individuos.size()) {
 				IndividuoEstrategia individuo1 = individuos.get(pos1);
 				IndividuoEstrategia hijo = new IndividuoEstrategia(generacion, individuo1, null,

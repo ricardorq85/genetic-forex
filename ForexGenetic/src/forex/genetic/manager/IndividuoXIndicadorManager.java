@@ -206,6 +206,12 @@ public abstract class IndividuoXIndicadorManager {
 		Poblacion poblacionMutados = new Poblacion();
 		List<IndividuoEstrategia> mutados = null;
 		MutationIndividuoManager mutator = new MutationIndividuoManager();
+		try {
+			poblacion.add(dataClient.getDaoIndividuoBorrado().consultarById("1547824704907.2"));
+		} catch (GeneticDAOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		Poblacion[] mutacion = mutator.mutate(1, poblacion, parametroCantidadMutar);
 		if ((mutacion != null) && (mutacion.length > 0)) {
 			mutados = mutacion[1].getIndividuos();

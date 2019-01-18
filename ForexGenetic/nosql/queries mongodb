@@ -95,3 +95,16 @@ db.adminCommand({renameCollection: "forex.tendencia", to: "usdcad.tendencia"})
 db.adminCommand({renameCollection: "forex.tendenciaUltimosDatos", to: "usdcad.tendenciaUltimosDatos"})
 
 db.adminCommand({renameCollection: "forex.", to: "usdcad."})
+
+
+
+{"openIndicadores.Bollinger.high":-Infinity}
+{"openIndicadores.Adx.high":-Infinity}
+
+{"openIndicadores.Ma.high":-Infinity}
+{"openIndicadores.Macd.high":-Infinity}
+{"openIndicadores.MaCompare.high":-Infinity}
+{"openIndicadores.Sar.high":-Infinity}
+{"openIndicadores.Rsi.high":-Infinity}
+
+{"openIndicadores..high":-Infinity}

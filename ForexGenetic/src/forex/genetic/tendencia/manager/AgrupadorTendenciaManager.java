@@ -324,7 +324,7 @@ public class AgrupadorTendenciaManager {
 			limitApertura = extremos.getExtremosSinFiltrar().getLowInterval();
 			// slPips = extremos.getExtremosFiltrados().getHighInterval() -
 			// this.precioPonderado;
-			sl = precio - Math.max(adicionalTPO.getDiferenciaPrecioSuperior(), (200.0D / 100000.0D));
+			sl = precio - Math.max(adicionalTPO.getDiferenciaPrecioSuperior(), (200.0D / PropertiesManager.getPairFactor()));
 			tp = extremos.getExtremosIntermedios().getHighInterval();
 			// tp = extremos.getHighInterval();
 		} else if (OperationType.SELL.equals(procesoIndex.getTipoOperacion())) {
@@ -333,7 +333,7 @@ public class AgrupadorTendenciaManager {
 			limitApertura = extremos.getExtremosSinFiltrar().getHighInterval();
 			// slPips = -(this.precioPonderado -
 			// extremos.getExtremosFiltrados().getLowInterval());
-			sl = precio + Math.max(adicionalTPO.getDiferenciaPrecioInferior(), (200.0D / 100000.0D));
+			sl = precio + Math.max(adicionalTPO.getDiferenciaPrecioInferior(), (200.0D / PropertiesManager.getPairFactor()));
 			tp = extremos.getExtremosIntermedios().getLowInterval();
 			// tp = extremos.getLowInterval();
 		}

@@ -18,6 +18,7 @@ import forex.genetic.entities.RangoOperacionIndividuoIndicador;
 import forex.genetic.entities.indicator.Indicator;
 import forex.genetic.entities.indicator.IntervalIndicator;
 import forex.genetic.factory.ControllerFactory;
+import forex.genetic.manager.PropertiesManager;
 import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
@@ -189,7 +190,7 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 
 			double minLow = doc.getDouble("minLow");
 			double maxHigh = doc.getDouble("maxHigh");
-			int diff = Math.min(3000, new Double((maxHigh - minLow) * 100000.0D).intValue());
+			int diff = Math.min(3000, new Double((maxHigh - minLow) * PropertiesManager.getPairFactor()).intValue());
 			diff = Math.max(diff, 200);
 			rangoOperacionIndividuo.setTakeProfit(diff);
 			rangoOperacionIndividuo.setStopLoss(diff);

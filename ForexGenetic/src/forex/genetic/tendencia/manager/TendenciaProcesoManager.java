@@ -38,10 +38,10 @@ public abstract class TendenciaProcesoManager implements IGeneticManager {
 	public List<TendenciaEstadistica> calcularTendencias(Point puntoTendencia, int filas)
 			throws GeneticBusinessException {
 		List<TendenciaEstadistica> listaTendencias = new ArrayList<TendenciaEstadistica>();
-		if ((puntoTendencia != null)) {
-			// LogUtil.logEnter(1);
-			LogUtil.logTime("Fecha base=" + DateUtil.getDateString(puntoTendencia.getDate()), 1);
-			try {
+		try {
+			if ((puntoTendencia != null)) {
+				// LogUtil.logEnter(1);
+				LogUtil.logTime("Fecha base=" + DateUtil.getDateString(puntoTendencia.getDate()), 1);
 				List<Individuo> individuos = dataClient.getDaoOperaciones()
 						.consultarIndividuoOperacionActiva(puntoTendencia.getDate(), filas);
 				LogUtil.logTime("Individuos=" + individuos.size(), 1);
@@ -56,11 +56,12 @@ public abstract class TendenciaProcesoManager implements IGeneticManager {
 						listaTendencias.add(tendencia);
 					}
 				}
-			} catch (GeneticDAOException e) {
-				throw new GeneticBusinessException(null, e);
 			}
+		} catch (GeneticDAOException e) {
+			throw new GeneticBusinessException(null, e);
+		} finally {
+			dataClient.close();
 		}
-		dataClient.close();
 		return listaTendencias;
 	}
 

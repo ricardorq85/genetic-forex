@@ -5,6 +5,7 @@ import java.util.Date;
 import forex.genetic.entities.Extremos;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants.OperationType;
 import forex.genetic.util.jdbc.DataClient;
 
@@ -54,7 +55,7 @@ public class AgrupadorTendenciaFactorDatosManager extends AgrupadorTendenciaMana
 		} else if ((item.getPrecioCalculado() <= item.getTp())
 				&& (item.getTipoOperacion().equals(OperationType.SELL))) {
 			item.setActiva(0);
-		} else if ((Math.abs(item.getPrecioCalculado() - item.getTp()) * 100000) < 20) {
+		} else if ((Math.abs(item.getPrecioCalculado() - item.getTp()) * PropertiesManager.getPairFactor()) < 20) {
 			item.setActiva(0);
 		}
 	}
@@ -72,8 +73,8 @@ public class AgrupadorTendenciaFactorDatosManager extends AgrupadorTendenciaMana
 		double takeProfitAntesDe = item.getTp();
 		double stopLossAntesDe = item.getSl();
 
-		double valorMinimo = 1000.0D / 100000.0D;
-		double multiplicador = 100.0D / 100000.0D;
+		double valorMinimo = 1000.0D / PropertiesManager.getPairFactor();
+		double multiplicador = 100.0D / PropertiesManager.getPairFactor();
 		double multiplicadorFactorDatosParaLimitApertura = 0.20D * 10.0D;
 		double multiplicadorFactorDatosParaPrecio = 0.25D * 10.0D;
 		double multiplicadorFactorDatosParaStopApertura = 0.15D * 10.0D;

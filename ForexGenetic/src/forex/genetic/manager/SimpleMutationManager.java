@@ -40,10 +40,9 @@ public class SimpleMutationManager extends EspecificMutationManager {
 		double base = (infiniteOrNan) ? d1 : ((d1 + min + max) / 3);
 		double factor = (infiniteOrNan) ? d1 : (max - min);
 		double mutado = mutate(base, factor);
-		if (mutado < min) {
+		if ((!infiniteOrNan) && (mutado < min)) {
 			mutado = min;
-		}
-		if (mutado > max) {
+		} else if ((!infiniteOrNan) && (mutado > max)) {
 			mutado = max;
 		}
 		return (mutado);
@@ -62,10 +61,9 @@ public class SimpleMutationManager extends EspecificMutationManager {
 		int base = (infiniteOrNan) ? d1 : ((d1 + min + max) / 3);
 		int factor = (infiniteOrNan) ? d1 : (max - min);
 		int mutado = mutate(base, factor);
-		if (mutado < min) {
+		if ((!infiniteOrNan) && (mutado < min)) {
 			mutado = min;
-		}
-		if (mutado > max) {
+		} else if ((!infiniteOrNan) && (mutado > max)) {
 			mutado = max;
 		}
 		return (mutado);

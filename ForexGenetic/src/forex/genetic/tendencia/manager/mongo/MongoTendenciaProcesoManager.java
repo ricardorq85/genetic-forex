@@ -66,6 +66,8 @@ public class MongoTendenciaProcesoManager extends TendenciaProcesoManager {
 			}
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(null, e);
+		} finally {
+			dataClient.close();
 		}
 		return listaTendencias;
 	}
