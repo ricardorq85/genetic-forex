@@ -144,57 +144,60 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 			int cantidad = doc.getInteger("registros");
 			if (cantidad == 0) {
 				rangoOperacionIndividuo.setIndicadores(null);
-				return;
-			}
+			} else {
+				int num_indicadores = indicadorController.getIndicatorNumber();
+				for (int i = 0; i < num_indicadores; i++) {
+					IntervalIndicatorManager<?> indManager = (IntervalIndicatorManager<?>) indicadorController
+							.getManagerInstance(i);
+					RangoOperacionIndividuoIndicador rangoIndicador = rangoOperacionIndividuo.getIndicadores().get(i);
+					IntervalIndicator indicator = ((IntervalIndicator) rangoIndicador.getIndicator());
 
-			int num_indicadores = indicadorController.getIndicatorNumber();
-			for (int i = 0; i < num_indicadores; i++) {
-				IntervalIndicatorManager<?> indManager = (IntervalIndicatorManager<?>) indicadorController
-						.getManagerInstance(i);
-				RangoOperacionIndividuoIndicador rangoIndicador = rangoOperacionIndividuo.getIndicadores().get(i);
-				IntervalIndicator indicator = ((IntervalIndicator) rangoIndicador.getIndicator());
+					String[] nombreCalculado = indManager.getNombresCalculados();
+					double inferior = Double.MAX_VALUE;
+					double superior = Double.MIN_VALUE;
+					double maxSum = 0.0D;
+					for (int j = 0; j < nombreCalculado.length; j++) {
+						StringBuilder nombreIndicador = new StringBuilder("indicadores").append(".")
+								.append(indicator.getName()).append(".");
+						StringBuilder nombreIndicadorCalculado = new StringBuilder(nombreIndicador)
+								.append(nombreCalculado[j]);
+						String strNombre = nombreIndicadorCalculado.toString().replaceAll("\\.", "");
 
-				String[] nombreCalculado = indManager.getNombresCalculados();
-				double inferior = Double.MAX_VALUE;
-				double superior = Double.MIN_VALUE;
-				double maxSum = 0.0D;
-				for (int j = 0; j < nombreCalculado.length; j++) {
-					StringBuilder nombreIndicador = new StringBuilder("indicadores").append(".")
-							.append(indicator.getName()).append(".");
-					StringBuilder nombreIndicadorCalculado = new StringBuilder(nombreIndicador)
-							.append(nombreCalculado[j]);
-					String strNombre = nombreIndicadorCalculado.toString().replaceAll("\\.", "");
+						Double min = doc.getDouble("min" + strNombre);
+						Double max = doc.getDouble("max" + strNombre);
+						Double sum = doc.getDouble("sum" + strNombre);
+						if (min != null) {
+							inferior = Math.min(inferior, min);
+						}
+						if (max != null) {
+							superior = Math.max(superior, max);
+						}
+						if (sum != null) {
+							maxSum = Math.max(maxSum, sum);
+						}
+					}
 
-					Double min = doc.getDouble("min" + strNombre);
-					Double max = doc.getDouble("max" + strNombre);
-					Double sum = doc.getDouble("sum" + strNombre);
-					if (min != null) {
-						inferior = Math.min(inferior, min);
-					}
-					if (max != null) {
-						superior = Math.max(superior, max);
-					}
-					if (sum != null) {
-						maxSum = Math.max(maxSum, sum);
-					}
+					Interval<Double> interval = new DoubleInterval(inferior, superior);
+					Interval<Double> intervalWide = new DoubleInterval(inferior * (1 + RandomUtil.nextDouble()),
+							superior * (1 + RandomUtil.nextDouble()));
+					indicator.setInterval(interval);
+					rangoIndicador.setCantidad(cantidad);
+					rangoIndicador.setSuma(maxSum);
+					rangoIndicador.setPromedio(maxSum / cantidad);
 				}
 
-				Interval<Double> interval = new DoubleInterval(inferior, superior);
-				Interval<Double> intervalWide = new DoubleInterval(inferior * (1 + RandomUtil.nextDouble()),
-						superior * (1 + RandomUtil.nextDouble()));
-				indicator.setInterval(interval);
-				rangoIndicador.setCantidad(cantidad);
-				rangoIndicador.setSuma(maxSum);
-				rangoIndicador.setPromedio(maxSum / cantidad);
+				double minLow = doc.getDouble("minLow");
+				double maxHigh = doc.getDouble("maxHigh");
+				int diff = Math.min(3000,
+						new Double((maxHigh - minLow) * PropertiesManager.getPairFactor()).intValue());
+				int tp = Math.max(RandomUtil.nextInt(diff) + 1, 200);
+				int sl = Math.max(RandomUtil.nextInt(diff) + 1, 200);
+				rangoOperacionIndividuo.setTakeProfit(tp);
+				rangoOperacionIndividuo.setStopLoss(sl);
+				rangoOperacionIndividuo.setCantidad(cantidad);
 			}
-
-			double minLow = doc.getDouble("minLow");
-			double maxHigh = doc.getDouble("maxHigh");
-			int diff = Math.min(3000, new Double((maxHigh - minLow) * PropertiesManager.getPairFactor()).intValue());
-			diff = Math.max(diff, 200);
-			rangoOperacionIndividuo.setTakeProfit(diff);
-			rangoOperacionIndividuo.setStopLoss(diff);
-			rangoOperacionIndividuo.setCantidad(cantidad);
+		} else {
+			rangoOperacionIndividuo.setIndicadores(null);
 		}
 	}
 }

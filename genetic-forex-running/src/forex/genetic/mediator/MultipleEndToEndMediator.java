@@ -63,9 +63,9 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 						+ ",fechaHistoricaMaximaNueva=" + DateUtil.getDateString(this.fechaHistoricaMaximaNueva)
 						+ ",count=" + count, 1);
 				// TODO rrojasq Hacer con hilos para cada driver
-//				procesarIndividuos();
-//				procesarTendencias();
-//				exportarTendenciaParaOperar();
+				procesarIndividuos();
+				procesarTendencias();
+				exportarTendenciaParaOperar();
 				crearNuevosIndividuos();
 				if (imported == 0) {
 					count++;

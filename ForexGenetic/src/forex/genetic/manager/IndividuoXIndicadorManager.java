@@ -8,6 +8,7 @@ package forex.genetic.manager;
 import static forex.genetic.util.LogUtil.logTime;
 
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -284,45 +285,51 @@ public abstract class IndividuoXIndicadorManager {
 			RangoOperacionIndividuoIndicador rangoIndicador = rangoOperacionIndividuo.getIndicadores().get(i);
 			IntervalIndicator intervalIndicator = ((IntervalIndicator) rangoIndicador.getIndicator());
 			DoubleInterval interval = (DoubleInterval) intervalIndicator.getInterval();
-			double porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager, intervalIndicator,
-					null, null, cantidadPuntos);
-			rangoIndicador.setPorcentajeCumplimiento(porcCumplimiento);
-			if (!rangoIndicador.cumplePorcentajeIndicador()) {
-				double temporal;
-				if ((rangoIndicador.getPromedio() - interval.getLowInterval()) < (interval.getHighInterval()
-						- rangoIndicador.getPromedio())) {
-					temporal = interval.getHighInterval();
-					porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager, intervalIndicator,
-							interval.getLowInterval(), rangoIndicador.getPromedio(), cantidadPuntos);
-				} else {
-					temporal = interval.getLowInterval();
-					porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager, intervalIndicator,
-							rangoIndicador.getPromedio(), interval.getHighInterval(), cantidadPuntos);
-				}
+			if (interval != null) {
+				double porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager, intervalIndicator,
+						null, null, cantidadPuntos);
 				rangoIndicador.setPorcentajeCumplimiento(porcCumplimiento);
 				if (!rangoIndicador.cumplePorcentajeIndicador()) {
+					double temporal;
 					if ((rangoIndicador.getPromedio() - interval.getLowInterval()) < (interval.getHighInterval()
 							- rangoIndicador.getPromedio())) {
-						double temporal2 = temporal;
-						temporal = interval.getLowInterval();
-						porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager,
-								intervalIndicator, rangoIndicador.getPromedio(), temporal2, cantidadPuntos);
-					} else {
-						double temporal2 = temporal;
 						temporal = interval.getHighInterval();
 						porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager,
-								intervalIndicator, temporal2, rangoIndicador.getPromedio(), cantidadPuntos);
+								intervalIndicator, interval.getLowInterval(), rangoIndicador.getPromedio(),
+								cantidadPuntos);
+					} else {
+						temporal = interval.getLowInterval();
+						porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager,
+								intervalIndicator, rangoIndicador.getPromedio(), interval.getHighInterval(),
+								cantidadPuntos);
 					}
 					rangoIndicador.setPorcentajeCumplimiento(porcCumplimiento);
 					if (!rangoIndicador.cumplePorcentajeIndicador()) {
 						if ((rangoIndicador.getPromedio() - interval.getLowInterval()) < (interval.getHighInterval()
 								- rangoIndicador.getPromedio())) {
-							interval.setHighInterval(temporal);
+							double temporal2 = temporal;
+							temporal = interval.getLowInterval();
+							porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager,
+									intervalIndicator, rangoIndicador.getPromedio(), temporal2, cantidadPuntos);
 						} else {
-							interval.setLowInterval(temporal);
+							double temporal2 = temporal;
+							temporal = interval.getHighInterval();
+							porcCumplimiento = porcentajeCumplimiento(rangoOperacionIndividuo, indManager,
+									intervalIndicator, temporal2, rangoIndicador.getPromedio(), cantidadPuntos);
+						}
+						rangoIndicador.setPorcentajeCumplimiento(porcCumplimiento);
+						if (!rangoIndicador.cumplePorcentajeIndicador()) {
+							if ((rangoIndicador.getPromedio() - interval.getLowInterval()) < (interval.getHighInterval()
+									- rangoIndicador.getPromedio())) {
+								interval.setHighInterval(temporal);
+							} else {
+								interval.setLowInterval(temporal);
+							}
 						}
 					}
 				}
+			} else {
+				rangoIndicador.setPorcentajeCumplimiento(0.0D);
 			}
 		}
 	}

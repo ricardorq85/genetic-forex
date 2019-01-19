@@ -90,7 +90,7 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		this.addRandomSort(sorts, "creationDate");
 
 		Bson ordenador = Sorts.orderBy(sorts);
-		bsonFiltroAdicional = Filters.and(Filters.regex("idIndividuo", "1547761146791.139"));
+	//	bsonFiltroAdicional = Filters.and(Filters.regex("idIndividuo", "1547761146791.139"));
 		// Filters.eq("tipoIndividuo",
 		// Constants.IndividuoType.INDICADOR_GANADOR.name()));
 //		Bson filtroIndividuo = Filters.regex("idIndividuo", "1544908361588.*");
