@@ -176,10 +176,17 @@ public class MongoDatoHistoricoMapper extends MongoMapper<Point> {
 							maxSum = Math.max(maxSum, sum);
 						}
 					}
-
 					Interval<Double> interval = new DoubleInterval(inferior, superior);
-					Interval<Double> intervalWide = new DoubleInterval(inferior * (1 + RandomUtil.nextDouble()),
-							superior * (1 + RandomUtil.nextDouble()));
+					if (RandomUtil.nextBoolean()) {
+						double r = RandomUtil.nextDouble();
+						Interval<Double> intervalWide = new DoubleInterval(inferior * (1 + r), superior * (1 + r));
+						interval = intervalWide;
+					}
+					if (RandomUtil.nextBoolean()) {
+						double r = RandomUtil.nextDouble();
+						Interval<Double> intervalShort = new DoubleInterval(inferior * r, superior * r);
+						interval = intervalShort;
+					}
 					indicator.setInterval(interval);
 					rangoIndicador.setCantidad(cantidad);
 					rangoIndicador.setSuma(maxSum);
