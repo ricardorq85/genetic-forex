@@ -1,8 +1,9 @@
 package forex.genetic.util.jdbc.mongodb;
 
+import java.util.logging.Level;
+
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import com.mongodb.client.MongoDatabase;
 
 import forex.genetic.manager.PropertiesManager;
 
@@ -15,6 +16,10 @@ public class ConnectionMongoDB {
 	// fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 //	private static MongoDatabase db;
 	// .withCodecRegistry(pojoCodecRegistry);;
+
+	static {
+		java.util.logging.Logger.getLogger("org.mongodb.driver").setLevel(Level.SEVERE);
+	}
 
 	private static MongoClient getMongoClient() {
 		String uri = PropertiesManager.getUriMongoDB();
