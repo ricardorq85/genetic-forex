@@ -42,17 +42,17 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 				any = false;
 				List<Thread> threads = new ArrayList<>();
 				int numeroHilos = 0;
-				int filtroAdicional = 0;
-				while ((numeroHilos < 1) && (filtroAdicional < 10)) {
+				int numeroDelFiltroAdicional = 0;
+				while ((numeroHilos < 6) && (numeroDelFiltroAdicional < 10)) {
 					if (RandomUtil.nextBoolean()) {
 						numeroHilos++;
-						LogUtil.logTime("Obteniendo individuos para el filtro " + filtroAdicional, 1);
+						LogUtil.logTime("Obteniendo individuos para el filtro " + numeroDelFiltroAdicional, 1);
 						@SuppressWarnings("unchecked")
 						List<MongoIndividuo> individuos = (List<MongoIndividuo>) dataClient.getDaoIndividuo()
-								.getListByProcesoEjecucion("" + filtroAdicional, maxFechaHistorico);
+								.getListByProcesoEjecucion("" + numeroDelFiltroAdicional, maxFechaHistorico);
 						if ((individuos != null) && (!individuos.isEmpty())) {
 							MongoProcesarIndividuoThread procesarIndividuoThread = new MongoProcesarIndividuoThread(
-									"Mongo_" + filtroAdicional, individuos);
+									"Mongo_" + numeroDelFiltroAdicional, individuos);
 							procesarIndividuoThread.setMaxFechaHistorico(maxFechaHistorico);
 							procesarIndividuoThread.setMinFechaHistorico(minFechaHistorico);
 							procesarIndividuoThread.start();
@@ -63,7 +63,7 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 							LogUtil.logTime("No existen individuos", 1);
 						}
 					}
-					filtroAdicional++;
+					numeroDelFiltroAdicional++;
 				}
 				ThreadUtil.joinThreads(threads);
 			} while (any && !onlyOne);
