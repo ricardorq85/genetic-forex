@@ -117,7 +117,7 @@ public abstract class IndividuoXIndicadorManager {
 					}
 					meses++;
 				}
-				fechaFiltroFinal = DateUtil.adicionarMes(fechaFiltroFinal, -1);
+				fechaFiltroFinal = DateUtil.adicionarMes(fechaFiltroFinal, -RandomUtil.nextInt(12));
 			}
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(e);

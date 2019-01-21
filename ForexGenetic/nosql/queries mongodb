@@ -108,3 +108,15 @@ db.adminCommand({renameCollection: "forex.", to: "usdcad."})
 {"openIndicadores.Rsi.high":-Infinity}
 
 {"openIndicadores..high":-Infinity}
+
+
+/**
+ * _id - The id of the group.
+ * field1 - The first field name.
+ */
+{
+  _id: {maxFechaHistorico:"$procesoEjecucion.maxFechaHistorico"},
+  cantidad: {
+    $sum: 1
+  }
+}
