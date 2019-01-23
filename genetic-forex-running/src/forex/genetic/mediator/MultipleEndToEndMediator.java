@@ -64,8 +64,8 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 						+ ",count=" + count, 1);
 				// TODO rrojasq Hacer con hilos para cada driver
 				procesarIndividuos();
-				procesarTendencias();
-				exportarTendenciaParaOperar();
+				//procesarTendencias();
+				//exportarTendenciaParaOperar();
 				crearNuevosIndividuos();
 				if (imported == 0) {
 					count++;

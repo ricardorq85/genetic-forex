@@ -95,7 +95,11 @@ public class MongoTendenciaProcesoManager extends TendenciaProcesoManager {
 			LogUtil.logTime("Consultando estadística...", 3);
 			MongoEstadistica estadisticaHistorica = (MongoEstadistica) dataClient.getDaoEstadistica().getLast(individuo,
 					fechaBase);
-			estadisticaHistorica.corregirInfinitos();
+			if (estadisticaHistorica != null) {
+				estadisticaHistorica.corregirInfinitos();
+			} else {
+				LogUtil.logTime("Estadistica historica no encontrada para el individuo " + individuo.getId(), 1);
+			}
 			return estadisticaHistorica;
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(null, e);

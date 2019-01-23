@@ -75,7 +75,7 @@ public abstract class TendenciaProcesoManager implements IGeneticManager {
 				Order ordenActual = this.getOrdenActual(pointFecha, individuo, fechaBase);
 				Estadistica estadisticaFiltradaActual = consultarEstadisticaFiltrada(fechaBase, ordenActual, individuo);
 				Estadistica estadisticaHistorica = consultarEstadisticaHistorica(fechaBase, individuo);
-				if (estadisticaHistorica.getCantidadTotal() > 0) {
+				if ((estadisticaHistorica != null) && (estadisticaHistorica.getCantidadTotal() > 0)) {
 					LogUtil.logTime("Creando tendencia...", 5);
 					tendencia = this.crearTendencia(estadisticaHistorica, estadisticaFiltradaActual, ordenActual);
 					tendencia.setIndividuo(individuo);

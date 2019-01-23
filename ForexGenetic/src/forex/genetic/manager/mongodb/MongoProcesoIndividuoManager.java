@@ -39,16 +39,15 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 			// TODO ricardorq85 Quitar, es solo para agilizar el proceso para verificar
 			// tendencias
 			maxFechaHistorico = DateUtil.obtenerFecha("2016/01/01 00:00");
+			List<Thread> threads = new Vector<>();
 			do {
 				any = false;
-				List<Thread> threads = new Vector<>();
-				int numeroHilos = 0;
 				int numeroDelFiltroAdicional = 0;
 				int maxHilos = 5;
-				while ((numeroHilos <= maxHilos) && (numeroDelFiltroAdicional < 10)) {
-					if ((RandomUtil.nextBoolean()) || (numeroDelFiltroAdicional - numeroHilos >= 10 - maxHilos)) {
-						numeroHilos++;
-						String threadName = "Mongo_" + numeroDelFiltroAdicional;
+				while ((threads.size() <= maxHilos) && (numeroDelFiltroAdicional < 10)) {
+					String threadName = "Mongo_" + numeroDelFiltroAdicional;
+					// if (!threads.contains(new MongoProcesarIndividuoThread(threadName, null))) {
+					if ((RandomUtil.nextBoolean()) || (numeroDelFiltroAdicional - threads.size() >= 10 - maxHilos)) {
 						LogUtil.logTime("Obteniendo individuos para el hilo " + threadName, 1);
 						@SuppressWarnings("unchecked")
 						List<MongoIndividuo> individuos = (List<MongoIndividuo>) dataClient.getDaoIndividuo()
@@ -68,10 +67,15 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 							LogUtil.logTime("No existen individuos", 1);
 						}
 					}
+					// }
 					numeroDelFiltroAdicional++;
 				}
+//				if (!threads.isEmpty()) {
+//					ThreadUtil.joinThread(threads.get(0));
+//				}
 				ThreadUtil.joinThreads(threads);
 			} while (any && !onlyOne);
+			//ThreadUtil.joinThreads(threads);
 		} catch (GeneticDAOException | ParseException ex) {
 			ex.printStackTrace();
 		}
