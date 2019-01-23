@@ -5,9 +5,9 @@
 package forex.genetic.manager.mongodb;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.exception.GeneticBusinessException;
@@ -40,19 +40,21 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 			maxFechaHistorico = DateUtil.obtenerFecha("2016/01/01 00:00");
 			do {
 				any = false;
-				List<Thread> threads = new ArrayList<>();
+				List<Thread> threads = new Vector<>();
 				int numeroHilos = 0;
 				int numeroDelFiltroAdicional = 0;
 				while ((numeroHilos < 6) && (numeroDelFiltroAdicional < 10)) {
 					if (RandomUtil.nextBoolean()) {
 						numeroHilos++;
-						LogUtil.logTime("Obteniendo individuos para el filtro " + numeroDelFiltroAdicional, 1);
+						String threadName ="Mongo_" + numeroDelFiltroAdicional; 
+						LogUtil.logTime("Obteniendo individuos para el hilo " + threadName, 1);
 						@SuppressWarnings("unchecked")
 						List<MongoIndividuo> individuos = (List<MongoIndividuo>) dataClient.getDaoIndividuo()
 								.getListByProcesoEjecucion("" + numeroDelFiltroAdicional, maxFechaHistorico);
+						LogUtil.logTime("Individuos consultados para el hilo " + threadName + ": " + individuos.size(), 1);
 						if ((individuos != null) && (!individuos.isEmpty())) {
 							MongoProcesarIndividuoThread procesarIndividuoThread = new MongoProcesarIndividuoThread(
-									"Mongo_" + numeroDelFiltroAdicional, individuos);
+									threadName, individuos);
 							procesarIndividuoThread.setMaxFechaHistorico(maxFechaHistorico);
 							procesarIndividuoThread.setMinFechaHistorico(minFechaHistorico);
 							procesarIndividuoThread.start();
