@@ -36,22 +36,25 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 			// minFechaHistorico = DateUtil.obtenerFecha("2008/05/06 00:00");
 			Date minFechaHistorico = dataClient.getDaoDatoHistorico().getFechaHistoricaMinima();
 			Date maxFechaHistorico = dataClient.getDaoDatoHistorico().getFechaHistoricaMaxima();
-			//TODO ricardorq85 Quitar, es solo para agilizar el proceso para verificar tendencias
+			// TODO ricardorq85 Quitar, es solo para agilizar el proceso para verificar
+			// tendencias
 			maxFechaHistorico = DateUtil.obtenerFecha("2016/01/01 00:00");
 			do {
 				any = false;
 				List<Thread> threads = new Vector<>();
 				int numeroHilos = 0;
 				int numeroDelFiltroAdicional = 0;
-				while ((numeroHilos < 6) && (numeroDelFiltroAdicional < 10)) {
-					if (RandomUtil.nextBoolean()) {
+				int maxHilos = 5;
+				while ((numeroHilos <= maxHilos) && (numeroDelFiltroAdicional < 10)) {
+					if ((RandomUtil.nextBoolean()) || (numeroDelFiltroAdicional - numeroHilos >= 10 - maxHilos)) {
 						numeroHilos++;
-						String threadName ="Mongo_" + numeroDelFiltroAdicional; 
+						String threadName = "Mongo_" + numeroDelFiltroAdicional;
 						LogUtil.logTime("Obteniendo individuos para el hilo " + threadName, 1);
 						@SuppressWarnings("unchecked")
 						List<MongoIndividuo> individuos = (List<MongoIndividuo>) dataClient.getDaoIndividuo()
 								.getListByProcesoEjecucion("" + numeroDelFiltroAdicional, maxFechaHistorico);
-						LogUtil.logTime("Individuos consultados para el hilo " + threadName + ": " + individuos.size(), 1);
+						LogUtil.logTime("Individuos consultados para el hilo " + threadName + ": " + individuos.size(),
+								1);
 						if ((individuos != null) && (!individuos.isEmpty())) {
 							MongoProcesarIndividuoThread procesarIndividuoThread = new MongoProcesarIndividuoThread(
 									threadName, individuos);
