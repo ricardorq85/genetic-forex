@@ -1,6 +1,9 @@
-cd "Program Files\MongoDB\Server\4.0\bin"
+cd "C:\\Program Files\MongoDB\Server\4.0\bin"
 mongo
 use 
+
+COLLATION
+{locale:"en_US"}
 
 db.adminCommand({renameCollection: "forex.individuoBorrado", to: "usdcad.individuoBorrado"})
 datoHistorico2008
@@ -26,7 +29,12 @@ idIndividuo=1394841600000.83 <- 2018/11/19 20:33.43
   }
 }
 
-db.operacion.deleteMany({"idIndividuo":{$ne:"1394755200000.32"}})
+db.xx.deleteMany({"idIndividuo":{$ne:"1394755200000.32"}})
+
+db.xx.deleteMany({"procesoEjecucion":null})
+
+db.individuo.updateMany({"procesoEjecucion":{$ne:null}}, {$set:{"procesoEjecucion":null}})
+db.individuo.updateMany({"procesoEjecucion":null}, {$set:{"ordenActiva":null}})
 
 {"idIndividuo":"1394841600000.83"}
 {"idIndividuo":"1394841600000.73"}
