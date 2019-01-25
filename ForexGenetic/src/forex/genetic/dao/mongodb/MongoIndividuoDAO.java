@@ -77,9 +77,9 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 
 	@Override
 	public List<? extends IndividuoEstrategia> getListByProcesoEjecucion(String filtroAdicional, Date fechaHistorico) {
-		int cantidad = 100;
+		int cantidad = 50;
 		Bson filtroProcesoEjecucionNull = Filters.exists("procesoEjecucion.maxFechaHistorico", false);
-		Bson filtroFechaHistorica = Filters.ne("procesoEjecucion.maxFechaHistorico", fechaHistorico);
+		Bson filtroFechaHistorica = Filters.lt("procesoEjecucion.maxFechaHistorico", fechaHistorico);
 		Bson filtroOr = Filters.or(filtroProcesoEjecucionNull, filtroFechaHistorica);
 		Bson bsonFiltroAdicional = Filters.regex("idIndividuo", filtroAdicional + "$");
 

@@ -108,10 +108,10 @@ public class MongoProcesarIndividuoThread extends Thread {
 		while (!deleted && processed && this.maxFechaHistorico.after(interval.getLowInterval())) {
 			LogUtil.logTime(super.getName() + ":" + individuo.getId() + "," + interval.toString(), 1);
 
-			LogUtil.logTime("Consultando puntos de apertura:" + individuo.getId(), 1);
+			LogUtil.logTime("Consultando puntos de apertura:" + individuo.getId(), 2);
 			List<Point> puntosApertura = daoDatoHistorico.consultarProximosPuntosApertura(individuo, interval);
 
-			LogUtil.logTime("Consultando puntos de cierre:" + individuo.getId(), 1);
+			LogUtil.logTime("Consultando puntos de cierre:" + individuo.getId(), 2);
 			List<Point> puntosCierre = daoDatoHistorico.consultarPuntosCierre(individuo, interval);
 
 			Date lastProcessedDate = null;
