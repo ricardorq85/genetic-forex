@@ -327,7 +327,7 @@ public class MongoProcesarIndividuoThread extends Thread {
 		procesoEjecucionIndividuo.setMaxFechaHistorico(fechaHistorico);
 		procesoEjecucionIndividuo.setFechaProceso(new Date());
 		individuo.setProcesoEjecucion(procesoEjecucionIndividuo);
-		daoIndividuo.insertOrUpdate(individuo);
+		daoIndividuo.update(individuo);
 	}
 
 	private Point getPuntoMinimo(Point p1, Point p2) {

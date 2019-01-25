@@ -118,7 +118,7 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 	@Override
 	public void update(E obj) {
 		Document filterPk = new Document(getMapper().toPrimaryKeyMap(obj));
-		Document doc = new Document("$set", getMapper().toMap(obj));
+		Document doc = new Document("$set", getMapper().toMapForUpdate(obj));
 		this.collection.updateOne(filterPk, doc);
 	}
 

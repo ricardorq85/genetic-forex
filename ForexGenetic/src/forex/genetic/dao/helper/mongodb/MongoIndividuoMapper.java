@@ -32,6 +32,21 @@ public class MongoIndividuoMapper extends MongoMapper<MongoIndividuo> {
 	}
 
 	@Override
+	public Map<String, Object> toMapForUpdate(MongoIndividuo obj) {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		objectMap.put("procesoEjecucion", toMapProcesoEjecucion(obj));
+
+		if (obj.getCurrentOrder() != null) {
+			MongoOperacionMapper operacionMapper = new MongoOperacionMapper();
+			objectMap.put("ordenActiva", operacionMapper.toMap((MongoOrder) obj.getCurrentOrder()));
+		} else {
+			objectMap.put("ordenActiva", null);
+		}
+		
+		return objectMap;
+	}
+
+	@Override
 	public Map<String, Object> toMap(MongoIndividuo obj) {
 		Map<String, Object> objectMap = toMapIndividuoEstrategia(obj);
 		objectMap.put("procesoEjecucion", toMapProcesoEjecucion(obj));

@@ -22,6 +22,10 @@ public abstract class MongoMapper<T> {
 
 	public abstract T helpOne(Document one);
 
+	public Map<String, Object> toMapForUpdate(T obj) {
+		return toMap(obj);
+	}
+
 	public Map<String, Object> toMapForDeleteByIndividuo(Individuo obj) {
 		Map<String, Object> objectMap = new HashMap<String, Object>();
 		objectMap.put("idIndividuo", obj.getId());
