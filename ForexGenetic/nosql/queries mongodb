@@ -2,6 +2,8 @@ cd "C:\\Program Files\MongoDB\Server\4.0\bin"
 mongo
 use 
 
+mongod -f "C:\Program Files\MongoDB\Server\4.0\bin\mongod.cfg"
+
 COLLATION
 {locale:"en_US"}
 

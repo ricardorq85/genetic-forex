@@ -90,8 +90,9 @@ public abstract class IndividuoXIndicadorManager {
 			}
 			Date fechaFiltroFinal = new Date(fechaMaxima.getTime());
 			while (fechaFiltroFinal.after(fechaMinima)) {
-				int meses = parametroMeses;
-				while (meses <= maximoMeses) {
+				int meses = RandomUtil.nextInt(parametroMeses) + 1;
+				int count = 0;
+				while (count <= 3) {
 					logTime("Meses: " + meses, 1);
 					Date fechaFiltroInicial = DateUtil.adicionarMes(fechaFiltroFinal, -meses);
 					Date fecha1 = DateUtil.randomDate(fechaFiltroInicial, fechaFiltroFinal);
@@ -115,7 +116,8 @@ public abstract class IndividuoXIndicadorManager {
 							this.crearIndividuos(rangoOperacionIndividuo);
 						}
 					}
-					meses++;
+					meses = RandomUtil.nextInt(parametroMeses) + 1;
+					count++;
 				}
 				fechaFiltroFinal = DateUtil.adicionarMes(fechaFiltroFinal, -RandomUtil.nextInt(12));
 			}
