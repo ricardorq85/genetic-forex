@@ -61,8 +61,11 @@ public class MongoProcesarIndividuoThread extends Thread {
 			daoDatoHistorico = (MongoDatoHistoricoDAO) dataClient.getDaoDatoHistorico();
 			daoOperaciones = (MongoOperacionesDAO) dataClient.getDaoOperaciones();
 			daoIndividuo = (MongoIndividuoDAO) dataClient.getDaoIndividuo();
+			int index = 1;
 			for (MongoIndividuo individuo : individuos) {
+				LogUtil.logTime(super.getName() + "-Procesando individuo:" + (index) + "-" + individuo.getId(), 1);
 				runIndividuo(individuo);
+				index++;
 			}
 		} catch (ClassNotFoundException ex) {
 			ex.printStackTrace();
