@@ -36,9 +36,6 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 			// minFechaHistorico = DateUtil.obtenerFecha("2008/05/06 00:00");
 			Date minFechaHistorico = dataClient.getDaoDatoHistorico().getFechaHistoricaMinima();
 			Date maxFechaHistorico = dataClient.getDaoDatoHistorico().getFechaHistoricaMaxima();
-			// TODO ricardorq85 Quitar, es solo para agilizar el proceso para verificar
-			// tendencias
-			maxFechaHistorico = DateUtil.obtenerFecha("2016/01/01 00:00");
 			List<Thread> threads = new Vector<>();
 			do {
 				any = false;
@@ -76,9 +73,8 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 				ThreadUtil.joinThreads(threads);
 			} while (any && !onlyOne);
 			//ThreadUtil.joinThreads(threads);
-		} catch (GeneticDAOException | ParseException ex) {
+		} catch (GeneticDAOException ex) {
 			ex.printStackTrace();
 		}
 	}
-
 }

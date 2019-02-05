@@ -45,6 +45,7 @@ public class MongoEstadisticasIndividuoDAO extends MongoGeneticDAO<MongoEstadist
 
 		this.collection.createIndex(Indexes.ascending("idIndividuo", "fechaInicial"), indexOptions);
 		this.collection.createIndex(Indexes.ascending("idIndividuo"));
+		this.collection.createIndex(Indexes.ascending("fechaFinal"));
 	}
 
 	@Override

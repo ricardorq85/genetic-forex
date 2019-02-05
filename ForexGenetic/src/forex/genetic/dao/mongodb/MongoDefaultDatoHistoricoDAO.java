@@ -1,5 +1,6 @@
 package forex.genetic.dao.mongodb;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -35,6 +36,7 @@ import forex.genetic.manager.controller.IndicadorController;
 import forex.genetic.manager.indicator.IndicadorManager;
 import forex.genetic.manager.indicator.IntervalIndicatorManager;
 import forex.genetic.util.Constants;
+import forex.genetic.util.DateUtil;
 
 /**
  *
@@ -172,6 +174,16 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 
 	@Override
 	public Date getFechaHistoricaMaxima() {
+		Date d = new Date();
+		try {
+			d = DateUtil.obtenerFecha("2015/12/31 23:59");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return d;
+	}
+
+	public Date getRealFechaHistoricaMaxima() {
 		Date fecha = null;
 //		Document doc = this.collection
 //				.aggregate(Arrays.asList(Aggregates.group(null, Accumulators.max("maxDate", "$fechaHistorico"))))

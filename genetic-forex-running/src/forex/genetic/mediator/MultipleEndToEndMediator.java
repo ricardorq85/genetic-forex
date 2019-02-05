@@ -9,6 +9,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import forex.genetic.dao.IDatoHistoricoDAO;
@@ -49,11 +50,12 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 				int imported = 0;
 				for (int j = 0; j < dataClients.size(); j++) {
 					IDatoHistoricoDAO daoDatoHistorico = ((IDatoHistoricoDAO) dataClients.get(j).getDaoDatoHistorico());
-					fechaHistoricaMaximaAnterior = DateUtil.obtenerFechaMinima(
-							daoDatoHistorico.getFechaHistoricaMaxima(), fechaHistoricaMaximaAnterior);
+					Date fechaHistoricaMaxima = daoDatoHistorico.getFechaHistoricaMaxima();
+					fechaHistoricaMaximaAnterior = DateUtil.obtenerFechaMinima(fechaHistoricaMaxima,
+							fechaHistoricaMaximaAnterior);
 					imported = importarDatosHistoricos(dataClients.get(j));
-					this.fechaHistoricaMaximaNueva = DateUtil
-							.obtenerFechaMinima(daoDatoHistorico.getFechaHistoricaMaxima(), fechaHistoricaMaximaNueva);
+					this.fechaHistoricaMaximaNueva = DateUtil.obtenerFechaMinima(fechaHistoricaMaxima,
+							fechaHistoricaMaximaNueva);
 				}
 				this.exportarDatosHistoricos();
 				this.oneDataClient = dataClients.get(0);
@@ -64,8 +66,8 @@ public class MultipleEndToEndMediator extends EndToEndMediator {
 						+ ",count=" + count, 1);
 				// TODO rrojasq Hacer con hilos para cada driver
 				procesarIndividuos();
-				//procesarTendencias();
-				//exportarTendenciaParaOperar();
+				// procesarTendencias();
+				// exportarTendenciaParaOperar();
 				crearNuevosIndividuos();
 				if (imported == 0) {
 					count++;
