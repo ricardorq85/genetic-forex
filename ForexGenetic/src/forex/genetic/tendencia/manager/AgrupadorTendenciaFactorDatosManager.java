@@ -72,6 +72,11 @@ public class AgrupadorTendenciaFactorDatosManager extends AgrupadorTendenciaMana
 		double stopAperturaAntesDe = item.getStopApertura();
 		double takeProfitAntesDe = item.getTp();
 		double stopLossAntesDe = item.getSl();
+		double minPrecioSinFiltrar = item.getRegresion().getMinPrecio();
+		double minPrecioFiltrado = item.getRegresionFiltrada().getMinPrecio();
+
+		double maxPrecioSinFiltrar = item.getRegresion().getMaxPrecio();
+		double maxPrecioFiltrado = item.getRegresionFiltrada().getMaxPrecio();
 
 		double valorMinimo = 1000.0D / PropertiesManager.getPairFactor();
 		double multiplicador = 100.0D / PropertiesManager.getPairFactor();
@@ -103,6 +108,9 @@ public class AgrupadorTendenciaFactorDatosManager extends AgrupadorTendenciaMana
 
 		double nuevoPrecio;
 		if (item.getTipoOperacion().equals(OperationType.BUY)) {
+			double diffFiltradoVsSinFiltrar = (minPrecioFiltrado - minPrecioSinFiltrar) * factorDatos;
+			calculoLimitApertura = Math.min(calculoLimitApertura, diffFiltradoVsSinFiltrar);
+
 			item.setLimitApertura(precioAntesDe - calculoLimitApertura);
 			nuevoPrecio = precioAntesDe + calculoPrecio;
 			item.setPrecioCalculado(nuevoPrecio);
@@ -110,6 +118,9 @@ public class AgrupadorTendenciaFactorDatosManager extends AgrupadorTendenciaMana
 			item.setTp(takeProfitAntesDe - calculoTakeProfit);
 			item.setSl(stopLossAntesDe - calculoStopLoss);
 		} else if (item.getTipoOperacion().equals(OperationType.SELL)) {
+			double diffFiltradoVsSinFiltrar = (maxPrecioSinFiltrar - maxPrecioFiltrado) * factorDatos;
+			calculoLimitApertura = Math.max(calculoLimitApertura, diffFiltradoVsSinFiltrar);
+
 			item.setLimitApertura(precioAntesDe + calculoLimitApertura);
 			nuevoPrecio = precioAntesDe - calculoPrecio;
 			item.setPrecioCalculado(nuevoPrecio);
@@ -118,5 +129,4 @@ public class AgrupadorTendenciaFactorDatosManager extends AgrupadorTendenciaMana
 			item.setSl(stopLossAntesDe + calculoStopLoss);
 		}
 	}
-
 }
