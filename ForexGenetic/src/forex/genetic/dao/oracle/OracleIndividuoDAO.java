@@ -890,7 +890,7 @@ public class OracleIndividuoDAO extends OracleGeneticDAO<IndividuoEstrategia>
 	}
 
 	@Override
-	public List<? extends IndividuoEstrategia> getListByProcesoEjecucion(String filtroAdicional, Date fechaHistorico)
+	public List<? extends IndividuoEstrategia> getListByProcesoEjecucion(String filtroAdicional, Date fechaHistorico, int cantidadIndividuos)
 			throws GeneticDAOException {
 		// TODO Auto-generated method stub
 		return null;

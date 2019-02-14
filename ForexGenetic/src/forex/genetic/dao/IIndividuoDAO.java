@@ -21,7 +21,7 @@ public interface IIndividuoDAO<E extends IndividuoEstrategia> extends IGeneticDA
 
 	public void insertIndividuoEstrategia(IndividuoEstrategia obj) throws GeneticDAOException;
 
-	public List<? extends IndividuoEstrategia> getListByProcesoEjecucion(String filtroAdicional, Date fechaHistorico)
+	public List<? extends IndividuoEstrategia> getListByProcesoEjecucion(String filtroAdicional, Date fechaHistorico, int cantidadIndividuos)
 			throws GeneticDAOException;
 
 	public void crearVistaIndicadoresIndividuo(String viewName, String idIndividuo) throws GeneticDAOException;

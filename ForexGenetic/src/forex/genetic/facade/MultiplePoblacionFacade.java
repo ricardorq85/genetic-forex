@@ -36,7 +36,8 @@ public class MultiplePoblacionFacade extends PoblacionFacade {
 			for (int i = 0; i < managers.length; i++) {
 				ProcesoIndividuoManager manager = (ProcesoIndividuoManager) managers[i];
 				try {
-					manager.process(onlyOne);
+					// TODO rrojasq: onlyOne como parametro
+					manager.process(true);
 				} catch (GeneticBusinessException e) {
 					e.printStackTrace();
 				}
