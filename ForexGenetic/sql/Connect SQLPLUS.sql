@@ -23,7 +23,8 @@ c:\app\rrq\product\11.2.0\dbhome_1\BIN\sqlplus sys as SYSDBA/ForexAdmin2018@loca
 --@"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\Insertar Acumulados Semana.sql"
 
 --Export tendencias
-C:\app\USER\product\11.2.0\dbhome_2\BIN\sqlplus FOREX/forex@localhost:1522/FOREX3 @"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\ExportTendencias.sql"
+--C:\app\USER\product\11.2.0\dbhome_2\BIN\sqlplus FOREX/forex@localhost:1522/FOREX3 @"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\ExportTendencias.sql"
+C:\app\Angela\product\11.2.0\dbhome_1\BIN\sqlplus FOREX/forex@localhost:1521/orclforex @"C:\Users\Angela\Documents\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\ExportTendencias.sql"
 
 --Consulta Individuos Para Operar
 C:\app\USER\product\11.2.0\dbhome_2\BIN\sqlplus FOREX/forex@localhost:1522/FOREX3 @"d:\ricardorq85\JavaProjects\Git\genetic-forex\ForexGenetic\sql\Consulta Individuos Para Operar.sql"

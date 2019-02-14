@@ -80,6 +80,13 @@ public abstract class EndToEndMediator extends GeneticMediator {
 				this.fechaHistoricaMaximaAnterior = datoHistoricoDAO.getFechaHistoricaMaxima();
 				int imported = this.importarDatosHistoricos(oneDataClient);
 				this.fechaHistoricaMaximaNueva = datoHistoricoDAO.getFechaHistoricaMaxima();
+				if (this.fechaHistoricaMaximaNueva == null) {
+					try {
+						this.fechaHistoricaMaximaNueva = DateUtil.obtenerFecha("2008/01/01 00:00");
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+				}
 				this.exportarDatosHistoricos();
 				this.setUltimaFechaTendencia(count);
 				LogUtil.logTime("ultimaFechaBaseTendencia=" + DateUtil.getDateString(this.ultimaFechaBaseTendencia)

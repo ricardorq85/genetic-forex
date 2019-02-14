@@ -3,8 +3,8 @@ package forex.genetic.factory;
 import forex.genetic.dao.IParametroDAO;
 import forex.genetic.entities.Moneda;
 import forex.genetic.entities.MonedaEURJPY;
+import forex.genetic.entities.MonedaGBPCHF;
 import forex.genetic.entities.MonedaUSDCAD;
-import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.PropertiesManager;
 
 public class MonedaFactory {
@@ -48,6 +48,8 @@ public class MonedaFactory {
 			moneda = new MonedaUSDCAD();
 		} else if ("EURJPY".equals(m)) {
 			moneda = new MonedaEURJPY();
+		} else if ("GBPCHF".equals(m)) {
+			moneda = new MonedaGBPCHF();
 		}
 		return moneda;
 	}
