@@ -5,6 +5,8 @@
  */
 package forex.genetic.manager.mongodb;
 
+import static forex.genetic.util.LogUtil.logTime;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,7 +76,12 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 		}
 		List<IndividuoEstrategia> individuosParaCruzar = new ArrayList<>();
 		for (MongoEstadistica estadistica : estadisticasRandom) {
-			individuosParaCruzar.add(dataClient.getDaoIndividuo().consultarById(estadistica.getIdIndividuo()));
+			IndividuoEstrategia individuo = dataClient.getDaoIndividuo().consultarById(estadistica.getIdIndividuo());
+			if (individuo == null) {
+				logTime("El individuo con ID: " + estadistica.getIdIndividuo()
+						+ " no existe, pero fue consultado en las estadisticas", 1);
+			}
+			individuosParaCruzar.add(individuo);
 		}
 		return individuosParaCruzar;
 	}
