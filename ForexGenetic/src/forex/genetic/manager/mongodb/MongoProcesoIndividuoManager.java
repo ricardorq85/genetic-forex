@@ -43,7 +43,7 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 			int counter = 0;
 			do {
 				int numeroDelFiltroAdicional = 0;
-				int maxHilos = 5;
+				int maxHilos = 3;
 				while ((threads.size() <= maxHilos) && (numeroDelFiltroAdicional < 10)) {
 					String threadName = "Mongo_" + numeroDelFiltroAdicional;
 					if (!threads.contains(new MongoProcesarIndividuoThread(threadName, null))) {
