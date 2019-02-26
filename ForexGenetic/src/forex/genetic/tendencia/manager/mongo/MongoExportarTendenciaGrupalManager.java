@@ -1,5 +1,6 @@
 package forex.genetic.tendencia.manager.mongo;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,8 @@ public class MongoExportarTendenciaGrupalManager extends ExportarTendenciaGrupal
 
 	public MongoExportarTendenciaGrupalManager(DataClient dc, Date fechaBase) throws GeneticBusinessException {
 		super(dc);
+		tendenciasSinFiltrar = new ArrayList<>();
+		tendenciasFiltradas = new ArrayList<>();
 		try {
 			if (DateUtil.cumpleFechaParaTendenciaUltimosDatos(fechaBase)) {
 				tendenciaDAO = dc.getDaoTendenciaUltimosDatos();

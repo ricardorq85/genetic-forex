@@ -80,6 +80,12 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 	}
 
 	@Override
+	public double consultarPrecioPonderado(Date fecha) throws GeneticDAOException {
+		setCollection(DateUtil.obtenerAnyo(fecha));
+		return super.consultarPrecioPonderado(fecha);
+	}
+
+	@Override
 	public void clean() {
 		int year = 2008;
 		int currYear = DateUtil.obtenerAnyo(new Date());

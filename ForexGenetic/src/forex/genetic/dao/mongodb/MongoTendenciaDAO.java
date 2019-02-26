@@ -70,7 +70,7 @@ public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> implements ITe
 		MongoCursor<Document> cursor = this.collection.find(filtros).sort(sorts).iterator();
 		return getMapper().helpList(cursor);
 	}
-	
+
 	@Override
 	public void deleteByIndividuo(Individuo individuo, Date fechaBase) throws GeneticDAOException {
 		throw new UnsupportedOperationException("UnsupportedOperationException");
@@ -101,7 +101,16 @@ public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> implements ITe
 
 	@Override
 	public Date maxFechaProcesoTendencia(DateInterval intervaloFechaBase) throws GeneticDAOException {
-		throw new UnsupportedOperationException("UnsupportedOperationException");
+		Date fecha = null;
+		Bson filtro = Filters.and(Filters.gte("fecha", intervaloFechaBase.getLowInterval()),
+				Filters.lte("fecha", intervaloFechaBase.getHighInterval()));
+		Document doc = this.collection.find(filtro).projection(Projections.include("fecha"))
+				.sort(Sorts.ascending("fecha")).first();
+
+		if (doc != null) {
+			fecha = doc.getDate("fecha");
+		}
+		return fecha;
 	}
 
 	@Override

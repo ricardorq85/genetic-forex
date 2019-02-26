@@ -363,6 +363,17 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 	}
 
 	@Override
+	public double consultarPrecioPonderado(Date fecha) throws GeneticDAOException {
+		double precio = 0.0D;
+		Document doc = this.collection.find(Filters.eq("fechaHistorico", fecha)).limit(1).first();
+		if ((doc != null) && (!doc.isEmpty())) {
+			Point p = getMapper().helpOne(doc);
+			precio = (p.getLow() + p.getHigh() + p.getOpen() + p.getClose()) / 4;
+		}
+		return precio;
+	}
+
+	@Override
 	public List<Date> consultarPuntosApertura(Date fechaMayorQue, String idIndividuo) throws GeneticDAOException {
 		throw new UnsupportedOperationException(
 				"MongoDatoHistoricoDAO.consultarPuntosApertura no soportado. Se debe usar consultarProximoPuntoApertura");
@@ -372,11 +383,6 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 	public List<Date> consultarPuntosApertura(DateInterval rango, String idIndividuo) throws GeneticDAOException {
 		throw new UnsupportedOperationException(
 				"MongoDatoHistoricoDAO.consultarPuntosApertura no soportado. Se debe usar consultarProximoPuntoApertura");
-	}
-
-	@Override
-	public double consultarPrecioPonderado(Date fecha) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
 	@Override
