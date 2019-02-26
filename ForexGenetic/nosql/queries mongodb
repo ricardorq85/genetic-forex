@@ -24,6 +24,10 @@ idIndividuo=1394841600000.83 <- 2018/11/19 20:33.43
 {idIndividuo:"1394841600000.16"}
 2008-11-13 16:59:00.000
 
+{$and:[{tipoTendencia:"BUY_SELL_20170204-2"},{duracionMinutos:{$lt:18720} }]}
+{    $and:[      {tipoTendencia:"BUY_SELL_20170204-2"},      {duracionMinutos:{$lt:18720}},      {fechaBase:{$lte:new Date("2015-12-31T00:00")}}      ]}
+{$and:[{tipoTendencia:"BUY_SELL_20170204-2"},{duracionMinutos:{$lt:18720} }, {fechaBase:{$lte:new Date("2015-12-01T00:00")}}]}
+
 {
   _id: "$idIndividuo",
   count: {
@@ -37,6 +41,9 @@ db.xx.deleteMany({"procesoEjecucion":null})
 
 db.individuo.updateMany({"procesoEjecucion":{$ne:null}}, {$set:{"procesoEjecucion":null}})
 db.individuo.updateMany({"procesoEjecucion":null}, {$set:{"ordenActiva":null}})
+
+db.tendencia.update({_id:ObjectId('5c6c501aaee4d56295c66f9c')},{$rename:{'propabilidadPositivos':'probabilidadPositivos'}})
+db.tendencia.updateMany({},{$rename:{'propabilidadPositivos':'probabilidadPositivos'}})
 
 {"idIndividuo":"1394841600000.83"}
 {"idIndividuo":"1394841600000.73"}
