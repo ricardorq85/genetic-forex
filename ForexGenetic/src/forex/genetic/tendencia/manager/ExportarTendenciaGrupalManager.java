@@ -51,47 +51,36 @@ public abstract class ExportarTendenciaGrupalManager extends ExportarTendenciaMa
 	}
 
 	protected void procesarRegresionParaCalculoJava() throws GeneticBusinessException {
-		SimpleRegression simpleRegressionProcessorSinFiltrar = new SimpleRegression();
-		StandardDeviation standardDeviationSinFiltrar = new StandardDeviation();
-
 		List<TendenciaParaOperar> tendenciasSinFiltrar = consultarTendenciasSinFiltrar();
-		Regresion regSinFiltrarJava = new Regresion();
-		double[] sdDataSinFiltrar = new double[tendenciasSinFiltrar.size()];
-
-		if ((tendenciasSinFiltrar != null) && (!tendenciasSinFiltrar.isEmpty())) {
-			for (int i = 0; i < tendenciasSinFiltrar.size(); i++) {
-				TendenciaParaOperar tendenciaParaOperar = tendenciasSinFiltrar.get(i);
-				float diffDias = DateUtil.diferenciaMinutos(tendenciaParaOperar.getFechaBase(),
-						tendenciaParaOperar.getFechaTendencia()) / 60.0F / 24.0F;
-				simpleRegressionProcessorSinFiltrar.addData(diffDias, tendenciaParaOperar.getPrecioCalculado());
-				sdDataSinFiltrar[i] = tendenciaParaOperar.getPrecioCalculado();
-			}
-			standardDeviationSinFiltrar.setData(sdDataSinFiltrar);
-			regSinFiltrarJava = TendenciaProcesoBuySellHelper.helpRegresion(procesoTendencia,
-					simpleRegressionProcessorSinFiltrar, standardDeviationSinFiltrar);
-		}
-
-		SimpleRegression simpleRegressionProcessorFiltrada = new SimpleRegression();
-		StandardDeviation standardDeviationFiltrada = new StandardDeviation();
-
 		List<TendenciaParaOperar> tendenciasFiltradas = consultarTendenciasFiltradas();
-		Regresion regFiltradaJava = new Regresion();
-		double[] sdDataFiltrada = new double[tendenciasFiltradas.size()];
 
-		if ((tendenciasFiltradas != null) && (!tendenciasFiltradas.isEmpty())) {
-			for (int i = 0; i < tendenciasFiltradas.size(); i++) {
-				TendenciaParaOperar ten = tendenciasFiltradas.get(i);
-				float diffDias = DateUtil.diferenciaMinutos(ten.getFechaBase(), ten.getFechaTendencia()) / 60.0F
-						/ 24.0F;
-				simpleRegressionProcessorFiltrada.addData(diffDias, ten.getPrecioCalculado());
-				sdDataFiltrada[i] = ten.getPrecioCalculado();
-			}
-			standardDeviationFiltrada.setData(sdDataFiltrada);
-			regFiltradaJava = TendenciaProcesoBuySellHelper.helpRegresion(procesoTendencia,
-					simpleRegressionProcessorFiltrada, standardDeviationFiltrada);
-		}
+		Regresion regSinFiltrarJava = this.calcularRegresionJava(tendenciasSinFiltrar);
+		Regresion regFiltradaJava = this.calcularRegresionJava(tendenciasFiltradas);
+
 		procesoTendencia.setRegresionJava(regSinFiltrarJava);
 		procesoTendencia.setRegresionFiltradaJava(regFiltradaJava);
+	}
+
+	private Regresion calcularRegresionJava(List<TendenciaParaOperar> listaTendencias) {
+		SimpleRegression simpleRegressionProcessor = new SimpleRegression();
+		StandardDeviation standardDeviation = new StandardDeviation();
+
+		Regresion regJava = new Regresion();
+		double[] sdData = new double[listaTendencias.size()];
+
+		if ((listaTendencias != null) && (!listaTendencias.isEmpty())) {
+			for (int i = 0; i < listaTendencias.size(); i++) {
+				TendenciaParaOperar tendenciaParaOperar = listaTendencias.get(i);
+				float diffDias = DateUtil.diferenciaMinutos(tendenciaParaOperar.getFechaBase(),
+						tendenciaParaOperar.getFechaTendencia()) / 60.0F / 24.0F;
+				simpleRegressionProcessor.addData(diffDias, tendenciaParaOperar.getPrecioCalculado());
+				sdData[i] = tendenciaParaOperar.getPrecioCalculado();
+			}
+			standardDeviation.setData(sdData);
+			regJava = TendenciaProcesoBuySellHelper.helpRegresion(procesoTendencia, simpleRegressionProcessor,
+					standardDeviation);
+		}
+		return regJava;
 	}
 
 	@Override
