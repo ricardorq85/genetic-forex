@@ -95,7 +95,8 @@ public class TestTendenciaRegresion {
 		});
 		sd.setData(sdData);
 		double standardDeviation = sd.evaluate();
-		Regresion regSinFiltrar = TendenciaProcesoBuySellHelper.helpRegresion(procesoTendencia, sr, sd);
+		Regresion regSinFiltrar = new Regresion();
+		TendenciaProcesoBuySellHelper.helpRegresion(regSinFiltrar, sr, sd);
 		System.out.println("Fecha base:" + DateUtil.getDateString(fechaBase));
 		System.out.println("Pendiente:" + sr.getSlope() + ";" + regSinFiltrar.getPendiente());
 		System.out.println("R2:" + sr.getRSquare() + ";" + regSinFiltrar.getR2());

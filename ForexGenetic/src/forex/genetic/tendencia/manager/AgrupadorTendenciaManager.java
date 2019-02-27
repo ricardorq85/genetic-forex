@@ -36,8 +36,7 @@ public class AgrupadorTendenciaManager {
 	private double stepLote = 0.01D;
 	private double maxLote = 0.1D;
 
-	public AgrupadorTendenciaManager(Date fechaBase, Date maxFechaProceso, DataClient dc)
-			throws GeneticDAOException {
+	public AgrupadorTendenciaManager(Date fechaBase, Date maxFechaProceso, DataClient dc) throws GeneticDAOException {
 		super();
 		this.dataClient = dc;
 		this.listaTendencias = new ArrayList<>();
@@ -324,7 +323,8 @@ public class AgrupadorTendenciaManager {
 			limitApertura = extremos.getExtremosSinFiltrar().getLowInterval();
 			// slPips = extremos.getExtremosFiltrados().getHighInterval() -
 			// this.precioPonderado;
-			sl = precio - Math.max(adicionalTPO.getDiferenciaPrecioSuperior(), (200.0D / PropertiesManager.getPairFactor()));
+			sl = precio - Math.max(adicionalTPO.getDiferenciaPrecioSuperior(),
+					(200.0D / PropertiesManager.getPairFactor()));
 			tp = extremos.getExtremosIntermedios().getHighInterval();
 			// tp = extremos.getHighInterval();
 		} else if (OperationType.SELL.equals(procesoIndex.getTipoOperacion())) {
@@ -333,7 +333,8 @@ public class AgrupadorTendenciaManager {
 			limitApertura = extremos.getExtremosSinFiltrar().getHighInterval();
 			// slPips = -(this.precioPonderado -
 			// extremos.getExtremosFiltrados().getLowInterval());
-			sl = precio + Math.max(adicionalTPO.getDiferenciaPrecioInferior(), (200.0D / PropertiesManager.getPairFactor()));
+			sl = precio + Math.max(adicionalTPO.getDiferenciaPrecioInferior(),
+					(200.0D / PropertiesManager.getPairFactor()));
 			tp = extremos.getExtremosIntermedios().getLowInterval();
 			// tp = extremos.getLowInterval();
 		}
@@ -496,13 +497,7 @@ public class AgrupadorTendenciaManager {
 
 	public void saveDatosAdicionalesTPO(DatoAdicionalTPO datoAdicional) throws GeneticDAOException {
 		if (datoAdicional != null) {
-			boolean exists = dataClient.getDaoDatoAdicionalTPO().exists(datoAdicional);
-			// mongoTendenciaParaOperarDAO.insertOrUpdateDatoAdicional(datoAdicional);
-			if (exists) {
-				dataClient.getDaoDatoAdicionalTPO().update(datoAdicional);
-			} else {
-				dataClient.getDaoDatoAdicionalTPO().insert(datoAdicional);
-			}
+			dataClient.getDaoDatoAdicionalTPO().insertOrUpdate(datoAdicional);
 		}
 	}
 

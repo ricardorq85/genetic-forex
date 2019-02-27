@@ -58,6 +58,8 @@ public class OracleExportarTendenciaGrupalManager extends ExportarTendenciaGrupa
 			this.setParametrosRegresion(regresionFiltrada);
 			this.procesarRegresion(regresion, regresionFiltrada);
 
+			procesoTendencia.setRegresionJava(new Regresion());
+			procesoTendencia.setRegresionFiltradaJava(new Regresion());
 			this.procesarRegresionParaCalculoJava();
 		} catch (SQLException e) {
 			throw new GeneticBusinessException(null, e);

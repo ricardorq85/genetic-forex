@@ -53,19 +53,18 @@ public abstract class ExportarTendenciaGrupalManager extends ExportarTendenciaMa
 	protected void procesarRegresionParaCalculoJava() throws GeneticBusinessException {
 		List<TendenciaParaOperar> tendenciasSinFiltrar = consultarTendenciasSinFiltrar();
 		List<TendenciaParaOperar> tendenciasFiltradas = consultarTendenciasFiltradas();
+		
+		this.setParametrosRegresion(procesoTendencia.getRegresionJava());
+		this.setParametrosRegresion(procesoTendencia.getRegresionFiltradaJava());
 
-		Regresion regSinFiltrarJava = this.calcularRegresionJava(tendenciasSinFiltrar);
-		Regresion regFiltradaJava = this.calcularRegresionJava(tendenciasFiltradas);
-
-		procesoTendencia.setRegresionJava(regSinFiltrarJava);
-		procesoTendencia.setRegresionFiltradaJava(regFiltradaJava);
+		this.calcularRegresionJava(procesoTendencia.getRegresionJava(), tendenciasSinFiltrar);
+		this.calcularRegresionJava(procesoTendencia.getRegresionFiltradaJava(), tendenciasFiltradas);
 	}
 
-	private Regresion calcularRegresionJava(List<TendenciaParaOperar> listaTendencias) {
+	private void calcularRegresionJava(Regresion regresion, List<TendenciaParaOperar> listaTendencias) {
 		SimpleRegression simpleRegressionProcessor = new SimpleRegression();
 		StandardDeviation standardDeviation = new StandardDeviation();
 
-		Regresion regJava = new Regresion();
 		double[] sdData = new double[listaTendencias.size()];
 
 		if ((listaTendencias != null) && (!listaTendencias.isEmpty())) {
@@ -77,10 +76,9 @@ public abstract class ExportarTendenciaGrupalManager extends ExportarTendenciaMa
 				sdData[i] = tendenciaParaOperar.getPrecioCalculado();
 			}
 			standardDeviation.setData(sdData);
-			regJava = TendenciaProcesoBuySellHelper.helpRegresion(procesoTendencia, simpleRegressionProcessor,
+			TendenciaProcesoBuySellHelper.helpRegresion(regresion, simpleRegressionProcessor,
 					standardDeviation);
 		}
-		return regJava;
 	}
 
 	@Override

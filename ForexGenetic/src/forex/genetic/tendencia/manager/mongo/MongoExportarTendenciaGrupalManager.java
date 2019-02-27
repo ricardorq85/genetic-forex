@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang3.time.DateUtils;
 
 import forex.genetic.dao.ITendenciaDAO;
+import forex.genetic.entities.Regresion;
 import forex.genetic.entities.Tendencia;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.exception.GeneticBusinessException;
@@ -40,17 +41,30 @@ public class MongoExportarTendenciaGrupalManager extends ExportarTendenciaGrupal
 	public void procesar() throws GeneticBusinessException {
 		this.procesarTendenciasIntern(this.tendenciaDAO.consultar(procesoTendencia));
 		this.procesarRegresionParaCalculoJava();
+		procesoTendencia.setRegresion(procesoTendencia.getRegresionJava());
+		procesoTendencia.setRegresionFiltrada(procesoTendencia.getRegresionFiltradaJava());
 	}
 
 	private void procesarTendenciasIntern(List<Tendencia> tendencias) {
-		// double sumPrecioCalculado = 0.0D; // , minPrecioCalculado = 0.0D,
-		// maxPrecioCalculado = 0.0D;
-		double sumProbabilidad = 0.0D, sumPrecioCalculadoXProbabilidad = 0.0D; // , sumPrecioBase = 0.0D;
-		double count = 0.0D;
-		// Date minFechatendencia = null, maxFechaTendencia = null;
+		double sumProbabilidad = 0.0D, sumPrecioCalculadoXProbabilidad = 0.0D;
+		int cantidadTotal = 0;
 		Date fechaBase = this.getProcesoTendencia().getFechaBase();
 		String periodo = this.getProcesoTendencia().getPeriodo();
 		Date fechaTendenciaPorHoraActual = null;
+
+		int cantidadTendenciasCalculadasSinFiltrar = 0, cantidadTendenciasCalculadasFiltrada = 0;
+		int cantidadTotalSinFiltrar = 0, cantidadTotalFiltrada = 0;
+		double precioCalculadoPrimeraTendenciaSinFiltrar = 0.0D, precioCalculadoPrimeraTendenciaFiltrada = 0.0D;
+		double minPrecioExtremoSinFiltrar = Double.POSITIVE_INFINITY,
+				maxPrecioExtremoSinFiltrar = Double.NEGATIVE_INFINITY;
+		double minPrecioExtremoFiltrado = Double.POSITIVE_INFINITY, maxPrecioExtremoFiltrado = Double.NEGATIVE_INFINITY;
+		double minPrecioCalculadoSinFiltrar = Double.POSITIVE_INFINITY,
+				maxPrecioCalculadoSinFiltrar = Double.NEGATIVE_INFINITY;
+		double minPrecioCalculadoFiltrado = Double.POSITIVE_INFINITY,
+				maxPrecioCalculadoFiltrado = Double.NEGATIVE_INFINITY;
+		Date minFechaTendenciaSinFiltrar = null, maxFechaTendenciaSinFiltrar = null;
+		Date minFechaTendenciaFiltrada = null, maxFechaTendenciaFiltrada = null;
+		double sumAvgProbabilidadSinFiltrar = 0.0D, sumAvgProbabilidadFiltrada = 0.0D;
 		for (int i = 0; i <= tendencias.size(); i++) {
 			Tendencia tendencia = null;
 			Date fechaTendencia = null;
@@ -67,40 +81,103 @@ public class MongoExportarTendenciaGrupalManager extends ExportarTendenciaGrupal
 				tpoSinFiltrar.setPeriodo(periodo);
 				tpoSinFiltrar.setFechaBase(fechaBase);
 				tpoSinFiltrar.setFechaTendencia(fechaTendenciaPorHoraActual);
-				tpoSinFiltrar.setPrecioCalculado(sumPrecioCalculadoXProbabilidad / sumProbabilidad);
+				double precioCalculado = sumPrecioCalculadoXProbabilidad / sumProbabilidad;
+				tpoSinFiltrar.setPrecioCalculado(precioCalculado);
 				tendenciasSinFiltrar.add(tpoSinFiltrar);
 
+				// Para regresion sin filtrar
+				cantidadTotalSinFiltrar += cantidadTotal;
+				cantidadTendenciasCalculadasSinFiltrar++;
+				sumAvgProbabilidadSinFiltrar += (sumProbabilidad / cantidadTotal);
+				minPrecioCalculadoSinFiltrar = Math.min(minPrecioCalculadoSinFiltrar, precioCalculado);
+				maxPrecioCalculadoSinFiltrar = Math.max(maxPrecioCalculadoSinFiltrar, precioCalculado);
+				if (precioCalculadoPrimeraTendenciaSinFiltrar == 0.0D) {
+					precioCalculadoPrimeraTendenciaSinFiltrar = precioCalculado;
+				}
+				//
+
 				double cantidadExigida = this.calcularCantidadExigida(fechaTendenciaPorHoraActual);
-				if (count > cantidadExigida) {
+				if (cantidadTotal > cantidadExigida) {
 					TendenciaParaOperar tpoFiltrada = new TendenciaParaOperar();
 					tpoFiltrada.setPeriodo(periodo);
 					tpoFiltrada.setFechaBase(fechaBase);
 					tpoFiltrada.setFechaTendencia(fechaTendenciaPorHoraActual);
-					tpoFiltrada.setPrecioCalculado(sumPrecioCalculadoXProbabilidad / sumProbabilidad);
+					tpoFiltrada.setPrecioCalculado(precioCalculado);
 					tendenciasFiltradas.add(tpoFiltrada);
-				}
 
-				// sumPrecioCalculado = 0.0D;
-				count = 0;
+					// Para regresion filtrada
+					cantidadTotalFiltrada += cantidadTotal;
+					cantidadTendenciasCalculadasFiltrada++;
+					sumAvgProbabilidadFiltrada += (sumProbabilidad / cantidadTotal);
+					minPrecioCalculadoFiltrado = Math.min(minPrecioCalculadoFiltrado, precioCalculado);
+					maxPrecioCalculadoFiltrado = Math.max(maxPrecioCalculadoFiltrado, precioCalculado);
+					if (precioCalculadoPrimeraTendenciaFiltrada == 0.0D) {
+						precioCalculadoPrimeraTendenciaFiltrada = precioCalculado;
+					}
+					if (minFechaTendenciaFiltrada == null) {
+						minFechaTendenciaFiltrada = minFechaTendenciaSinFiltrar;
+					}
+					maxFechaTendenciaFiltrada = maxFechaTendenciaSinFiltrar;
+
+					minPrecioExtremoFiltrado = Math.min(minPrecioExtremoFiltrado, minPrecioExtremoSinFiltrar);
+					maxPrecioExtremoFiltrado = Math.max(maxPrecioExtremoFiltrado, maxPrecioExtremoSinFiltrar);
+					//
+				}
+				cantidadTotal = 0;
 				sumProbabilidad = 0.0D;
 				sumPrecioCalculadoXProbabilidad = 0.0D;
-				// sumPrecioBase = 0.0D;
 				fechaTendenciaPorHoraActual = null;
 			}
 			if (i < tendencias.size()) {
-				count++;
+				cantidadTotal++;
 				double precioCalculado = tendencia.getPrecioCalculado();
-				// sumPrecioCalculado += precioCalculado;
 				double probabilidad = tendencia.getProbabilidad();
 				sumProbabilidad += probabilidad;
 				double precioXProbabilidad = (precioCalculado * probabilidad);
 				sumPrecioCalculadoXProbabilidad += precioXProbabilidad;
-				// double precioBase = tendencia.getPrecioBase();
-				// sumPrecioBase += precioBase;
 
+				// Para regresion
+				minPrecioExtremoSinFiltrar = Math.min(minPrecioExtremoSinFiltrar, tendencia.getPrecioCalculado());
+				maxPrecioExtremoSinFiltrar = Math.max(maxPrecioExtremoSinFiltrar, tendencia.getPrecioCalculado());
+				if (minFechaTendenciaSinFiltrar == null) {
+					minFechaTendenciaSinFiltrar = tendencia.getFechaTendencia();
+				}
+				maxFechaTendenciaSinFiltrar = tendencia.getFechaTendencia();
+				//
 				fechaTendenciaPorHoraActual = fechaTendenciaPorHora;
 			}
 		}
+
+		Regresion regSinFiltrar = new Regresion();
+		if (!tendencias.isEmpty()) {
+			regSinFiltrar.setPrimeraTendencia(precioCalculadoPrimeraTendenciaSinFiltrar);
+			regSinFiltrar.setProbabilidad(sumAvgProbabilidadSinFiltrar / cantidadTendenciasCalculadasSinFiltrar);
+			regSinFiltrar.setCantidad(cantidadTendenciasCalculadasSinFiltrar);
+			regSinFiltrar.setMinPrecio(minPrecioCalculadoSinFiltrar);
+			regSinFiltrar.setMaxPrecio(maxPrecioCalculadoSinFiltrar);
+			regSinFiltrar.setMinPrecioExtremo(minPrecioExtremoSinFiltrar);
+			regSinFiltrar.setMaxPrecioExtremo(maxPrecioExtremoSinFiltrar);
+			regSinFiltrar.setCantidadTotal(cantidadTotalSinFiltrar);
+			regSinFiltrar.setMinFechaTendencia(minFechaTendenciaSinFiltrar);
+			regSinFiltrar.setMaxFechaTendencia(maxFechaTendenciaSinFiltrar);
+		}
+		Regresion regFiltrada = new Regresion();
+		if (!tendencias.isEmpty()) {
+			regFiltrada.setPrimeraTendencia(precioCalculadoPrimeraTendenciaFiltrada);
+			regFiltrada.setProbabilidad(sumAvgProbabilidadFiltrada / cantidadTendenciasCalculadasFiltrada);
+			regFiltrada.setCantidad(cantidadTendenciasCalculadasFiltrada);
+			regFiltrada.setMinPrecio(minPrecioCalculadoFiltrado);
+			regFiltrada.setMaxPrecio(maxPrecioCalculadoFiltrado);
+
+			regFiltrada.setMinPrecioExtremo(minPrecioExtremoFiltrado);
+			regFiltrada.setMaxPrecioExtremo(maxPrecioExtremoFiltrado);
+
+			regFiltrada.setCantidadTotal(cantidadTotalFiltrada);
+			regFiltrada.setMinFechaTendencia(minFechaTendenciaFiltrada);
+			regFiltrada.setMaxFechaTendencia(maxFechaTendenciaFiltrada);
+		}
+		procesoTendencia.setRegresionJava(regSinFiltrar);
+		procesoTendencia.setRegresionFiltradaJava(regFiltrada);
 	}
 
 	private double calcularCantidadExigida(Date fechaTendenciaPorHora) {

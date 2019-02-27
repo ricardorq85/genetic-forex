@@ -15,10 +15,8 @@ import forex.genetic.util.NumberUtil;
 
 public class TendenciaProcesoBuySellHelper {
 
-	public static Regresion helpRegresion(ProcesoTendenciaBuySell procesoTendencia,
+	public static void helpRegresion(Regresion regresion,
 			SimpleRegression simpleRegressionProcessor, StandardDeviation standardDeviationProcessor) {
-		Regresion regresion = new Regresion();
-		regresion.setTiempoTendencia(procesoTendencia.getTiempoTendencia());
 		double r2 = simpleRegressionProcessor.getRSquare();
 		double pendiente = simpleRegressionProcessor.getSlope();
 		double sd = standardDeviationProcessor.evaluate();
@@ -31,7 +29,6 @@ public class TendenciaProcesoBuySellHelper {
 			regresion.setPendiente(NumberUtil.round(pendiente, 5));
 			regresion.setDesviacion(NumberUtil.round(sd));
 		}
-		return regresion;
 	}
 
 	public static Regresion helpRegresion(ResultSet resultado, ProcesoTendenciaBuySell procesoTendencia)

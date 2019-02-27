@@ -7,7 +7,7 @@ public class MongoMapperFactory {
 			return new MongoIndividuoMapper();
 		} else if (collectionName.startsWith("datoHistorico")) {
 			return new MongoDatoHistoricoMapper();
-		} else if ("datoAdicional".equals(collectionName)) {
+		} else if ("datoAdicionalTPO".equals(collectionName)) {
 			return new MongoDatoAdicionalTPOMapper();
 		} else if ("tendenciaParaOperar".equals(collectionName)) {
 			return new MongoTendenciaParaOperarMapper();
