@@ -285,7 +285,7 @@ public class AgrupadorTendenciaManager {
 		// long borradosMongo = mongoTendenciaParaOperarDAO.delete(tpo,
 		// maxFechaProceso);
 		LogUtil.logTime("Borrando tendencias para operar: maxFechaProceso=" + DateUtil.getDateString(maxFechaProceso)
-				+ "; borradosOracle=" + borrados, 1);
+				+ "; borrados BD=" + borrados, 1);
 		dataClient.commit();
 	}
 
