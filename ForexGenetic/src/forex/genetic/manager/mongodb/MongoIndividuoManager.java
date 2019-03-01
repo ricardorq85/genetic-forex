@@ -33,20 +33,20 @@ public class MongoIndividuoManager extends GeneticManager {
 		try {
 			for (Individuo individuo : individuos) {
 				MongoIndividuo mongoIndividuo = (MongoIndividuo) individuo;
-				if (dataClient.getDaoIndividuo().exists(mongoIndividuo)) {
-					if (!dataClient.getDaoIndividuoBorrado().exists(mongoIndividuo)) {
-						dataClient.getDaoIndividuoBorrado().insert(mongoIndividuo);
-					}
-
-					int r_operaciones = dataClient.getDaoOperaciones().deleteByIndividuo(individuo);
-					logTime("Individuo: " + individuo.getId() + ". Borrados OPERACIONES = " + r_operaciones, 2);
-					int r_estadisticas = dataClient.getDaoEstadistica().deleteByIndividuo(individuo);
-					logTime("Individuo: " + individuo.getId() + ". Borrados ESTADISTICAS = " + r_estadisticas, 2);
-					int r_tendencia = dataClient.getDaoTendencia().deleteByIndividuo(individuo);
-					logTime("Individuo: " + individuo.getId() + ". Borrados TENDENCIA = " + r_tendencia, 2);
-					int r_individuo = dataClient.getDaoIndividuo().deleteByIndividuo(individuo);
-					logTime("Individuo: " + individuo.getId() + ". Borrados INDIVIDUO = " + r_individuo, 2);
+				// if (dataClient.getDaoIndividuo().exists(mongoIndividuo)) {
+				if (!dataClient.getDaoIndividuoBorrado().exists(mongoIndividuo)) {
+					dataClient.getDaoIndividuoBorrado().insert(mongoIndividuo);
 				}
+
+				int r_operaciones = dataClient.getDaoOperaciones().deleteByIndividuo(individuo);
+				logTime("Individuo: " + individuo.getId() + ". Borrados OPERACIONES = " + r_operaciones, 2);
+				int r_estadisticas = dataClient.getDaoEstadistica().deleteByIndividuo(individuo);
+				logTime("Individuo: " + individuo.getId() + ". Borrados ESTADISTICAS = " + r_estadisticas, 2);
+				int r_tendencia = dataClient.getDaoTendencia().deleteByIndividuo(individuo);
+				logTime("Individuo: " + individuo.getId() + ". Borrados TENDENCIA = " + r_tendencia, 2);
+				int r_individuo = dataClient.getDaoIndividuo().deleteByIndividuo(individuo);
+				logTime("Individuo: " + individuo.getId() + ". Borrados INDIVIDUO = " + r_individuo, 2);
+				// }
 			}
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException("smartDelete", e);

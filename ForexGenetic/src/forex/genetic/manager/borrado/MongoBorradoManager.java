@@ -43,7 +43,11 @@ public abstract class MongoBorradoManager extends BorradoManager {
 			deleted = true;
 		}
 		if (count > 0) {
-			LogUtil.logTime("Individuos borrados: " + count, 1);
+			if (count == 1) {
+				LogUtil.logTime("Individuos borrados: " + count, 1);
+			} else {
+				LogUtil.logTime("Individuo borrado: " + individuo.getId(), 1);
+			}
 		}
 		return deleted;
 	}

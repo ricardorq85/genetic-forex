@@ -76,7 +76,8 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 	}
 
 	@Override
-	public List<? extends IndividuoEstrategia> getListByProcesoEjecucion(String filtroAdicional, Date fechaHistorico, int cantidadIndividuos) {
+	public List<? extends IndividuoEstrategia> getListByProcesoEjecucion(String filtroAdicional, Date fechaHistorico,
+			int cantidadIndividuos) {
 		Bson filtroProcesoEjecucionNull = Filters.exists("procesoEjecucion.maxFechaHistorico", false);
 		Bson filtroFechaHistorica = Filters.lt("procesoEjecucion.maxFechaHistorico", fechaHistorico);
 		Bson filtroOr = Filters.or(filtroProcesoEjecucionNull, filtroFechaHistorica);
@@ -89,14 +90,16 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		this.addRandomSort(sorts, "creationDate");
 
 		Bson ordenador = Sorts.orderBy(sorts);
-	//	bsonFiltroAdicional = Filters.and(Filters.regex("idIndividuo", "1547761146791.139"));
+		// bsonFiltroAdicional = Filters.and(Filters.regex("idIndividuo",
+		// "1547761146791.139"));
 		// Filters.eq("tipoIndividuo",
 		// Constants.IndividuoType.INDICADOR_GANADOR.name()));
 //		Bson filtroIndividuo = Filters.regex("idIndividuo", "1544908361588.*");
 //		Bson filtroCompleto = Filters.and(filtroIndividuo, filtroOr);
 
 		Bson filtroCompleto = Filters.and(filtroOr, bsonFiltroAdicional);
-		MongoCursor<Document> cursor = collection.find(filtroCompleto).sort(ordenador).limit(cantidadIndividuos).iterator();
+		MongoCursor<Document> cursor = collection.find(filtroCompleto).sort(ordenador).limit(cantidadIndividuos)
+				.iterator();
 		return getMapper().helpList(cursor);
 	}
 
@@ -107,7 +110,8 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 
 		List<Bson> filtros = new ArrayList<>();
 		filtros.add(Filters.ne("idIndividuo", individuo.getId()));
-		filtros.add(Filters.lt("creationDate", individuo.getCreationDate()));
+		//filtros.add(Filters.lt("creationDate", individuo.getCreationDate()));
+		filtros.add(Filters.lt("idIndividuo", individuo.getId()));
 		filtros.add(Filters.eq("takeProfit", individuo.getTakeProfit()));
 		filtros.add(Filters.eq("stopLoss", individuo.getStopLoss()));
 
@@ -144,6 +148,12 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 				}
 			}
 		}
+	}
+
+	@Override
+	public void insertIndividuoEstrategia(IndividuoEstrategia obj) throws GeneticDAOException {
+		Document doc = new Document(((MongoIndividuoMapper) getMapper()).toMapIndividuoEstrategia(obj));
+		this.collection.insertOne(doc);
 	}
 
 	@Override
@@ -285,9 +295,4 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
 
-	@Override
-	public void insertIndividuoEstrategia(IndividuoEstrategia obj) throws GeneticDAOException {
-		Document doc = new Document(((MongoIndividuoMapper) getMapper()).toMapIndividuoEstrategia(obj));
-		this.collection.insertOne(doc);
-	}
 }

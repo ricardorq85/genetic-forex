@@ -58,7 +58,7 @@ public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 				count += individuosRepetidos.size();
 				individuosRepetidos = individuoDAO.consultarIndividuosRepetidos();
 			}
-			LogUtil.logTime("Individuos borrados: " + count, 1);
+			//LogUtil.logTime("Individuos borrados: " + count, 1);
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(e);
 		} finally {
@@ -84,9 +84,9 @@ public class BorradoDuplicadoIndividuoManager extends BorradoManager {
 			individuosRepetidos = individuoDAO.consultarIndividuoHijoRepetido(individuo);
 			deleteRepetidos(individuosRepetidos);
 			count += individuosRepetidos.size();
-			if (count > 0) {
-				LogUtil.logTime("Individuos borrados: " + count, 1);
-			}
+//			if (count > 0) {
+//				LogUtil.logTime("Individuos borrados: " + count, 1);
+//			}
 		} catch (GeneticDAOException e) {
 			throw new GeneticBusinessException(e);
 		}

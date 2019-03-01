@@ -79,9 +79,19 @@ public class MongoIndividuoXIndicadorManager extends IndividuoXIndicadorManager 
 			IndividuoEstrategia individuo = dataClient.getDaoIndividuo().consultarById(estadistica.getIdIndividuo());
 			if (individuo == null) {
 				logTime("El individuo con ID: " + estadistica.getIdIndividuo()
-						+ " no existe, pero fue consultado en las estadisticas", 1);
+						+ " no existe, pero fue consultado en las estadisticas. Eliminando...", 1);
+				Individuo indToDelete = new Individuo();
+				indToDelete.setId(estadistica.getIdIndividuo());
+				try {
+					MongoIndividuoManager mongoIndividuoManager;
+					mongoIndividuoManager = new MongoIndividuoManager();
+					mongoIndividuoManager.delete(indToDelete);
+				} catch (GeneticBusinessException e) {
+					e.printStackTrace();
+				}
+			} else {
+				individuosParaCruzar.add(individuo);
 			}
-			individuosParaCruzar.add(individuo);
 		}
 		return individuosParaCruzar;
 	}

@@ -38,11 +38,11 @@ public class MongoExportarTendenciaGrupalManager extends ExportarTendenciaGrupal
 	}
 
 	@Override
-	public void procesar() throws GeneticBusinessException {
+	protected void procesarRegresion() throws GeneticBusinessException {
 		this.procesarTendenciasIntern(this.tendenciaDAO.consultar(procesoTendencia));
 		this.procesarRegresionParaCalculoJava();
-		procesoTendencia.setRegresion(procesoTendencia.getRegresionJava());
-		procesoTendencia.setRegresionFiltrada(procesoTendencia.getRegresionFiltradaJava());
+
+		this.procesarRegresion(procesoTendencia.getRegresionJava(), procesoTendencia.getRegresionFiltradaJava());
 	}
 
 	private void procesarTendenciasIntern(List<Tendencia> tendencias) {
@@ -195,10 +195,6 @@ public class MongoExportarTendenciaGrupalManager extends ExportarTendenciaGrupal
 				+ FACTOR_MULT_CANTIDAD_EXIGIDA * (tiempoTendenciaHoras - diffMinutosHoras);
 
 		return cantidadExigida;
-	}
-
-	@Override
-	protected void procesarRegresion() throws GeneticBusinessException {
 	}
 
 	@Override

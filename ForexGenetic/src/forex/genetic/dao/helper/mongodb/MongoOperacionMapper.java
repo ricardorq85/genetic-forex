@@ -34,7 +34,11 @@ public class MongoOperacionMapper extends MongoMapper<MongoOrder> {
 		objMap.put("openPrice", obj.getOpenOperationValue());
 		objMap.put("pips", obj.getPips());
 		objMap.put("lote", obj.getLot());
-		objMap.put("fechaRegistro", new Date());
+		if (obj.getFechaRegistro() == null) {
+			objMap.put("fechaRegistro", new Date());
+		} else {
+			objMap.put("fechaRegistro", obj.getFechaRegistro());
+		}
 		objMap.put("closePriceByTakeProfit", obj.getClosePriceByTakeProfit());
 		objMap.put("closePriceByStopLoss", obj.getClosePriceByStopLoss());
 		if (obj.getTipoCierre() != null) {
@@ -52,7 +56,7 @@ public class MongoOperacionMapper extends MongoMapper<MongoOrder> {
 	public Map<String, Object> toMapForDelete(MongoOrder obj, Date fechaReferencia) {
 		throw new UnsupportedOperationException("Operacion no soportada");
 	}
-	
+
 	@Override
 	public MongoOrder helpOne(Document one) {
 		MongoOrder order = new MongoOrder();
