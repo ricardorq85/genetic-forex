@@ -39,7 +39,7 @@ public class ProcesarTendenciasBuySell {
 		long id = currentTimeMillis();
 		load().join();
 		logTime("ProcesarTendenciasBuySell: " + id + ". "
-				+ (((args != null) && (args.length > 0)) ? args.toString() : ""), 1);
+				+ (((args != null) && (args.length > 0)) ? args[0].toString() : ""), 1);
 		String name = getPropertyString(LOG_PATH) + "ProcesarTendenciasBuySell" + id + ".log";
 		PrintStream out = new PrintStream(name, Charset.defaultCharset().name());
 		setOut(out);
