@@ -1,5 +1,7 @@
 package forex.genetic.tendencia.manager.mongo;
 
+import static forex.genetic.util.LogUtil.logTime;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +18,7 @@ import forex.genetic.entities.mongo.MongoIndividuo;
 import forex.genetic.entities.mongo.MongoOrder;
 import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
+import forex.genetic.manager.mongodb.MongoIndividuoManager;
 import forex.genetic.manager.mongodb.MongoOperacionesManager;
 import forex.genetic.tendencia.manager.TendenciaProcesoManager;
 import forex.genetic.util.DateUtil;
@@ -44,7 +47,19 @@ public class MongoTendenciaProcesoManager extends TendenciaProcesoManager {
 					TendenciaEstadistica tendenciaEstadistica;
 					MongoIndividuo individuo;
 					individuo = (MongoIndividuo) dataClient.getDaoIndividuo().consultarById(order.getIdIndividuo());
-					if (individuo.getProcesoEjecucion().getMaxFechaHistorico().after(puntoTendencia.getDate())) {
+					if (individuo == null) {
+						logTime("El individuo con ID: " + order.getIdIndividuo()
+								+ " no existe, pero fue consultado en las ordenes. Eliminando...", 1);
+						Individuo indToDelete = new Individuo();
+						indToDelete.setId(order.getIdIndividuo());
+						try {
+							MongoIndividuoManager mongoIndividuoManager;
+							mongoIndividuoManager = new MongoIndividuoManager();
+							mongoIndividuoManager.delete(indToDelete);
+						} catch (GeneticBusinessException e) {
+							e.printStackTrace();
+						}
+					} else if (individuo.getProcesoEjecucion().getMaxFechaHistorico().after(puntoTendencia.getDate())) {
 						individuo.setCurrentOrder(order);
 						Tendencia objTendencia = new Tendencia();
 						objTendencia.setIndividuo(individuo);

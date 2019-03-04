@@ -4,11 +4,16 @@ use
 
 mongod -f "C:\Program Files\MongoDB\Server\4.0\bin\mongod.cfg"
 
+
 COLLATION
 {locale:"en_US"}
 
 db.adminCommand({renameCollection: "forex.individuoBorrado", to: "usdcad.individuoBorrado"})
 datoHistorico2008
+
+db.operacion.deleteMany({"idIndividuo":{$eq:"1551216862540.545"}})
+db.estadisticaIndividuo.deleteMany({"idIndividuo":{$eq:"1551216862540.545"}})
+db.tendencia.deleteMany({"idIndividuo":{$eq:"1551216862540.545"}})
 
 {$and:[{"fechaApertura":{$lt:new Date("2018-12-11T12:59")}}, {"fechaCierre":{$gt:new Date("2018-12-11T12:59")}}]}
 
@@ -36,6 +41,7 @@ idIndividuo=1394841600000.83 <- 2018/11/19 20:33.43
 }
 
 db.xx.deleteMany({"idIndividuo":{$ne:"1394755200000.32"}})
+
 
 db.xx.deleteMany({"procesoEjecucion":null})
 
@@ -144,3 +150,7 @@ db.adminCommand({renameCollection: "forex.", to: "usdcad."})
     $sum: 1
   }
 }
+
+PROJECT
+{tipoOperacion:1,precioCalculado:1,takeProfit:1}
+
