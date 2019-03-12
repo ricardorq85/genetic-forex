@@ -1,0 +1,11 @@
+[{$group: {
+  _id: {
+ fechaBase:{  $dateToString: { format: "%Y-%m-%d", date: "$fechaBase", timezone: "-05:00" }}
+},
+  cantidad: {
+    $sum: 1
+  }
+}}, {$sort: {
+  _id:-1,
+  cantidad:-1
+}}]

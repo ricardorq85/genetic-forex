@@ -71,7 +71,7 @@ public class MongoTendenciaProcesoManager extends TendenciaProcesoManager {
 							if (tendenciaEstadistica != null) {
 								LogUtil.logTime("Guardando..." + individuo.getId(), 4);
 								LogUtil.logTime(tendenciaEstadistica.toString(), 2);
-								LogUtil.logAvance(1);
+								//LogUtil.logAvance(1);
 								this.guardarTendencia(tendenciaEstadistica);
 								listaTendencias.add(tendenciaEstadistica);
 							}

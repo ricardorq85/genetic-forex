@@ -1,0 +1,8 @@
+[{$group: {
+  _id: {maxFechaHistorico:"$procesoEjecucion.maxFechaHistorico"},
+  cantidad: {
+    $sum: 1
+  }
+}}, {$sort: {
+  "cantidad": -1
+}}]

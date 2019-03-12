@@ -2,7 +2,13 @@ cd "C:\\Program Files\MongoDB\Server\4.0\bin"
 mongo
 use 
 
+"C:\\Program Files\MongoDB\Server\4.0\bin\mongoexport" --db eurjpy --collection parametro --out parametros.json
+"C:\\Program Files\MongoDB\Server\4.0\bin\mongoexport" --db eurjpy --collection tendencia --out tendencias.json
+
+"C:\\Program Files\MongoDB\Server\4.0\bin\mongoimport" -d eurjpy -c tendencia --file tendencias.json
+
 mongod -f "C:\Program Files\MongoDB\Server\4.0\bin\mongod.cfg"
+
 
 
 COLLATION
