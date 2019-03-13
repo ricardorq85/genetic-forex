@@ -50,7 +50,7 @@ public class MongoTendenciaProcesoManager extends TendenciaProcesoManager {
 					if (individuo == null) {
 						logTime("El individuo con ID: " + order.getIdIndividuo()
 								+ " no existe, pero fue consultado en las ordenes. Eliminando...", 1);
-						Individuo indToDelete = new Individuo();
+						MongoIndividuo indToDelete = new MongoIndividuo();
 						indToDelete.setId(order.getIdIndividuo());
 						try {
 							MongoIndividuoManager mongoIndividuoManager;
