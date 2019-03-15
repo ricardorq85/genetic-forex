@@ -198,17 +198,17 @@ public class MongoExportarTendenciaGrupalManager extends ExportarTendenciaGrupal
 	}
 
 	@Override
-	protected List<TendenciaParaOperar> consultarTendenciasSinFiltrar() throws GeneticBusinessException {
+	public List<TendenciaParaOperar> consultarTendenciasSinFiltrar() throws GeneticBusinessException {
 		return tendenciasSinFiltrar;
 	}
 
 	@Override
-	protected List<TendenciaParaOperar> consultarTendenciasFiltradas() throws GeneticBusinessException {
+	public List<TendenciaParaOperar> consultarTendenciasFiltradas() throws GeneticBusinessException {
 		return tendenciasFiltradas;
 	}
 
 	@Override
-	protected List<TendenciaParaOperar> consultarTendencias() throws GeneticBusinessException {
+	public List<TendenciaParaOperar> consultarTendencias() throws GeneticBusinessException {
 		return null;
 	}
 }

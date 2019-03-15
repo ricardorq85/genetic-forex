@@ -33,7 +33,7 @@ public class OracleExportarTendenciaManager extends ExportarTendenciaManager {
 		super(dc);
 	}
 
-	protected List<TendenciaParaOperar> consultarTendencias() throws GeneticBusinessException {
+	public List<TendenciaParaOperar> consultarTendencias() throws GeneticBusinessException {
 		List<TendenciaParaOperar> tendencias;
 		try {
 			tendencias = tendenciaProcesoDAO.consultarTendencias(procesoTendencia);

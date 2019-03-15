@@ -109,8 +109,7 @@ public abstract class ProcesarTendenciasGrupalManager extends ProcesarTendencias
 		ProcesoTendenciaFiltradaBuySell procesoTendencia = new ProcesoTendenciaFiltradaBuySell(periodo,
 				super.tipoTendencia, tiempoTendenciaMinutos, fechaBase);
 		ExportarTendenciaManager exporterTendenciaManager = procesarExporter(procesoTendencia);
-		ProcesoTendenciaFiltradaBuySell procesoFromExporter = (ProcesoTendenciaFiltradaBuySell) exporterTendenciaManager
-				.getProcesoTendencia();
+		ProcesoTendenciaFiltradaBuySell procesoFromExporter = (ProcesoTendenciaFiltradaBuySell) exporterTendenciaManager.getProcesoTendencia();
 		return procesoFromExporter;
 	}
 

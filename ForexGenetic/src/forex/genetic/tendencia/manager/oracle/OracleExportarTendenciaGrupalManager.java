@@ -67,7 +67,7 @@ public class OracleExportarTendenciaGrupalManager extends ExportarTendenciaGrupa
 	}
 
 	@Override
-	protected List<TendenciaParaOperar> consultarTendenciasSinFiltrar() throws GeneticBusinessException {
+	public List<TendenciaParaOperar> consultarTendenciasSinFiltrar() throws GeneticBusinessException {
 		try {
 			return this.tendenciaProcesoCompletaDAO.consultarTendencias(procesoTendencia);
 		} catch (SQLException e) {
@@ -76,12 +76,12 @@ public class OracleExportarTendenciaGrupalManager extends ExportarTendenciaGrupa
 	}
 
 	@Override
-	protected List<TendenciaParaOperar> consultarTendenciasFiltradas() throws GeneticBusinessException {
+	public List<TendenciaParaOperar> consultarTendenciasFiltradas() throws GeneticBusinessException {
 		return consultarTendencias();
 	}
 
 	@Override
-	protected List<TendenciaParaOperar> consultarTendencias() throws GeneticBusinessException {
+	public List<TendenciaParaOperar> consultarTendencias() throws GeneticBusinessException {
 		List<TendenciaParaOperar> tendencias;
 		try {
 			tendencias = tendenciaProcesoFiltradaDAO.consultarTendencias(procesoTendencia);

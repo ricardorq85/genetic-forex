@@ -27,9 +27,9 @@ public abstract class ExportarTendenciaGrupalManager extends ExportarTendenciaMa
 		super(dc);
 	}
 
-	protected abstract List<TendenciaParaOperar> consultarTendenciasSinFiltrar() throws GeneticBusinessException;
+	public abstract List<TendenciaParaOperar> consultarTendenciasSinFiltrar() throws GeneticBusinessException;
 
-	protected abstract List<TendenciaParaOperar> consultarTendenciasFiltradas() throws GeneticBusinessException;
+	public abstract List<TendenciaParaOperar> consultarTendenciasFiltradas() throws GeneticBusinessException;
 
 	protected void procesarRegresion(Regresion regresion, Regresion regresionFiltrada) {
 		procesoTendencia.setRegresion(regresion);

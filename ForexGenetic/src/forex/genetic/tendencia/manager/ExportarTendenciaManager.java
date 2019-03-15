@@ -28,7 +28,7 @@ public abstract class ExportarTendenciaManager {
 	public ExportarTendenciaManager() {
 	}
 
-	protected abstract List<TendenciaParaOperar> consultarTendencias() throws GeneticBusinessException;
+	public abstract List<TendenciaParaOperar> consultarTendencias() throws GeneticBusinessException;
 
 	protected void calcularPuntosDiferenciaInicial(List<TendenciaParaOperar> tendencias) throws GeneticBusinessException {
 		try {
