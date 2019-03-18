@@ -73,4 +73,16 @@ public class OracleExportarTendenciaManager extends ExportarTendenciaManager {
 			throw new GeneticBusinessException(null, e);
 		}
 	}
+
+	@Override
+	public List<TendenciaParaOperar> consultarTendenciasSinFiltrar() throws GeneticBusinessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<TendenciaParaOperar> consultarTendenciasFiltradas() throws GeneticBusinessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -78,16 +78,16 @@ public abstract class ProcesarTendenciasGrupalManager extends ProcesarTendencias
 					AgrupadorTendenciaManager agrupadorTendenciaManager = new AgrupadorTendenciaFactorDatosManager(
 							fechaBase, lastFechaProcesoMaxima, dataClient);
 					LogUtil.logTime("Fecha base exportacion=" + DateUtil.getDateString(fechaBase), 1);
-					ProcesoTendenciaFiltradaBuySell procesoFromExporterLastIndex = procesarExporter(
-							dias[dias.length - 1], fechaBase);
+					ExportarTendenciaManager exporterTendenciaManagerLastIndex = procesarExporter(dias[dias.length - 1],
+							fechaBase);
 					for (int i = 0; i < dias.length - 1; i++) {
-						ProcesoTendenciaFiltradaBuySell procesoFromExporter = procesarExporter(dias[i], fechaBase);
-						agrupadorTendenciaManager.add(procesoFromExporter);
+						ExportarTendenciaManager exporterTendenciaManager = procesarExporter(dias[i], fechaBase);
+						agrupadorTendenciaManager.add(exporterTendenciaManager);
 					}
-					// procesoFromExporterLastIndex.getTendencias().get(0).getPrecioCalculado()
-					agrupadorTendenciaManager.add(procesoFromExporterLastIndex);
+					agrupadorTendenciaManager.add(exporterTendenciaManagerLastIndex);
 					agrupadorTendenciaManager.procesar();
 					agrupadorTendenciaManager.export();
+					agrupadorTendenciaManager.exportDetalleTendencia();
 					this.tendenciasResultado.addAll(agrupadorTendenciaManager.getTendenciasResultado());
 					fechaProceso = DateUtil.calcularFechaXDuracion(parametroStep, fechaBase);
 				} else {
@@ -102,15 +102,18 @@ public abstract class ProcesarTendenciasGrupalManager extends ProcesarTendencias
 		}
 	}
 
-	protected ProcesoTendenciaFiltradaBuySell procesarExporter(float tiempoTendencia, Date fechaBase)
+	protected ExportarTendenciaManager procesarExporter(float tiempoTendencia, Date fechaBase)
 			throws GeneticBusinessException {
 		String periodo = tiempoTendencia + "D";
 		double tiempoTendenciaMinutos = (tiempoTendencia) * 24 * 60;
 		ProcesoTendenciaFiltradaBuySell procesoTendencia = new ProcesoTendenciaFiltradaBuySell(periodo,
 				super.tipoTendencia, tiempoTendenciaMinutos, fechaBase);
 		ExportarTendenciaManager exporterTendenciaManager = procesarExporter(procesoTendencia);
-		ProcesoTendenciaFiltradaBuySell procesoFromExporter = (ProcesoTendenciaFiltradaBuySell) exporterTendenciaManager.getProcesoTendencia();
-		return procesoFromExporter;
+		// ProcesoTendenciaFiltradaBuySell procesoFromExporter =
+		// (ProcesoTendenciaFiltradaBuySell)
+		// exporterTendenciaManager.getProcesoTendencia();
+		// return procesoFromExporter;
+		return exporterTendenciaManager;
 	}
 
 	private boolean validarCantidadMinima(ProcesoTendenciaFiltradaBuySell procesoIndex) {

@@ -1,5 +1,6 @@
 package forex.genetic.tendencia.manager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,10 +13,12 @@ import forex.genetic.entities.ProcesoTendenciaFiltradaBuySell;
 import forex.genetic.entities.Regresion;
 import forex.genetic.entities.TendenciaParaOperar;
 import forex.genetic.entities.TendenciaParaOperarMaxMin;
+import forex.genetic.exception.GeneticBusinessException;
 import forex.genetic.exception.GeneticDAOException;
 import forex.genetic.manager.PropertiesManager;
 import forex.genetic.util.Constants.OperationType;
 import forex.genetic.util.DateUtil;
+import forex.genetic.util.FileUtil;
 import forex.genetic.util.LogUtil;
 import forex.genetic.util.NumberUtil;
 import forex.genetic.util.jdbc.DataClient;
@@ -24,6 +27,8 @@ public class AgrupadorTendenciaManager {
 
 	private List<ProcesoTendenciaFiltradaBuySell> listaTendencias;
 	protected List<TendenciaParaOperarMaxMin> tendenciasResultado;
+
+	private List<ExportarTendenciaManager> listaExporter;
 
 	@SuppressWarnings("rawtypes")
 	protected DataClient dataClient;
@@ -41,6 +46,7 @@ public class AgrupadorTendenciaManager {
 		this.dataClient = dc;
 		this.listaTendencias = new ArrayList<>();
 		this.tendenciasResultado = new ArrayList<>();
+		this.listaExporter = new ArrayList<>();
 		this.setFechaBase(fechaBase);
 		this.maxFechaProceso = maxFechaProceso;
 		this.precioPonderado = dc.getDaoDatoHistorico().consultarPrecioPonderado(fechaBase);
@@ -68,7 +74,10 @@ public class AgrupadorTendenciaManager {
 		this.adicionalTPO.setExtremos(extremos);
 	}
 
-	public void add(ProcesoTendenciaFiltradaBuySell paraProcesar) {
+	public void add(ExportarTendenciaManager exporterTendenciaManager) {
+		ProcesoTendenciaFiltradaBuySell paraProcesar = (ProcesoTendenciaFiltradaBuySell) exporterTendenciaManager
+				.getProcesoTendencia();
+		this.listaExporter.add(exporterTendenciaManager);
 		this.listaTendencias.add(paraProcesar);
 		this.numeroTendencias++;
 		this.sumaR2 += paraProcesar.getRegresion().getR2();
@@ -507,7 +516,6 @@ public class AgrupadorTendenciaManager {
 		List<TendenciaParaOperarMaxMin> tendencias = this.tendenciasResultado;
 		if (tendencias != null) {
 			tendencias.stream().forEach((ten) -> {
-				// System.out.println("INDEX=" + (index)+ "," + ten.toString());
 				System.out.println(ten.toString());
 				try {
 					this.saveTendenciaParaOperar(ten);
@@ -516,6 +524,46 @@ public class AgrupadorTendenciaManager {
 				}
 			});
 			dataClient.commit();
+		}
+	}
+
+	public void exportDetalleTendencia() {
+		if (listaExporter != null) {
+			// Crear folder
+			listaExporter.stream().forEach((exporter) -> {
+				StringBuilder fileName = new StringBuilder("export\\");
+				String tiempo = Integer
+						.toString(new Double(exporter.procesoTendencia.getTiempoTendencia() / 60).intValue());
+				if (exporter.procesoTendencia.getTiempoTendencia() >= 1440) {
+					tiempo = Integer
+							.toString(new Double(exporter.procesoTendencia.getTiempoTendencia() / 60 / 24).intValue());
+				}
+				fileName.append(DateUtil.getDateString("yyyyMMdd_HHmm", exporter.procesoTendencia.getFechaBase()));
+				fileName.append("_");
+				fileName.append(tiempo);
+				if (exporter.procesoTendencia.getTiempoTendencia() >= 1440) {
+					fileName.append("D");
+				} else {
+					fileName.append("H");
+				}
+				System.out.println("Exporter: " + fileName.toString());
+				// Crear cada archivo
+				try {
+					List<TendenciaParaOperar> tendencias = exporter.consultarTendenciasSinFiltrar();
+					StringBuilder strTendencias = new StringBuilder();
+					if (tendencias != null) {
+						tendencias.stream().forEach((ten) -> {
+							strTendencias.append(ten.toStringSimple());
+							strTendencias.append("\n");
+						});
+						FileUtil.save(fileName.toString(), strTendencias.toString());
+					}
+				} catch (GeneticBusinessException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+//				System.out.println(exporter.toString());
+			});
 		}
 	}
 

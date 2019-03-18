@@ -30,12 +30,18 @@ public abstract class ExportarTendenciaManager {
 
 	public abstract List<TendenciaParaOperar> consultarTendencias() throws GeneticBusinessException;
 
-	protected void calcularPuntosDiferenciaInicial(List<TendenciaParaOperar> tendencias) throws GeneticBusinessException {
+	public abstract List<TendenciaParaOperar> consultarTendenciasSinFiltrar() throws GeneticBusinessException;
+
+	public abstract List<TendenciaParaOperar> consultarTendenciasFiltradas() throws GeneticBusinessException;
+
+	protected void calcularPuntosDiferenciaInicial(List<TendenciaParaOperar> tendencias)
+			throws GeneticBusinessException {
 		try {
 			TendenciaParaOperar op = tendencias.get(0);
 			IDatoHistoricoDAO datoHistoricoDAO = dataClient.getDaoDatoHistorico();
 			Date fechaConsultaHistorico = datoHistoricoDAO.getFechaHistoricaMaxima(procesoTendencia.getFechaBase());
-			List<? extends Point> historico = datoHistoricoDAO.consultarHistorico(fechaConsultaHistorico, fechaConsultaHistorico);
+			List<? extends Point> historico = datoHistoricoDAO.consultarHistorico(fechaConsultaHistorico,
+					fechaConsultaHistorico);
 			Point point = null;
 			if ((historico != null) && (!historico.isEmpty())) {
 				point = historico.get(0);
@@ -48,7 +54,7 @@ public abstract class ExportarTendenciaManager {
 			throw new GeneticBusinessException(e);
 		}
 	}
-	
+
 	protected abstract void procesarRegresion() throws GeneticBusinessException;
 
 	public void export() {

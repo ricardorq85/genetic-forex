@@ -325,4 +325,11 @@ public class TendenciaParaOperar {
 				+ DateUtil.getDateString(vigenciaLower) + ",VIGENCIAHIGHER=" + DateUtil.getDateString(vigenciaHigher)
 				+ ",FECHA_BASE=" + DateUtil.getDateString(fechaBase);
 	}
+
+	public String toStringSimple() {
+		StringBuilder sb = new StringBuilder().append("FECHA_TENDENCIA=")
+				.append(DateUtil.getDateString("yyyy.MM.dd HH:mm", fechaTendencia)).append(",PRECIO_CALCULADO=")
+				.append(NumberUtil.round(precioCalculado));
+		return sb.toString();
+	}
 }
