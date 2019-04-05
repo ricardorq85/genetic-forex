@@ -176,7 +176,7 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 	public Date getFechaHistoricaMaxima() {
 		Date d = new Date();
 		try {
-			d = DateUtil.obtenerFecha("2015/12/31 23:59");
+			d = DateUtil.obtenerFecha("2016/12/31 23:59");
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

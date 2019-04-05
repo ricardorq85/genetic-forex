@@ -529,7 +529,7 @@ public class AgrupadorTendenciaManager {
 
 	public void exportDetalleTendencia() {
 		if (listaExporter != null) {
-			// Crear folder
+			// TODO: Crear folder
 			listaExporter.stream().forEach((exporter) -> {
 				StringBuilder fileName = new StringBuilder("export\\");
 				String tiempo = Integer
@@ -546,6 +546,7 @@ public class AgrupadorTendenciaManager {
 				} else {
 					fileName.append("H");
 				}
+				fileName.append(".csv");
 				System.out.println("Exporter: " + fileName.toString());
 				// Crear cada archivo
 				try {

@@ -59,24 +59,25 @@ public class MongoTendenciaMapper extends MongoMapper<Tendencia> {
 		individuo.setId(one.getString("idIndividuo"));
 		obj.setIndividuo(individuo);
 		obj.setFechaBase(one.getDate("fechaBase"));
-		obj.setPrecioBase(one.getDouble("precioBase"));
+		obj.setPrecioBase(new Double(one.get("precioBase").toString()));
 		obj.setFechaTendencia(one.getDate("fechaTendencia"));
-		obj.setPips(one.getDouble("pips"));
-		obj.setPrecioCalculado(one.getDouble("precioCalculado"));
+//		obj.setPips(one.getDouble("pips"));
+		obj.setPips(new Double(one.get("pips").toString()));
+		obj.setPrecioCalculado(new Double(one.get("precioCalculado").toString()));
 		obj.setTipoTendencia(one.getString("tipoTendencia"));
 		obj.setFechaApertura(one.getDate("fechaApertura"));
-		obj.setPrecioApertura(one.getDouble("precioApertura"));
-		obj.setDuracion(one.getLong("duracion"));
-		obj.setPipsActuales(one.getDouble("pipsActuales"));
-		obj.setDuracionActual(one.getLong("duracionActual"));
+		obj.setPrecioApertura(new Double(one.get("precioApertura").toString()));
+		obj.setDuracion(new Long(one.get("duracion").toString()));
+		obj.setPipsActuales(new Double(one.get("pipsActuales").toString()));
+		obj.setDuracionActual(new Long(one.get("duracionActual").toString()));
 		obj.setProbabilidadPositivos(one.getDouble("probabilidadPositivos"));
 		obj.setProbabilidadNegativos(one.getDouble("probabilidadNegativos"));
 		obj.setProbabilidad(one.getDouble("probabilidad"));
 		obj.setFecha(one.getDate("fecha"));
 		obj.setFechaCierre(one.getDate("fechaCierre"));
 		obj.setTipoCalculo(one.getString("tipoCalculo"));
-		obj.setPipsReales(one.getDouble("pipsReales"));
-		obj.setDuracionMinutos(one.getLong("duracionMinutos"));
+		obj.setPipsReales(new Double(one.get("pipsReales").toString()));
+		obj.setDuracionMinutos(new Long(one.get("duracionMinutos").toString()));
 		
 		return obj;
 	}
