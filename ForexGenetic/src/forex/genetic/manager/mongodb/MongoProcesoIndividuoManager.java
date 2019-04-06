@@ -38,7 +38,7 @@ public class MongoProcesoIndividuoManager extends ProcesoIndividuoManager {
 			Date minFechaHistorico = dataClient.getDaoDatoHistorico().getFechaHistoricaMinima();
 			Date maxFechaHistorico = dataClient.getDaoDatoHistorico().getFechaHistoricaMaxima();
 			List<Thread> threads = new Vector<>();
-			int cantidadIndividuos = 50;
+			int cantidadIndividuos = 500;
 			int ciclosMaximos = 6;
 			int counter = 0;
 			do {
