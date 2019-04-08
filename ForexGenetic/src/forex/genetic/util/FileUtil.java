@@ -1,5 +1,6 @@
 package forex.genetic.util;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -13,5 +14,10 @@ public class FileUtil {
 			writer.write(text.getBytes());
 			writer.close();
 		}
+	}
+	
+	public static boolean createFolder(String name) {
+		File dir = new File(name);
+		return dir.mkdir();
 	}
 }
