@@ -282,7 +282,6 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 	@Override
 	public List<MongoOrder> consultarOperacionesActivas(Date fechaBase, Date fechaFin, int filas)
 			throws GeneticDAOException {
-		int cantidad = 100;
 		Bson filtroFechaApertura = Filters.and(Filters.lt("fechaApertura", fechaBase),
 				Filters.gt("fechaApertura", DateUtil.adicionarMes(fechaBase, -1)));
 		Bson filtroFechaCierre = Filters.gt("fechaCierre", fechaBase);
@@ -296,7 +295,7 @@ public class MongoOperacionesDAO extends MongoGeneticDAO<MongoOrder> implements 
 		Bson bsonFiltrosCompletos = Filters.and(filtroFechaApertura, filtroFechaCierre);
 		MongoCursor<Document> cursor = this.collection
 				.aggregate(Arrays.asList(Aggregates.match(Filters.and(bsonFiltrosCompletos)),
-						Aggregates.sample(cantidad), Aggregates.sort(Sorts.orderBy(Sorts.ascending("fechaApertura")))))
+						Aggregates.sample(filas), Aggregates.sort(Sorts.orderBy(Sorts.ascending("fechaApertura")))))
 				.iterator();
 
 		List<MongoOrder> list = getMapper().helpList(cursor);
