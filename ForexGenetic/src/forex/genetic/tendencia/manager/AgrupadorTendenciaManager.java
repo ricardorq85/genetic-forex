@@ -529,6 +529,7 @@ public class AgrupadorTendenciaManager {
 
 	public void exportDetalleTendencia() {
 		if (listaExporter != null) {
+			// TODO: Crear folder
 			String folderName = "exportTendencias\\";
 			FileUtil.createFolder(folderName);
 			listaExporter.stream().forEach((exporter) -> {
