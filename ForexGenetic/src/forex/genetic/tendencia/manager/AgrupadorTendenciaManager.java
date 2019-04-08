@@ -529,9 +529,10 @@ public class AgrupadorTendenciaManager {
 
 	public void exportDetalleTendencia() {
 		if (listaExporter != null) {
-			// TODO: Crear folder
+			String folderName = "exportTendencias\\";
+			FileUtil.createFolder(folderName);
 			listaExporter.stream().forEach((exporter) -> {
-				StringBuilder fileName = new StringBuilder("export\\");
+				StringBuilder fileName = new StringBuilder(folderName);
 				String tiempo = Integer
 						.toString(new Double(exporter.procesoTendencia.getTiempoTendencia() / 60).intValue());
 				if (exporter.procesoTendencia.getTiempoTendencia() >= 1440) {
@@ -547,7 +548,7 @@ public class AgrupadorTendenciaManager {
 					fileName.append("H");
 				}
 				fileName.append(".csv");
-				System.out.println("Exporter: " + fileName.toString());
+				//System.out.println("Exporter: " + fileName.toString());
 				// Crear cada archivo
 				try {
 					List<TendenciaParaOperar> tendencias = exporter.consultarTendenciasSinFiltrar();
@@ -560,7 +561,6 @@ public class AgrupadorTendenciaManager {
 						FileUtil.save(fileName.toString(), strTendencias.toString());
 					}
 				} catch (GeneticBusinessException | IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 //				System.out.println(exporter.toString());
