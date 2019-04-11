@@ -21,7 +21,7 @@ public class MongoTendenciaFacade extends TendenciaFacade {
 	public MongoTendenciaFacade() throws GeneticBusinessException {
 		try {
 			dataClient = (MongoDataClient) DriverDBFactory.createDataClient("mongodb");
-			//tendenciaProcesoManager = new MongoTendenciaProcesoManager(dataClient);
+			// tendenciaProcesoManager = new MongoTendenciaProcesoManager(dataClient);
 			tendenciaProcesoFacade = new MongoTendenciaProcesoFacade(dataClient);
 			parametroFechaInicio = dataClient.getDaoParametro().getDateValorParametro("FECHA_INICIO_TENDENCIA");
 			parametroStepTendencia = dataClient.getDaoParametro().getIntValorParametro("STEP_TENDENCIA");
@@ -72,6 +72,11 @@ public class MongoTendenciaFacade extends TendenciaFacade {
 					+ DateUtil.getDateString(fechaBaseFinal), 1);
 			tendenciaProcesoFacade.calcularTendencias(fechaBaseInicial, fechaBaseFinal, parametroFilasTendencia);
 			fechaBaseFinal = fechaBaseInicial;
+			try {
+				dataClient.getDaoParametro().updateDateValorParametro("FECHA_INICIO_TENDENCIA", fechaBaseInicial);
+			} catch (GeneticDAOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

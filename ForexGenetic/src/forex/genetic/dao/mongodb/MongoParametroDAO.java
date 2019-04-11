@@ -141,7 +141,12 @@ public class MongoParametroDAO extends MongoGeneticDAO<Parametro> implements IPa
 
 	@Override
 	public void updateDateValorParametro(String nombre, Date valor) throws GeneticDAOException {
-		throw new UnsupportedOperationException("Operacion no soportada");
+		ParametroDTO p = new ParametroDTO();
+		p.setFecha(new Date());
+		p.setNombre(nombre);
+		p.setValor(valor);
+		Parametro parametro = new Parametro(p);
+		this.update(parametro);
 	}
 
 	@Override
