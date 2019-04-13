@@ -90,6 +90,7 @@ public abstract class ProcesarTendenciasGrupalManager extends ProcesarTendencias
 					agrupadorTendenciaManager.exportDetalleTendencia();
 					this.tendenciasResultado.addAll(agrupadorTendenciaManager.getTendenciasResultado());
 					fechaProceso = DateUtil.calcularFechaXDuracion(parametroStep, fechaBase);
+					dataClient.getDaoParametro().updateDateValorParametro("FECHA_INICIO_PROCESAR_TENDENCIA", fechaProceso);
 				} else {
 					LogUtil.logTime("NO existen mas Fecha base tendencia para exportacion", 1);
 					fechaProceso = parametroFechaFin;
