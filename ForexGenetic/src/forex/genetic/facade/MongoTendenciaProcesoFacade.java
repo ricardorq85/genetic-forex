@@ -36,9 +36,13 @@ public class MongoTendenciaProcesoFacade extends TendenciaProcesoFacade {
 					public void run() {
 						TendenciaProcesoManager tpm;
 						try {
-							tpm = (TendenciaProcesoManager) DriverDBFactory.createManager(dataClient, "tendenciaProceso");
+							tpm = (TendenciaProcesoManager) DriverDBFactory.createManager(dataClient,
+									"tendenciaProceso");
 							tpm.setFechaComparacion(fechaComparacion);
-							listaTendencias.addAll(tpm.calcularTendencias(point, filas));
+							List<TendenciaEstadistica> l = tpm.calcularTendencias(point, filas);
+							if (!l.isEmpty()) {
+								listaTendencias.addAll(l);
+							}
 						} catch (GeneticBusinessException | GeneticDAOException e) {
 							e.printStackTrace();
 						}
