@@ -1,5 +1,6 @@
 package forex.genetic.dao.mongodb;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import com.mongodb.client.result.DeleteResult;
 import forex.genetic.dao.IGeneticDAO;
 import forex.genetic.dao.helper.mongodb.MongoMapper;
 import forex.genetic.dao.helper.mongodb.MongoMapperFactory;
+import forex.genetic.entities.DateInterval;
 import forex.genetic.entities.Individuo;
 import forex.genetic.util.LogUtil;
 
@@ -44,6 +46,16 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 	}
 
 	public abstract void configureCollection();
+
+	protected List<MongoCursor<Document>> findJsonCursor(DateInterval interval) {
+		return Collections.<MongoCursor<Document>>emptyList();
+	}
+
+	public List<String> findJson(DateInterval interval) {
+		List<MongoCursor<Document>> documents = findJsonCursor(interval);
+		List<String> list = getMapper().helpJsonList(documents);
+		return list;
+	}
 
 	public List<E> findAll() {
 		MongoCursor<Document> cursor = this.collection.find().iterator();

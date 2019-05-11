@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.bson.Document;
+
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
 import forex.genetic.entities.DateInterval;
@@ -175,6 +178,20 @@ public class MongoDatoHistoricoDAO extends MongoDefaultDatoHistoricoDAO {
 			year++;
 		}
 		return count;
+	}
+
+	@Override
+	public List<MongoCursor<Document>> findJsonCursor(DateInterval interval) {
+		ArrayList<MongoCursor<Document>> documents = new ArrayList<MongoCursor<Document>>();
+		int initialYear = DateUtil.obtenerAnyo(interval.getLowInterval());
+		int endYear = DateUtil.obtenerAnyo(interval.getHighInterval());
+		int year = initialYear;
+		while (year <= endYear) {
+			setCollection(year);
+			documents.addAll(super.findJsonCursor(interval));
+			year++;
+		}
+		return documents;
 	}
 
 	@Override

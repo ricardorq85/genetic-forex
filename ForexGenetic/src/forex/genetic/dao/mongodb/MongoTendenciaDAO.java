@@ -1,5 +1,6 @@
 package forex.genetic.dao.mongodb;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +49,14 @@ public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> implements ITe
 
 		this.collection.createIndex(Indexes.ascending("fechaBase", "idIndividuo"), indexOptions);
 		this.collection.createIndex(Indexes.ascending("fechaTendencia"));
+	}
+
+	@Override
+	public List<MongoCursor<Document>> findJsonCursor(DateInterval interval) {
+		return Collections
+				.singletonList(this.collection.find(Filters.and(Filters.gte("fechaBase", interval.getLowInterval())
+				// ,Filters.lte("fechaBase", interval.getHighInterval())
+				)).sort(Sorts.ascending("fechaBase")).limit(2).iterator());
 	}
 
 	@Override

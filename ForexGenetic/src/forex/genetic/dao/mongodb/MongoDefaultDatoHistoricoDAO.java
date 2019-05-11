@@ -3,6 +3,7 @@ package forex.genetic.dao.mongodb;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -122,6 +123,13 @@ public class MongoDefaultDatoHistoricoDAO extends MongoGeneticDAO<Point> impleme
 				.countDocuments(Filters.and(Filters.gte("fechaHistorico", interval.getLowInterval()),
 						Filters.lte("fechaHistorico", interval.getHighInterval())));
 		return count;
+	}
+
+	@Override
+	public List<MongoCursor<Document>> findJsonCursor(DateInterval interval) {
+		return Collections.singletonList(
+				this.collection.find(Filters.and(Filters.gte("fechaHistorico", interval.getLowInterval()),
+						Filters.lte("fechaHistorico", interval.getHighInterval()))).iterator());
 	}
 
 	@Override

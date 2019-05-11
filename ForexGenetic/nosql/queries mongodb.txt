@@ -3,13 +3,33 @@ mongo
 use 
 
 "C:\\Program Files\MongoDB\Server\4.0\bin\mongoexport" --db eurjpy --collection parametro --out parametros.json
+
 "C:\\Program Files\MongoDB\Server\4.0\bin\mongoexport" --db eurjpy --collection tendencia --out tendencias.json
+"C:\\Program Files\MongoDB\Server\4.0\bin\mongoexport" --db eurjpy --collection tendencia --out tendencias.json
+
+"C:\\Program Files\MongoDB\Server\4.0\bin\mongoexport" --db eurjpy --collection tendencia --out 'tendencias_fechaBase201512_fecha201903_ind0.json' --query {idIndividuo:{$regex:"0$"}}
+
+
 "C:\\Program Files\MongoDB\Server\4.0\bin\mongoexport" --db eurjpy --collection tendenciaParaOperar --out tendenciasParaOperar.json
 
 "C:\\Program Files\MongoDB\Server\4.0\bin\mongoimport" -d eurjpy -c tendencia --file tendencias.json
 
 mongod -f "C:\Program Files\MongoDB\Server\4.0\bin\mongod.cfg"
 
+{$and:[{idIndividuo:{$regex:"0$"}},{fechaBase:{$gte:{"$date":"2015-12-01T00:00:00.000Z"}}},{fechaBase:{$lt:{"$date":"2016-01-01T00:00:00.000Z"}}},{fecha:{$lt:{"$date":"2019-03-01T00:00:00.000Z"}}}]}
+
+{$and:[{idIndividuo:{$regex:"0$"}},{fechaBase:{$gte:{"$date":1448946000000}}},{fechaBase:{$lt:{"$date":1451624400000}}},{fecha:{$lt:{"$date":1551416400000}}}]}
+
+{$and:[{idIndividuo:{$regex:"0$"}},{fechaBase:{$gte:new Date("2015-12-01T00:00")}},{fechaBase:{$lt:new Date("2016-01-01T00:00")}},{fecha:{$lt:new Date("2019-03-01T00:00")}}]}
+{$and:[{idIndividuo:{$regex:"1$"}},{fechaBase:{$gte:new Date("2015-12-01T00:00")}},{fechaBase:{$lt:new Date("2016-01-01T00:00")}},{fecha:{$lt:new Date("2019-03-01T00:00")}}]}
+{$and:[{idIndividuo:{$regex:"2$"}},{fechaBase:{$gte:new Date("2015-12-01T00:00")}},{fechaBase:{$lt:new Date("2016-01-01T00:00")}},{fecha:{$lt:new Date("2019-03-01T00:00")}}]}
+{$and:[{idIndividuo:{$regex:"3$"}},{fechaBase:{$gte:new Date("2015-12-01T00:00")}},{fechaBase:{$lt:new Date("2016-01-01T00:00")}},{fecha:{$lt:new Date("2019-03-01T00:00")}}]}
+{$and:[{idIndividuo:{$regex:"4$"}},{fechaBase:{$gte:new Date("2015-12-01T00:00")}},{fechaBase:{$lt:new Date("2016-01-01T00:00")}},{fecha:{$lt:new Date("2019-03-01T00:00")}}]}
+{$and:[{idIndividuo:{$regex:"5$"}},{fechaBase:{$gte:new Date("2015-12-01T00:00")}},{fechaBase:{$lt:new Date("2016-01-01T00:00")}},{fecha:{$lt:new Date("2019-03-01T00:00")}}]}
+{$and:[{idIndividuo:{$regex:"6$"}},{fechaBase:{$gte:new Date("2015-12-01T00:00")}},{fechaBase:{$lt:new Date("2016-01-01T00:00")}},{fecha:{$lt:new Date("2019-03-01T00:00")}}]}
+{$and:[{idIndividuo:{$regex:"7$"}},{fechaBase:{$gte:new Date("2015-12-01T00:00")}},{fechaBase:{$lt:new Date("2016-01-01T00:00")}},{fecha:{$lt:new Date("2019-03-01T00:00")}}]}
+{$and:[{idIndividuo:{$regex:"8$"}},{fechaBase:{$gte:new Date("2015-12-01T00:00")}},{fechaBase:{$lt:new Date("2016-01-01T00:00")}},{fecha:{$lt:new Date("2019-03-01T00:00")}}]}
+{$and:[{idIndividuo:{$regex:"9$"}},{fechaBase:{$gte:new Date("2015-12-01T00:00")}},{fechaBase:{$lt:new Date("2016-01-01T00:00")}},{fecha:{$lt:new Date("2019-03-01T00:00")}}]}
 
 
 COLLATION

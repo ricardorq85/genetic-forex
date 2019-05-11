@@ -7,6 +7,7 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -82,7 +83,8 @@ public class MongoIndividuoDAO extends MongoGeneticDAO<MongoIndividuo> implement
 		Bson filtroFechaHistorica = Filters.lt("procesoEjecucion.maxFechaHistorico", fechaHistorico);
 		Bson filtroOr = Filters.or(filtroProcesoEjecucionNull, filtroFechaHistorica);
 		Bson bsonFiltroAdicional = Filters.regex("idIndividuo", filtroAdicional + "$");
-
+		//String json= filtroFechaHistorica.toBsonDocument(Document.class, MongoClient.getDefaultCodecRegistry()).toJson();
+		
 		List<Bson> sorts = new ArrayList<>();
 		sorts.add(Sorts.ascending("procesoEjecucion.maxFechaHistorico"));
 		this.addRandomSort(sorts, "takeProfit");

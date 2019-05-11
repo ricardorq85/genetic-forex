@@ -1,0 +1,15 @@
+Inicio: 1547579141532 <- 2019/01/15 14:05.41
+MultipleEndToEnd: 1547579141532 <- 2019/01/15 14:05.41
+ene 15, 2019 2:05:42 PM com.mongodb.diagnostics.logging.JULLogger log
+INFORMACIÓN: Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+ene 15, 2019 2:05:42 PM com.mongodb.diagnostics.logging.JULLogger log
+INFORMACIÓN: Opened connection [connectionId{localValue:1, serverValue:19}] to localhost:27017
+ene 15, 2019 2:05:42 PM com.mongodb.diagnostics.logging.JULLogger log
+INFORMACIÓN: Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=4333475}
+Exception in thread "main" java.lang.NullPointerException
+	at forex.genetic.dao.mongodb.MongoGeneticDAO.setCollection(MongoGeneticDAO.java:36)
+	at forex.genetic.dao.mongodb.MongoGeneticDAO.<init>(MongoGeneticDAO.java:32)
+	at forex.genetic.dao.mongodb.MongoParametroDAO.<init>(MongoParametroDAO.java:24)
+	at forex.genetic.util.jdbc.mongodb.MongoDataClient.getDaoParametro(MongoDataClient.java:78)
+	at forex.genetic.mediator.MultipleEndToEndMediator.init(MultipleEndToEndMediator.java:38)
+	at forex.genetic.MultipleEndToEnd.main(MultipleEndToEnd.java:51)

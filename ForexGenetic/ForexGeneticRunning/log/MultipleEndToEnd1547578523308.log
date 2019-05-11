@@ -1,0 +1,16 @@
+MultipleEndToEnd: 1547578523308 <- 2019/01/15 13:55.23
+Inicio: 1547578523308 <- 2019/01/15 13:55.23
+ene 15, 2019 1:55:24 PM com.mongodb.diagnostics.logging.JULLogger log
+INFORMACIÓN: Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+ene 15, 2019 1:55:24 PM com.mongodb.diagnostics.logging.JULLogger log
+INFORMACIÓN: Cluster description not yet available. Waiting for 30000 ms before timing out
+ene 15, 2019 1:55:24 PM com.mongodb.diagnostics.logging.JULLogger log
+INFORMACIÓN: Opened connection [connectionId{localValue:1, serverValue:17}] to localhost:27017
+ene 15, 2019 1:55:24 PM com.mongodb.diagnostics.logging.JULLogger log
+INFORMACIÓN: Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=3022386}
+ene 15, 2019 1:55:24 PM com.mongodb.diagnostics.logging.JULLogger log
+INFORMACIÓN: Opened connection [connectionId{localValue:2, serverValue:18}] to localhost:27017
+Init Importar Datos Historicos <- 2019/01/15 13:55.28
+File:EURJPY-201901150134-1.csv <- 2019/01/15 13:55.32
+Crear poblacion 1 <- 2019/01/15 13:55.32
+Init Insert Datos Historicos <- 2019/01/15 13:55.32
