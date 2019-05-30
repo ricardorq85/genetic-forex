@@ -3,7 +3,9 @@ package forex.genetic.dao.mongodb;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.bson.Document;
 
 import com.mongodb.client.MongoCollection;
@@ -71,14 +73,20 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 	public void insertManyDocuments(List<Document> docs) {
 		InsertManyOptions options = new InsertManyOptions();
 		options.bypassDocumentValidation(true);
+		docs.forEach((u) -> u.append("hostName", SystemUtils.getHostName()));
 		this.collection.insertMany(docs, options);
 	}
 
 	public void insertOrUpdate(E obj) {
 		Document filterPk = new Document(getMapper().toPrimaryKeyMap(obj));
-		Document doc = new Document("$set", getMapper().toMap(obj));
+
+		Map<String, Object> mapObject = getMapper().toMap(obj);
+		mapObject.putIfAbsent("hostName", SystemUtils.getHostName());		
+		Document doc = new Document("$set", mapObject);
+
 		UpdateOptions options = new UpdateOptions();
 		options.upsert(true);
+
 		this.collection.updateOne(filterPk, doc, options);
 		System.out.print("#");
 	}
@@ -123,14 +131,18 @@ public abstract class MongoGeneticDAO<E> implements IGeneticDAO<E> {
 
 	@Override
 	public void insert(E obj) {
-		Document doc = new Document(getMapper().toMap(obj));
+		Map<String, Object> mapObject = getMapper().toMap(obj);
+		mapObject.putIfAbsent("hostName", SystemUtils.getHostName());		
+		Document doc = new Document(mapObject);
 		this.collection.insertOne(doc);
 	}
 
 	@Override
 	public void update(E obj) {
 		Document filterPk = new Document(getMapper().toPrimaryKeyMap(obj));
-		Document doc = new Document("$set", getMapper().toMapForUpdate(obj));
+		Map<String, Object> mapObject = getMapper().toMapForUpdate(obj);
+		mapObject.putIfAbsent("hostName", SystemUtils.getHostName());
+		Document doc = new Document("$set", mapObject);
 		this.collection.updateOne(filterPk, doc);
 	}
 

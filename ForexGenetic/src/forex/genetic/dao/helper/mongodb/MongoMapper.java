@@ -1,13 +1,12 @@
 package forex.genetic.dao.helper.mongodb;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.bson.Document;
 
 import com.mongodb.client.MongoCursor;
@@ -36,19 +35,12 @@ public abstract class MongoMapper<T> {
 
 	public List<String> helpJsonList(List<MongoCursor<Document>> documents) {
 		List<String> list = new ArrayList<String>();
+		String hostname = SystemUtils.getHostName();
 		for (MongoCursor<Document> cursor : documents) {
 			try {
 				cursor.forEachRemaining(elem -> {
-					if (!elem.containsKey("HOSTNAME")) {
-						InetAddress ip;
-						String hostname;
-						try {
-							ip = InetAddress.getLocalHost();
-							hostname = ip.getHostName();
-							elem.append("HOSTNAME", hostname);
-						} catch (UnknownHostException e) {
-							e.printStackTrace();
-						}
+					if (!elem.containsKey("hostName")) {
+						elem.append("hostName", hostname);
 					}
 					list.add(elem.toJson());
 				});
