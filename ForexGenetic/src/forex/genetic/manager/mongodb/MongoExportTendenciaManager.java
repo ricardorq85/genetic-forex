@@ -34,8 +34,8 @@ public class MongoExportTendenciaManager extends MongoExportManager<Tendencia> {
 	public void exportar() throws GeneticBusinessException {
 		Date d1, d2;
 		try {
-			d1 = DateUtil.obtenerFecha("2016/01/01 00:00");
-			d2 = DateUtil.obtenerFecha("2016/01/10 23:59");
+			d1 = DateUtil.obtenerFecha("2016/06/01 00:00");
+			d2 = DateUtil.obtenerFecha("2016/06/10 23:59");
 		} catch (ParseException e) {
 			throw new GeneticBusinessException(e);
 		}
@@ -45,6 +45,7 @@ public class MongoExportTendenciaManager extends MongoExportManager<Tendencia> {
 		List<String> findJsonList = dao.findJson(interval);
 		for (String doc : findJsonList) {
 			LogUtil.logAvance(doc, 1);
+			LogUtil.logEnter(1);
 		}
 	}
 

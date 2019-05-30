@@ -53,10 +53,10 @@ public class MongoTendenciaDAO extends MongoGeneticDAO<Tendencia> implements ITe
 
 	@Override
 	public List<MongoCursor<Document>> findJsonCursor(DateInterval interval) {
-		return Collections
-				.singletonList(this.collection.find(Filters.and(Filters.gte("fechaBase", interval.getLowInterval())
-				// ,Filters.lte("fechaBase", interval.getHighInterval())
-				)).sort(Sorts.ascending("fechaBase")).limit(2).iterator());
+		return Collections.singletonList(this.collection
+				.find(Filters.and(Filters.gte("fechaBase", interval.getLowInterval()),
+						Filters.lte("fechaBase", interval.getHighInterval())))
+				.sort(Sorts.ascending("fechaBase")).limit(20).iterator());
 	}
 
 	@Override

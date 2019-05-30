@@ -1,7 +1,8 @@
 package forex.genetic.dao.helper.mongodb;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +39,17 @@ public abstract class MongoMapper<T> {
 		for (MongoCursor<Document> cursor : documents) {
 			try {
 				cursor.forEachRemaining(elem -> {
+					if (!elem.containsKey("HOSTNAME")) {
+						InetAddress ip;
+						String hostname;
+						try {
+							ip = InetAddress.getLocalHost();
+							hostname = ip.getHostName();
+							elem.append("HOSTNAME", hostname);
+						} catch (UnknownHostException e) {
+							e.printStackTrace();
+						}
+					}
 					list.add(elem.toJson());
 				});
 			} finally {
